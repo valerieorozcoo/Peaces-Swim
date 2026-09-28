@@ -1,1 +1,1276 @@
-https://claude.ai/artifact/SsRcnvR8FjTJ9TrWJMTFF3
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Peaces Swim Builder</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600;700&family=Pinyon+Script&display=swap">
+<style>
+  :root{color-scheme:light; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);}
+  html,body{margin:0;}
+  img{max-width:100%;}
+  [hidden]{display:none!important;}
+</style>
+</head>
+<body>
+<style>
+  :root{
+    --paper:#FFFFFF; --card:#FFF7FB; --pink-pale:#FFEEF7;
+    --ink:#3A2C34; --ink-soft:#8A7480;
+    --pink:#FF4FB0; --pink-deep:#D6288A; --pink-soft:#FFC3E2;
+    --aqua:#4FDEDC; --aqua-pale:#E6FBFB;
+    --line:#E9C9DC; --sketch:#463A30;
+    color-scheme:light;
+  }
+  *{box-sizing:border-box;}
+  html,body{height:100%;}
+  body{
+    margin:0; color:var(--ink); font-family:'Lora', Georgia, serif; padding-inline:20px;
+    background-color:#FCEFF5;
+  }
+  .wrap{max-width:1180px; margin:0 auto; padding-block:24px 56px;}
+
+  header.top{
+    display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap;
+    margin-bottom:24px; padding-bottom:16px; border-bottom:1px solid var(--line);
+  }
+  header.top img.logo{width:clamp(190px,26vw,270px); height:auto; display:block;}
+  header.top .tagline{
+    font-family:'Pinyon Script',cursive; font-size:clamp(17px,2.4vw,23px);
+    color:var(--aqua); margin:0; text-align:right;
+  }
+  @media (max-width:640px){header.top .tagline{text-align:left;}}
+
+  .layout{display:grid; grid-template-columns:minmax(280px,396px) 1fr; gap:34px; align-items:start;}
+  @media (max-width:880px){.layout{grid-template-columns:1fr;}}
+  .stage-col{position:sticky; top:14px;}
+  @media (max-width:880px){.stage-col{position:static;}}
+
+  .stage{
+    background:var(--paper); border:1px solid var(--line); border-radius:0;
+    padding:16px 18px 26px; box-shadow:none;
+  }
+  .stage-label{
+    display:flex; justify-content:space-between; align-items:baseline; gap:8px;
+    font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-soft); padding-bottom:10px;
+  }
+  .stage-label .style-name{font-family:'Pinyon Script',cursive; font-size:21px; text-transform:none; letter-spacing:0; color:var(--pink);}
+  .rig{display:flex; flex-direction:column; align-items:center; gap:10px; --u:0.33%;}
+  .piece{position:relative;}
+  .piece .layer{position:absolute; inset:0; -webkit-mask-size:100% 100%; mask-size:100% 100%; -webkit-mask-repeat:no-repeat; mask-repeat:no-repeat;}
+  .piece .fill{background:var(--fabric,#8A9A6E);}
+  .piece.leopard .fill{
+    background-color:#E2BA84;
+    background-image:url("art2/leopard.png");
+    background-size:74px 74px;
+  }
+  .piece .laceover{background-image:url("art2/lace-seamless.png"); background-size:52px 52px; opacity:.92;}
+  .piece .lines{background:var(--sketch); opacity:.85;}
+  .piece .deco{position:absolute; inset:0; width:100%; height:100%; overflow:visible;}
+  .piece img.sizer{display:block; width:100%; height:auto; visibility:hidden;}
+  .size-chip{
+    position:absolute; right:-6px; top:50%; transform:translateY(-50%);
+    font-size:10.5px; letter-spacing:.12em; color:var(--pink-deep);
+    background:var(--pink-pale); border:1px solid var(--line); border-radius:0; padding:2px 8px;
+  }
+
+  .price-bar{display:flex; align-items:flex-end; justify-content:space-between; gap:10px; margin-top:14px; padding:15px 18px; background:var(--paper); border:1px solid var(--line); border-radius:0;}
+  .price-bar .total-label{font-size:11px; text-transform:uppercase; letter-spacing:.13em; color:var(--ink-soft); margin-bottom:3px;}
+  .price-bar .total{font-size:30px; font-weight:500; line-height:1; font-variant-numeric:tabular-nums;}
+  .price-bar .total s{color:var(--ink-soft); font-size:17px; margin-right:7px; font-weight:300;}
+  .price-bar .breakdown{font-size:12.5px; color:var(--ink-soft); text-align:right; max-width:160px;}
+  .summary-list{margin-top:12px; display:flex; flex-direction:column; gap:5px; font-size:13.5px;}
+  .summary-list .row{display:flex; justify-content:space-between; gap:10px; color:var(--ink-soft);}
+  .summary-list .row span:last-child{font-variant-numeric:tabular-nums; color:var(--ink);}
+  .summary-list .row.discount span{color:var(--pink);}
+  .perk{margin-top:12px; display:flex; gap:9px; align-items:flex-start; background:var(--aqua-pale); border:1px solid #CFF3F3; border-radius:0; padding:11px 13px; font-size:13px; cursor:pointer;}
+  .perk input{accent-color:var(--aqua); margin-top:2px; width:15px; height:15px; flex:none;}
+  .perk small{display:block; color:var(--ink-soft); font-size:11.5px;}
+  .cta{margin-top:12px; width:100%; padding:14px 18px; border:none; border-radius:0; background:var(--pink); color:#fff; font-family:'Lora', Georgia, serif; font-weight:500; font-size:15px; cursor:pointer; transition:background .15s, transform .12s;}
+  .cta:hover{background:var(--pink-deep);} .cta:active{transform:scale(.985);}
+  .cta:focus-visible{outline:2px solid var(--pink); outline-offset:2px;}
+  a.cta.checkout{display:block; text-align:center; text-decoration:none; background:var(--ink);
+    color:#fff; font-weight:700; letter-spacing:.14em; text-transform:uppercase; margin-top:8px;}
+  a.cta.checkout:hover{background:var(--pink-deep);}
+  .tote{margin-top:14px; background:var(--paper); border:1px solid var(--line); padding:16px; text-align:center;}
+  .tote-shot{background:var(--pink-pale); padding:12px 8px; margin-bottom:12px;}
+  .tote-shot img{width:62%; max-width:190px; height:auto; display:block; margin:0 auto;
+    filter:drop-shadow(0 12px 16px rgba(214,40,138,.16));}
+  .tote-name{font-family:'Pinyon Script',cursive; font-size:30px; color:var(--pink); line-height:1.05;}
+  .tote-desc{margin:4px 0 12px; font-size:12.5px; line-height:1.5; color:var(--ink-soft);}
+  .tote-btn{padding:10px 20px; border:1.5px solid var(--pink);
+    background:var(--paper); color:var(--pink-deep); font-family:'Lora', Georgia, serif; font-weight:700;
+    font-size:12px; letter-spacing:.1em; text-transform:uppercase; cursor:pointer;}
+  .tote-btn[aria-pressed="true"]{background:var(--pink); color:#fff; border-color:var(--pink);}
+  .tote-btn:focus-visible{outline:2px solid var(--pink); outline-offset:2px;}
+
+  .fulfil{position:fixed; inset:0; z-index:40; overflow-y:auto;
+    display:flex; align-items:center; justify-content:center;
+    padding:max(28px, env(safe-area-inset-top,0px)) 20px max(28px, env(safe-area-inset-bottom,0px));
+    background-image:linear-gradient(rgba(255,255,255,.12), rgba(255,255,255,.12)), url("art2/pool.jpg");
+    background-size:cover; background-position:center; background-repeat:no-repeat; background-attachment:scroll;}
+  .fulfil-card{width:100%; max-width:600px; background:rgba(255,255,255,.93);
+    -webkit-backdrop-filter:blur(7px); backdrop-filter:blur(7px);
+    border:1px solid rgba(255,255,255,.75); padding:24px 0 22px; text-align:center;
+    box-shadow:0 18px 44px -22px rgba(20,60,80,.5);}
+  .fulfil-title{font-family:'Lora', Georgia, serif; font-weight:700; text-transform:uppercase;
+    letter-spacing:.16em; font-size:clamp(26px,6vw,40px); color:#1FB9B6;
+    margin:2px 20px 20px; line-height:1.15;}
+  .fulfil-choices{display:grid; grid-template-columns:1fr 1fr; gap:12px; margin:0 20px;}
+  .fulfil-opt{display:flex; flex-direction:column; justify-content:center; gap:8px; text-align:center;
+    padding:26px 16px; min-height:150px;
+    border:1.5px solid var(--line); background:var(--card); cursor:pointer; font-family:inherit; color:inherit;}
+  .fulfil-opt[aria-pressed="true"]{border-color:var(--pink); background:var(--pink-pale);}
+  .fulfil-opt:focus-visible{outline:2px solid var(--pink); outline-offset:2px;}
+  .fo-name{font-weight:700; font-size:clamp(17px,3.4vw,21px); letter-spacing:.02em;}
+  .fo-desc{font-size:12.5px; color:var(--ink-soft); line-height:1.45;}
+  @media (max-width:430px){ .fulfil-opt{min-height:120px; padding:18px 12px;} }
+  .slots{margin:18px 20px 0; text-align:left;}
+  .slots-label{font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-soft); margin-bottom:8px;}
+  .slot-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(88px,1fr)); gap:8px;}
+  .slot{padding:10px 6px; border:1.5px solid var(--line); background:var(--card); cursor:pointer;
+    font-family:inherit; font-size:13.5px; color:var(--ink); font-variant-numeric:tabular-nums;}
+  .slot[aria-pressed="true"]{border-color:var(--pink); background:var(--pink-pale); color:var(--pink-deep); font-weight:700;}
+  .slot:focus-visible{outline:2px solid var(--pink); outline-offset:2px;}
+  .wait{margin:20px 20px 0; border-top:1px solid var(--line); padding-top:16px;}
+  .wait-label{font-size:11px; letter-spacing:.18em; text-transform:uppercase; color:var(--ink-soft);}
+  .wait-num{font-family:'Lora', Georgia, serif; font-weight:700; color:var(--pink);
+    font-size:clamp(84px,22vw,132px); line-height:.95; letter-spacing:-.02em; font-variant-numeric:tabular-nums;}
+  .wait-unit{font-size:12px; letter-spacing:.2em; text-transform:uppercase; color:var(--ink-soft); margin-top:2px;}
+  .wait-note{margin:12px 0 0; font-size:13px; color:var(--ink-soft); line-height:1.5;}
+
+  .checkout-note{margin:8px 0 0; font-size:11.5px; line-height:1.45; color:var(--ink-soft); text-align:center;}
+
+  .panel{display:flex; flex-direction:column; gap:20px;}
+  .step{background:var(--paper); border:1px solid var(--line); border-radius:0; padding:20px 22px 22px;}
+  .step-head{margin-bottom:14px;}
+  .step-head h2{margin:0; font-family:'Pinyon Script',cursive; font-weight:400; font-size:31px; color:var(--pink); line-height:1.1;}
+  .step-head p.hint{margin:2px 0 0; font-size:13px; color:var(--ink-soft);}
+
+  .base-grid{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
+  @media (max-width:520px){.base-grid{grid-template-columns:1fr;}}
+  .base-card{border:1.5px solid var(--line); border-radius:0; padding:12px; background:var(--card); cursor:pointer; text-align:left; display:flex; flex-direction:column; gap:6px; font-family:inherit; color:inherit; transition:border-color .15s, background .15s;}
+  .base-card .thumb{display:flex; justify-content:center;}
+  .base-card .thumb .piece{width:56%;}
+  .base-card .name{font-weight:500; font-size:15px;}
+  .base-card .desc{font-size:12.5px; color:var(--ink-soft); line-height:1.35;}
+  .base-card .price{font-size:12.5px; color:var(--pink); font-weight:500;}
+  .base-card[aria-pressed="true"]{border-color:var(--pink); background:var(--pink-pale);}
+  .base-card:focus-visible{outline:2px solid var(--pink); outline-offset:2px;}
+
+  .sub-head{font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-soft); margin:18px 0 9px;}
+  .page-back{display:block; width:100%; margin-top:12px; text-align:center;}
+  .done-copy{margin:0; font-size:13.5px; line-height:1.6; color:var(--ink-soft);}
+  .size-block{display:flex; gap:26px; flex-wrap:wrap;}
+  .size-group{flex:1; min-width:170px;}
+  .size-group .lbl{font-size:11.5px; letter-spacing:.13em; text-transform:uppercase; color:var(--ink-soft); margin-bottom:8px;}
+  .size-row{display:flex; gap:8px; flex-wrap:wrap;}
+  .size-btn{min-width:46px; padding:9px 0; border-radius:0; border:1.5px solid var(--line); background:var(--card); cursor:pointer; font-family:inherit; font-size:13.5px; color:var(--ink);}
+  .size-btn[aria-pressed="true"]{border-color:var(--pink); background:var(--pink-pale); color:var(--pink-deep); font-weight:500;}
+  .size-btn:focus-visible{outline:2px solid var(--pink); outline-offset:2px;}
+
+  .swatch-row{display:flex; flex-wrap:wrap; gap:11px;}
+  .swatch{width:40px; height:40px; border-radius:0; border:2px solid transparent; cursor:pointer; padding:0; position:relative; box-shadow:inset 0 0 0 1px rgba(0,0,0,.12);}
+  .swatch[aria-pressed="true"]{border-color:var(--pink);}
+  .swatch[aria-pressed="true"]::after{content:""; position:absolute; inset:-6px; border:1px solid var(--pink); border-radius:0;}
+  .swatch:focus-visible{outline:2px solid var(--pink); outline-offset:3px;}
+  .swatch-name{display:block; margin-top:9px; font-size:12.5px; color:var(--ink-soft);}
+
+  .tier{margin-bottom:16px;} .tier:last-child{margin-bottom:0;}
+  .tier-title{display:flex; align-items:center; gap:8px; font-size:11px; text-transform:uppercase; letter-spacing:.12em; color:var(--ink-soft); margin-bottom:9px;}
+  .tier-title .dot{width:7px; height:7px; border-radius:0; background:var(--aqua);}
+  .tier-title .price-each{margin-left:auto; text-transform:none; letter-spacing:0; font-size:12.5px; color:var(--pink); font-weight:500;}
+  .addon-grid{display:grid; grid-template-columns:1fr 1fr; gap:9px;}
+  @media (max-width:520px){.addon-grid{grid-template-columns:1fr;}}
+  .addon{display:flex; align-items:center; gap:9px; padding:8px 11px; border:1px solid var(--line); border-radius:0; background:var(--card); cursor:pointer; font-size:13.5px;}
+  .addon input{accent-color:var(--pink); width:15px; height:15px; flex:none;}
+  .addon img.thumbicon{width:26px; height:26px; object-fit:contain; flex:none;}
+  .addon .label{flex:1; line-height:1.25;}
+  .addon .label small{display:block; color:var(--ink-soft); font-size:11px;}
+  .addon.checked{border-color:var(--pink); background:var(--pink-pale);}
+  .addon.disabled{opacity:.42; cursor:not-allowed;}
+
+  .addon{width:100%; text-align:left;}
+  .addon .addon-state{font-size:12px; color:var(--pink-deep); font-weight:700; white-space:nowrap;}
+  .addon.checked .addon-state{color:var(--pink);}
+  .addon[aria-expanded="true"]{border-color:var(--pink); background:var(--pink-pale);}
+  .addon .thumbicon.rhine{display:flex; align-items:center; justify-content:center; font-size:18px; color:var(--pink);}
+  .addon.disabled{opacity:.4;}
+  .addon-drawer{grid-column:1 / -1; border:1.5px solid var(--pink); background:var(--pink-pale); padding:14px;}
+  .addon-drawer .chips{margin-bottom:4px;}
+  .drawer-actions{margin-top:12px;}
+  .drawer-actions .cta{margin-top:0; font-weight:700; letter-spacing:.08em;}
+  .drawer-remove{margin-top:10px; display:block; width:100%; text-align:center;}
+
+  .extras-grid{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
+  @media (max-width:560px){ .extras-grid{grid-template-columns:1fr;} }
+  .extra{border:1px solid var(--line); background:var(--card); padding:14px; text-align:center;
+    display:flex; flex-direction:column; gap:4px;}
+  .extra-shot{background:var(--pink-pale); padding:10px; margin-bottom:8px; display:flex; align-items:center; justify-content:center; min-height:150px;}
+  .extra-shot img{max-width:100%; max-height:150px; height:auto; display:block;
+    filter:drop-shadow(0 10px 14px rgba(214,40,138,.14));}
+  .extra-shot.band img{max-height:130px; width:100%; object-fit:cover; filter:none;}
+  .extra-name{font-family:'Pinyon Script',cursive; font-size:26px; color:var(--pink); line-height:1.05;}
+  .extra-desc{margin:0 0 10px; font-size:12px; line-height:1.45; color:var(--ink-soft);}
+  .extra .tote-btn{align-self:center; margin-top:auto;}
+
+  .chip-field{grid-column:1 / -1; padding:2px 2px 6px;}
+  .chip-field .cf-label{font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-soft); margin-bottom:7px;}
+  .chips{display:flex; gap:7px; flex-wrap:wrap;}
+  .chip{border:1.5px solid var(--line); background:var(--paper); border-radius:0; padding:5px 7px; cursor:pointer; display:flex; align-items:center; gap:5px; font-family:inherit; font-size:12px; color:var(--ink-soft);}
+  .chip img{width:20px; height:24px; object-fit:contain;}
+  .chip.bead img{height:20px;}
+  .chip[aria-pressed="true"]{border-color:var(--pink); background:var(--pink-pale); color:var(--pink-deep);}
+  .chip:focus-visible{outline:2px solid var(--pink); outline-offset:2px;}
+  .initials-field{grid-column:1 / -1; display:flex; align-items:center; gap:10px; padding:2px 2px 6px;}
+  .initials-field label{font-size:12px; color:var(--ink-soft);}
+  .initials-field input{width:82px; padding:7px 9px; border-radius:0; border:1px solid var(--line); background:var(--paper); color:var(--ink); font-family:'Lora', Georgia, serif; font-size:13px; text-transform:uppercase;}
+
+  .splash{position:fixed; inset:0; z-index:50; background:#FCEFF5;
+    display:flex; align-items:center; justify-content:center; padding:24px;
+    transition:opacity .5s ease;}
+  .splash.out{opacity:0; pointer-events:none;}
+  .splash-inner{text-align:center; animation:rise .9s ease both;}
+  .splash-logo{width:min(320px,74vw); height:auto; display:block; margin:0 auto 10px;}
+  .splash-tag{font-family:'Pinyon Script',cursive; font-size:clamp(20px,5.4vw,30px);
+    color:var(--aqua); margin:0 0 26px;}
+  .splash-bar{width:min(220px,55vw); height:2px; background:#F3DCE9; margin:0 auto; overflow:hidden;}
+  .splash-bar span{display:block; height:100%; width:0; background:var(--pink); animation:load 2.1s ease-in-out both;}
+  @keyframes rise{from{opacity:0; transform:translateY(10px);} to{opacity:1; transform:none;}}
+  @keyframes load{from{width:0;} to{width:100%;}}
+  @media (prefers-reduced-motion:reduce){
+    .splash-inner{animation:none;} .splash-bar span{animation-duration:.01s;}
+  }
+
+  .gate{
+    position:fixed; inset:0; z-index:30; overflow-y:auto;
+    display:flex; align-items:center; justify-content:center;
+    padding:max(24px, env(safe-area-inset-top, 0px)) 20px max(24px, env(safe-area-inset-bottom, 0px));
+    background-image:linear-gradient(rgba(255,240,247,.34), rgba(255,240,247,.34)), url("art2/hero.jpg");
+    background-size:cover; background-position:center; background-repeat:no-repeat;
+  }
+  .gate-card{width:100%; max-width:410px; background:rgba(255,255,255,.94);
+    -webkit-backdrop-filter:blur(7px); backdrop-filter:blur(7px);
+    border:1px solid rgba(255,255,255,.7); border-radius:0; padding:28px 26px 24px;
+    box-shadow:0 14px 30px -18px rgba(70,30,55,.5); text-align:center;}
+  .gate-logo{width:min(230px,70%); height:auto; display:block; margin:0 auto 14px;}
+  .gate-title{font-family:'Lora', Georgia, serif; font-weight:700; text-transform:uppercase;
+    letter-spacing:.15em; font-size:clamp(25px,5.4vw,33px); color:var(--pink-deep); margin:2px 0 8px;}
+  .gate-sub{margin:0 0 20px; font-size:15px; color:var(--ink-soft); line-height:1.45;}
+  .gate-card form{display:flex; flex-direction:column; gap:4px; text-align:left;}
+  .gate-card label{font-size:11.5px; letter-spacing:.13em; text-transform:uppercase; color:var(--ink-soft); margin-top:10px;}
+  .gate-card input{padding:11px 12px; border:1px solid var(--line); border-radius:0; background:var(--card);
+    font-family:'Lora', Georgia, serif; font-size:15px; color:var(--ink);}
+  .gate-card input:focus-visible{outline:2px solid var(--pink); outline-offset:1px;}
+  .gate-card input.bad{border-color:var(--pink);}
+  .gate-cta{font-weight:700; text-transform:uppercase; letter-spacing:.14em;}
+  .gate-err{margin:10px 0 0; font-size:13px; color:var(--pink-deep);}
+  .gate-skip{margin-top:14px; background:none; border:none; color:var(--ink-soft); font-family:'Lora', Georgia, serif;
+    font-size:13.5px; text-decoration:underline; cursor:pointer;}
+  .gate-skip:hover{color:var(--pink-deep);}
+
+  footer{margin-top:30px; padding-top:16px; border-top:1px solid var(--line); font-size:12.5px; color:var(--ink-soft); display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap;}
+</style>
+
+<div class="splash" id="splash">
+  <div class="splash-inner">
+    <img class="splash-logo" src="art/logo-pink.png" alt="Peaces Swim">
+    <p class="splash-tag">pick your peaces, design your dream</p>
+    <div class="splash-bar"><span></span></div>
+  </div>
+</div>
+
+<div class="gate" id="gate" hidden>
+  <div class="gate-card">
+    <img class="gate-logo" src="art/logo-pink.png" alt="Peaces Swim">
+
+    <div id="stepPhone">
+      <h1 class="gate-title">WELCOME</h1>
+      <p class="gate-sub">Time to design your dream. Enter your phone number to get started.</p>
+      <form id="phoneForm" novalidate>
+        <label for="gPhone">Phone number</label>
+        <input id="gPhone" type="tel" autocomplete="tel" inputmode="tel" placeholder="(555) 555-5555">
+        <p class="gate-err" id="phoneErr" hidden></p>
+        <button class="cta gate-cta" type="submit" id="phoneBtn">CONTINUE</button>
+      </form>
+      <button class="gate-skip" type="button" id="gateSkip">Continue without an account</button>
+    </div>
+
+    <div id="stepNew" hidden>
+      <h1 class="gate-title">NEW HERE</h1>
+      <p class="gate-sub">Add your name and email and we'll take 10% off your first peace.</p>
+      <form id="newForm" novalidate>
+        <label for="gName">Name</label>
+        <input id="gName" type="text" autocomplete="name" placeholder="First and last">
+        <label for="gEmail">Email</label>
+        <input id="gEmail" type="email" autocomplete="email" placeholder="you@email.com">
+        <p class="gate-err" id="newErr" hidden></p>
+        <button class="cta gate-cta" type="submit">SAVE 10%</button>
+      </form>
+      <button class="gate-skip" type="button" id="backToPhone">Use a different number</button>
+    </div>
+
+    <div id="stepBack" hidden>
+      <h1 class="gate-title" id="backTitle">WELCOME BACK</h1>
+      <p class="gate-sub" id="backSub">We're so glad you're back.</p>
+      <button class="cta gate-cta" type="button" id="backGo">START DESIGNING</button>
+      <button class="gate-skip" type="button" id="notYou">Not you? Use a different number</button>
+    </div>
+  </div>
+</div>
+
+<div class="wrap" id="builder" hidden>
+  <header class="top">
+    <img class="logo" src="art/logo-pink.png" alt="Peaces Swim">
+    <p class="tagline">pick your peaces, design your dream</p>
+  </header>
+
+  <div class="layout">
+    <div class="stage-col">
+      <div class="stage">
+        <div class="stage-label">
+          <span>Your peace</span>
+          <span class="style-name" id="styleName">Triangle, Turquoise</span>
+        </div>
+        <div class="rig" id="rig"></div>
+      </div>
+
+      <div class="price-bar">
+        <div>
+          <div class="total-label">Your total</div>
+          <div class="total" id="totalPrice">$80.00</div>
+        </div>
+        <div class="breakdown" id="itemCount">Base only</div>
+      </div>
+
+      <div class="summary-list" id="summaryList"></div>
+
+      <div class="perk" id="perkNote" hidden>
+        <span aria-hidden="true">&#10003;</span>
+        <span>10% off applied<small id="perkWho">Thanks for sharing your info</small></span>
+      </div>
+
+      <div id="orderBlock" hidden>
+      <button class="cta" id="ctaBtn" type="button">Save my peace</button>
+      <a class="cta checkout" id="checkoutBtn" href="https://shopify.com/85529657569/account" target="_blank" rel="noopener">CHECKOUT</a>
+      <p class="checkout-note" id="checkoutNote">Your design summary is copied to your clipboard — paste it in the order notes at checkout.</p>
+      </div>
+    </div>
+
+    <div class="panel">
+
+      <div id="pageStyle">
+        <section class="step">
+          <div class="step-head"><h2>Pick your top</h2><p class="hint">Shape, size and fabric — $80 for the set.</p></div>
+          <div class="base-grid" id="topStyleGrid"></div>
+          <div class="sub-head">Size</div>
+          <div class="size-row" id="sizeTop"></div>
+          <div class="sub-head">Fabric</div>
+          <div class="swatch-row" id="topSwatches"></div>
+          <span class="swatch-name" id="topSwatchName"></span>
+        </section>
+
+        <section class="step">
+          <div class="step-head"><h2>Pick your bottom</h2><p class="hint">Mix and match — it doesn't have to match the top.</p></div>
+          <div class="base-grid" id="bottomStyleGrid"></div>
+          <div class="sub-head">Size</div>
+          <div class="size-row" id="sizeBottom"></div>
+          <div class="sub-head">Fabric</div>
+          <div class="swatch-row" id="bottomSwatches"></div>
+          <span class="swatch-name" id="bottomSwatchName"></span>
+        </section>
+
+        <button class="cta" id="toPeaces" type="button">NEXT: PICK YOUR PEACES</button>
+      </div>
+
+      <div id="pagePeaces" hidden>
+        <section class="step">
+          <div class="step-head"><h2>Pick your Peaces</h2><p class="hint">Mix and match — priced per add-on.</p></div>
+          <div id="tierContainer"></div>
+        </section>
+        <button class="cta" id="allDone" type="button">ALL DONE</button>
+        <button class="gate-skip page-back" id="backToStyle" type="button">Back to shape, size &amp; fabric</button>
+      </div>
+
+      <div id="pageExtras" hidden>
+        <section class="step">
+          <div class="step-head"><h2>Anything else?</h2><p class="hint">Two little things that go with everything.</p></div>
+          <div class="extras-grid">
+            <div class="extra">
+              <div class="extra-shot band"><img src="art2/headband.jpg" alt="Light pink terry headband"></div>
+              <div class="extra-name">the peaces headband</div>
+              <p class="extra-desc">Soft terry band, same pink as the tote.</p>
+              <button class="tote-btn" id="hbBtn" type="button" aria-pressed="false">Add for $10</button>
+            </div>
+            <div class="extra">
+              <div class="extra-shot"><img src="art2/tote.png" alt="Light pink terrycloth Peaces tote bag"></div>
+              <div class="extra-name">the peaces tote</div>
+              <p class="extra-desc">Light pink terrycloth, embroidered script.</p>
+              <button class="tote-btn" id="toteBtn" type="button" aria-pressed="false">Add for $15</button>
+            </div>
+          </div>
+        </section>
+        <button class="cta" id="extrasNext" type="button">CONTINUE TO CHECKOUT</button>
+        <button class="gate-skip page-back" id="extrasNo" type="button">No thanks</button>
+      </div>
+
+      <div id="pageDone" hidden>
+        <section class="step">
+          <div class="step-head"><h2>All done</h2><p class="hint">Here's your peace. Save it, add the tote if you want one, then check out.</p></div>
+          <p class="done-copy">Your total and everything you picked are in the panel — use <strong>Save my peace</strong> to keep the design, then <strong>Checkout</strong> when you're ready.</p>
+          <button class="gate-skip page-back" id="backToPeaces" type="button">Back to my Peaces</button>
+        </section>
+      </div>
+
+    </div>
+  </div>
+
+  <footer>
+    <span>Peaces Swim — build concept, prices in USD.</span>
+    <span id="baseNote">Triangle top + triangle bottom</span>
+  </footer>
+</div>
+
+<div class="fulfil" id="fulfil" hidden>
+  <div class="fulfil-card">
+    <h1 class="fulfil-title">ORDER CONFIRMED</h1>
+
+    <div class="fulfil-choices" id="fulfilChoices">
+      <button class="fulfil-opt" type="button" data-mode="wait" aria-pressed="false">
+        <span class="fo-name">Wait &amp; watch</span>
+        <span class="fo-desc">Stay with us and watch your peace get customized.</span>
+      </button>
+      <button class="fulfil-opt" type="button" data-mode="pickup" aria-pressed="false">
+        <span class="fo-name">Pick it up later</span>
+        <span class="fo-desc">Choose a pickup time and come back for it.</span>
+      </button>
+    </div>
+
+    <div class="slots" id="slotBlock" hidden>
+      <div class="slots-label">Pick up at</div>
+      <div class="slot-grid" id="slotGrid"></div>
+    </div>
+
+    <div class="wait" id="waitBlock" hidden>
+      <div class="wait-label" id="waitLabel">Estimated wait</div>
+      <div class="wait-num" id="waitNum">0</div>
+      <div class="wait-unit" id="waitUnit">minutes</div>
+      <p class="wait-note" id="waitNote"></p>
+    </div>
+
+    <div style="margin:0 20px;"><button class="cta" id="fulfilBack" type="button">Back to my design</button></div>
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  var NS="http://www.w3.org/2000/svg";
+  var BASE_PRICE=80, DISCOUNT=0.10;
+
+  /* each piece style: art file, which fabric family it belongs to, whether it has ties */
+  var STYLES={
+    top:{
+      triangle:{art:"b-triangle-top", name:"Triangle top", desc:"Classic triangle cups with neck ties.", family:"triangle", ties:true,  ruffle:'1″',
+        addons:["extTies","ruffles","laceTrim","laceOver","bows","roses","beads","buttons","initials","charmsB","charmsP","connectors"]},
+      underwire:{art:"b-underwire-top", name:"Bralette top", desc:"Structured cups with set straps.", family:"underwire", ties:true, ruffle:'½″',
+        addons:["extTies","laceTrim","laceOver","bows","roses","buttons","initials","charmsB","charmsP"]}
+    },
+    bottom:{
+      triangle:{art:"b-triangle-bottom", name:"Triangle bottom", desc:"Triangle front with side ties.", family:"triangle", ties:true,  ruffle:'1″',
+        addons:["ruffles","laceTrim","laceOver","bows","roses","buttons","initials","charmsB","charmsP","connectors"]},
+      seamless:{art:"b-seamless-bottom", name:"Seamless bottom", desc:"Smooth full-coverage, no ties.", family:"underwire", ties:false, ruffle:'½″',
+        addons:["laceTrim","laceOver","bows","roses","buttons","initials","charmsB","charmsP"]}
+    }
+  };
+  var SIZES=["XS","S","M","L"];
+
+  /* family: which silhouettes a fabric is cut for. "both" = available on either. */
+  var COLORS=[
+    {id:"green",  name:"Light Green", fill:"#B2D183", family:"triangle"},
+    {id:"cheetah",name:"Cheetah",     fill:"leopard", family:"triangle"},
+    {id:"teal",   name:"Teal",        fill:"#5FD6D2", family:"underwire"},
+    {id:"coral",  name:"Coral",       fill:"#F4785F", family:"underwire"}
+  ];
+  function colorsFor(family){
+    return COLORS.filter(function(c){ return c.family==="both" || c.family===family; });
+  }
+
+  var BEADS=[
+    ["turquoise","Turquoise"],["lightpink","Light pink"],["darkpink","Dark pink"],
+    ["lightgreen","Light green"],["coral","Coral"],["pink","Pink"],
+    ["lightblue","Light blue"],["purpleblue","Light purple"],["lightturq","Light turquoise"]
+  ];
+  var CHARMS_B=[["c-shell","Shell"],["c-heart","Heart"],["c-star","Star"]];
+  var CHARMS_P=[["c-bead1","Bead charm 1"],["c-bead2","Bead charm 2"]];
+
+  /* every add-on opens to choose a colour/finish, then Add to cart */
+  var ADDONS=[
+    {id:"beads",   tier:1,price:3, name:"Beads",          hint:"Straps + center front",
+      opts:BEADS, art:function(v){return "bead-"+v;}, def:"lightpink"},
+    {id:"bows",    tier:2,price:5, name:"Mini bows",      hint:"Center front, top + bottom",
+      opts:[["pink","Light pink"],["white","White"]], art:function(v){return "p-bow-"+v;}, def:"pink"},
+    {id:"roses",   tier:2,price:5, name:"Mini roses",     hint:"Center front, top + bottom",
+      opts:[["pink","Pink"]], art:function(){return "p-rose";}, def:"pink"},
+    {id:"buttons", tier:2,price:5, name:"Buttons",        hint:"Pearl buttons, center front",
+      opts:[["pearl","Pearl"]], art:function(){return "button";}, def:"pearl"},
+    {id:"charmsB", tier:2,price:5, name:"Basic charms",   hint:"Shell, heart or star",
+      opts:CHARMS_B, art:function(v){return v;}, def:"c-heart"},
+    {id:"charmsP", tier:3,price:7, name:"Premium charms", hint:"Beaded dangles",
+      opts:CHARMS_P, art:function(v){return v;}, def:"c-bead1"},
+    {id:"extTies", tier:3,price:7, name:"Extended ties",  hint:"55″ beaded wrap ties",
+      opts:[["pink","Pink"],["green","Green"],["turq","Turquoise"],["coral","Coral"]],
+      art:function(v){return "p-extties-l-"+v;}, def:"pink"},
+    {id:"laceTrim",tier:4,price:10,name:"Lace trim",      hint:"1.25″ along the edges",
+      opts:[["white","White"],["pink","Pink"],["coral","Coral"],["turq","Turquoise"],["green","Green"]],
+      art:function(v){return "p-lacetrim-"+v;}, def:"white"},
+    {id:"laceOver",tier:4,price:10,name:"Lace overlay",   hint:"Lace sheet over the panels",
+      opts:[["white","White"],["black","Black"],["pink","Pink"],["lav","Lavender"]],
+      art:function(v){return "lace-tile-"+v;}, def:"white"},
+    {id:"ruffles", tier:4,price:10,name:"Ruffles",        hint:"Along the edges",
+      opts:[["pink","Pink"],["green","Green"],["turq","Turquoise"],["coral","Coral"]],
+      art:function(v){return "p-ruffle-"+v;}, def:"pink"},
+    {id:"initials",tier:4,price:10,name:"Rhinestones",    hint:"Your initials on the bottom",
+      opts:[["clear","Clear"]], art:function(){return "";}, def:"clear"},
+    {id:"connectors",tier:4,price:10,name:"Connectors",   hint:"Gold key ring",
+      opts:[["gold","Gold"]], art:function(){return "c-keyring";}, def:"gold"}
+  ];
+  function addonDef(id){ return ADDONS.filter(function(a){return a.id===id;})[0]; }
+  function variantOf(id){ var a=addonDef(id); return state.variant[id]||a.def; }
+  function variantName(id){
+    var a=addonDef(id), v=variantOf(id);
+    var hit=a.opts.filter(function(o){return o[0]===v;})[0];
+    return hit?hit[1]:v;
+  }
+
+  var state={
+    topStyle:"triangle", bottomStyle:"triangle",
+    topColor:"green", bottomColor:"green",
+    sizeTop:"S", sizeBottom:"S", addons:{}, variant:{}, preview:null,
+    tote:false, headband:false, fulfil:null, pickupAt:null,
+    initials:"VAL", perk:false
+  };
+
+  /* geometry measured from the watercolor flats, in artwork pixels */
+  var GEO={
+    "b-triangle-top":{w:310,h:218,
+      strapL:[60,4],strapR:[246,4], junctionL:[56,84],junctionR:[250,78],
+      strapRunL:[[60,10],[56,74]], strapRunR:[[246,10],[250,70]],
+      outerL:[12,188],outerR:[298,188], center:[155,190], centerHigh:[155,180],
+      trimSegs:[[58,86,148,186],[162,186,248,80]]},
+    "b-triangle-bottom":{w:280,h:186,
+      hipL:[14,16],hipR:[266,14], tieTopL:[9,5],tieTopR:[264,5],
+      strapRunL:[[12,8],[16,34]], strapRunR:[[266,8],[262,34]],
+      center:[140,26], mono:[140,100],
+      trimSegs:[[16,10,140,27],[140,27,264,8]]},
+    "b-underwire-top":{w:284,h:224,
+      strapL:[46,4],strapR:[238,4], junctionL:[58,104],junctionR:[216,106],
+      strapRunL:[[46,10],[58,96]], strapRunR:[[238,10],[226,96]],
+      outerL:[12,155],outerR:[272,156], center:[142,170], centerHigh:[142,160],
+      trimSegs:[[62,106,140,166],[144,166,212,110]]},
+    "b-seamless-bottom":{w:281,h:182,
+      hipL:[12,18],hipR:[268,16], tieTopL:[16,4],tieTopR:[264,4],
+      strapRunL:[[14,8],[18,34]], strapRunR:[[266,8],[262,34]],
+      center:[140,20], mono:[140,96],
+      trimSegs:[[16,8,140,21],[140,21,266,8]]}
+  };
+
+  function fmt(n){ return "$"+n.toFixed(2); }
+  function colorDef(id){ return COLORS.filter(function(c){return c.id===id;})[0]||COLORS[0]; }
+  function styleOf(part){ return STYLES[part][part==="top"?state.topStyle:state.bottomStyle]; }
+  function colorOf(part){ return colorDef(part==="top"?state.topColor:state.bottomColor); }
+  function fabricHex(part){ var c=colorOf(part); return c.fill==="leopard"?"#E2BA84":c.fill; }
+  function partOfArt(artName){ return artName.indexOf("top")>-1 ? "top" : "bottom"; }
+  function anyTies(){ return styleOf("top").ties || styleOf("bottom").ties; }
+  function allows(part,addonId){ return styleOf(part).addons.indexOf(addonId)>-1; }
+  function addonAvailable(id){ return allows("top",id)||allows("bottom",id); }
+  function el(tag,attrs,parent){
+    var e=document.createElementNS(NS,tag);
+    for(var k in attrs) e.setAttribute(k,attrs[k]);
+    if(parent) parent.appendChild(e);
+    return e;
+  }
+  function img(svg,name,cx,cy,w,h,rot){
+    var a={href:"art2/"+name+".png","x":(-w/2),"y":(-h/2),width:w,height:h,preserveAspectRatio:"xMidYMid meet"};
+    a.transform="translate("+cx+","+cy+")"+(rot?" rotate("+rot+")":"");
+    return el("image",a,svg);
+  }
+  function strip(svg,name,seg,h){
+    var dx=seg[2]-seg[0], dy=seg[3]-seg[1];
+    var L=Math.sqrt(dx*dx+dy*dy), ang=Math.atan2(dy,dx)*180/Math.PI;
+    el("image",{href:"art2/"+name+".png",x:0,y:(-h/2),width:L,height:h,
+      preserveAspectRatio:"none",transform:"translate("+seg[0]+","+seg[1]+") rotate("+ang+")"},svg);
+  }
+  function hang(svg,name,x,y,h){ // charm hanging from a point
+    el("image",{href:"art2/"+name+".png",x:(x-h*0.19),y:y,width:h*0.38,height:h,
+      preserveAspectRatio:"xMidYMid meet"},svg);
+  }
+  function beadRun(svg,run,n,size){
+    var p1=run[0],p2=run[1];
+    for(var i=0;i<n;i++){
+      var t=(i+0.5)/n;
+      img(svg,"bead-"+variantOf("beads"),p1[0]+(p2[0]-p1[0])*t,p1[1]+(p2[1]-p1[1])*t,size,size,0);
+    }
+  }
+
+  /* ---------- pieces ---------- */
+  function makePiece(artName,opts){
+    opts=opts||{};
+    var g=GEO[artName];
+    var part=partOfArt(artName);
+    var col=opts.colorId ? colorDef(opts.colorId) : colorOf(part);
+    var hex=col.fill==="leopard" ? "#E2BA84" : col.fill;
+    var wrap=document.createElement("div");
+    wrap.className="piece"+(col.fill==="leopard"?" leopard":"");
+    wrap.style.width=opts.thumb?"100%":"calc("+g.w+" * var(--u))";
+    wrap.style.setProperty("--fabric",hex);
+    var sizer=document.createElement("img");
+    sizer.className="sizer"; sizer.alt=""; sizer.src="art2/"+artName+"-sil.png";
+    wrap.appendChild(sizer);
+    var silUrl='url("art2/'+artName+'-sil.png")';
+    function layer(cls,url){
+      var d=document.createElement("div"); d.className="layer "+cls;
+      d.style.webkitMaskImage=url; d.style.maskImage=url;
+      wrap.appendChild(d); return d;
+    }
+    layer("fill",silUrl);
+    if(!opts.thumb && (state.addons.laceOver||state.preview==="laceOver") && allows(part,"laceOver")){
+      var lo=layer("laceover",silUrl);
+      lo.style.backgroundImage='url("art2/lace-tile-'+variantOf("laceOver")+'.png")';
+    }
+    layer("lines",'url("art2/'+artName+'-line.png")');
+    if(!opts.thumb){
+      var svg=el("svg",{class:"deco",viewBox:"0 0 "+g.w+" "+g.h,"aria-hidden":"true"});
+      wrap.appendChild(svg);
+      decorate(svg,artName,g);
+      var chip=document.createElement("span");
+      chip.className="size-chip";
+      chip.textContent=(artName.indexOf("top")>-1?state.sizeTop:state.sizeBottom);
+      wrap.appendChild(chip);
+    }
+    return wrap;
+  }
+
+  function decorate(svg,artName,g){
+    var A=state.addons, part=partOfArt(artName), isTop=(part==="top");
+    var tie=styleOf(part).ties;
+    var W=g.w, H=g.h;
+    function on(id){ return (A[id]||state.preview===id) && allows(part,id); }
+
+    /* extended ties — tied at the top of each strap, strands falling outside */
+    if(on("extTies") && tie){
+      var tw=W*0.145, th=tw*182/63;
+      if(isTop){
+        el("image",{href:"art2/p-extties-l-"+variantOf("extTies")+".png",x:(g.strapL[0]-tw*0.62),y:(g.strapL[1]-4),width:tw,height:th},svg);
+        el("image",{href:"art2/p-extties-r-"+variantOf("extTies")+".png",x:(g.strapR[0]-tw*0.38),y:(g.strapR[1]-4),width:tw,height:th},svg);
+      } else {
+        el("image",{href:"art2/p-extties-l-"+variantOf("extTies")+".png",x:(g.hipL[0]-tw*0.62),y:(g.hipL[1]-8),width:tw,height:th},svg);
+        el("image",{href:"art2/p-extties-r-"+variantOf("extTies")+".png",x:(g.hipR[0]-tw*0.38),y:(g.hipR[1]-8),width:tw,height:th},svg);
+      }
+    }
+
+    /* ruffle + trim lace run along the cup edges / waistband */
+    if(on("ruffles")) g.trimSegs.forEach(function(sg){ strip(svg,"p-ruffle-"+variantOf("ruffles"),sg,H*0.135); });
+    if(on("laceTrim")) g.trimSegs.forEach(function(sg){ strip(svg,"p-lacetrim-"+variantOf("laceTrim"),sg,H*0.115); });
+
+    /* beads — along the straps and across the center front */
+    if(on("beads")){
+      var bs=W*0.05;
+      beadRun(svg,g.strapRunL,4,bs);
+      beadRun(svg,g.strapRunR,4,bs);
+      for(var i=-1;i<2;i++) img(svg,"bead-"+variantOf("beads"),g.center[0]+i*bs*1.02,g.center[1],bs,bs,0);
+    }
+
+    /* charms hang from the outer edges / hips */
+    if(on("charmsB")){
+      if(isTop){ hang(svg,variantOf("charmsB"),g.outerL[0]+6,g.outerL[1]-10,H*0.19); hang(svg,variantOf("charmsB"),g.outerR[0]-6,g.outerR[1]-10,H*0.19); }
+      else { hang(svg,variantOf("charmsB"),g.hipL[0]-2,g.hipL[1]-2,H*0.24); hang(svg,variantOf("charmsB"),g.hipR[0]+2,g.hipR[1]-2,H*0.24); }
+    }
+    if(on("charmsP")){
+      if(isTop){ hang(svg,variantOf("charmsP"),g.outerL[0]+6,g.outerL[1]-10,H*0.21); hang(svg,variantOf("charmsP"),g.outerR[0]-6,g.outerR[1]-10,H*0.21); }
+      else { hang(svg,variantOf("charmsP"),g.hipL[0]-2,g.hipL[1]-2,H*0.26); hang(svg,variantOf("charmsP"),g.hipR[0]+2,g.hipR[1]-2,H*0.26); }
+    }
+
+    /* key ring — center front on the top, hips on the bottom */
+    if(on("connectors")){
+      var kw=W*0.1;
+      if(isTop) img(svg,"c-keyring",g.center[0],g.center[1]+2,kw,kw,0);
+      else { img(svg,"c-keyring",g.hipL[0],g.hipL[1]+2,kw,kw,0); img(svg,"c-keyring",g.hipR[0],g.hipR[1]+2,kw,kw,0); }
+    }
+
+    /* pearl buttons — centre front */
+    if(on("buttons")){
+      var bw=W*0.062;
+      if(isTop){
+        for(var bi=0;bi<3;bi++) img(svg,"button",g.center[0],g.center[1]-6+bi*bw*1.15,bw,bw,0);
+      } else {
+        for(var bj=-1;bj<2;bj++) img(svg,"button",g.center[0]+bj*bw*1.2,g.center[1]+4,bw,bw,0);
+      }
+    }
+
+    /* mini rose + mini bow — center front, top and bottom */
+    if(on("roses")){
+      var rw=W*0.115, rh=rw*92/95;
+      if(isTop) img(svg,"p-rose",g.centerHigh[0],g.centerHigh[1],rw,rh,0);
+      else img(svg,"p-rose",g.center[0],g.center[1]+4,rw,rh,0);
+    }
+    if(on("bows")){
+      var bw=W*0.17, bh=bw*97/138;
+      if(isTop) img(svg,"p-bow-"+variantOf("bows"),g.center[0],g.center[1]-2,bw,bh,0);
+      else img(svg,"p-bow-"+variantOf("bows"),g.center[0],g.center[1]+4,bw,bh,0);
+    }
+
+    if(on("initials") && !isTop){
+      var t=el("text",{x:g.mono[0],y:g.mono[1],"font-family":"'Pinyon Script', cursive",
+        "font-size":(W*0.14),fill:"#FFFFFF",stroke:"#E7CBDD","stroke-width":.7,"text-anchor":"middle",opacity:.96},svg);
+      t.textContent=(state.initials||"").slice(0,3).toUpperCase();
+      for(var k=0;k<12;k++){
+        var ang=k/12*Math.PI*2;
+        el("circle",{cx:g.mono[0]+Math.cos(ang)*(W*0.11),cy:g.mono[1]-W*0.045+Math.sin(ang)*(W*0.06),
+          r:1.4,fill:"#FFFFFF",stroke:"#EBD3E3","stroke-width":.4},svg);
+      }
+    }
+  }
+
+  /* ---------- render ---------- */
+  var rig=document.getElementById("rig");
+  function renderRig(){
+    rig.innerHTML="";
+    rig.appendChild(makePiece(styleOf("top").art));
+    rig.appendChild(makePiece(styleOf("bottom").art));
+    document.getElementById("styleName").textContent=
+      styleOf("top").name+" · "+styleOf("bottom").name;
+    document.getElementById("baseNote").textContent=
+      colorOf("top").name+" top + "+colorOf("bottom").name+" bottom";
+  }
+  function activeAddons(){ return ADDONS.filter(function(a){return state.addons[a.id] && addonAvailable(a.id);}); }
+  function renderSummary(){
+    var list=activeAddons(), sub=BASE_PRICE;
+    list.forEach(function(a){ sub+=a.price; });
+    if(state.tote) sub+=15;
+    if(state.headband) sub+=10;
+    var total=state.perk?sub*(1-DISCOUNT):sub;
+    document.getElementById("totalPrice").innerHTML=state.perk?"<s>"+fmt(sub)+"</s>"+fmt(total):fmt(total);
+    document.getElementById("itemCount").textContent=(list.length?list.length+" add-on"+(list.length>1?"s":""):"Base only")+" · size "+state.sizeTop+"/"+state.sizeBottom;
+    var box=document.getElementById("summaryList"); box.innerHTML="";
+    function row(l,v,cls){
+      var d=document.createElement("div"); d.className="row"+(cls?" "+cls:"");
+      d.innerHTML="<span>"+l+"</span><span>"+v+"</span>"; box.appendChild(d);
+    }
+    row(styleOf("top").name+" · "+colorOf("top").name+" · "+state.sizeTop,fmt(BASE_PRICE));
+    row(styleOf("bottom").name+" · "+colorOf("bottom").name+" · "+state.sizeBottom,"included");
+    list.forEach(function(a){
+      var extra="";
+      if(a.id==="initials"&&state.initials) extra=" ("+state.initials.slice(0,3).toUpperCase()+")";
+      if(a.opts.length>1) extra=" ("+variantName(a.id).toLowerCase()+")";
+      if(a.id==="ruffles"){
+        var rs=styleOf("top").ruffle===styleOf("bottom").ruffle
+          ? styleOf("top").ruffle : styleOf("top").ruffle+" / "+styleOf("bottom").ruffle;
+        extra=" ("+rs+")";
+      }
+      row(a.name+extra,"+"+fmt(a.price));
+    });
+    if(state.perk) row("Socials + messages","−"+fmt(sub*DISCOUNT),"discount");
+  }
+  function renderAll(){ renderRig(); renderSummary(); syncControls(); }
+
+  /* ---------- controls ---------- */
+  function buildStyleGrid(part){
+    var grid=document.getElementById(part==="top"?"topStyleGrid":"bottomStyleGrid");
+    grid.innerHTML="";
+    Object.keys(STYLES[part]).forEach(function(id){
+      var st=STYLES[part][id];
+      var card=document.createElement("button");
+      card.type="button"; card.className="base-card"; card.dataset.style=id; card.dataset.part=part;
+      card.setAttribute("aria-pressed",(part==="top"?state.topStyle:state.bottomStyle)===id?"true":"false");
+      var thumb=document.createElement("div"); thumb.className="thumb";
+      var firstCol=colorsFor(st.family)[0];
+      thumb.appendChild(makePiece(st.art,{thumb:true,colorId:(part==="top"?state.topStyle:state.bottomStyle)===id?(part==="top"?state.topColor:state.bottomColor):firstCol.id}));
+      card.appendChild(thumb);
+      var meta=document.createElement("div");
+      meta.innerHTML='<div class="name">'+st.name+'</div><div class="desc">'+st.desc+'</div>';
+      card.appendChild(meta);
+      card.addEventListener("click",function(){ pickStyle(part,id); });
+      grid.appendChild(card);
+    });
+  }
+
+  function pickStyle(part,id){
+    if(part==="top") state.topStyle=id; else state.bottomStyle=id;
+    /* keep the fabric legal for the new silhouette */
+    var fam=STYLES[part][id].family;
+    var cur=part==="top"?state.topColor:state.bottomColor;
+    var allowed=colorsFor(fam).map(function(c){return c.id;});
+    if(allowed.indexOf(cur)<0){
+      if(part==="top") state.topColor=allowed[0]; else state.bottomColor=allowed[0];
+    }
+    /* drop add-ons neither piece can take any more */
+    ADDONS.forEach(function(a){ if(!addonAvailable(a.id)) delete state.addons[a.id]; });
+    buildSwatches(part);
+    renderAll();
+    buildStyleGrid("top"); buildStyleGrid("bottom");
+  }
+
+  function buildSwatches(part){
+    var row=document.getElementById(part==="top"?"topSwatches":"bottomSwatches");
+    var nameEl=document.getElementById(part==="top"?"topSwatchName":"bottomSwatchName");
+    row.innerHTML="";
+    var fam=styleOf(part).family;
+    colorsFor(fam).forEach(function(c){
+      var b=document.createElement("button");
+      b.type="button"; b.className="swatch"; b.title=c.name; b.dataset.color=c.id;
+      b.setAttribute("aria-pressed",(part==="top"?state.topColor:state.bottomColor)===c.id?"true":"false");
+      if(c.fill==="leopard"){ b.style.backgroundImage='url("art2/leopard.png")'; b.style.backgroundSize="46px 46px"; }
+      else b.style.background=c.fill;
+      b.addEventListener("click",function(){
+        if(part==="top") state.topColor=c.id; else state.bottomColor=c.id;
+        nameEl.textContent=c.name;
+        renderAll(); buildStyleGrid(part);
+      });
+      row.appendChild(b);
+    });
+    nameEl.textContent=colorOf(part).name;
+  }
+
+  ["top","bottom"].forEach(function(part){ buildStyleGrid(part); buildSwatches(part); });
+
+  ["Top","Bottom"].forEach(function(which){
+    var row=document.getElementById("size"+which);
+    SIZES.forEach(function(sz){
+      var b=document.createElement("button");
+      b.type="button"; b.className="size-btn"; b.textContent=sz;
+      b.dataset.size=sz; b.dataset.which=which;
+      b.setAttribute("aria-pressed",state["size"+which]===sz?"true":"false");
+      b.addEventListener("click",function(){ state["size"+which]=sz; renderAll(); });
+      row.appendChild(b);
+    });
+  });
+
+  /* ---------- page flow inside the builder ---------- */
+  function showPage(id){
+    ["pageStyle","pagePeaces","pageExtras","pageDone"].forEach(function(k){
+      document.getElementById(k).hidden=(k!==id);
+    });
+    document.getElementById("orderBlock").hidden=(id!=="pageDone");
+    window.scrollTo(0,0);
+  }
+  document.getElementById("toPeaces").addEventListener("click",function(){ showPage("pagePeaces"); });
+  document.getElementById("backToStyle").addEventListener("click",function(){ showPage("pageStyle"); });
+  document.getElementById("allDone").addEventListener("click",function(){ showPage("pageExtras"); });
+  document.getElementById("extrasNext").addEventListener("click",function(){ showPage("pageDone"); });
+  document.getElementById("extrasNo").addEventListener("click",function(){
+    state.tote=false; state.headband=false; syncExtras(); renderSummary(); showPage("pageDone");
+  });
+  document.getElementById("backToPeaces").addEventListener("click",function(){ showPage("pageExtras"); });
+
+  var TIER_LABEL={1:"Tier 1",2:"Tier 2",3:"Tier 3",4:"Tier 4"};
+  var tierContainer=document.getElementById("tierContainer");
+
+  function closeDrawers(except){
+    tierContainer.querySelectorAll(".addon-drawer").forEach(function(d){
+      if(d.dataset.for!==except) d.hidden=true;
+    });
+    tierContainer.querySelectorAll(".addon").forEach(function(b){
+      if(b.dataset.id!==except) b.setAttribute("aria-expanded","false");
+    });
+  }
+
+  function openDrawer(id){
+    if(!addonAvailable(id)) return;
+    var drawer=tierContainer.querySelector('.addon-drawer[data-for="'+id+'"]');
+    var tile=tierContainer.querySelector('.addon[data-id="'+id+'"]');
+    var isOpen=!drawer.hidden;
+    closeDrawers(isOpen?null:id);
+    drawer.hidden=isOpen;
+    tile.setAttribute("aria-expanded",isOpen?"false":"true");
+    state.preview = (!isOpen && !state.addons[id]) ? id : null;
+    renderAll();
+  }
+
+  [1,2,3,4].forEach(function(t){
+    var items=ADDONS.filter(function(a){return a.tier===t;});
+    var div=document.createElement("div"); div.className="tier";
+    div.innerHTML='<div class="tier-title"><span class="dot"></span><span>'+TIER_LABEL[t]+'</span><span class="price-each">'+fmt(items[0].price)+' each</span></div>';
+    var grid=document.createElement("div"); grid.className="addon-grid";
+
+    items.forEach(function(a){
+      var tile=document.createElement("button");
+      tile.type="button"; tile.className="addon"; tile.dataset.id=a.id;
+      tile.setAttribute("aria-expanded","false");
+      var iconName=a.art(a.def);
+      tile.innerHTML=(iconName?'<img class="thumbicon" src="art2/'+iconName+'.png" alt="">':'<span class="thumbicon rhine">&#10022;</span>')+
+        '<span class="label">'+a.name+'<small>'+a.hint+'</small></span>'+
+        '<span class="addon-state">'+fmt(a.price)+'</span>';
+      tile.addEventListener("click",function(){ openDrawer(a.id); });
+      grid.appendChild(tile);
+
+      var drawer=document.createElement("div");
+      drawer.className="addon-drawer"; drawer.dataset.for=a.id; drawer.hidden=true;
+      var html='';
+      if(a.opts.length>1){
+        html+='<div class="cf-label">Choose a colour</div><div class="chips">';
+        a.opts.forEach(function(o){
+          var art=a.art(o[0]);
+          html+='<button type="button" class="chip" data-val="'+o[0]+'">'+
+                (art?'<img src="art2/'+art+'.png" alt="">':'')+o[1]+'</button>';
+        });
+        html+='</div>';
+      } else {
+        html+='<div class="cf-label">'+a.opts[0][1]+'</div>';
+      }
+      if(a.id==="initials"){
+        html+='<div class="initials-field"><label for="initialsInput">Initials</label>'+
+              '<input id="initialsInput" type="text" maxlength="3" value="'+state.initials+'"></div>';
+      }
+      html+='<div class="drawer-actions">'+
+            '<button type="button" class="cta add-cart" data-add="'+a.id+'">ADD TO CART — '+fmt(a.price)+'</button>'+
+            '<button type="button" class="gate-skip drawer-remove" data-remove="'+a.id+'" hidden>Remove from cart</button>'+
+            '</div>';
+      drawer.innerHTML=html;
+
+      drawer.querySelectorAll(".chip").forEach(function(ch){
+        ch.addEventListener("click",function(){
+          state.variant[a.id]=ch.dataset.val;
+          if(!state.addons[a.id]) state.preview=a.id;
+          renderAll();
+        });
+      });
+      var ini=drawer.querySelector("#initialsInput");
+      if(ini) ini.addEventListener("input",function(e){ state.initials=e.target.value.toUpperCase(); renderAll(); });
+
+      drawer.querySelector("[data-add]").addEventListener("click",function(){
+        state.addons[a.id]=true; state.preview=null;
+        drawer.hidden=true; tile.setAttribute("aria-expanded","false");
+        renderAll();
+      });
+      drawer.querySelector("[data-remove]").addEventListener("click",function(){
+        delete state.addons[a.id]; state.preview=null;
+        drawer.hidden=true; tile.setAttribute("aria-expanded","false");
+        renderAll();
+      });
+
+      grid.appendChild(drawer);
+    });
+
+    div.appendChild(grid); tierContainer.appendChild(div);
+  });
+
+  /* ---------- anything else: headband + tote ---------- */
+  function syncExtras(){
+    var hb=document.getElementById("hbBtn"), tb=document.getElementById("toteBtn");
+    hb.setAttribute("aria-pressed",state.headband?"true":"false");
+    hb.textContent=state.headband?"Added ✓":"Add for $10";
+    tb.setAttribute("aria-pressed",state.tote?"true":"false");
+    tb.textContent=state.tote?"Added ✓":"Add for $15";
+  }
+  document.getElementById("hbBtn").addEventListener("click",function(){
+    state.headband=!state.headband; syncExtras(); renderSummary();
+  });
+  document.getElementById("toteBtn").addEventListener("click",function(){
+    state.tote=!state.tote; syncExtras(); renderSummary();
+  });
+  syncExtras();
+
+  /* ---------- splash ---------- */
+  (function(){
+    var sp=document.getElementById("splash");
+    function go(){
+      if(sp.classList.contains("out")) return;
+      sp.classList.add("out");
+      setTimeout(function(){ sp.hidden=true; document.getElementById("gate").hidden=false;
+        var ph=document.getElementById("gPhone"); if(ph) ph.focus({preventScroll:true}); },500);
+    }
+    setTimeout(go,2300);
+    sp.addEventListener("click",go);
+  })();
+
+  /* ---------- welcome / account ---------- */
+  var lead=null;
+  function digitsOf(v){ return (v||"").replace(/\D/g,""); }
+  function prettyPhone(v){
+    var d=digitsOf(v);
+    if(d.length===10) return "("+d.slice(0,3)+") "+d.slice(3,6)+"-"+d.slice(6);
+    return v;
+  }
+
+  /* Swap this for the Shopify customer lookup when the backend is live. */
+  async function lookupCustomer(phone){
+    try{
+      var db=(window.claude && claude.use) ? await claude.use("db") : null;
+      if(!db) return null;
+      var doc=await db.doc("customers/"+digitsOf(phone)).get();
+      return (doc && doc.data) ? doc.data : (doc && doc.name ? doc : null);
+    }catch(e){ return null; }
+  }
+  async function saveCustomer(c){
+    try{
+      var db=(window.claude && claude.use) ? await claude.use("db") : null;
+      if(!db) return;
+      await db.doc("customers/"+digitsOf(c.phone)).set({
+        name:c.name, email:c.email, phone:c.phone,
+        createdAt:new Date().toISOString(), discount:"10%"
+      });
+    }catch(e){}
+  }
+  async function storeLead(l){
+    try{
+      var db=(window.claude && claude.use) ? await claude.use("db") : null;
+      if(!db) return;
+      var id="lead-"+Date.now()+"-"+Math.random().toString(36).slice(2,7);
+      lead.id=id;
+      await db.doc("leads/"+id).set({
+        name:l.name, email:l.email, phone:l.phone,
+        returning:!!l.returning, createdAt:new Date().toISOString(), discount:"10%"
+      });
+    }catch(e){}
+  }
+
+  function showStep(id){
+    ["stepPhone","stepNew","stepBack"].forEach(function(k){
+      document.getElementById(k).hidden = (k!==id);
+    });
+  }
+  function showBuilder(){
+    document.getElementById("gate").hidden=true;
+    document.getElementById("builder").hidden=false;
+    var note=document.getElementById("perkNote");
+    note.hidden=!state.perk;
+    if(state.perk && lead && lead.name){
+      document.getElementById("perkWho").textContent="Thanks, "+lead.name.split(" ")[0]+" — your discount is on your total";
+    }
+    renderAll();
+    window.scrollTo(0,0);
+  }
+
+  var pendingPhone="";
+  document.getElementById("phoneForm").addEventListener("submit",async function(e){
+    e.preventDefault();
+    var ph=document.getElementById("gPhone"), err=document.getElementById("phoneErr"), btn=document.getElementById("phoneBtn");
+    ph.classList.remove("bad");
+    if(digitsOf(ph.value).length<7){
+      ph.classList.add("bad"); err.hidden=false; err.textContent="That phone number doesn't look right."; ph.focus();
+      return;
+    }
+    err.hidden=true;
+    pendingPhone=prettyPhone(ph.value.trim());
+    btn.textContent="CHECKING…";
+    var found=await lookupCustomer(pendingPhone);
+    btn.textContent="CONTINUE";
+    if(found && found.name){
+      lead={name:found.name, email:found.email||"", phone:pendingPhone, returning:true};
+      state.perk=true;
+      document.getElementById("backTitle").textContent="WELCOME "+String(found.name).split(" ")[0].toUpperCase();
+      document.getElementById("backSub").textContent="We're so glad you're back. Your 10% is already on.";
+      storeLead(lead);
+      showStep("stepBack");
+    } else {
+      showStep("stepNew");
+      document.getElementById("gName").focus({preventScroll:true});
+    }
+  });
+
+  document.getElementById("newForm").addEventListener("submit",function(e){
+    e.preventDefault();
+    var n=document.getElementById("gName"), em=document.getElementById("gEmail"), err=document.getElementById("newErr");
+    var bad=[];
+    [n,em].forEach(function(f){ f.classList.remove("bad"); });
+    if(!n.value.trim()) bad.push(n);
+    if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em.value.trim())) bad.push(em);
+    if(bad.length){
+      bad.forEach(function(f){ f.classList.add("bad"); });
+      err.hidden=false;
+      err.textContent = bad.length>1 ? "Please add your name and email."
+        : (bad[0]===n ? "Please add your name." : "That email doesn't look right.");
+      bad[0].focus();
+      return;
+    }
+    err.hidden=true;
+    lead={name:n.value.trim(), email:em.value.trim(), phone:pendingPhone, returning:false};
+    state.perk=true;
+    saveCustomer(lead);
+    storeLead(lead);
+    showBuilder();
+  });
+
+  document.getElementById("backGo").addEventListener("click",showBuilder);
+  document.getElementById("backToPhone").addEventListener("click",function(){ showStep("stepPhone"); });
+  document.getElementById("notYou").addEventListener("click",function(){
+    lead=null; state.perk=false; showStep("stepPhone");
+  });
+  document.getElementById("gateSkip").addEventListener("click",function(){
+    lead=null; state.perk=false; showBuilder();
+  });
+
+  /* ---------- fulfilment screen ---------- */
+  function makeMinutes(){
+    var n=activeAddons().length;
+    return 12 + n*4 + (state.tote?2:0) + (state.headband?1:0);
+  }
+  function fmtTime(d){
+    var h=d.getHours(), m=d.getMinutes(), ap=h>=12?"PM":"AM";
+    h=h%12; if(!h) h=12;
+    return h+":"+(m<10?"0":"")+m+" "+ap;
+  }
+  function showWait(mins,note,label){
+    document.getElementById("waitBlock").hidden=false;
+    document.getElementById("waitLabel").textContent=label||"Estimated wait";
+    document.getElementById("waitNum").textContent=mins;
+    document.getElementById("waitUnit").textContent=(mins===1?"minute":"minutes");
+    document.getElementById("waitNote").textContent=note||"";
+  }
+  function buildSlots(){
+    var grid=document.getElementById("slotGrid"); grid.innerHTML="";
+    var ready=makeMinutes();
+    var start=new Date(Date.now()+ready*60000);
+    start.setMinutes(Math.ceil(start.getMinutes()/15)*15,0,0);
+    for(var i=0;i<8;i++){
+      var t=new Date(start.getTime()+i*15*60000);
+      var b=document.createElement("button");
+      b.type="button"; b.className="slot"; b.textContent=fmtTime(t);
+      b.setAttribute("aria-pressed","false");
+      b.dataset.at=t.getTime();
+      b.addEventListener("click",function(){
+        grid.querySelectorAll(".slot").forEach(function(x){ x.setAttribute("aria-pressed","false"); });
+        this.setAttribute("aria-pressed","true");
+        var mins=Math.max(1,Math.round((+this.dataset.at-Date.now())/60000));
+        state.pickupAt=this.textContent;
+        showWait(mins,"Pick up at "+this.textContent+" — we'll text you when it's ready.","Ready in");
+      });
+      grid.appendChild(b);
+    }
+  }
+  document.getElementById("fulfilChoices").addEventListener("click",function(e){
+    var btn=e.target.closest(".fulfil-opt"); if(!btn) return;
+    this.querySelectorAll(".fulfil-opt").forEach(function(x){ x.setAttribute("aria-pressed","false"); });
+    btn.setAttribute("aria-pressed","true");
+    state.fulfil=btn.dataset.mode;
+    if(state.fulfil==="wait"){
+      document.getElementById("slotBlock").hidden=true;
+      state.pickupAt=null;
+      showWait(makeMinutes(),"Stay close — we'll customize your peace right in front of you.","Estimated wait");
+    } else {
+      document.getElementById("slotBlock").hidden=false;
+      document.getElementById("waitBlock").hidden=true;
+      buildSlots();
+    }
+  });
+  document.getElementById("fulfilBack").addEventListener("click",function(){
+    document.getElementById("fulfil").hidden=true;
+    window.scrollTo(0,0);
+  });
+
+  /* ---------- order summary text + save ---------- */
+  function designText(){
+    var list=activeAddons(), sub=BASE_PRICE;
+    list.forEach(function(a){ sub+=a.price; });
+    if(state.tote) sub+=15;
+    if(state.headband) sub+=10;
+    var total=state.perk?sub*(1-DISCOUNT):sub;
+    var lines=["PEACES SWIM — custom order",
+      "Top: "+styleOf("top").name+" · "+colorOf("top").name+" · size "+state.sizeTop,
+      "Bottom: "+styleOf("bottom").name+" · "+colorOf("bottom").name+" · size "+state.sizeBottom];
+    list.forEach(function(a){
+      var extra="";
+      if(a.id==="initials"&&state.initials) extra=" — "+state.initials.slice(0,3).toUpperCase();
+      else if(a.opts.length>1) extra=" — "+variantName(a.id);
+      lines.push("Add-on: "+a.name+extra+" (+"+fmt(a.price)+")");
+    });
+    if(state.tote) lines.push("Add-on: Peaces tote (+"+fmt(15)+")");
+    if(state.headband) lines.push("Add-on: Peaces headband (+"+fmt(10)+")");
+    lines.push("Subtotal: "+fmt(sub));
+    if(state.perk) lines.push("Discount: -10%");
+    lines.push("Total: "+fmt(total));
+    if(lead) lines.push("Customer: "+lead.name+" · "+lead.email+" · "+lead.phone);
+    return lines.join("\n");
+  }
+
+  async function saveDesign(){
+    if(!lead || !lead.id) return;
+    try{
+      var db=(window.claude && claude.use) ? await claude.use("db") : null;
+      if(!db) return;
+      var list=activeAddons(), sub=BASE_PRICE;
+      list.forEach(function(a){ sub+=a.price; });
+      if(state.tote) sub+=15;
+      if(state.headband) sub+=10;
+      await db.doc("leads/"+lead.id).update({
+        design:{
+          topStyle:styleOf("top").name, topFabric:colorOf("top").name,
+          bottomStyle:styleOf("bottom").name, bottomFabric:colorOf("bottom").name,
+          sizeTop:state.sizeTop, sizeBottom:state.sizeBottom,
+          addOns:list.map(function(a){return a.name+(a.opts.length>1?" ("+variantName(a.id)+")":"");})
+                 .concat(state.tote?["Peaces tote"]:[]).concat(state.headband?["Peaces headband"]:[]),
+          fulfilment:state.fulfil, pickupAt:state.pickupAt,
+          subtotal:sub, total:+((state.perk?sub*(1-DISCOUNT):sub)).toFixed(2),
+          summary:designText()
+        },
+        savedAt:new Date().toISOString()
+      });
+    }catch(e){}
+  }
+
+  document.getElementById("checkoutBtn").addEventListener("click",function(){
+    try{ if(navigator.clipboard) navigator.clipboard.writeText(designText()); }catch(e){}
+    document.getElementById("checkoutNote").textContent="Design summary copied — paste it into the order notes at checkout.";
+    saveDesign();
+    document.getElementById("fulfil").hidden=false;
+    window.scrollTo(0,0);
+  });
+
+  /* ---------- keep every control in sync ---------- */
+  function syncControls(){
+    document.querySelectorAll(".base-card").forEach(function(c){
+      var sel=(c.dataset.part==="top"?state.topStyle:state.bottomStyle);
+      c.setAttribute("aria-pressed",c.dataset.style===sel?"true":"false");
+    });
+    document.querySelectorAll(".size-btn").forEach(function(b){
+      b.setAttribute("aria-pressed",state["size"+b.dataset.which]===b.dataset.size?"true":"false");
+    });
+    ["top","bottom"].forEach(function(part){
+      var row=document.getElementById(part==="top"?"topSwatches":"bottomSwatches");
+      row.querySelectorAll(".swatch").forEach(function(b){
+        b.setAttribute("aria-pressed",b.dataset.color===(part==="top"?state.topColor:state.bottomColor)?"true":"false");
+      });
+    });
+    tierContainer.querySelectorAll(".addon").forEach(function(tile){
+      var def=addonDef(tile.dataset.id);
+      var off=!addonAvailable(def.id);
+      var added=!!state.addons[def.id];
+      tile.classList.toggle("checked",added);
+      tile.classList.toggle("disabled",off);
+      tile.disabled=off;
+      var rs=styleOf("top").ruffle===styleOf("bottom").ruffle
+        ? styleOf("top").ruffle+" ruffle trim"
+        : styleOf("top").ruffle+" top / "+styleOf("bottom").ruffle+" bottom";
+      tile.querySelector("small").textContent = off ? "Not available on these styles"
+        : (def.id==="ruffles" ? rs : def.hint);
+      tile.querySelector(".addon-state").textContent = off ? "—" : (added ? "Added ✓" : fmt(def.price));
+      var icon=tile.querySelector("img.thumbicon");
+      if(icon){ var art=def.art(variantOf(def.id)); if(art) icon.src="art2/"+art+".png"; }
+      if(off){
+        var dr=tierContainer.querySelector('.addon-drawer[data-for="'+def.id+'"]');
+        if(dr) dr.hidden=true;
+        tile.setAttribute("aria-expanded","false");
+      }
+    });
+    tierContainer.querySelectorAll(".addon-drawer").forEach(function(dr){
+      var id=dr.dataset.for;
+      dr.querySelectorAll(".chip").forEach(function(ch){
+        ch.setAttribute("aria-pressed",ch.dataset.val===variantOf(id)?"true":"false");
+      });
+      var add=dr.querySelector("[data-add]"), rem=dr.querySelector("[data-remove]");
+      add.hidden=!!state.addons[id]; rem.hidden=!state.addons[id];
+    });
+  }
+
+  document.getElementById("ctaBtn").addEventListener("click",function(){
+    var b=this,t=b.textContent; b.textContent="Saved ✓";
+    setTimeout(function(){ b.textContent=t; },1600);
+    saveDesign();
+  });
+
+  renderAll();
+})();
+</script>
+</body>
+</html>
