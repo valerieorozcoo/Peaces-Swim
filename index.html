@@ -3,13 +3,235 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Peaces Swim Builder</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600;700&family=Pinyon+Script&display=swap">
+<title>Peaces Swim — A new era of swimwear has arrived</title>
+<meta name="description" content="Design-your-own bikinis, made in Miami. Pick your peaces, add lace, ties and charms, and wear a swimsuit that's entirely yours.">
+<link rel="icon" type="image/png" href="art/logo-pink.png">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..700;1,6..96,400..700&family=Lora:wght@400;500;600;700&family=Pinyon+Script&display=swap">
 <style>
   :root{color-scheme:light; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);}
   html,body{margin:0;}
   img{max-width:100%;}
   [hidden]{display:none!important;}
+</style>
+<style>
+  /* ================= Landing page (#landing) =================
+     Everything here is prefixed lp- so it never touches the builder below. */
+  @font-face {
+    font-family: "Helvetica Regular";
+    src: url("https://db.onlinewebfonts.com/t/a64ff11d2c24584c767f6257e880dc65.eot");
+    src: url("https://db.onlinewebfonts.com/t/a64ff11d2c24584c767f6257e880dc65.eot?#iefix")format("embedded-opentype"),
+    url("https://db.onlinewebfonts.com/t/a64ff11d2c24584c767f6257e880dc65.woff2")format("woff2"),
+    url("https://db.onlinewebfonts.com/t/a64ff11d2c24584c767f6257e880dc65.woff")format("woff"),
+    url("https://db.onlinewebfonts.com/t/a64ff11d2c24584c767f6257e880dc65.ttf")format("truetype"),
+    url("https://db.onlinewebfonts.com/t/a64ff11d2c24584c767f6257e880dc65.svg#Helvetica Regular")format("svg");
+  }
+  #landing{
+    --lp-sans:"Helvetica Regular","Helvetica Neue",Helvetica,Arial,sans-serif;
+    --lp-display:"Bodoni Moda","Didot","Bodoni 72",Georgia,serif;
+    --lp-script:'Pinyon Script',cursive;
+    --lp-blush:#FCEFF5;
+    --lp-ink-60:rgba(58,44,52,.6); --lp-ink-70:rgba(58,44,52,.7); --lp-ink-25:rgba(58,44,52,.25);
+    font-family:var(--lp-sans); color:var(--ink); background:#fff;
+    overflow-x:clip; -webkit-font-smoothing:antialiased;
+  }
+  #landing *{box-sizing:border-box;}
+  #landing ::selection{background:rgba(255,79,176,.3); color:var(--ink);}
+  /* :where() keeps these resets at zero specificity so the lp- classes always win */
+  :where(#landing) a{color:inherit; text-decoration:none;}
+  :where(#landing) :is(h1,h2,h3,h4,p,figure,blockquote,ol,ul){margin:0;}
+  :where(#landing) :is(ol,ul){padding:0; list-style:none;}
+  :where(#landing) svg{display:block;}
+
+  .lp-label{font-size:10px; letter-spacing:.25em; text-transform:uppercase;}
+  .lp-link{display:inline-block; font-size:11px; letter-spacing:.25em; text-transform:uppercase;
+    text-decoration:underline; text-decoration-thickness:1px; text-underline-offset:7px; transition:color .2s;}
+
+  /* scrolling announcement strip */
+  .lp-bar{background:var(--ink); color:rgba(255,255,255,.9); height:36px; overflow:hidden; display:flex; align-items:center;}
+  .lp-bar-track{display:flex; width:max-content; animation:lp-marquee 48s linear infinite;}
+  .lp-bar-track span{padding:0 32px; font-size:10px; letter-spacing:.28em; text-transform:uppercase; white-space:nowrap;}
+  .lp-bar-track b{font-weight:400; color:var(--pink); padding-left:64px;}
+  @keyframes lp-marquee{to{transform:translateX(-50%);}}
+
+  /* header (sits on the cover) */
+  .lp-header{position:absolute; top:0; left:0; right:0; z-index:5; display:flex; align-items:center; justify-content:space-between; padding:20px 20px 0;}
+  .lp-header-left{display:flex; align-items:center; gap:32px;}
+  .lp-logo{height:36px; width:auto; filter:brightness(0) invert(1);}
+  .lp-nav{display:none; align-items:center; gap:24px;}
+  .lp-nav a{font-size:11px; letter-spacing:.22em; text-transform:uppercase; color:rgba(58,44,52,.8); transition:color .2s;}
+  .lp-nav a:hover{color:#fff;}
+  .liquid-glass.lp-cart{width:40px; height:40px; border-radius:999px; display:grid; place-items:center;
+    background:rgba(58,44,52,.15); color:rgba(255,255,255,.9); transition:color .2s;}
+  .lp-cart:hover{color:#fff;}
+
+  /* cover */
+  .lp-hero{position:relative; display:grid;}
+  .lp-cover{position:relative; background:var(--aqua); color:#fff; display:flex; flex-direction:column; padding:96px 20px 24px; min-height:88svh;}
+  .lp-rule{display:flex; justify-content:space-between; align-items:flex-end; gap:12px; color:rgba(58,44,52,.75);}
+  .lp-rule.lp-top{border-bottom:1px solid var(--lp-ink-25); padding-bottom:8px;}
+  .lp-rule.lp-bottom{border-top:1px solid var(--lp-ink-25); padding-top:8px;}
+  .lp-wide{display:none;}
+  .lp-cover-main{flex:1; display:flex; flex-direction:column; justify-content:center; padding:40px 0;}
+  .lp-mono{font-family:var(--lp-script); font-size:60px; line-height:1; margin-bottom:8px;}
+  .lp-h1{font-family:var(--lp-display); font-weight:400; line-height:.86; letter-spacing:-.01em; font-size:16.5vw;}
+  .lp-h1 > span{display:block;}
+  .lp-h1 i{font-size:.42em; letter-spacing:0;}
+  .lp-h1 .lp-arrived{font-style:italic; font-size:.42em; letter-spacing:0; margin-top:12px;}
+  .lp-actions{margin-top:40px; display:flex; flex-wrap:wrap; align-items:center; gap:20px 32px;}
+  .lp-btn{display:inline-block; background:#fff; color:var(--ink); padding:16px 32px; font-size:11px; letter-spacing:.25em; text-transform:uppercase; transition:background .2s, color .2s;}
+  .lp-btn:hover{background:var(--ink); color:#fff;}
+  .lp-cover .lp-link{color:var(--ink);}
+  .lp-cover .lp-link:hover{color:#fff;}
+  .lp-shot{position:relative; min-height:75svh; overflow:hidden;}
+  .lp-shot img{position:absolute; inset:0; width:100%; height:100%; max-width:none; object-fit:cover; object-position:36% 50%; animation:lp-zoom 2.2s ease-out both;}
+  .lp-fig{position:absolute; left:20px; bottom:20px; color:#fff; text-shadow:0 1px 8px rgba(0,0,0,.35);}
+  .lp-rise{animation:lp-rise 1s cubic-bezier(.22,1,.36,1) both; animation-delay:var(--d,0s);}
+  @keyframes lp-rise{from{opacity:0; transform:translateY(30px);}}
+  @keyframes lp-zoom{from{transform:scale(1.08);}}
+
+  /* how it works */
+  .lp-how{background:#fff; padding:96px 20px;}
+  .lp-container{max-width:1280px; margin:0 auto;}
+  .lp-how-head{display:grid; gap:32px; align-items:end;}
+  .lp-eyebrow{color:var(--lp-ink-60); margin-bottom:24px; letter-spacing:.28em;}
+  .lp-h2{font-family:var(--lp-display); font-weight:400; font-size:48px; line-height:.95; letter-spacing:-.025em;}
+  .lp-h2 .lp-script{display:block; font-family:var(--lp-script); color:var(--pink); font-size:60px; line-height:1.15; letter-spacing:0;}
+  .lp-aside p{font-size:14px; line-height:1.65; color:var(--lp-ink-70);}
+  .lp-aside .lp-link{margin-top:24px;}
+  .lp-aside .lp-link:hover{color:var(--pink);}
+  .lp-steps{margin-top:64px; display:grid; gap:56px;}
+  .lp-step-img{aspect-ratio:4/5; overflow:hidden; background:var(--lp-blush);}
+  .lp-step-img img{width:100%; height:100%; max-width:none; object-fit:cover; transition:transform 1.2s ease-out;}
+  .lp-step-img img:hover{transform:scale(1.04);}
+  .lp-step-meta{margin-top:24px; display:flex; gap:20px;}
+  .lp-step-n{font-family:var(--lp-display); font-style:italic; font-size:36px; line-height:1; color:var(--pink);}
+  .lp-step h3{font-family:var(--lp-display); font-weight:400; font-size:24px; line-height:1.25;}
+  .lp-step p{margin-top:8px; font-size:14px; line-height:1.65; color:var(--lp-ink-70); max-width:320px;}
+
+  /* lookbook */
+  .lp-look{background:var(--lp-blush); padding:96px 20px;}
+  .lp-look-head{display:flex; align-items:flex-end; justify-content:space-between; gap:16px; border-bottom:1px solid rgba(58,44,52,.2); padding-bottom:12px; margin-bottom:40px;}
+  .lp-look-head h2{font-family:var(--lp-display); font-weight:400; font-size:30px;}
+  .lp-look-head span{color:var(--lp-ink-60); text-align:right;}
+  .lp-look-grid{display:grid; gap:24px;}
+  .lp-frame{overflow:hidden;}
+  .lp-frame img{width:100%; height:100%; max-width:none; object-fit:cover;}
+  .lp-r32{aspect-ratio:3/2;} .lp-r34{aspect-ratio:3/4;}
+  .lp-look figcaption{margin-top:12px; color:var(--lp-ink-60);}
+  .lp-quote{display:flex; flex-direction:column; justify-content:center; padding:40px 0;}
+  .lp-quote p{font-family:var(--lp-display); font-style:italic; font-size:36px; line-height:1.1;}
+  .lp-quote span{margin-top:24px; font-family:var(--lp-script); font-size:36px; color:var(--pink);}
+
+  /* closing + glass footer */
+  .lp-close{position:relative; overflow:hidden; padding:112px 16px 24px; display:flex; flex-direction:column; align-items:center;}
+  .lp-close-bg{position:absolute; inset:0; width:100%; height:100%; max-width:none; object-fit:cover; object-position:46% 40%;}
+  .lp-close-tint{position:absolute; inset:0; background:linear-gradient(to bottom, rgba(58,44,52,.1), rgba(58,44,52,.25), rgba(58,44,52,.75));}
+  .lp-close-inner{position:relative; z-index:1; width:100%; max-width:1280px; color:#fff;}
+  .lp-close h2{font-family:var(--lp-display); font-weight:400; font-size:48px; line-height:.95; max-width:576px; text-shadow:0 2px 24px rgba(58,44,52,.3);}
+  .lp-close-copy{margin-top:20px; font-size:14px; line-height:1.6; color:rgba(255,255,255,.85); max-width:384px;}
+  .lp-signup{margin-top:32px; display:flex; align-items:flex-end; gap:24px; max-width:384px; border-bottom:1px solid rgba(255,255,255,.7); padding-bottom:8px;}
+  .lp-signup input{flex:1; min-width:0; background:transparent; border:0; padding:0; color:#fff; font-family:inherit; font-size:14px;}
+  .lp-signup input::placeholder{color:rgba(255,255,255,.6);}
+  .lp-signup input:focus{outline:none;}
+  .lp-signup button{background:none; border:0; padding:0; color:#fff; cursor:pointer; font-family:inherit; font-size:11px; letter-spacing:.25em; text-transform:uppercase; transition:color .2s;}
+  .lp-signup button:hover{color:var(--pink-soft);}
+  .lp-sr{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap;}
+
+  .liquid-glass {
+    background: rgba(255, 255, 255, 0.01);
+    background-blend-mode: luminosity;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    border: none;
+    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.1);
+    position: relative;
+    overflow: hidden;
+  }
+  .liquid-glass::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1.4px;
+    background: linear-gradient(180deg,
+      rgba(255,255,255,0.45) 0%, rgba(255,255,255,0.15) 20%,
+      rgba(255,255,255,0) 40%, rgba(255,255,255,0) 60%,
+      rgba(255,255,255,0.15) 80%, rgba(255,255,255,0.45) 100%);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+  .lp-footer{width:100%; border-radius:24px; padding:24px; color:rgba(255,255,255,.7); margin-top:128px;}
+  .lp-foot-top{display:grid; gap:40px; margin-bottom:40px;}
+  .lp-foot-logo{display:flex; align-items:flex-end; gap:8px; color:#fff; margin-bottom:16px;}
+  .lp-foot-logo img{height:36px; width:auto;}
+  .lp-foot-logo span{font-size:20px; font-weight:500; padding-bottom:2px;}
+  .lp-foot-brand p{font-size:14px; line-height:1.65; max-width:384px;}
+  .lp-foot-links{display:grid; grid-template-columns:repeat(3,1fr); gap:24px;}
+  .lp-foot-links h4{font-size:14px; text-transform:uppercase; letter-spacing:.05em; color:#fff; font-weight:500; margin-bottom:16px;}
+  .lp-foot-links ul{font-size:12px;}
+  .lp-foot-links li + li{margin-top:8px;}
+  .lp-foot-links a{transition:color .2s;}
+  .lp-foot-links a:hover{color:#fff;}
+  .lp-foot-bottom{padding-top:24px; border-top:1px solid rgba(255,255,255,.1); display:flex; flex-direction:column; align-items:center; justify-content:space-between; gap:24px;}
+  .lp-foot-bottom p,.lp-foot-follow span{font-size:10px; text-transform:uppercase; letter-spacing:.1em; opacity:.5;}
+  .lp-foot-follow{display:flex; align-items:center; gap:16px;}
+  .lp-socials{display:flex; align-items:center; gap:16px;}
+  .lp-socials a{opacity:.7; transition:opacity .2s, color .2s;}
+  .lp-socials a:hover{opacity:1; color:#fff;}
+
+  /* scroll reveal (only hides things once the script has started) */
+  .lp-js .lp-reveal{opacity:0; transform:translateY(28px); transition:opacity .9s ease-out, transform .9s ease-out; transition-delay:var(--d,0s);}
+  .lp-js .lp-reveal.lp-in{opacity:1; transform:none;}
+  .lp-js .lp-footer.lp-reveal{transform:translateY(40px); transition-duration:1s; transition-delay:.4s;}
+  .lp-js .lp-footer.lp-reveal.lp-in{transform:none;}
+
+  @media (min-width:640px){ .lp-wide{display:inline;} }
+  @media (min-width:768px){
+    .lp-header{padding:20px 40px 0;}
+    .lp-logo{height:44px;}
+    .lp-cover{padding:112px 40px 32px;}
+    .lp-mono{font-size:72px;}
+    .lp-fig{left:32px; bottom:32px;}
+    .lp-how{padding:144px 40px;}
+    .lp-how-head{grid-template-columns:repeat(12,1fr);}
+    .lp-how-title{grid-column:span 7;}
+    .lp-aside{grid-column:9 / span 4; padding-bottom:24px;}
+    .lp-h2{font-size:72px;}
+    .lp-h2 .lp-script{font-size:96px;}
+    .lp-steps{margin-top:96px; grid-template-columns:repeat(3,1fr); gap:32px;}
+    .lp-steps .lp-step:nth-child(2){margin-top:96px;}
+    .lp-look{padding:128px 40px;}
+    .lp-look-head{margin-bottom:56px;}
+    .lp-look-head h2{font-size:48px;}
+    .lp-look-grid{grid-template-columns:repeat(12,1fr); gap:32px;}
+    .lp-span-8{grid-column:span 8;} .lp-span-7{grid-column:span 7;} .lp-span-5{grid-column:span 5;} .lp-span-4{grid-column:span 4;}
+    .lp-r34{aspect-ratio:auto; height:calc(100% - 28px);}
+    .lp-quote{padding:0 24px 0 0;}
+    .lp-quote p{font-size:48px;}
+    .lp-close{padding:160px 32px 32px;}
+    .lp-close-bg{object-position:10% 40%;}
+    .lp-close h2{font-size:72px;}
+    .lp-close-copy{font-size:16px;}
+    .lp-footer{padding:40px; margin-top:256px;}
+    .lp-foot-top{grid-template-columns:repeat(12,1fr); gap:48px;}
+    .lp-foot-brand{grid-column:span 5;}
+    .lp-foot-links{grid-column:span 7;}
+    .lp-foot-bottom{flex-direction:row; gap:16px;}
+  }
+  @media (min-width:1024px){
+    .lp-hero{grid-template-columns:1fr 1fr; min-height:calc(100svh - 36px);}
+    .lp-cover{min-height:0;}
+    .lp-h1{font-size:8.6vw;}
+    .lp-shot{min-height:0;}
+  }
+  @media (min-width:1280px){ .lp-nav{display:flex;} }
+  @media (min-width:1536px){ .lp-h1{font-size:150px;} }
+  @media (prefers-reduced-motion:reduce){
+    .lp-bar-track,.lp-rise,.lp-shot img{animation:none;}
+    .lp-js .lp-reveal{transform:none; transition:opacity .4s;}
+  }
 </style>
 </head>
 <body>
@@ -25,10 +247,10 @@
   *{box-sizing:border-box;}
   html,body{height:100%;}
   body{
-    margin:0; color:var(--ink); font-family:'Lora', Georgia, serif; padding-inline:20px;
+    margin:0; color:var(--ink); font-family:'Lora', Georgia, serif;
     background-color:#FCEFF5;
   }
-  .wrap{max-width:1180px; margin:0 auto; padding-block:24px 56px;}
+  .wrap{max-width:1220px; margin:0 auto; padding:24px 20px 56px;}
 
   header.top{
     display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap;
@@ -271,10 +493,185 @@
     font-size:13.5px; text-decoration:underline; cursor:pointer;}
   .gate-skip:hover{color:var(--pink-deep);}
 
-  footer{margin-top:30px; padding-top:16px; border-top:1px solid var(--line); font-size:12.5px; color:var(--ink-soft); display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap;}
+  .wrap > footer{margin-top:30px; padding-top:16px; border-top:1px solid var(--line); font-size:12.5px; color:var(--ink-soft); display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap;}
 </style>
 
-<div class="splash" id="splash">
+<!-- ================= Landing page =================
+     Home screen. Any link to #design (the buttons, the bag, a QR code to /#design)
+     hides this and starts the splash -> welcome -> builder flow below. -->
+<div id="landing">
+  <div class="lp-bar" aria-label="A new era of swimwear has arrived. Designed by you, made in Miami. 10% off your first design. Wait and watch, or pick it up later.">
+    <div class="lp-bar-track" aria-hidden="true">
+      <span>A new era of swimwear has arrived<b>✶</b></span><span>Designed by you, made in Miami<b>✶</b></span><span>10% off your first design<b>✶</b></span><span>Wait &amp; watch, or pick it up later<b>✶</b></span>
+      <span>A new era of swimwear has arrived<b>✶</b></span><span>Designed by you, made in Miami<b>✶</b></span><span>10% off your first design<b>✶</b></span><span>Wait &amp; watch, or pick it up later<b>✶</b></span>
+      <span>A new era of swimwear has arrived<b>✶</b></span><span>Designed by you, made in Miami<b>✶</b></span><span>10% off your first design<b>✶</b></span><span>Wait &amp; watch, or pick it up later<b>✶</b></span>
+      <span>A new era of swimwear has arrived<b>✶</b></span><span>Designed by you, made in Miami<b>✶</b></span><span>10% off your first design<b>✶</b></span><span>Wait &amp; watch, or pick it up later<b>✶</b></span>
+    </div>
+  </div>
+
+  <section class="lp-hero">
+    <header class="lp-header">
+      <div class="lp-header-left">
+        <a href="#" aria-label="Peaces Swim home"><img class="lp-logo" src="art/logo-pink.png" alt="Peaces"></a>
+        <nav class="lp-nav" aria-label="Main">
+          <a href="#design">Design your own</a>
+          <a href="#how">How it works</a>
+          <a href="#making">The making of</a>
+        </nav>
+      </div>
+      <a class="liquid-glass lp-cart" href="#design" aria-label="Your bag">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 10a4 4 0 0 1-8 0"/><path d="M3.103 6.034h17.794"/><path d="M3.4 5.467a2 2 0 0 0-.4 1.2V20a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6.667a2 2 0 0 0-.4-1.2l-2-2.667A2 2 0 0 0 17 2H7a2 2 0 0 0-1.6.8z"/></svg>
+      </a>
+    </header>
+
+    <!-- Cover page, set like the Vol. 01 poster -->
+    <div class="lp-cover">
+      <div class="lp-rule lp-top lp-label">
+        <span><span class="lp-wide">Peaces Swim · </span>Vol. 01 / Miami</span>
+        <span>November 2026</span>
+      </div>
+      <div class="lp-cover-main">
+        <span class="lp-mono lp-rise" style="--d:.1s">PS</span>
+        <h1 class="lp-h1">
+          <span class="lp-rise" style="--d:.2s"><i>a</i> NEW</span>
+          <span class="lp-rise" style="--d:.32s">ERA <i>of</i></span>
+          <span class="lp-rise" style="--d:.44s">swimwear</span>
+          <span class="lp-rise lp-arrived" style="--d:.56s">has arrived</span>
+        </h1>
+        <div class="lp-actions lp-rise" style="--d:.75s">
+          <a class="lp-btn" href="#design">Design your own</a>
+          <a class="lp-link" href="#how">How it works</a>
+        </div>
+      </div>
+      <div class="lp-rule lp-bottom lp-label">
+        <span>Made in Miami</span>
+        <span>Designed by you</span>
+      </div>
+    </div>
+
+    <div class="lp-shot">
+      <img src="photos/lifeguard-tower.jpg" alt="Two women in aqua and coral bikinis waving from a mint lifeguard tower" fetchpriority="high">
+      <span class="lp-fig lp-label">Fig. 01 — Tower no. 8</span>
+    </div>
+  </section>
+
+  <section class="lp-how" id="how">
+    <div class="lp-container">
+      <div class="lp-how-head">
+        <div class="lp-how-title lp-reveal">
+          <p class="lp-eyebrow lp-label">How it works</p>
+          <h2 class="lp-h2">Pick your peaces,<span class="lp-script">design your dream.</span></h2>
+        </div>
+        <div class="lp-aside lp-reveal">
+          <p>Every Peaces bikini starts on your screen and ends on our sewing table. Three steps, and it's entirely yours.</p>
+          <a class="lp-link" href="#design">Start designing</a>
+        </div>
+      </div>
+
+      <ol class="lp-steps">
+        <li class="lp-step lp-reveal">
+          <div class="lp-step-img"><img src="photos/flatlay.jpg" alt="Mint and leopard bikini pieces laid out on a pink table with confetti" loading="lazy" style="object-position:55% 50%"></div>
+          <div class="lp-step-meta">
+            <span class="lp-step-n">01</span>
+            <div><h3>Pick your peaces</h3><p>Start with a top and a bottom: triangle, underwire or seamless, in the colors you love.</p></div>
+          </div>
+        </li>
+        <li class="lp-step lp-reveal" style="--d:.12s">
+          <div class="lp-step-img"><img src="photos/styling-overhead.jpg" alt="Hands arranging mint bikini ties among rhinestones and confetti" loading="lazy"></div>
+          <div class="lp-step-meta">
+            <span class="lp-step-n">02</span>
+            <div><h3>Make them yours</h3><p>Layer on lace, ruffles, bows and extra-long ties, then finish with charms and beads.</p></div>
+          </div>
+        </li>
+        <li class="lp-step lp-reveal" style="--d:.24s">
+          <div class="lp-step-img"><img src="photos/sewing-closeup.jpg" alt="A mint bikini being sewn on a pink jeweled sewing machine" loading="lazy" style="object-position:40% 50%"></div>
+          <div class="lp-step-meta">
+            <span class="lp-step-n">03</span>
+            <div><h3>We sew, you swim</h3><p>Your design is sewn to order in Miami. Wait and watch, or pick it up later.</p></div>
+          </div>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="lp-look" id="making">
+    <div class="lp-container">
+      <div class="lp-look-head">
+        <h2>Inside <i>Vol. 01</i></h2>
+        <span class="lp-label">The making of a new era</span>
+      </div>
+      <div class="lp-look-grid">
+        <figure class="lp-span-8 lp-reveal">
+          <div class="lp-frame lp-r32"><img src="photos/party.jpg" alt="Two women in Peaces bikinis pouring champagne at a pink party" loading="lazy"></div>
+          <figcaption class="lp-label">Fig. 02 — The launch night</figcaption>
+        </figure>
+        <figure class="lp-span-4 lp-reveal" style="--d:.12s">
+          <div class="lp-frame lp-r34"><img src="photos/walking-away.jpg" alt="Two women in aqua and coral bikinis walking under palm trees holding the Peaces Swim poster" loading="lazy"></div>
+          <figcaption class="lp-label">Fig. 03 — Off to the beach</figcaption>
+        </figure>
+        <blockquote class="lp-span-5 lp-quote lp-reveal">
+          <p>Made at a sleepover, worn at the beach.</p>
+          <span>xoxo, Peaces</span>
+        </blockquote>
+        <figure class="lp-span-7 lp-reveal" style="--d:.12s">
+          <div class="lp-frame lp-r32"><img src="photos/sewing-rollers.jpg" alt="A woman in hair rollers sewing a mint bikini" loading="lazy"></div>
+          <figcaption class="lp-label">Fig. 04 — On the sewing table</figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <section class="lp-close">
+    <img class="lp-close-bg" src="photos/tower-standing.jpg" alt="" loading="lazy">
+    <div class="lp-close-tint"></div>
+    <div class="lp-close-inner">
+      <div class="lp-reveal">
+        <h2>See you on <i>the sand.</i></h2>
+        <p class="lp-close-copy">Start with your email and we'll take 10% off your first design.</p>
+        <form class="lp-signup" id="lpSignup" novalidate>
+          <label class="lp-sr" for="lpEmail">Email address</label>
+          <input id="lpEmail" type="email" autocomplete="email" placeholder="email address">
+          <button type="submit">Join</button>
+        </form>
+      </div>
+
+      <footer class="liquid-glass lp-footer lp-reveal">
+        <div class="lp-foot-top">
+          <div class="lp-foot-brand">
+            <div class="lp-foot-logo"><img src="art/logo-pink.png" alt="Peaces"><span>Swim</span></div>
+            <p>Peaces Swim is design-your-own swimwear. Pick your peaces, add lace, ties and charms, and we'll make a bikini that's entirely yours.</p>
+          </div>
+          <!-- TODO: placeholder links (#) until those pages exist -->
+          <div class="lp-foot-links">
+            <div><h4>Shop</h4><ul>
+              <li><a href="#design">Design Your Own</a></li><li><a href="#design">Bikini Tops</a></li><li><a href="#design">Bikini Bottoms</a></li><li><a href="#design">Charms &amp; Beads</a></li><li><a href="#design">The Peaces Tote</a></li>
+            </ul></div>
+            <div><h4>Peaces</h4><ul>
+              <li><a href="#">Our Story</a></li><li><a href="#making">Lookbook</a></li><li><a href="#">Swim Journal</a></li><li><a href="#">Join the Team</a></li>
+            </ul></div>
+            <div><h4>Help</h4><ul>
+              <li><a href="#">Get in Touch</a></li><li><a href="#">Size Guide</a></li><li><a href="#">Shipping &amp; Pickup</a></li><li><a href="#">Privacy Policy</a></li>
+            </ul></div>
+          </div>
+        </div>
+        <div class="lp-foot-bottom">
+          <p>© 2026 Peaces Swim · Made in Miami</p>
+          <div class="lp-foot-follow">
+            <span>Follow the tide:</span>
+            <div class="lp-socials">
+              <a href="#" aria-label="Instagram"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg></a>
+              <a href="#" aria-label="TikTok"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="18" r="4"/><path d="M12 18V2l7 4"/></svg></a>
+              <a href="#" aria-label="Facebook"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg></a>
+              <a href="#" aria-label="Email"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7"/><rect x="2" y="4" width="20" height="16" rx="2"/></svg></a>
+            </div>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </section>
+</div>
+
+<div class="splash" id="splash" hidden>
   <div class="splash-inner">
     <img class="splash-logo" src="art/logo-pink.png" alt="Peaces Swim">
     <p class="splash-tag">pick your peaces, design your dream</p>
@@ -324,7 +721,7 @@
 
 <div class="wrap" id="builder" hidden>
   <header class="top">
-    <img class="logo" src="art/logo-pink.png" alt="Peaces Swim">
+    <a href="#" aria-label="Back to the Peaces Swim home page"><img class="logo" src="art/logo-pink.png" alt="Peaces Swim"></a>
     <p class="tagline">pick your peaces, design your dream</p>
   </header>
 
@@ -974,18 +1371,26 @@
   });
   syncExtras();
 
-  /* ---------- splash ---------- */
-  (function(){
+  /* ---------- splash (plays on the way from the landing page into the builder) ---------- */
+  var splashTimer=null;
+  function playSplash(){
     var sp=document.getElementById("splash");
     function go(){
       if(sp.classList.contains("out")) return;
+      clearTimeout(splashTimer);
       sp.classList.add("out");
-      setTimeout(function(){ sp.hidden=true; document.getElementById("gate").hidden=false;
+      setTimeout(function(){
+        sp.hidden=true;
+        if(location.hash!=="#design") return;   // they went back home while it played
+        document.getElementById("gate").hidden=false;
         var ph=document.getElementById("gPhone"); if(ph) ph.focus({preventScroll:true}); },500);
     }
-    setTimeout(go,2300);
-    sp.addEventListener("click",go);
-  })();
+    sp.classList.remove("out");
+    sp.hidden=false;
+    sp.onclick=go;
+    clearTimeout(splashTimer);
+    splashTimer=setTimeout(go,2300);
+  }
 
   /* ---------- welcome / account ---------- */
   var lead=null;
@@ -1025,6 +1430,7 @@
     });
   }
   function showBuilder(){
+    inBuilder=true;
     document.getElementById("gate").hidden=true;
     document.getElementById("builder").hidden=false;
     var note=document.getElementById("perkNote");
@@ -1095,6 +1501,49 @@
   document.getElementById("gateSkip").addEventListener("click",function(){
     lead=null; state.perk=false; showBuilder();
   });
+
+  /* ---------- landing page <-> builder ----------
+     The landing page is home. #design means "in the builder", so the buttons,
+     the bag, the phone's back button and a QR code to /#design all just work. */
+  var landing=document.getElementById("landing"), inBuilder=false;
+  function enterDesign(){
+    if(landing.hidden) return;
+    landing.hidden=true;
+    window.scrollTo(0,0);
+    if(inBuilder){ document.getElementById("builder").hidden=false; return; }
+    playSplash();
+  }
+  function leaveDesign(){
+    if(!landing.hidden) return;
+    clearTimeout(splashTimer);
+    ["splash","gate","builder","fulfil"].forEach(function(id){ document.getElementById(id).hidden=true; });
+    landing.hidden=false;
+    window.scrollTo(0,0);
+  }
+  function route(){ if(location.hash==="#design") enterDesign(); else leaveDesign(); }
+  window.addEventListener("hashchange",route);
+  route();
+
+  // The email box on the landing page carries straight into the "New here — 10% off" step.
+  document.getElementById("lpSignup").addEventListener("submit",function(e){
+    e.preventDefault();
+    var v=document.getElementById("lpEmail").value.trim();
+    if(v) document.getElementById("gEmail").value=v;
+    // Skipped the account step earlier? Send them back through it so they can claim the 10%.
+    if(inBuilder && !state.perk){ inBuilder=false; showStep("stepPhone"); }
+    location.hash="design";
+  });
+
+  // Fade sections in as they scroll into view.
+  (function(){
+    var items=document.querySelectorAll("#landing .lp-reveal");
+    if(!("IntersectionObserver" in window)) return;
+    document.documentElement.classList.add("lp-js");
+    var io=new IntersectionObserver(function(entries){
+      entries.forEach(function(en){ if(en.isIntersecting){ en.target.classList.add("lp-in"); io.unobserve(en.target); } });
+    },{rootMargin:"0px 0px -80px 0px"});
+    items.forEach(function(it){ io.observe(it); });
+  })();
 
   /* ---------- fulfilment screen ---------- */
   function makeMinutes(){
