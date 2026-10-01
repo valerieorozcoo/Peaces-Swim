@@ -11,7 +11,6 @@ _Last updated: October 1, 2026_
 | Setup guide | ✅ [README.md](README.md) |
 | Shopify app connected | ⬜ Not yet |
 | Live on Vercel | ⬜ Not yet |
-| New interface design | ⬜ 11 directions mocked up, choice pending |
 
 ---
 
@@ -43,30 +42,6 @@ After this, every merge into `main` goes live automatically, and every pull requ
 - [ ] Delete the test order from Drafts
 
 If something fails, send Claude the `/api/health` output or Vercel's **Logs** tab and it gets fixed through a pull request.
-
-## Step 4: Pick the new look
-
-There are 11 clickable directions in the "Peaces UI Directions" mockup page:
-
-| # | Direction | Idea |
-|---|---|---|
-| 00 | **Atelier (recommended)** | Our pink, script and sharp edges, made premium: ticket number, pins on the bikini, price tiers, sticky total |
-| 01 | Formula | Function of Beauty–style vibe quiz that builds a personalised label |
-| 02 | Colour Block | Triangl-style: the whole page turns the fabric colour |
-| 03 | Sun Club | Frankies-style: lowercase, sun-faded, add-ons sold like products |
-| 04 | Peaces OS | Y2K computer desktop |
-| 05 | Group Chat | Design by tapping replies in a text thread |
-| 06 | The Ticket | The builder is a receipt that prints as you tap |
-| 07 | Fitting Lab | High-tech screen with labels pointing to each spot on the bikini |
-| 08 | Grid | Swiss magazine layout with a huge live price |
-| 09 | Moodboard | Scrapbook: polaroid, sticky notes, marker circles |
-| 10 | Player Select | Video-game select screen with stats |
-
-**Recommendation:** build 00 Atelier now, add the zone labels from 07, and consider the vibe quiz from 01 as the first screen for new customers.
-
-- [ ] Choose a direction (or mix)
-- [ ] Claude builds it as a pull request with a preview link
-- [ ] Review it on a phone → merge → live
 
 ## Decisions we still need to make
 
