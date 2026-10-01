@@ -448,33 +448,34 @@
   .initials-field label{font-size:12px; color:var(--ink-soft);}
   .initials-field input{width:82px; padding:7px 9px; border-radius:0; border:1px solid var(--line); background:var(--paper); color:var(--ink); font-family:'Lora', Georgia, serif; font-size:13px; text-transform:uppercase;}
 
-  .splash{position:fixed; inset:0; z-index:50; background:#FCEFF5;
-    display:flex; align-items:center; justify-content:center; padding:24px;
-    transition:opacity .5s ease;}
-  .splash.out{opacity:0; pointer-events:none;}
-  .splash-inner{text-align:center; animation:rise .9s ease both;}
-  .splash-logo{width:min(320px,74vw); height:auto; display:block; margin:0 auto 10px;}
-  .splash-tag{font-family:'Pinyon Script',cursive; font-size:clamp(20px,5.4vw,30px);
-    color:var(--aqua); margin:0 0 26px;}
-  .splash-bar{width:min(220px,55vw); height:2px; background:#F3DCE9; margin:0 auto; overflow:hidden;}
-  .splash-bar span{display:block; height:100%; width:0; background:var(--pink); animation:load 2.1s ease-in-out both;}
-  @keyframes rise{from{opacity:0; transform:translateY(10px);} to{opacity:1; transform:none;}}
-  @keyframes load{from{width:0;} to{width:100%;}}
-  @media (prefers-reduced-motion:reduce){
-    .splash-inner{animation:none;} .splash-bar span{animation-duration:.01s;}
-  }
-
+  /* Welcome / 10% pop-up: opens over the site shortly after it loads */
   .gate{
     position:fixed; inset:0; z-index:30; overflow-y:auto;
     display:flex; align-items:center; justify-content:center;
     padding:max(24px, env(safe-area-inset-top, 0px)) 20px max(24px, env(safe-area-inset-bottom, 0px));
-    background-image:linear-gradient(rgba(255,240,247,.34), rgba(255,240,247,.34)), url("art2/hero.jpg");
-    background-size:cover; background-position:center; background-repeat:no-repeat;
+    background:rgba(58,44,52,.42);
+    -webkit-backdrop-filter:blur(4px); backdrop-filter:blur(4px);
+    animation:gate-fade .35s ease both;
   }
-  .gate-card{width:100%; max-width:410px; background:rgba(255,255,255,.94);
-    -webkit-backdrop-filter:blur(7px); backdrop-filter:blur(7px);
-    border:1px solid rgba(255,255,255,.7); border-radius:0; padding:28px 26px 24px;
-    box-shadow:0 14px 30px -18px rgba(70,30,55,.5); text-align:center;}
+  .gate-card{position:relative; width:100%; max-width:410px; background:rgba(255,255,255,.97);
+    border:1px solid rgba(255,255,255,.7); border-radius:0;
+    box-shadow:0 24px 60px -24px rgba(70,30,55,.55); text-align:center;
+    display:grid; animation:gate-rise .45s cubic-bezier(.22,1,.36,1) both;}
+  .gate-body{padding:28px 26px 24px;}
+  .gate-photo{display:none; background:url("art2/hero.jpg") center/cover no-repeat;}
+  .gate-close{position:absolute; top:6px; right:8px; z-index:1; width:36px; height:36px; padding:0;
+    background:none; border:0; cursor:pointer; color:var(--ink-soft); font-size:26px; line-height:1; font-family:inherit;}
+  .gate-card:focus{outline:none;}
+  .gate-close:hover{color:var(--pink-deep);}
+  .gate-close:focus-visible{outline:2px solid var(--pink); outline-offset:-2px;}
+  @media (min-width:720px){
+    .gate-card{max-width:780px; grid-template-columns:1fr 1fr;}
+    .gate-photo{display:block; min-height:520px;}
+    .gate-body{padding:40px 34px 30px; display:flex; flex-direction:column; justify-content:center;}
+  }
+  @keyframes gate-fade{from{opacity:0;}}
+  @keyframes gate-rise{from{opacity:0; transform:translateY(16px);}}
+  @media (prefers-reduced-motion:reduce){ .gate,.gate-card{animation:none;} }
   .gate-logo{width:min(230px,70%); height:auto; display:block; margin:0 auto 14px;}
   .gate-title{font-family:'Lora', Georgia, serif; font-weight:700; text-transform:uppercase;
     letter-spacing:.15em; font-size:clamp(25px,5.4vw,33px); color:var(--pink-deep); margin:2px 0 8px;}
@@ -492,13 +493,15 @@
   .gate-skip{margin-top:14px; background:none; border:none; color:var(--ink-soft); font-family:'Lora', Georgia, serif;
     font-size:13.5px; text-decoration:underline; cursor:pointer;}
   .gate-skip:hover{color:var(--pink-deep);}
+  .gate-skip.gate-small{display:block; margin:8px auto 0; font-size:12.5px;}
 
   .wrap > footer{margin-top:30px; padding-top:16px; border-top:1px solid var(--line); font-size:12.5px; color:var(--ink-soft); display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap;}
 </style>
 
 <!-- ================= Landing page =================
      Home screen. Any link to #design (the buttons, the bag, a QR code to /#design)
-     hides this and starts the splash -> welcome -> builder flow below. -->
+     hides this and opens the builder below. The welcome / 10% pop-up (#gate)
+     opens over whichever one is showing shortly after the site loads. -->
 <div id="landing">
   <div class="lp-bar" aria-label="A new era of swimwear has arrived. Designed by you, made in Miami. 10% off your first design. Wait and watch, or pick it up later.">
     <div class="lp-bar-track" aria-hidden="true">
@@ -671,32 +674,27 @@
   </section>
 </div>
 
-<div class="splash" id="splash" hidden>
-  <div class="splash-inner">
-    <img class="splash-logo" src="art/logo-pink.png" alt="Peaces Swim">
-    <p class="splash-tag">pick your peaces, design your dream</p>
-    <div class="splash-bar"><span></span></div>
-  </div>
-</div>
-
-<div class="gate" id="gate" hidden>
-  <div class="gate-card">
+<div class="gate" id="gate" hidden role="dialog" aria-modal="true" aria-label="Welcome to Peaces Swim">
+  <div class="gate-card" tabindex="-1">
+    <button class="gate-close" type="button" id="gateClose" aria-label="Close">&times;</button>
+    <div class="gate-photo" aria-hidden="true"></div>
+    <div class="gate-body">
     <img class="gate-logo" src="art/logo-pink.png" alt="Peaces Swim">
 
     <div id="stepPhone">
-      <h1 class="gate-title">WELCOME</h1>
-      <p class="gate-sub">Time to design your dream. Enter your phone number to get started.</p>
+      <h2 class="gate-title">WELCOME</h2>
+      <p class="gate-sub">Take 10% off your first design. Enter your phone number to get started.</p>
       <form id="phoneForm" novalidate>
         <label for="gPhone">Phone number</label>
         <input id="gPhone" type="tel" autocomplete="tel" inputmode="tel" placeholder="(555) 555-5555">
         <p class="gate-err" id="phoneErr" hidden></p>
         <button class="cta gate-cta" type="submit" id="phoneBtn">CONTINUE</button>
       </form>
-      <button class="gate-skip" type="button" id="gateSkip">Continue without an account</button>
+      <button class="gate-skip" type="button" id="gateSkip">No thanks</button>
     </div>
 
     <div id="stepNew" hidden>
-      <h1 class="gate-title">NEW HERE</h1>
+      <h2 class="gate-title">NEW HERE</h2>
       <p class="gate-sub">Add your name and email and we'll take 10% off your first peace.</p>
       <form id="newForm" novalidate>
         <label for="gName">Name</label>
@@ -711,10 +709,12 @@
     </div>
 
     <div id="stepBack" hidden>
-      <h1 class="gate-title" id="backTitle">WELCOME BACK</h1>
+      <h2 class="gate-title" id="backTitle">WELCOME BACK</h2>
       <p class="gate-sub" id="backSub">We're so glad you're back.</p>
       <button class="cta gate-cta" type="button" id="backGo">START DESIGNING</button>
-      <button class="gate-skip" type="button" id="notYou">Not you? Use a different number</button>
+      <button class="gate-skip" type="button" id="keepBrowsing">Keep browsing</button>
+      <button class="gate-skip gate-small" type="button" id="notYou">Not you? Use a different number</button>
+    </div>
     </div>
   </div>
 </div>
@@ -1371,27 +1371,6 @@
   });
   syncExtras();
 
-  /* ---------- splash (plays on the way from the landing page into the builder) ---------- */
-  var splashTimer=null;
-  function playSplash(){
-    var sp=document.getElementById("splash");
-    function go(){
-      if(sp.classList.contains("out")) return;
-      clearTimeout(splashTimer);
-      sp.classList.add("out");
-      setTimeout(function(){
-        sp.hidden=true;
-        if(location.hash!=="#design") return;   // they went back home while it played
-        document.getElementById("gate").hidden=false;
-        var ph=document.getElementById("gPhone"); if(ph) ph.focus({preventScroll:true}); },500);
-    }
-    sp.classList.remove("out");
-    sp.hidden=false;
-    sp.onclick=go;
-    clearTimeout(splashTimer);
-    splashTimer=setTimeout(go,2300);
-  }
-
   /* ---------- welcome / account ---------- */
   var lead=null;
   function digitsOf(v){ return (v||"").replace(/\D/g,""); }
@@ -1429,18 +1408,45 @@
       document.getElementById(k).hidden = (k!==id);
     });
   }
-  function showBuilder(){
-    inBuilder=true;
-    document.getElementById("gate").hidden=true;
-    document.getElementById("builder").hidden=false;
+  function syncPerk(){
     var note=document.getElementById("perkNote");
     note.hidden=!state.perk;
     if(state.perk && lead && lead.name){
       document.getElementById("perkWho").textContent="Thanks, "+lead.name.split(" ")[0]+" — your discount is on your total";
     }
+  }
+  function showBuilder(){
+    document.getElementById("builder").hidden=false;
+    syncPerk();
     renderAll();
     window.scrollTo(0,0);
   }
+
+  /* ---------- welcome pop-up ----------
+     Opens over the site shortly after it loads (once per visit) and from the
+     landing page's email box. "Design your own" never waits on it. */
+  var gate=document.getElementById("gate"), POPUP_KEY="peaces-welcome-seen";
+  function openGate(step){
+    showStep(step||"stepPhone");
+    gate.hidden=false;
+    document.documentElement.style.overflow="hidden";
+    if(step){ var f=document.querySelector("#"+step+" input"); if(f) f.focus({preventScroll:true}); }
+    else gate.querySelector(".gate-card").focus({preventScroll:true});
+  }
+  function closeGate(){
+    if(gate.hidden) return;
+    gate.hidden=true;
+    document.documentElement.style.overflow="";
+    try{ sessionStorage.setItem(POPUP_KEY,"1"); }catch(e){}
+    if(!document.getElementById("builder").hidden) syncPerk();
+  }
+  function startDesigning(){
+    closeGate();
+    if(location.hash==="#design") showBuilder(); else location.hash="design";
+  }
+  document.getElementById("gateClose").addEventListener("click",closeGate);
+  gate.addEventListener("click",function(e){ if(e.target===gate) closeGate(); });
+  document.addEventListener("keydown",function(e){ if(e.key==="Escape") closeGate(); });
 
   var pendingPhone="";
   document.getElementById("phoneForm").addEventListener("submit",async function(e){
@@ -1461,6 +1467,7 @@
       state.perk=true;
       document.getElementById("backTitle").textContent="WELCOME "+String(found.name).split(" ")[0].toUpperCase();
       document.getElementById("backSub").textContent="We're so glad you're back. Your 10% is already on.";
+      document.getElementById("notYou").hidden=false;
       storeLead(lead);
       showStep("stepBack");
     } else {
@@ -1490,48 +1497,44 @@
     state.perk=true;
     saveCustomer(lead);
     storeLead(lead);
-    showBuilder();
+    document.getElementById("backTitle").textContent="YOU'RE IN, "+lead.name.split(" ")[0].toUpperCase();
+    document.getElementById("backSub").textContent="Your 10% is saved and comes off your first design.";
+    document.getElementById("notYou").hidden=true;
+    showStep("stepBack");
   });
 
-  document.getElementById("backGo").addEventListener("click",showBuilder);
+  document.getElementById("backGo").addEventListener("click",startDesigning);
+  document.getElementById("keepBrowsing").addEventListener("click",closeGate);
   document.getElementById("backToPhone").addEventListener("click",function(){ showStep("stepPhone"); });
   document.getElementById("notYou").addEventListener("click",function(){
     lead=null; state.perk=false; showStep("stepPhone");
   });
-  document.getElementById("gateSkip").addEventListener("click",function(){
-    lead=null; state.perk=false; showBuilder();
-  });
+  document.getElementById("gateSkip").addEventListener("click",closeGate);
 
   /* ---------- landing page <-> builder ----------
      The landing page is home. #design means "in the builder", so the buttons,
      the bag, the phone's back button and a QR code to /#design all just work. */
-  var landing=document.getElementById("landing"), inBuilder=false;
+  var landing=document.getElementById("landing");
   function enterDesign(){
     if(landing.hidden) return;
     landing.hidden=true;
-    window.scrollTo(0,0);
-    if(inBuilder){ document.getElementById("builder").hidden=false; return; }
-    playSplash();
+    showBuilder();
   }
   function leaveDesign(){
     if(!landing.hidden) return;
-    clearTimeout(splashTimer);
-    ["splash","gate","builder","fulfil"].forEach(function(id){ document.getElementById(id).hidden=true; });
+    ["builder","fulfil"].forEach(function(id){ document.getElementById(id).hidden=true; });
     landing.hidden=false;
     window.scrollTo(0,0);
   }
   function route(){ if(location.hash==="#design") enterDesign(); else leaveDesign(); }
   window.addEventListener("hashchange",route);
-  route();
 
-  // The email box on the landing page carries straight into the "New here — 10% off" step.
+  // The email box on the landing page opens the pop-up with the email already filled in.
   document.getElementById("lpSignup").addEventListener("submit",function(e){
     e.preventDefault();
     var v=document.getElementById("lpEmail").value.trim();
     if(v) document.getElementById("gEmail").value=v;
-    // Skipped the account step earlier? Send them back through it so they can claim the 10%.
-    if(inBuilder && !state.perk){ inBuilder=false; showStep("stepPhone"); }
-    location.hash="design";
+    openGate(state.perk?"stepBack":"stepPhone");
   });
 
   // Fade sections in as they scroll into view.
@@ -1744,6 +1747,15 @@
   });
 
   renderAll();
+
+  // Start on the landing page (or the builder for /#design links), then offer the welcome pop-up.
+  route();
+  (function(){
+    var seen=false; try{ seen=!!sessionStorage.getItem(POPUP_KEY); }catch(e){}
+    if(!seen) setTimeout(function(){
+      if(gate.hidden && document.getElementById("fulfil").hidden) openGate();
+    },900);
+  })();
 })();
 </script>
 </body>
