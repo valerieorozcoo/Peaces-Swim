@@ -25,22 +25,23 @@
     url("https://db.onlinewebfonts.com/t/a64ff11d2c24584c767f6257e880dc65.ttf")format("truetype"),
     url("https://db.onlinewebfonts.com/t/a64ff11d2c24584c767f6257e880dc65.svg#Helvetica Regular")format("svg");
   }
-  #landing{
+  :root{
     --lp-sans:"Helvetica Regular","Helvetica Neue",Helvetica,Arial,sans-serif;
     --lp-display:"Bodoni Moda","Didot","Bodoni 72",Georgia,serif;
     --lp-script:'Pinyon Script',cursive;
     --lp-blush:#FCEFF5;
     --lp-ink-60:rgba(58,44,52,.6); --lp-ink-70:rgba(58,44,52,.7); --lp-ink-25:rgba(58,44,52,.25);
-    font-family:var(--lp-sans); color:var(--ink); background:#fff;
-    overflow-x:clip; -webkit-font-smoothing:antialiased;
   }
-  #landing *{box-sizing:border-box;}
-  #landing ::selection{background:rgba(255,79,176,.3); color:var(--ink);}
+  /* .lp = the landing page plus the strip and footer it shares with the builder */
+  .lp{font-family:var(--lp-sans); color:var(--ink); -webkit-font-smoothing:antialiased;}
+  #landing{background:#fff; overflow-x:clip;}
+  .lp *{box-sizing:border-box;}
+  .lp ::selection{background:rgba(255,79,176,.3); color:var(--ink);}
   /* :where() keeps these resets at zero specificity so the lp- classes always win */
-  :where(#landing) a{color:inherit; text-decoration:none;}
-  :where(#landing) :is(h1,h2,h3,h4,p,figure,blockquote,ol,ul){margin:0;}
-  :where(#landing) :is(ol,ul){padding:0; list-style:none;}
-  :where(#landing) svg{display:block;}
+  :where(.lp) a{color:inherit; text-decoration:none;}
+  :where(.lp) :is(h1,h2,h3,h4,p,figure,blockquote,ol,ul){margin:0;}
+  :where(.lp) :is(ol,ul){padding:0; list-style:none;}
+  :where(.lp) svg{display:block;}
 
   .lp-label{font-size:10px; letter-spacing:.25em; text-transform:uppercase;}
   .lp-link{display:inline-block; font-size:11px; letter-spacing:.25em; text-transform:uppercase;
@@ -502,16 +503,17 @@
      Home screen. Any link to #design (the buttons, the bag, a QR code to /#design)
      hides this and opens the builder below. The welcome / 10% pop-up (#gate)
      opens over whichever one is showing shortly after the site loads. -->
-<div id="landing">
-  <div class="lp-bar" aria-label="A new era of swimwear has arrived. Designed by you, made in Miami. 10% off your first design. Wait and watch, or pick it up later.">
-    <div class="lp-bar-track" aria-hidden="true">
-      <span>A new era of swimwear has arrived<b>✶</b></span><span>Designed by you, made in Miami<b>✶</b></span><span>10% off your first design<b>✶</b></span><span>Wait &amp; watch, or pick it up later<b>✶</b></span>
-      <span>A new era of swimwear has arrived<b>✶</b></span><span>Designed by you, made in Miami<b>✶</b></span><span>10% off your first design<b>✶</b></span><span>Wait &amp; watch, or pick it up later<b>✶</b></span>
-      <span>A new era of swimwear has arrived<b>✶</b></span><span>Designed by you, made in Miami<b>✶</b></span><span>10% off your first design<b>✶</b></span><span>Wait &amp; watch, or pick it up later<b>✶</b></span>
-      <span>A new era of swimwear has arrived<b>✶</b></span><span>Designed by you, made in Miami<b>✶</b></span><span>10% off your first design<b>✶</b></span><span>Wait &amp; watch, or pick it up later<b>✶</b></span>
-    </div>
+<!-- Shared announcement strip (landing page and builder) -->
+<div class="lp lp-bar" aria-label="A new era of swimwear has arrived. Designed by you, made in Miami. 10% off your first design. Wait and watch, or pick it up later.">
+  <div class="lp-bar-track" aria-hidden="true">
+    <span>A new era of swimwear has arrived<b>✶</b></span><span>Designed by you, made in Miami<b>✶</b></span><span>10% off your first design<b>✶</b></span><span>Wait &amp; watch, or pick it up later<b>✶</b></span>
+    <span>A new era of swimwear has arrived<b>✶</b></span><span>Designed by you, made in Miami<b>✶</b></span><span>10% off your first design<b>✶</b></span><span>Wait &amp; watch, or pick it up later<b>✶</b></span>
+    <span>A new era of swimwear has arrived<b>✶</b></span><span>Designed by you, made in Miami<b>✶</b></span><span>10% off your first design<b>✶</b></span><span>Wait &amp; watch, or pick it up later<b>✶</b></span>
+    <span>A new era of swimwear has arrived<b>✶</b></span><span>Designed by you, made in Miami<b>✶</b></span><span>10% off your first design<b>✶</b></span><span>Wait &amp; watch, or pick it up later<b>✶</b></span>
   </div>
+</div>
 
+<div id="landing" class="lp">
   <section class="lp-hero">
     <header class="lp-header">
       <div class="lp-header-left">
@@ -624,54 +626,6 @@
     </div>
   </section>
 
-  <section class="lp-close">
-    <img class="lp-close-bg" src="photos/tower-standing.jpg" alt="" loading="lazy">
-    <div class="lp-close-tint"></div>
-    <div class="lp-close-inner">
-      <div class="lp-reveal">
-        <h2>See you on <i>the sand.</i></h2>
-        <p class="lp-close-copy">Start with your email and we'll take 10% off your first design.</p>
-        <form class="lp-signup" id="lpSignup" novalidate>
-          <label class="lp-sr" for="lpEmail">Email address</label>
-          <input id="lpEmail" type="email" autocomplete="email" placeholder="email address">
-          <button type="submit">Join</button>
-        </form>
-      </div>
-
-      <footer class="liquid-glass lp-footer lp-reveal">
-        <div class="lp-foot-top">
-          <div class="lp-foot-brand">
-            <div class="lp-foot-logo"><img src="art/logo-pink.png" alt="Peaces"><span>Swim</span></div>
-            <p>Peaces Swim is design-your-own swimwear. Pick your peaces, add lace, ties and charms, and we'll make a bikini that's entirely yours.</p>
-          </div>
-          <!-- TODO: placeholder links (#) until those pages exist -->
-          <div class="lp-foot-links">
-            <div><h4>Shop</h4><ul>
-              <li><a href="#design">Design Your Own</a></li><li><a href="#design">Bikini Tops</a></li><li><a href="#design">Bikini Bottoms</a></li><li><a href="#design">Charms &amp; Beads</a></li><li><a href="#design">The Peaces Tote</a></li>
-            </ul></div>
-            <div><h4>Peaces</h4><ul>
-              <li><a href="#">Our Story</a></li><li><a href="#making">Lookbook</a></li><li><a href="#">Swim Journal</a></li><li><a href="#">Join the Team</a></li>
-            </ul></div>
-            <div><h4>Help</h4><ul>
-              <li><a href="#">Get in Touch</a></li><li><a href="#">Size Guide</a></li><li><a href="#">Shipping &amp; Pickup</a></li><li><a href="#">Privacy Policy</a></li>
-            </ul></div>
-          </div>
-        </div>
-        <div class="lp-foot-bottom">
-          <p>© 2026 Peaces Swim · Made in Miami</p>
-          <div class="lp-foot-follow">
-            <span>Follow the tide:</span>
-            <div class="lp-socials">
-              <a href="#" aria-label="Instagram"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg></a>
-              <a href="#" aria-label="TikTok"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="18" r="4"/><path d="M12 18V2l7 4"/></svg></a>
-              <a href="#" aria-label="Facebook"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg></a>
-              <a href="#" aria-label="Email"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7"/><rect x="2" y="4" width="20" height="16" rx="2"/></svg></a>
-            </div>
-          </div>
-        </div>
-      </footer>
-    </div>
-  </section>
 </div>
 
 <div class="gate" id="gate" hidden role="dialog" aria-modal="true" aria-label="Welcome to Peaces Swim">
@@ -830,6 +784,56 @@
     <span id="baseNote">Triangle top + triangle bottom</span>
   </footer>
 </div>
+
+<!-- Shared footer (landing page and builder) -->
+<section class="lp lp-close">
+  <img class="lp-close-bg" src="photos/tower-standing.jpg" alt="" loading="lazy">
+  <div class="lp-close-tint"></div>
+  <div class="lp-close-inner">
+    <div class="lp-reveal">
+      <h2>See you on <i>the sand.</i></h2>
+      <p class="lp-close-copy">Start with your email and we'll take 10% off your first design.</p>
+      <form class="lp-signup" id="lpSignup" novalidate>
+        <label class="lp-sr" for="lpEmail">Email address</label>
+        <input id="lpEmail" type="email" autocomplete="email" placeholder="email address">
+        <button type="submit">Join</button>
+      </form>
+    </div>
+
+    <footer class="liquid-glass lp-footer lp-reveal">
+      <div class="lp-foot-top">
+        <div class="lp-foot-brand">
+          <div class="lp-foot-logo"><img src="art/logo-pink.png" alt="Peaces"><span>Swim</span></div>
+          <p>Peaces Swim is design-your-own swimwear. Pick your peaces, add lace, ties and charms, and we'll make a bikini that's entirely yours.</p>
+        </div>
+        <!-- TODO: placeholder links (#) until those pages exist -->
+        <div class="lp-foot-links">
+          <div><h4>Shop</h4><ul>
+            <li><a href="#design">Design Your Own</a></li><li><a href="#design">Bikini Tops</a></li><li><a href="#design">Bikini Bottoms</a></li><li><a href="#design">Charms &amp; Beads</a></li><li><a href="#design">The Peaces Tote</a></li>
+          </ul></div>
+          <div><h4>Peaces</h4><ul>
+            <li><a href="#">Our Story</a></li><li><a href="#making">Lookbook</a></li><li><a href="#">Swim Journal</a></li><li><a href="#">Join the Team</a></li>
+          </ul></div>
+          <div><h4>Help</h4><ul>
+            <li><a href="#">Get in Touch</a></li><li><a href="#">Size Guide</a></li><li><a href="#">Shipping &amp; Pickup</a></li><li><a href="#">Privacy Policy</a></li>
+          </ul></div>
+        </div>
+      </div>
+      <div class="lp-foot-bottom">
+        <p>© 2026 Peaces Swim · Made in Miami</p>
+        <div class="lp-foot-follow">
+          <span>Follow the tide:</span>
+          <div class="lp-socials">
+            <a href="#" aria-label="Instagram"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg></a>
+            <a href="#" aria-label="TikTok"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="18" r="4"/><path d="M12 18V2l7 4"/></svg></a>
+            <a href="#" aria-label="Facebook"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg></a>
+            <a href="#" aria-label="Email"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7"/><rect x="2" y="4" width="20" height="16" rx="2"/></svg></a>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </div>
+</section>
 
 <div class="fulfil" id="fulfil" hidden>
   <div class="fulfil-card">
@@ -1524,7 +1528,8 @@
     if(!landing.hidden) return;
     ["builder","fulfil"].forEach(function(id){ document.getElementById(id).hidden=true; });
     landing.hidden=false;
-    window.scrollTo(0,0);
+    var target=location.hash.length>1 && document.getElementById(location.hash.slice(1));
+    if(target) target.scrollIntoView(); else window.scrollTo(0,0);
   }
   function route(){ if(location.hash==="#design") enterDesign(); else leaveDesign(); }
   window.addEventListener("hashchange",route);
@@ -1539,7 +1544,7 @@
 
   // Fade sections in as they scroll into view.
   (function(){
-    var items=document.querySelectorAll("#landing .lp-reveal");
+    var items=document.querySelectorAll(".lp-reveal");
     if(!("IntersectionObserver" in window)) return;
     document.documentElement.classList.add("lp-js");
     var io=new IntersectionObserver(function(entries){
