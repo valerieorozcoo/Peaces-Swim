@@ -263,6 +263,8 @@
     font-family:'Lora', Georgia, serif; font-size:15px; color:var(--ink);}
   .gate-card input:focus-visible{outline:2px solid var(--pink); outline-offset:1px;}
   .gate-card input.bad{border-color:var(--pink);}
+  .gate-consent{display:flex; align-items:center; gap:8px; margin:12px 0 4px; font-size:13px; text-transform:none; letter-spacing:0;}
+  .gate-consent input{width:18px; height:18px; margin:0; accent-color:var(--pink);}
   .gate-cta{font-weight:700; text-transform:uppercase; letter-spacing:.14em;}
   .gate-err{margin:10px 0 0; font-size:13px; color:var(--pink-deep);}
   .gate-skip{margin-top:14px; background:none; border:none; color:var(--ink-soft); font-family:'Lora', Georgia, serif;
@@ -304,6 +306,7 @@
         <input id="gName" type="text" autocomplete="name" placeholder="First and last">
         <label for="gEmail">Email</label>
         <input id="gEmail" type="email" autocomplete="email" placeholder="you@email.com">
+        <label class="gate-consent"><input id="gMarketing" type="checkbox"> Send me new drops &amp; offers by email</label>
         <p class="gate-err" id="newErr" hidden></p>
         <button class="cta gate-cta" type="submit">SAVE 10%</button>
       </form>
@@ -993,37 +996,28 @@
     return v;
   }
 
-  /* Swap this for the Shopify customer lookup when the backend is live. */
+  /* ---------- backend (Shopify via /api) ----------
+     Set window.PEACES_API before this script to point at a backend on another domain.
+     If the backend is missing or down, the builder still works: everyone is treated
+     as a new customer and CHECKOUT falls back to the Shopify account link. */
+  var API=(window.PEACES_API||"api").replace(/\/$/,"");
+  async function api(path,body){
+    var r=await fetch(API+path,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body||{})});
+    var j={}; try{ j=await r.json(); }catch(e){}
+    if(!r.ok){ var err=new Error(j.error||("HTTP "+r.status)); err.status=r.status; throw err; }
+    return j;
+  }
   async function lookupCustomer(phone){
     try{
-      var db=(window.claude && claude.use) ? await claude.use("db") : null;
-      if(!db) return null;
-      var doc=await db.doc("customers/"+digitsOf(phone)).get();
-      return (doc && doc.data) ? doc.data : (doc && doc.name ? doc : null);
+      var j=await api("/customers/lookup",{phone:phone});
+      return j.found ? {name:j.firstName||"friend"} : null;
     }catch(e){ return null; }
   }
   async function saveCustomer(c){
-    try{
-      var db=(window.claude && claude.use) ? await claude.use("db") : null;
-      if(!db) return;
-      await db.doc("customers/"+digitsOf(c.phone)).set({
-        name:c.name, email:c.email, phone:c.phone,
-        createdAt:new Date().toISOString(), discount:"10%"
-      });
-    }catch(e){}
+    try{ await api("/customers/create",{name:c.name,email:c.email,phone:c.phone,marketing:!!c.marketing}); }
+    catch(e){ console.warn("[peaces] customer not saved:",e.message); }
   }
-  async function storeLead(l){
-    try{
-      var db=(window.claude && claude.use) ? await claude.use("db") : null;
-      if(!db) return;
-      var id="lead-"+Date.now()+"-"+Math.random().toString(36).slice(2,7);
-      lead.id=id;
-      await db.doc("leads/"+id).set({
-        name:l.name, email:l.email, phone:l.phone,
-        returning:!!l.returning, createdAt:new Date().toISOString(), discount:"10%"
-      });
-    }catch(e){}
-  }
+  function storeLead(){ /* the Shopify customer record is the lead now */ }
 
   function showStep(id){
     ["stepPhone","stepNew","stepBack"].forEach(function(k){
@@ -1085,7 +1079,8 @@
       return;
     }
     err.hidden=true;
-    lead={name:n.value.trim(), email:em.value.trim(), phone:pendingPhone, returning:false};
+    lead={name:n.value.trim(), email:em.value.trim(), phone:pendingPhone, returning:false,
+          marketing:document.getElementById("gMarketing").checked};
     state.perk=true;
     saveCustomer(lead);
     storeLead(lead);
@@ -1135,6 +1130,7 @@
         var mins=Math.max(1,Math.round((+this.dataset.at-Date.now())/60000));
         state.pickupAt=this.textContent;
         showWait(mins,"Pick up at "+this.textContent+" — we'll text you when it's ready.","Ready in");
+        sendFulfilment(mins);
       });
       grid.appendChild(b);
     }
@@ -1148,6 +1144,7 @@
       document.getElementById("slotBlock").hidden=true;
       state.pickupAt=null;
       showWait(makeMinutes(),"Stay close — we'll customize your peace right in front of you.","Estimated wait");
+      sendFulfilment(makeMinutes());
     } else {
       document.getElementById("slotBlock").hidden=false;
       document.getElementById("waitBlock").hidden=true;
@@ -1184,35 +1181,63 @@
     return lines.join("\n");
   }
 
-  async function saveDesign(){
-    if(!lead || !lead.id) return;
+  /* "Save my peace" keeps the design on this device so it's still there next visit. */
+  var SAVE_KEY="peaces-design-v1";
+  function designPayload(){
+    return {
+      topStyle:state.topStyle, bottomStyle:state.bottomStyle,
+      topColor:state.topColor, bottomColor:state.bottomColor,
+      sizeTop:state.sizeTop, sizeBottom:state.sizeBottom,
+      addons:activeAddons().map(function(a){ return {id:a.id, option:a.opts.length>1?variantName(a.id):""}; }),
+      initials:state.initials, tote:!!state.tote, headband:!!state.headband
+    };
+  }
+  function saveDesign(){
     try{
-      var db=(window.claude && claude.use) ? await claude.use("db") : null;
-      if(!db) return;
-      var list=activeAddons(), sub=BASE_PRICE;
-      list.forEach(function(a){ sub+=a.price; });
-      if(state.tote) sub+=15;
-      if(state.headband) sub+=10;
-      await db.doc("leads/"+lead.id).update({
-        design:{
-          topStyle:styleOf("top").name, topFabric:colorOf("top").name,
-          bottomStyle:styleOf("bottom").name, bottomFabric:colorOf("bottom").name,
-          sizeTop:state.sizeTop, sizeBottom:state.sizeBottom,
-          addOns:list.map(function(a){return a.name+(a.opts.length>1?" ("+variantName(a.id)+")":"");})
-                 .concat(state.tote?["Peaces tote"]:[]).concat(state.headband?["Peaces headband"]:[]),
-          fulfilment:state.fulfil, pickupAt:state.pickupAt,
-          subtotal:sub, total:+((state.perk?sub*(1-DISCOUNT):sub)).toFixed(2),
-          summary:designText()
-        },
-        savedAt:new Date().toISOString()
-      });
+      localStorage.setItem(SAVE_KEY,JSON.stringify({
+        topStyle:state.topStyle, bottomStyle:state.bottomStyle, topColor:state.topColor, bottomColor:state.bottomColor,
+        sizeTop:state.sizeTop, sizeBottom:state.sizeBottom, addons:state.addons, variant:state.variant,
+        initials:state.initials, tote:state.tote, headband:state.headband
+      }));
     }catch(e){}
   }
+  (function restoreDesign(){
+    try{
+      var d=JSON.parse(localStorage.getItem(SAVE_KEY)||"null"); if(!d) return;
+      ["topStyle","bottomStyle","topColor","bottomColor","sizeTop","sizeBottom","initials","tote","headband"].forEach(function(k){
+        if(d[k]!==undefined) state[k]=d[k];
+      });
+      if(!STYLES.top[state.topStyle]||!STYLES.bottom[state.bottomStyle]) throw 0;
+      state.addons=d.addons||{}; state.variant=d.variant||{};
+    }catch(e){}
+  })();
 
-  document.getElementById("checkoutBtn").addEventListener("click",function(){
-    try{ if(navigator.clipboard) navigator.clipboard.writeText(designText()); }catch(e){}
-    document.getElementById("checkoutNote").textContent="Design summary copied — paste it into the order notes at checkout.";
+  var currentOrder=null;
+  function sendFulfilment(extra){
+    if(!currentOrder) return;
+    var body={id:currentOrder.id, sig:currentOrder.sig, mode:state.fulfil, pickupAt:state.pickupAt||"", minutes:extra||0};
+    api("/orders/fulfillment",body).catch(function(e){ console.warn("[peaces] fulfilment not saved:",e.message); });
+  }
+
+  document.getElementById("checkoutBtn").addEventListener("click",async function(e){
+    e.preventDefault();
+    var btn=this, note=document.getElementById("checkoutNote");
+    if(btn.dataset.busy) return;
+    btn.dataset.busy="1"; btn.textContent="PREPARING…";
     saveDesign();
+    // open the tab now (inside the click) so pop-up blockers allow it, then point it at checkout
+    var tab=window.open("","_blank");
+    try{
+      var o=await api("/orders/create",{design:designPayload(), customer:lead?{name:lead.name,email:lead.email,phone:lead.phone}:null});
+      currentOrder=o;
+      if(tab) tab.location.href=o.checkoutUrl; else window.location.href=o.checkoutUrl;
+      note.textContent="Order "+o.name+" is ready — finish paying in the checkout tab.";
+    }catch(err){
+      try{ if(navigator.clipboard) navigator.clipboard.writeText(designText()); }catch(x){}
+      if(tab) tab.location.href=btn.href;
+      note.textContent= (err.status===400 ? err.message+" " : "") + "Design summary copied — paste it into the order notes at checkout.";
+    }
+    btn.textContent="CHECKOUT"; delete btn.dataset.busy;
     document.getElementById("fulfil").hidden=false;
     window.scrollTo(0,0);
   });
