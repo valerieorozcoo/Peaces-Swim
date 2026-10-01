@@ -6,7 +6,7 @@
 <title>Peaces Swim — A new era of swimwear has arrived</title>
 <meta name="description" content="Design-your-own bikinis, made in Miami. Pick your peaces, add lace, ties and charms, and wear a swimsuit that's entirely yours.">
 <link rel="icon" type="image/png" href="art/logo-pink.png">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..700;1,6..96,400..700&family=Lora:wght@400;500;600;700&family=Pinyon+Script&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..700;1,6..96,400..700&family=Pinyon+Script&display=swap">
 <style>
   :root{color-scheme:light; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);}
   html,body{margin:0;}
@@ -248,7 +248,7 @@
   *{box-sizing:border-box;}
   html,body{height:100%;}
   body{
-    margin:0; color:var(--ink); font-family:'Lora', Georgia, serif;
+    margin:0; color:var(--ink); font-family:var(--lp-sans);
     background-color:#FCEFF5;
   }
   .wrap{max-width:1220px; margin:0 auto; padding:24px 20px 56px;}
@@ -309,7 +309,7 @@
   .perk{margin-top:12px; display:flex; gap:9px; align-items:flex-start; background:var(--aqua-pale); border:1px solid #CFF3F3; border-radius:0; padding:11px 13px; font-size:13px; cursor:pointer;}
   .perk input{accent-color:var(--aqua); margin-top:2px; width:15px; height:15px; flex:none;}
   .perk small{display:block; color:var(--ink-soft); font-size:11.5px;}
-  .cta{margin-top:12px; width:100%; padding:14px 18px; border:none; border-radius:0; background:var(--pink); color:#fff; font-family:'Lora', Georgia, serif; font-weight:500; font-size:15px; cursor:pointer; transition:background .15s, transform .12s;}
+  .cta{margin-top:12px; width:100%; padding:14px 18px; border:none; border-radius:0; background:var(--pink); color:#fff; font-family:var(--lp-sans); font-weight:500; font-size:15px; cursor:pointer; transition:background .15s, transform .12s;}
   .cta:hover{background:var(--pink-deep);} .cta:active{transform:scale(.985);}
   .cta:focus-visible{outline:2px solid var(--pink); outline-offset:2px;}
   a.cta.checkout{display:block; text-align:center; text-decoration:none; background:var(--ink);
@@ -322,7 +322,7 @@
   .tote-name{font-family:'Pinyon Script',cursive; font-size:30px; color:var(--pink); line-height:1.05;}
   .tote-desc{margin:4px 0 12px; font-size:12.5px; line-height:1.5; color:var(--ink-soft);}
   .tote-btn{padding:10px 20px; border:1.5px solid var(--pink);
-    background:var(--paper); color:var(--pink-deep); font-family:'Lora', Georgia, serif; font-weight:700;
+    background:var(--paper); color:var(--pink-deep); font-family:var(--lp-sans); font-weight:700;
     font-size:12px; letter-spacing:.1em; text-transform:uppercase; cursor:pointer;}
   .tote-btn[aria-pressed="true"]{background:var(--pink); color:#fff; border-color:var(--pink);}
   .tote-btn:focus-visible{outline:2px solid var(--pink); outline-offset:2px;}
@@ -336,7 +336,7 @@
     -webkit-backdrop-filter:blur(7px); backdrop-filter:blur(7px);
     border:1px solid rgba(255,255,255,.75); padding:24px 0 22px; text-align:center;
     box-shadow:0 18px 44px -22px rgba(20,60,80,.5);}
-  .fulfil-title{font-family:'Lora', Georgia, serif; font-weight:700; text-transform:uppercase;
+  .fulfil-title{font-family:var(--lp-sans); font-weight:700; text-transform:uppercase;
     letter-spacing:.16em; font-size:clamp(26px,6vw,40px); color:#1FB9B6;
     margin:2px 20px 20px; line-height:1.15;}
   .fulfil-choices{display:grid; grid-template-columns:1fr 1fr; gap:12px; margin:0 20px;}
@@ -357,7 +357,7 @@
   .slot:focus-visible{outline:2px solid var(--pink); outline-offset:2px;}
   .wait{margin:20px 20px 0; border-top:1px solid var(--line); padding-top:16px;}
   .wait-label{font-size:11px; letter-spacing:.18em; text-transform:uppercase; color:var(--ink-soft);}
-  .wait-num{font-family:'Lora', Georgia, serif; font-weight:700; color:var(--pink);
+  .wait-num{font-family:var(--lp-sans); font-weight:700; color:var(--pink);
     font-size:clamp(84px,22vw,132px); line-height:.95; letter-spacing:-.02em; font-variant-numeric:tabular-nums;}
   .wait-unit{font-size:12px; letter-spacing:.2em; text-transform:uppercase; color:var(--ink-soft); margin-top:2px;}
   .wait-note{margin:12px 0 0; font-size:13px; color:var(--ink-soft); line-height:1.5;}
@@ -447,9 +447,9 @@
   .chip:focus-visible{outline:2px solid var(--pink); outline-offset:2px;}
   .initials-field{grid-column:1 / -1; display:flex; align-items:center; gap:10px; padding:2px 2px 6px;}
   .initials-field label{font-size:12px; color:var(--ink-soft);}
-  .initials-field input{width:82px; padding:7px 9px; border-radius:0; border:1px solid var(--line); background:var(--paper); color:var(--ink); font-family:'Lora', Georgia, serif; font-size:13px; text-transform:uppercase;}
+  .initials-field input{width:82px; padding:7px 9px; border-radius:0; border:1px solid var(--line); background:var(--paper); color:var(--ink); font-family:var(--lp-sans); font-size:13px; text-transform:uppercase;}
 
-  /* Welcome / 10% pop-up: opens over the site shortly after it loads */
+  /* Welcome / 10% pop-up: opens over the site as soon as it loads */
   .gate{
     position:fixed; inset:0; z-index:30; overflow-y:auto;
     display:flex; align-items:center; justify-content:center;
@@ -478,31 +478,60 @@
   @keyframes gate-rise{from{opacity:0; transform:translateY(16px);}}
   @media (prefers-reduced-motion:reduce){ .gate,.gate-card{animation:none;} }
   .gate-logo{width:min(230px,70%); height:auto; display:block; margin:0 auto 14px;}
-  .gate-title{font-family:'Lora', Georgia, serif; font-weight:700; text-transform:uppercase;
+  .gate-title{font-family:var(--lp-sans); font-weight:700; text-transform:uppercase;
     letter-spacing:.15em; font-size:clamp(25px,5.4vw,33px); color:var(--pink-deep); margin:2px 0 8px;}
   .gate-sub{margin:0 0 20px; font-size:15px; color:var(--ink-soft); line-height:1.45;}
   .gate-card form{display:flex; flex-direction:column; gap:4px; text-align:left;}
   .gate-card label{font-size:11.5px; letter-spacing:.13em; text-transform:uppercase; color:var(--ink-soft); margin-top:10px;}
   .gate-card input{padding:11px 12px; border:1px solid var(--line); border-radius:0; background:var(--card);
-    font-family:'Lora', Georgia, serif; font-size:15px; color:var(--ink);}
+    font-family:var(--lp-sans); font-size:15px; color:var(--ink);}
   .gate-card input:focus-visible{outline:2px solid var(--pink); outline-offset:1px;}
   .gate-card input.bad{border-color:var(--pink);}
   .gate-consent{display:flex; align-items:center; gap:8px; margin:12px 0 4px; font-size:13px; text-transform:none; letter-spacing:0;}
   .gate-consent input{width:18px; height:18px; margin:0; accent-color:var(--pink);}
   .gate-cta{font-weight:700; text-transform:uppercase; letter-spacing:.14em;}
   .gate-err{margin:10px 0 0; font-size:13px; color:var(--pink-deep);}
-  .gate-skip{margin-top:14px; background:none; border:none; color:var(--ink-soft); font-family:'Lora', Georgia, serif;
+  .gate-skip{margin-top:14px; background:none; border:none; color:var(--ink-soft); font-family:var(--lp-sans);
     font-size:13.5px; text-decoration:underline; cursor:pointer;}
   .gate-skip:hover{color:var(--pink-deep);}
   .gate-skip.gate-small{display:block; margin:8px auto 0; font-size:12.5px;}
 
   .wrap > footer{margin-top:30px; padding-top:16px; border-top:1px solid var(--line); font-size:12.5px; color:var(--ink-soft); display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap;}
+
+  /* ===== Builder in the landing page's look: turquoise page, same fonts, curved boxes ===== */
+  body{background-color:var(--aqua);}
+  header.top{border-bottom-color:rgba(58,44,52,.25);}
+  header.top img.logo{filter:brightness(0) invert(1);}
+  header.top .tagline{color:#fff;}
+  .wrap > footer{border-top-color:rgba(58,44,52,.25); color:rgba(58,44,52,.75);}
+  .summary-list .row{color:rgba(58,44,52,.75);}
+  .checkout-note{color:rgba(58,44,52,.7);}
+  .page-back{color:var(--ink);}
+  .stage,.price-bar,.step{border-color:transparent;}
+
+  /* titles and big numbers in Bodoni, like the landing page; Helvetica has one weight, so no faux bold */
+  .price-bar .total,.wait-num{font-family:var(--lp-display); font-weight:400;}
+  .gate-title,.fulfil-title,.fo-name{font-family:var(--lp-display); font-weight:400;}
+  .gate-title,.fulfil-title{letter-spacing:.06em;}
+  .cta{font-size:12px; font-weight:400; letter-spacing:.18em; text-transform:uppercase;}
+  a.cta.checkout,.gate-cta,.drawer-actions .cta,.tote-btn,.addon .addon-state,.slot[aria-pressed="true"],.base-card .name{font-weight:400;}
+
+  /* curved corners, like the glass footer and cart */
+  .stage,.price-bar,.step,.extra,.addon-drawer,.gate-card,.fulfil-card{border-radius:24px;}
+  .base-card,.fulfil-opt,.extra-shot{border-radius:18px;}
+  .addon,.perk{border-radius:14px;}
+  .swatch{border-radius:12px;}
+  .swatch[aria-pressed="true"]::after{border-radius:16px;}
+  .tier-title .dot{border-radius:50%;}
+  .cta,a.cta.checkout,.tote-btn,.size-btn,.chip,.slot,.size-chip,.gate-card input,.initials-field input{border-radius:999px;}
+  .gate-card input{padding-left:18px; padding-right:18px;}
+  .gate-card,.fulfil-card{overflow:hidden;}
 </style>
 
 <!-- ================= Landing page =================
      Home screen. Any link to #design (the buttons, the bag, a QR code to /#design)
      hides this and opens the builder below. The welcome / 10% pop-up (#gate)
-     opens over whichever one is showing shortly after the site loads. -->
+     opens over whichever one is showing as soon as the site loads. -->
 <!-- Shared announcement strip (landing page and builder) -->
 <div class="lp lp-bar" aria-label="A new era of swimwear has arrived. Designed by you, made in Miami. 10% off your first design. Wait and watch, or pick it up later.">
   <div class="lp-bar-track" aria-hidden="true">
@@ -1427,21 +1456,19 @@
   }
 
   /* ---------- welcome pop-up ----------
-     Opens over the site shortly after it loads (once per visit) and from the
+     Opens over the site as soon as it loads (phone number first) and from the
      landing page's email box. "Design your own" never waits on it. */
-  var gate=document.getElementById("gate"), POPUP_KEY="peaces-welcome-seen";
+  var gate=document.getElementById("gate");
   function openGate(step){
     showStep(step||"stepPhone");
     gate.hidden=false;
     document.documentElement.style.overflow="hidden";
-    if(step){ var f=document.querySelector("#"+step+" input"); if(f) f.focus({preventScroll:true}); }
-    else gate.querySelector(".gate-card").focus({preventScroll:true});
+    var f=document.querySelector("#"+(step||"stepPhone")+" input"); if(f) f.focus({preventScroll:true});
   }
   function closeGate(){
     if(gate.hidden) return;
     gate.hidden=true;
     document.documentElement.style.overflow="";
-    try{ sessionStorage.setItem(POPUP_KEY,"1"); }catch(e){}
     if(!document.getElementById("builder").hidden) syncPerk();
   }
   function startDesigning(){
@@ -1753,14 +1780,9 @@
 
   renderAll();
 
-  // Start on the landing page (or the builder for /#design links), then offer the welcome pop-up.
+  // Start on the landing page (or the builder for /#design links) with the phone pop-up on top.
   route();
-  (function(){
-    var seen=false; try{ seen=!!sessionStorage.getItem(POPUP_KEY); }catch(e){}
-    if(!seen) setTimeout(function(){
-      if(gate.hidden && document.getElementById("fulfil").hidden) openGate();
-    },900);
-  })();
+  openGate();
 })();
 </script>
 </body>
