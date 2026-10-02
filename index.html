@@ -503,14 +503,15 @@
 
   /* ===== Builder in the landing page's look: turquoise page, same fonts, curved boxes ===== */
   body{background-color:var(--aqua);}
-  header.top{border-bottom-color:rgba(58,44,52,.25);}
+  header.top{border-bottom-color:rgba(255,255,255,.75);}
   header.top img.logo{width:auto; height:clamp(64px,8vw,88px);}
   header.top a{color:inherit;}
-  header.top .tagline{color:var(--ink);}
-  .wrap > footer{border-top-color:rgba(58,44,52,.25); color:rgba(58,44,52,.75);}
-  .summary-list .row{color:rgba(58,44,52,.75);}
-  .checkout-note{color:rgba(58,44,52,.7);}
-  .page-back{color:var(--ink);}
+  header.top .tagline{color:#fff;}
+  .wrap > footer{border-top-color:rgba(255,255,255,.75); color:#fff;}
+  .summary-list .row,.summary-list .row span:last-child,.summary-list .row.discount span{color:#fff;}
+  .checkout-note{color:#fff;}
+  .page-back{color:#fff;}
+  .step .page-back{color:var(--ink-soft);}
   .stage,.price-bar,.step{border-color:transparent;}
 
   /* titles and big numbers in Bodoni, like the landing page; Helvetica has one weight, so no faux bold */
@@ -531,17 +532,52 @@
   .gate-card input{padding-left:18px; padding-right:18px;}
   .gate-card,.fulfil-card{overflow:hidden;}
 
-  /* ===== One colour (lavender): readable text on the lavender and white backgrounds ===== */
+  /* ===== One colour (lavender) with mostly white text =====
+     Text on the lavender areas and photos is white with a soft shadow so it reads;
+     text inside the white boxes (How it works, builder cards, pop-up) stays dark. */
+  :root{
+    --on-lav:0 1px 2px rgba(58,44,52,.32), 0 0 12px rgba(58,44,52,.10);          /* big type */
+    --on-lav-small:0 1px 1px rgba(58,44,52,.55), 0 0 6px rgba(58,44,52,.30);    /* small labels and links */
+  }
   ::selection{background:var(--purple); color:var(--ink);}
-  .lp-cover{color:var(--ink);}
-  .lp-nav a:hover,.lp-cover .lp-link:hover,.lp-aside .lp-link:hover{color:var(--ink-soft);}
-  .lp-h2 .lp-script,.lp-step-n,.lp-quote span{color:var(--ink);}
-  .stage-label .style-name,.summary-list .row.discount span,.wait-num,.step-head h2,.tier-title .price-each,
+
+  /* landing cover */
+  .lp-cover{color:#fff; text-shadow:var(--on-lav);}
+  .lp-cover .lp-rule{color:#fff;}
+  .lp-cover .lp-rule.lp-top,.lp-cover .lp-rule.lp-bottom{border-color:rgba(255,255,255,.75);}
+  .lp-cover .lp-link{color:#fff;}
+  .lp-cover .lp-link:hover{color:var(--ink-soft);}
+  .lp-cover .lp-btn{text-shadow:none;}
+  .lp-nav a{color:#fff; text-shadow:var(--on-lav);}
+  .lp-nav a:hover{color:var(--ink-soft);}
+  .lp-logo,.lp-mono,header.top img.logo{filter:drop-shadow(0 1px 2px rgba(58,44,52,.28));}
+
+  /* lookbook (lavender section) */
+  .lp-look{color:#fff; text-shadow:var(--on-lav);}
+  .lp-look-head{border-bottom-color:rgba(255,255,255,.75);}
+  .lp-look-head span,.lp-look figcaption{color:#fff;}
+  .lp-quote span{color:#fff;}
+
+  /* small white text needs a firmer shadow to read on lavender */
+  .lp-cover .lp-rule,.lp-cover .lp-link,.lp-nav a,.lp-look-head span,.lp-look figcaption{text-shadow:var(--on-lav-small);}
+
+  /* builder page text on lavender */
+  header.top .tagline{text-shadow:var(--on-lav);}
+  .summary-list,.checkout-note,.wrap > footer,.panel > div > .page-back{text-shadow:var(--on-lav-small);}
+
+  /* dark text inside the white boxes */
+  .lp-h2 .lp-script,.lp-step-n{color:var(--ink);}
+  .lp-aside .lp-link:hover{color:var(--ink-soft);}
+  .stage-label .style-name,.wait-num,.step-head h2,.tier-title .price-each,
   .addon .thumbicon.rhine,.extra-name,.tote-name{color:var(--ink);}
-  .cta{color:var(--ink);}
-  .cta:hover{color:#fff;}
-  a.cta.checkout:hover{background:var(--purple); color:var(--ink);}
   .tote-btn[aria-pressed="true"]{color:var(--ink);}
+
+  /* buttons: dark pill with white text (stands out on lavender and white);
+     checkout is the white pill so the last step pops */
+  .cta{background:var(--ink); color:#fff;}
+  .cta:hover{background:rgba(58,44,52,.82); color:#fff;}
+  a.cta.checkout{background:#fff; color:var(--ink);}
+  a.cta.checkout:hover{background:var(--ink); color:#fff;}
 </style>
 
 <!-- ================= Landing page =================
@@ -562,7 +598,7 @@
   <section class="lp-hero">
     <header class="lp-header">
       <div class="lp-header-left">
-        <a href="#" aria-label="Peaces Swim home"><img class="lp-logo" src="art/logo-ps-ink.png" alt="Peaces Swim"></a>
+        <a href="#" aria-label="Peaces Swim home"><img class="lp-logo" src="art/logo-ps-white.png" alt="Peaces Swim"></a>
         <nav class="lp-nav" aria-label="Main">
           <a href="#design">Design your own</a>
           <a href="#how">How it works</a>
@@ -581,7 +617,7 @@
         <span>November 2026</span>
       </div>
       <div class="lp-cover-main">
-        <img class="lp-mono lp-rise" src="art/logo-ps-ink.png" alt="" style="--d:.1s">
+        <img class="lp-mono lp-rise" src="art/logo-ps-white.png" alt="" style="--d:.1s">
         <h1 class="lp-h1">
           <span class="lp-rise" style="--d:.2s"><i>a</i> NEW</span>
           <span class="lp-rise" style="--d:.32s">ERA <i>of</i></span>
@@ -720,7 +756,7 @@
 
 <div class="wrap" id="builder" hidden>
   <header class="top">
-    <a href="#" aria-label="Back to the Peaces Swim home page"><img class="logo" src="art/logo-ps-ink.png" alt="Peaces Swim"></a>
+    <a href="#" aria-label="Back to the Peaces Swim home page"><img class="logo" src="art/logo-ps-white.png" alt="Peaces Swim"></a>
     <p class="tagline">pick your peaces, design your dream</p>
   </header>
 
