@@ -22,6 +22,14 @@ export function startMockShopify(port) {
       const nodes = db.customers.filter((c) => (m[1] === "email" ? (c.email || "").toLowerCase() === m[2] : c.phone === m[2]));
       return send({ data: { customers: { nodes: nodes.map((c) => ({ ...c, tags: c.tags || [] })) } } });
     }
+    if (query.includes("customerUpdate")) {
+      const { id, ...rest } = variables.input;
+      const c = db.customers.find((x) => x.id === id);
+      if (rest.phone && db.customers.some((x) => x.id !== id && x.phone === rest.phone))
+        return send({ data: { customerUpdate: { customer: null, userErrors: [{ field: ["phone"], message: "Phone has already been taken" }] } } });
+      Object.assign(c, rest);
+      return send({ data: { customerUpdate: { customer: { id }, userErrors: [] } } });
+    }
     if (query.includes("tagsAdd")) {
       const c = db.customers.find((x) => x.id === variables.id);
       if (!c) return send({ data: { tagsAdd: { userErrors: [{ field: ["id"], message: "not found" }] } } });

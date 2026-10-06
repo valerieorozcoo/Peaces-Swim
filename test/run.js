@@ -74,6 +74,12 @@ try {
   assert.equal(r.body.existing, true); assert.equal(db.customers.length, before);
   assert.ok(db.customers[0].tags.includes("waitlist")); ok("existing customer just gets the waitlist tag");
 
+  db.customers.push({ id: "gid://shopify/Customer/900", firstName: "Valerie", email: "old@shop.com", phone: null, tags: [] });
+  r = await post("/waitlist", { firstName: "Valerie", email: "old@shop.com", phone: "239-641-0000" });
+  const old = db.customers.find((c) => c.id === "gid://shopify/Customer/900");
+  assert.equal(old.phone, "+12396410000"); assert.ok(old.tags.includes("waitlist"));
+  ok("existing customer without a phone gets the phone added");
+
   r = await post("/waitlist", { firstName: "", email: "x@y.com", phone: "3055550000" });
   assert.equal(r.status, 400); ok("waitlist requires a first name");
   r = await post("/waitlist", { firstName: "Bot", email: "bot@spam.com", phone: "3055559999", company: "acme" });
