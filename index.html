@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="prelaunch">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Peaces Swim — A new era of swimwear has arrived</title>
 <meta name="description" content="Design-your-own bikinis, made in Miami. Pick your peaces, add lace, ties and charms, and wear a swimsuit that's entirely yours.">
 <link rel="icon" type="image/png" href="art/logo-ps.png">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..700;1,6..96,400..700&family=Pinyon+Script&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300..700;1,300..700&family=Pinyon+Script&display=swap">
 <style>
   :root{color-scheme:light; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);}
   html,body{margin:0;}
@@ -26,9 +26,9 @@
     url("https://db.onlinewebfonts.com/t/a64ff11d2c24584c767f6257e880dc65.svg#Helvetica Regular")format("svg");
   }
   :root{
-    --lp-sans:"Helvetica Regular","Helvetica Neue",Helvetica,Arial,sans-serif;
-    --lp-display:"Bodoni Moda","Didot","Bodoni 72",Georgia,serif;
-    --lp-script:'Pinyon Script',cursive;
+    --lp-sans:"Cormorant Garamond",Garamond,"Times New Roman",serif;
+    --lp-display:"Cormorant Garamond",Garamond,"Times New Roman",serif;
+    --lp-script:"Cormorant Garamond",Garamond,"Times New Roman",serif;
     --lp-blush:var(--purple);
     --lp-ink-60:rgba(58,44,52,.6); --lp-ink-70:rgba(58,44,52,.7); --lp-ink-25:rgba(58,44,52,.25);
   }
@@ -234,6 +234,80 @@
     .lp-js .lp-reveal{transform:none; transition:opacity .4s;}
   }
 </style>
+<style>
+  /* ================= Waitlist (#waitlist) ================= */
+  .lp-wait{background:var(--purple); color:#fff;}
+  .lp-wait-grid{display:grid;}
+  .lp-wait-photo{position:relative; margin:0; aspect-ratio:2/3; overflow:hidden;}
+  .lp-wait-photo img{width:100%; height:100%; max-width:none; object-fit:cover; object-position:50% 62%; display:block;}
+  .lp-wait-photo figcaption{position:absolute; left:20px; bottom:16px; color:#fff; text-shadow:var(--on-lav-small);}
+  .lp-wait-panel{display:flex; flex-direction:column; justify-content:center; padding:56px 20px 64px; text-shadow:var(--on-lav);}
+  .lp-wait-inner{width:100%; max-width:440px; margin:0 auto;}
+  .lp-wait-eyebrow{text-shadow:var(--on-lav-small); font-weight:700!important; font-size:12px;}
+  .lp-wait-h{font-family:var(--lp-display); font-weight:400; font-size:52px; line-height:.95; letter-spacing:-.02em; margin:18px 0 0;}
+  .lp-wait-h i{font-family:var(--lp-script); font-style:italic; font-size:1.18em; letter-spacing:0;}
+  .lp-wait-copy{margin-top:16px; font-size:17px; line-height:1.55; font-weight:700;}
+  .lp-wait-card{margin-top:28px; background:#fff; color:var(--ink); padding:24px 20px 20px; text-shadow:none;}
+  .lp-wait form{display:flex; flex-direction:column; gap:14px;}
+  .lp-wait label{display:flex; flex-direction:column; gap:6px; font-size:10px; letter-spacing:.25em; text-transform:uppercase; color:var(--ink);}
+  .lp-wait input{width:100%; padding:14px 16px; border:1px solid var(--purple); border-radius:0; background:#fff; color:var(--ink);
+    font-family:var(--lp-sans); font-size:16px; letter-spacing:0; text-transform:none;}
+  .lp-wait input:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
+  .lp-wait input.bad{border-color:var(--ink); box-shadow:inset 0 0 0 1px var(--ink);}
+  .lp-wait .lp-hp{position:absolute; left:-9999px; width:1px; height:1px; overflow:hidden;}
+  .lp-wait-btn{margin-top:6px; padding:17px 24px; border:0; border-radius:0; background:var(--ink); color:#fff; cursor:pointer;
+    font-family:var(--lp-sans); font-size:11px; letter-spacing:.28em; text-transform:uppercase; transition:background .2s;}
+  .lp-wait-btn:hover{background:rgba(58,44,52,.82);}
+  .lp-wait-btn:disabled{opacity:.7; cursor:wait;}
+  .lp-wait-btn:focus-visible{outline:2px solid var(--ink); outline-offset:3px;}
+  .lp-wait-err{margin:0; padding:10px 12px; background:var(--purple); color:var(--ink); font-size:13px; line-height:1.4;}
+  .lp-wait-fine{margin:2px 0 0; font-size:12px; line-height:1.5; color:var(--ink-soft);}
+  .lp-wait-done{text-align:left; outline:none;}
+  .lp-wait-thanks{font-family:var(--lp-display); font-size:40px; line-height:1; margin:0; color:var(--ink);}
+  .lp-wait-thanks span{display:block; font-family:var(--lp-script); font-size:1.15em; line-height:1.25;}
+  .lp-wait-done p.lp-wait-copy{margin-top:14px; color:var(--ink-soft); font-weight:500;}
+  @media (min-width:768px){
+    .lp-wait-grid{grid-template-columns:1fr 1fr; min-height:min(92svh,980px);}
+    .lp-wait-photo{aspect-ratio:auto; height:100%;}
+    .lp-wait-photo figcaption{left:32px; bottom:24px;}
+    .lp-wait-panel{padding:80px 48px;}
+    .lp-wait-h{font-size:76px;}
+    .lp-wait-thanks{font-size:52px;}
+    .lp-wait-card{padding:32px 32px 28px;}
+  }
+</style>
+<style>
+  /* ================= Fonts: Cormorant Garamond everywhere ================= */
+  body,.lp,#builder,.gate,.fulfil,button,input,select,textarea{font-family:var(--lp-sans);}
+  .lp,#builder,.gate,.fulfil{font-weight:500;}
+  .lp-label,.lp-link,.lp-wait label,.lp-wait-btn,.lp-btn{font-weight:600;}
+  .lp-h2 .lp-script,.lp-quote span,.lp-wait-h i,.lp-wait-thanks span{font-style:italic;}
+
+  .lp-wait-logo{display:block; height:96px; width:auto; margin-bottom:22px; filter:drop-shadow(0 1px 2px rgba(58,44,52,.25));}
+
+  /* ================= Pre-launch: the waitlist is the whole site =================
+     Remove class="prelaunch" from the <html> tag on launch day to open the full site. */
+  html.prelaunch,html.prelaunch body{height:100%; overflow:hidden;}
+  html.prelaunch body > *:not(#landing):not(script):not(style){display:none!important;}
+  html.prelaunch #landing > *:not(#waitlist){display:none!important;}
+  html.prelaunch #waitlist{position:fixed; inset:0; overflow-y:auto; overscroll-behavior:contain;}
+  html.prelaunch .lp-wait-grid{min-height:100%;}
+  @media (min-width:768px){
+    html.prelaunch .lp-wait-grid{height:100%; min-height:0;}
+    html.prelaunch .lp-wait-panel{padding:48px;}
+  }
+  @media (max-width:767px){
+    html.prelaunch .lp-wait-photo{aspect-ratio:auto; height:28svh;}
+    html.prelaunch .lp-wait-logo{height:46px; margin-bottom:8px;}
+    html.prelaunch .lp-wait-photo img{object-position:50% 58%;}
+    html.prelaunch .lp-wait-panel{padding:22px 20px 28px;}
+    html.prelaunch .lp-wait-h{font-size:42px; margin-top:10px;}
+    html.prelaunch .lp-wait-copy{margin-top:8px; font-size:16px;}
+    html.prelaunch .lp-wait-card{margin-top:16px; padding:16px 16px 14px;}
+    html.prelaunch .lp-wait form{gap:10px;}
+    html.prelaunch .lp-wait input{padding:11px 14px;}
+  }
+</style>
 </head>
 <body>
 <style>
@@ -262,7 +336,7 @@
   }
   header.top img.logo{width:clamp(190px,26vw,270px); height:auto; display:block;}
   header.top .tagline{
-    font-family:'Pinyon Script',cursive; font-size:clamp(17px,2.4vw,23px);
+    font-family:var(--lp-script); font-style:italic; font-size:clamp(17px,2.4vw,23px);
     color:var(--aqua); margin:0; text-align:right;
   }
   @media (max-width:640px){header.top .tagline{text-align:left;}}
@@ -280,7 +354,7 @@
     display:flex; justify-content:space-between; align-items:baseline; gap:8px;
     font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-soft); padding-bottom:10px;
   }
-  .stage-label .style-name{font-family:'Pinyon Script',cursive; font-size:21px; text-transform:none; letter-spacing:0; color:var(--pink);}
+  .stage-label .style-name{font-family:var(--lp-script); font-style:italic; font-size:21px; text-transform:none; letter-spacing:0; color:var(--pink);}
   .rig{display:flex; flex-direction:column; align-items:center; gap:10px; --u:0.33%;}
   .piece{position:relative;}
   .piece .layer{position:absolute; inset:0; -webkit-mask-size:100% 100%; mask-size:100% 100%; -webkit-mask-repeat:no-repeat; mask-repeat:no-repeat;}
@@ -322,7 +396,7 @@
   .tote-shot{background:var(--pink-pale); padding:12px 8px; margin-bottom:12px;}
   .tote-shot img{width:62%; max-width:190px; height:auto; display:block; margin:0 auto;
     filter:drop-shadow(0 12px 16px rgba(58,44,52,.12));}
-  .tote-name{font-family:'Pinyon Script',cursive; font-size:30px; color:var(--pink); line-height:1.05;}
+  .tote-name{font-family:var(--lp-script); font-style:italic; font-size:30px; color:var(--pink); line-height:1.05;}
   .tote-desc{margin:4px 0 12px; font-size:12.5px; line-height:1.5; color:var(--ink-soft);}
   .tote-btn{padding:10px 20px; border:1.5px solid var(--pink);
     background:var(--paper); color:var(--pink-deep); font-family:var(--lp-sans); font-weight:700;
@@ -370,7 +444,7 @@
   .panel{display:flex; flex-direction:column; gap:20px;}
   .step{background:var(--paper); border:1px solid var(--line); border-radius:0; padding:20px 22px 22px;}
   .step-head{margin-bottom:14px;}
-  .step-head h2{margin:0; font-family:'Pinyon Script',cursive; font-weight:400; font-size:31px; color:var(--pink); line-height:1.1;}
+  .step-head h2{margin:0; font-family:var(--lp-script); font-style:italic; font-weight:400; font-size:31px; color:var(--pink); line-height:1.1;}
   .step-head p.hint{margin:2px 0 0; font-size:13px; color:var(--ink-soft);}
 
   .base-grid{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
@@ -436,7 +510,7 @@
   .extra-shot img{max-width:100%; max-height:150px; height:auto; display:block;
     filter:drop-shadow(0 10px 14px rgba(58,44,52,.12));}
   .extra-shot.band img{max-height:130px; width:100%; object-fit:cover; filter:none;}
-  .extra-name{font-family:'Pinyon Script',cursive; font-size:26px; color:var(--pink); line-height:1.05;}
+  .extra-name{font-family:var(--lp-script); font-style:italic; font-size:26px; color:var(--pink); line-height:1.05;}
   .extra-desc{margin:0 0 10px; font-size:12px; line-height:1.45; color:var(--ink-soft);}
   .extra .tote-btn{align-self:center; margin-top:auto;}
 
@@ -603,6 +677,7 @@
           <a href="#design">Design your own</a>
           <a href="#how">How it works</a>
           <a href="#making">The making of</a>
+          <a href="#waitlist">Join the waitlist</a>
         </nav>
       </div>
       <a class="liquid-glass lp-cart" href="#design" aria-label="Your bag">
@@ -626,7 +701,7 @@
         </h1>
         <div class="lp-actions lp-rise" style="--d:.75s">
           <a class="lp-btn" href="#design">Design your own</a>
-          <a class="lp-link" href="#how">How it works</a>
+          <a class="lp-link" href="#waitlist">Join the waitlist</a>
         </div>
       </div>
       <div class="lp-rule lp-bottom lp-label">
@@ -638,6 +713,45 @@
     <div class="lp-shot">
       <img src="photos/lifeguard-tower.jpg" alt="Two women in aqua and coral bikinis waving from a mint lifeguard tower" fetchpriority="high">
       <span class="lp-fig lp-label">Fig. 01 — Tower no. 8</span>
+    </div>
+  </section>
+
+  <section class="lp-wait" id="waitlist" aria-labelledby="waitTitle">
+    <div class="lp-wait-grid">
+      <figure class="lp-wait-photo">
+        <img src="photos/waitlist.jpg" alt="Two friends on the beach under palm trees, one whispering to the other, holding the Peaces Swim poster that reads a new era of swimwear has arrived" loading="lazy">
+      </figure>
+      <div class="lp-wait-panel">
+        <div class="lp-wait-inner">
+          <img class="lp-wait-logo" src="art/logo-ps-leopard.png" alt="Peaces Swim">
+          <p class="lp-label lp-wait-eyebrow">Made in Miami</p>
+          <h2 class="lp-wait-h" id="waitTitle">Join the <i>waitlist</i></h2>
+          <p class="lp-wait-copy">Be the first to know when Peaces launches, and the first to design your own.</p>
+
+          <div class="lp-wait-card">
+          <form id="waitForm" novalidate>
+            <label for="wFirst">First name
+              <input id="wFirst" name="firstName" type="text" autocomplete="given-name" required>
+            </label>
+            <label for="wEmail">Email
+              <input id="wEmail" name="email" type="email" autocomplete="email" inputmode="email" required>
+            </label>
+            <label for="wPhone">Phone number
+              <input id="wPhone" name="phone" type="tel" autocomplete="tel" inputmode="tel" placeholder="(305) 555-0123" required>
+            </label>
+            <div class="lp-hp" aria-hidden="true"><label for="wCompany">Company<input id="wCompany" name="company" type="text" tabindex="-1" autocomplete="off"></label></div>
+            <p class="lp-wait-err" id="waitErr" role="alert" hidden></p>
+            <button class="lp-wait-btn" type="submit" id="waitBtn">Join the waitlist</button>
+            <p class="lp-wait-fine">By joining, you agree to get emails from Peaces Swim about our launch. Unsubscribe anytime.</p>
+          </form>
+
+          <div class="lp-wait-done" id="waitDone" hidden tabindex="-1">
+            <p class="lp-wait-thanks">Thank you, <span>you&rsquo;re on the list</span></p>
+            <p class="lp-wait-copy">We&rsquo;ll be in touch before launch.</p>
+          </div>
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -1620,6 +1734,36 @@
     if(v) document.getElementById("gEmail").value=v;
     openGate(state.perk?"stepBack":"stepPhone");
   });
+
+  // Waitlist form: saves the person to Shopify (tagged "waitlist") through /api/waitlist.
+  (function(){
+    var form=document.getElementById("waitForm"); if(!form) return;
+    var err=document.getElementById("waitErr"), btn=document.getElementById("waitBtn");
+    var f={first:document.getElementById("wFirst"), email:document.getElementById("wEmail"), phone:document.getElementById("wPhone")};
+    function fail(msg,field){ err.textContent=msg; err.hidden=false; if(field){ field.classList.add("bad"); field.focus(); } }
+    form.addEventListener("submit",async function(e){
+      e.preventDefault();
+      Object.keys(f).forEach(function(k){ f[k].classList.remove("bad"); });
+      err.hidden=true;
+      var first=f.first.value.trim(), email=f.email.value.trim(), phone=f.phone.value.trim();
+      if(!first) return fail("Please add your first name.",f.first);
+      if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) return fail("That email doesn't look right.",f.email);
+      if(phone.replace(/\D/g,"").length<10) return fail("Please add your phone number, area code included.",f.phone);
+      btn.disabled=true; btn.textContent="Joining…";
+      try{
+        var r=await fetch("api/waitlist",{method:"POST",headers:{"Content-Type":"application/json"},
+          body:JSON.stringify({firstName:first,email:email,phone:phone,company:document.getElementById("wCompany").value})});
+        var j={}; try{ j=await r.json(); }catch(x){}
+        if(!r.ok) throw new Error(j.error||"Something went wrong. Please try again.");
+        form.hidden=true;
+        var done=document.getElementById("waitDone"); done.hidden=false; done.focus({preventScroll:true});
+      }catch(x){
+        fail(x.message||"Something went wrong. Please try again.");
+      }finally{
+        btn.disabled=false; btn.textContent="Join the waitlist";
+      }
+    });
+  })();
 
   // Fade sections in as they scroll into view.
   (function(){

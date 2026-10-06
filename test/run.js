@@ -59,6 +59,26 @@ try {
   r = await post("/orders/fulfillment", { id: first.id, sig: "forged", mode: "wait" });
   assert.equal(r.status, 400); ok("forged order signature rejected");
 
+  const hs = await (await fetch(`http://localhost:${APP}/api/health?shopify=1`)).json();
+  assert.equal(hs.shopify.connected, true); ok("health ?shopify=1 signs in and returns the store name");
+
+  r = await post("/waitlist", { firstName: "Mia", email: "Mia@Example.com", phone: "(786) 555-0101" });
+  assert.equal(r.status, 201);
+  const mia = db.customers.find((c) => c.email === "mia@example.com");
+  assert.deepEqual(mia.tags, ["waitlist"]); assert.equal(mia.phone, "+17865550101");
+  assert.equal(mia.emailMarketingConsent.marketingState, "SUBSCRIBED"); assert.equal(mia.smsMarketingConsent, undefined);
+  ok("waitlist creates a tagged customer (email yes, SMS no)");
+
+  const before = db.customers.length;
+  r = await post("/waitlist", { firstName: "Val", email: "val@peacesswim.com", phone: "3055551234" });
+  assert.equal(r.body.existing, true); assert.equal(db.customers.length, before);
+  assert.ok(db.customers[0].tags.includes("waitlist")); ok("existing customer just gets the waitlist tag");
+
+  r = await post("/waitlist", { firstName: "", email: "x@y.com", phone: "3055550000" });
+  assert.equal(r.status, 400); ok("waitlist requires a first name");
+  r = await post("/waitlist", { firstName: "Bot", email: "bot@spam.com", phone: "3055559999", company: "acme" });
+  assert.equal(r.body.ok, true); assert.ok(!db.customers.some((c) => c.email === "bot@spam.com")); ok("spam bots are ignored");
+
   assert.equal(db.tokenCalls, 1); ok("access token fetched once and cached");
   console.log(`\nAll ${n} checks passed.`);
 } finally { s1.close(); s2.close(); }

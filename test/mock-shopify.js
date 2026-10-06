@@ -16,9 +16,17 @@ export function startMockShopify(port) {
     if (req.headers["x-shopify-access-token"] !== "tok_123") return send({ errors: "Invalid API key or access token" }, 401);
     const { query, variables } = JSON.parse(raw);
     db.calls.push({ query, variables });
+    if (query.includes("shop { name }")) return send({ data: { shop: { name: "Peaces Swim (mock)" } } });
     if (query.includes("customers(first:1")) {
-      const ph = variables.q.replace("phone:", "");
-      return send({ data: { customers: { nodes: db.customers.filter((c) => c.phone === ph) } } });
+      const m = /^(phone|email):"?([^"]*)"?$/.exec(variables.q) || [];
+      const nodes = db.customers.filter((c) => (m[1] === "email" ? (c.email || "").toLowerCase() === m[2] : c.phone === m[2]));
+      return send({ data: { customers: { nodes: nodes.map((c) => ({ ...c, tags: c.tags || [] })) } } });
+    }
+    if (query.includes("tagsAdd")) {
+      const c = db.customers.find((x) => x.id === variables.id);
+      if (!c) return send({ data: { tagsAdd: { userErrors: [{ field: ["id"], message: "not found" }] } } });
+      c.tags = [...new Set([...(c.tags || []), ...variables.tags])];
+      return send({ data: { tagsAdd: { userErrors: [] } } });
     }
     if (query.includes("customerCreate")) {
       const i = variables.input;
