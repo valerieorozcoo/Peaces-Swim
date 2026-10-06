@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="prelaunch">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Peaces Swim — A new era of swimwear has arrived</title>
 <meta name="description" content="Design-your-own bikinis, made in Miami. Pick your peaces, add lace, ties and charms, and wear a swimsuit that's entirely yours.">
 <link rel="icon" type="image/png" href="art/logo-ps.png">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..700;1,6..96,400..700&family=Pinyon+Script&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300..700;1,300..700&family=Pinyon+Script&display=swap">
 <style>
   :root{color-scheme:light; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);}
   html,body{margin:0;}
@@ -26,9 +26,9 @@
     url("https://db.onlinewebfonts.com/t/a64ff11d2c24584c767f6257e880dc65.svg#Helvetica Regular")format("svg");
   }
   :root{
-    --lp-sans:"Helvetica Regular","Helvetica Neue",Helvetica,Arial,sans-serif;
-    --lp-display:"Bodoni Moda","Didot","Bodoni 72",Georgia,serif;
-    --lp-script:'Pinyon Script',cursive;
+    --lp-sans:"Cormorant Garamond",Garamond,"Times New Roman",serif;
+    --lp-display:"Cormorant Garamond",Garamond,"Times New Roman",serif;
+    --lp-script:"Cormorant Garamond",Garamond,"Times New Roman",serif;
     --lp-blush:var(--purple);
     --lp-ink-60:rgba(58,44,52,.6); --lp-ink-70:rgba(58,44,52,.7); --lp-ink-25:rgba(58,44,52,.25);
   }
@@ -245,7 +245,7 @@
   .lp-wait-inner{width:100%; max-width:440px; margin:0 auto;}
   .lp-wait-eyebrow{text-shadow:var(--on-lav-small);}
   .lp-wait-h{font-family:var(--lp-display); font-weight:400; font-size:52px; line-height:.95; letter-spacing:-.02em; margin:18px 0 0;}
-  .lp-wait-h i{font-family:var(--lp-script); font-style:normal; font-size:1.18em; letter-spacing:0;}
+  .lp-wait-h i{font-family:var(--lp-script); font-style:italic; font-size:1.18em; letter-spacing:0;}
   .lp-wait-copy{margin-top:16px; font-size:17px; line-height:1.55;}
   .lp-wait-card{margin-top:28px; background:#fff; color:var(--ink); padding:24px 20px 20px; text-shadow:none;}
   .lp-wait form{display:flex; flex-direction:column; gap:14px;}
@@ -276,6 +276,38 @@
     .lp-wait-card{padding:32px 32px 28px;}
   }
 </style>
+<style>
+  /* ================= Fonts: Cormorant Garamond everywhere ================= */
+  body,.lp,#builder,.gate,.fulfil,button,input,select,textarea{font-family:var(--lp-sans);}
+  .lp,#builder,.gate,.fulfil{font-weight:500;}
+  .lp-label,.lp-link,.lp-wait label,.lp-wait-btn,.lp-btn{font-weight:600;}
+  .lp-h2 .lp-script,.lp-quote span,.lp-wait-h i,.lp-wait-thanks span{font-style:italic;}
+
+  .lp-wait-logo{display:block; height:96px; width:auto; margin-bottom:22px; filter:drop-shadow(0 1px 2px rgba(58,44,52,.25));}
+
+  /* ================= Pre-launch: the waitlist is the whole site =================
+     Remove class="prelaunch" from the <html> tag on launch day to open the full site. */
+  html.prelaunch,html.prelaunch body{height:100%; overflow:hidden;}
+  html.prelaunch body > *:not(#landing):not(script):not(style){display:none!important;}
+  html.prelaunch #landing > *:not(#waitlist){display:none!important;}
+  html.prelaunch #waitlist{position:fixed; inset:0; overflow-y:auto; overscroll-behavior:contain;}
+  html.prelaunch .lp-wait-grid{min-height:100%;}
+  @media (min-width:768px){
+    html.prelaunch .lp-wait-grid{height:100%; min-height:0;}
+    html.prelaunch .lp-wait-panel{padding:48px;}
+  }
+  @media (max-width:767px){
+    html.prelaunch .lp-wait-photo{aspect-ratio:auto; height:28svh;}
+    html.prelaunch .lp-wait-logo{height:46px; margin-bottom:8px;}
+    html.prelaunch .lp-wait-photo img{object-position:50% 58%;}
+    html.prelaunch .lp-wait-panel{padding:22px 20px 28px;}
+    html.prelaunch .lp-wait-h{font-size:42px; margin-top:10px;}
+    html.prelaunch .lp-wait-copy{margin-top:8px; font-size:16px;}
+    html.prelaunch .lp-wait-card{margin-top:16px; padding:16px 16px 14px;}
+    html.prelaunch .lp-wait form{gap:10px;}
+    html.prelaunch .lp-wait input{padding:11px 14px;}
+  }
+</style>
 </head>
 <body>
 <style>
@@ -304,7 +336,7 @@
   }
   header.top img.logo{width:clamp(190px,26vw,270px); height:auto; display:block;}
   header.top .tagline{
-    font-family:'Pinyon Script',cursive; font-size:clamp(17px,2.4vw,23px);
+    font-family:var(--lp-script); font-style:italic; font-size:clamp(17px,2.4vw,23px);
     color:var(--aqua); margin:0; text-align:right;
   }
   @media (max-width:640px){header.top .tagline{text-align:left;}}
@@ -322,7 +354,7 @@
     display:flex; justify-content:space-between; align-items:baseline; gap:8px;
     font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-soft); padding-bottom:10px;
   }
-  .stage-label .style-name{font-family:'Pinyon Script',cursive; font-size:21px; text-transform:none; letter-spacing:0; color:var(--pink);}
+  .stage-label .style-name{font-family:var(--lp-script); font-style:italic; font-size:21px; text-transform:none; letter-spacing:0; color:var(--pink);}
   .rig{display:flex; flex-direction:column; align-items:center; gap:10px; --u:0.33%;}
   .piece{position:relative;}
   .piece .layer{position:absolute; inset:0; -webkit-mask-size:100% 100%; mask-size:100% 100%; -webkit-mask-repeat:no-repeat; mask-repeat:no-repeat;}
@@ -364,7 +396,7 @@
   .tote-shot{background:var(--pink-pale); padding:12px 8px; margin-bottom:12px;}
   .tote-shot img{width:62%; max-width:190px; height:auto; display:block; margin:0 auto;
     filter:drop-shadow(0 12px 16px rgba(58,44,52,.12));}
-  .tote-name{font-family:'Pinyon Script',cursive; font-size:30px; color:var(--pink); line-height:1.05;}
+  .tote-name{font-family:var(--lp-script); font-style:italic; font-size:30px; color:var(--pink); line-height:1.05;}
   .tote-desc{margin:4px 0 12px; font-size:12.5px; line-height:1.5; color:var(--ink-soft);}
   .tote-btn{padding:10px 20px; border:1.5px solid var(--pink);
     background:var(--paper); color:var(--pink-deep); font-family:var(--lp-sans); font-weight:700;
@@ -412,7 +444,7 @@
   .panel{display:flex; flex-direction:column; gap:20px;}
   .step{background:var(--paper); border:1px solid var(--line); border-radius:0; padding:20px 22px 22px;}
   .step-head{margin-bottom:14px;}
-  .step-head h2{margin:0; font-family:'Pinyon Script',cursive; font-weight:400; font-size:31px; color:var(--pink); line-height:1.1;}
+  .step-head h2{margin:0; font-family:var(--lp-script); font-style:italic; font-weight:400; font-size:31px; color:var(--pink); line-height:1.1;}
   .step-head p.hint{margin:2px 0 0; font-size:13px; color:var(--ink-soft);}
 
   .base-grid{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
@@ -478,7 +510,7 @@
   .extra-shot img{max-width:100%; max-height:150px; height:auto; display:block;
     filter:drop-shadow(0 10px 14px rgba(58,44,52,.12));}
   .extra-shot.band img{max-height:130px; width:100%; object-fit:cover; filter:none;}
-  .extra-name{font-family:'Pinyon Script',cursive; font-size:26px; color:var(--pink); line-height:1.05;}
+  .extra-name{font-family:var(--lp-script); font-style:italic; font-size:26px; color:var(--pink); line-height:1.05;}
   .extra-desc{margin:0 0 10px; font-size:12px; line-height:1.45; color:var(--ink-soft);}
   .extra .tote-btn{align-self:center; margin-top:auto;}
 
@@ -692,6 +724,7 @@
       </figure>
       <div class="lp-wait-panel">
         <div class="lp-wait-inner">
+          <img class="lp-wait-logo" src="art/logo-ps-leopard.png" alt="Peaces Swim">
           <p class="lp-label lp-wait-eyebrow">Vol. 01 &middot; Made in Miami</p>
           <h2 class="lp-wait-h" id="waitTitle">Join the <i>waitlist</i></h2>
           <p class="lp-wait-copy">Be the first to know when Peaces launches, and the first to design your own.</p>
