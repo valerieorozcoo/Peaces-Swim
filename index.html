@@ -235,46 +235,58 @@
   }
 </style>
 <style>
-  /* ================= Waitlist (#waitlist) ================= */
-  .lp-wait{background:var(--purple); color:#fff;}
-  .lp-wait-grid{display:grid;}
-  .lp-wait-photo{position:relative; margin:0; aspect-ratio:2/3; overflow:hidden;}
-  .lp-wait-photo img{width:100%; height:100%; max-width:none; object-fit:cover; object-position:50% 62%; display:block;}
-  .lp-wait-photo figcaption{position:absolute; left:20px; bottom:16px; color:#fff; text-shadow:var(--on-lav-small);}
-  .lp-wait-panel{display:flex; flex-direction:column; justify-content:center; padding:56px 20px 64px; text-shadow:var(--on-lav);}
-  .lp-wait-inner{width:100%; max-width:440px; margin:0 auto;}
-  .lp-wait-eyebrow{text-shadow:var(--on-lav-small); font-weight:700!important; font-size:12px;}
-  .lp-wait-h{font-family:var(--lp-display); font-weight:400; font-size:52px; line-height:.95; letter-spacing:-.02em; margin:18px 0 0;}
-  .lp-wait-h i{font-family:var(--lp-script); font-style:italic; font-size:1.18em; letter-spacing:0;}
-  .lp-wait-copy{margin-top:16px; font-size:17px; line-height:1.55; font-weight:700;}
-  .lp-wait-card{margin-top:28px; background:#fff; color:var(--ink); padding:24px 20px 20px; text-shadow:none;}
-  .lp-wait form{display:flex; flex-direction:column; gap:14px;}
-  .lp-wait label{display:flex; flex-direction:column; gap:6px; font-size:10px; letter-spacing:.25em; text-transform:uppercase; color:var(--ink);}
-  .lp-wait input{width:100%; padding:14px 16px; border:1px solid var(--purple); border-radius:0; background:#fff; color:var(--ink);
-    font-family:var(--lp-sans); font-size:16px; letter-spacing:0; text-transform:none;}
-  .lp-wait input:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
-  .lp-wait input.bad{border-color:var(--ink); box-shadow:inset 0 0 0 1px var(--ink);}
-  .lp-wait .lp-hp{position:absolute; left:-9999px; width:1px; height:1px; overflow:hidden;}
-  .lp-wait-btn{margin-top:6px; padding:17px 24px; border:0; border-radius:0; background:var(--ink); color:#fff; cursor:pointer;
-    font-family:var(--lp-sans); font-size:11px; letter-spacing:.28em; text-transform:uppercase; transition:background .2s;}
-  .lp-wait-btn:hover{background:rgba(58,44,52,.82);}
-  .lp-wait-btn:disabled{opacity:.7; cursor:wait;}
-  .lp-wait-btn:focus-visible{outline:2px solid var(--ink); outline-offset:3px;}
-  .lp-wait-err{margin:0; padding:10px 12px; background:var(--purple); color:var(--ink); font-size:13px; line-height:1.4;}
-  .lp-wait-fine{margin:2px 0 0; font-size:12px; line-height:1.5; color:var(--ink-soft);}
-  .lp-wait-done{text-align:left; outline:none;}
-  .lp-wait-thanks{font-family:var(--lp-display); font-size:40px; line-height:1; margin:0; color:var(--ink);}
-  .lp-wait-thanks span{display:block; font-family:var(--lp-script); font-size:1.15em; line-height:1.25;}
-  .lp-wait-done p.lp-wait-copy{margin-top:14px; color:var(--ink-soft); font-weight:500;}
-  @media (min-width:768px){
-    .lp-wait-grid{grid-template-columns:1fr 1fr; min-height:min(92svh,980px);}
-    .lp-wait-photo{aspect-ratio:auto; height:100%;}
-    .lp-wait-photo figcaption{left:32px; bottom:24px;}
-    .lp-wait-panel{padding:80px 48px;}
-    .lp-wait-h{font-size:76px;}
-    .lp-wait-thanks{font-size:52px;}
-    .lp-wait-card{padding:32px 32px 28px;}
+  /* ================= Waitlist (#waitlist) =================
+     Phone: photo with the white script logo + launch line on top, white sign-up panel below.
+     Desktop: the same card side by side (photo left, sign-up right) on a lavender backdrop. */
+  .lp-wait{
+    --w-lavender:#efddfd; --w-lavender-deep:#e6cdfb; --w-orchid:#d094f9; --w-orchid-deep:#bf78f2;
+    --w-pink:#e75297; --w-ink:#4a3456; --w-serif:"Times New Roman",Times,serif;
+    --w-script:"Pinyon Script","Snell Roundhand","Apple Chancery",cursive;
+    background:#fff; color:var(--w-ink); font-family:var(--w-serif); font-weight:400;
+    display:grid; place-items:center;
   }
+  .lp-wait-card{width:100%; max-width:440px; background:#fff; display:flex; flex-direction:column;}
+  .lp-wait-photo{position:relative; margin:0; aspect-ratio:4/5; overflow:hidden;}
+  .lp-wait-photo img{width:100%; height:100%; max-width:none; object-fit:cover; object-position:50% 55%; display:block;}
+  .lp-wait-photo::after{content:""; position:absolute; inset:0; pointer-events:none;
+    background:linear-gradient(to bottom,rgba(74,52,86,.38) 0%,rgba(74,52,86,.12) 38%,rgba(74,52,86,0) 60%);}
+  .lp-wait-overlay{position:absolute; inset:0 0 auto 0; z-index:1; padding:9% 20px 0; text-align:center; color:#fff;
+    display:flex; flex-direction:column; align-items:center; gap:10px;}
+  .lp-wait-h{margin:0; line-height:0; width:88%; max-width:380px;}
+  .lp-wait-h img{width:100%; height:auto; display:block; filter:drop-shadow(0 2px 10px rgba(74,52,86,.4));}
+  .lp-wait-pitch{margin:0; font-size:clamp(15px,4vw,18px); line-height:1.35; letter-spacing:.08em; text-transform:uppercase;
+    max-width:28ch; text-wrap:balance; text-shadow:0 1px 8px rgba(74,52,86,.45);}
+  .lp-wait-panel{flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:16px;
+    padding:26px 24px 30px; text-align:center; background:#fff;}
+  .lp-wait-mark{display:none;}
+  .lp-wait form{width:100%; max-width:320px; display:flex; flex-direction:column; gap:12px;}
+  .lp-wait .lp-sr{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap;}
+  .lp-wait input{width:100%; border:0; border-radius:0; background:var(--w-lavender); color:var(--w-ink);
+    font-family:var(--w-serif); font-size:17px; padding:12px 14px; outline:none; -webkit-appearance:none; appearance:none;}
+  .lp-wait input::placeholder{color:rgba(74,52,86,.62);}
+  .lp-wait input:focus-visible{background:var(--w-lavender-deep); box-shadow:inset 0 0 0 2px var(--w-orchid);}
+  .lp-wait input.bad{box-shadow:inset 0 0 0 2px var(--w-pink);}
+  .lp-wait .lp-hp{position:absolute; left:-9999px; width:1px; height:1px; overflow:hidden;}
+  .lp-wait-btn{margin-top:2px; padding:13px 14px; border:0; border-radius:0; background:var(--w-orchid); color:#fff; cursor:pointer;
+    font-family:var(--w-serif); font-size:18px; letter-spacing:.04em; transition:background .15s;}
+  .lp-wait-btn:hover{background:var(--w-orchid-deep);}
+  .lp-wait-btn:disabled{opacity:.7; cursor:wait;}
+  .lp-wait-btn:focus-visible{outline:2px solid var(--w-pink); outline-offset:3px;}
+  .lp-wait-err{margin:0; color:var(--w-pink); font-size:15px; line-height:1.4;}
+  .lp-wait-fine{margin:0; font-size:12.5px; line-height:1.5; opacity:.7; max-width:34ch;}
+  .lp-wait-done{display:flex; flex-direction:column; align-items:center; gap:8px; outline:none;}
+  .lp-wait-thanks{margin:0; font-family:var(--w-script); font-size:44px; line-height:1; color:var(--w-pink);}
+  .lp-wait-done p.lp-wait-copy{margin:0; font-size:17px; letter-spacing:.03em; max-width:30ch;}
+  @media (min-width:820px){
+    .lp-wait{background:var(--w-lavender); padding:40px 32px;}
+    .lp-wait-card{max-width:940px; flex-direction:row; box-shadow:0 24px 60px -28px rgba(120,60,150,.45);}
+    .lp-wait-photo{flex:0 0 52%; aspect-ratio:3/4;}
+    .lp-wait-panel{padding:48px 44px; gap:18px;}
+    .lp-wait-mark{display:block; margin:0 0 4px; font-family:var(--w-script); font-size:52px; line-height:1; color:var(--w-orchid);}
+  }
+  .lp-wait .lp-wait-btn,.lp-wait .lp-wait-mark{font-weight:400;}
+  .lp-wait form .lp-wait-fine{margin-inline:auto;}
+  @media (prefers-reduced-motion:reduce){ .lp-wait-btn{transition:none;} }
 </style>
 <style>
   /* ================= Fonts: Cormorant Garamond everywhere ================= */
@@ -283,7 +295,6 @@
   .lp-label,.lp-link,.lp-wait label,.lp-wait-btn,.lp-btn{font-weight:600;}
   .lp-h2 .lp-script,.lp-quote span,.lp-wait-h i,.lp-wait-thanks span{font-style:italic;}
 
-  .lp-wait-logo{display:block; height:96px; width:auto; margin-bottom:22px; filter:drop-shadow(0 1px 2px rgba(58,44,52,.25));}
 
   /* ================= Pre-launch: the waitlist is the whole site =================
      Remove class="prelaunch" from the <html> tag on launch day to open the full site. */
@@ -291,22 +302,7 @@
   html.prelaunch body > *:not(#landing):not(script):not(style){display:none!important;}
   html.prelaunch #landing > *:not(#waitlist){display:none!important;}
   html.prelaunch #waitlist{position:fixed; inset:0; overflow-y:auto; overscroll-behavior:contain;}
-  html.prelaunch .lp-wait-grid{min-height:100%;}
-  @media (min-width:768px){
-    html.prelaunch .lp-wait-grid{height:100%; min-height:0;}
-    html.prelaunch .lp-wait-panel{padding:48px;}
-  }
-  @media (max-width:767px){
-    html.prelaunch .lp-wait-photo{aspect-ratio:auto; height:28svh;}
-    html.prelaunch .lp-wait-logo{height:46px; margin-bottom:8px;}
-    html.prelaunch .lp-wait-photo img{object-position:50% 58%;}
-    html.prelaunch .lp-wait-panel{padding:22px 20px 28px;}
-    html.prelaunch .lp-wait-h{font-size:42px; margin-top:10px;}
-    html.prelaunch .lp-wait-copy{margin-top:8px; font-size:16px;}
-    html.prelaunch .lp-wait-card{margin-top:16px; padding:16px 16px 14px;}
-    html.prelaunch .lp-wait form{gap:10px;}
-    html.prelaunch .lp-wait input{padding:11px 14px;}
-  }
+  @media (max-width:819px){ html.prelaunch .lp-wait{place-items:start center;} html.prelaunch .lp-wait-card{min-height:100%;} }
 </style>
 </head>
 <body>
@@ -717,39 +713,33 @@
   </section>
 
   <section class="lp-wait" id="waitlist" aria-labelledby="waitTitle">
-    <div class="lp-wait-grid">
+    <div class="lp-wait-card">
       <figure class="lp-wait-photo">
-        <img src="photos/waitlist.jpg" alt="Two friends on the beach under palm trees, one whispering to the other, holding the Peaces Swim poster that reads a new era of swimwear has arrived" loading="lazy">
+        <img src="photos/waitlist-couch.jpg" width="1100" height="1709" alt="The two Peaces Swim founders upside down on a pink couch in feather slippers, holding XOXO Peaces Swim posters that read a new era of swimwear has arrived">
+        <figcaption class="lp-wait-overlay">
+          <h2 class="lp-wait-h" id="waitTitle"><img src="art/logo-script-white.png" width="941" height="199" alt="Peaces Swim"></h2>
+          <p class="lp-wait-pitch">Sign up and be the first to know when Peaces launches</p>
+        </figcaption>
       </figure>
+
       <div class="lp-wait-panel">
-        <div class="lp-wait-inner">
-          <img class="lp-wait-logo" src="art/logo-ps-leopard.png" alt="Peaces Swim">
-          <p class="lp-label lp-wait-eyebrow">Made in Miami</p>
-          <h2 class="lp-wait-h" id="waitTitle">Join the <i>waitlist</i></h2>
-          <p class="lp-wait-copy">Be the first to know when Peaces launches, and the first to design your own.</p>
+        <p class="lp-wait-mark" aria-hidden="true">Peaces</p>
+        <form id="waitForm" novalidate>
+          <label class="lp-sr" for="wFirst">First name</label>
+          <input id="wFirst" name="firstName" type="text" placeholder="first name" autocomplete="given-name" required>
+          <label class="lp-sr" for="wEmail">Email</label>
+          <input id="wEmail" name="email" type="email" placeholder="email" autocomplete="email" inputmode="email" required>
+          <label class="lp-sr" for="wPhone">Phone number</label>
+          <input id="wPhone" name="phone" type="tel" placeholder="phone number" autocomplete="tel" inputmode="tel" required>
+          <div class="lp-hp" aria-hidden="true"><label for="wCompany">Company<input id="wCompany" name="company" type="text" tabindex="-1" autocomplete="off"></label></div>
+          <p class="lp-wait-err" id="waitErr" role="alert" hidden></p>
+          <button class="lp-wait-btn" type="submit" id="waitBtn">sign me up</button>
+          <p class="lp-wait-fine">By signing up you agree to get emails from Peaces Swim about our launch. Unsubscribe anytime.</p>
+        </form>
 
-          <div class="lp-wait-card">
-          <form id="waitForm" novalidate>
-            <label for="wFirst">First name
-              <input id="wFirst" name="firstName" type="text" autocomplete="given-name" required>
-            </label>
-            <label for="wEmail">Email
-              <input id="wEmail" name="email" type="email" autocomplete="email" inputmode="email" required>
-            </label>
-            <label for="wPhone">Phone number
-              <input id="wPhone" name="phone" type="tel" autocomplete="tel" inputmode="tel" placeholder="(305) 555-0123" required>
-            </label>
-            <div class="lp-hp" aria-hidden="true"><label for="wCompany">Company<input id="wCompany" name="company" type="text" tabindex="-1" autocomplete="off"></label></div>
-            <p class="lp-wait-err" id="waitErr" role="alert" hidden></p>
-            <button class="lp-wait-btn" type="submit" id="waitBtn">Join the waitlist</button>
-            <p class="lp-wait-fine">By joining, you agree to get emails from Peaces Swim about our launch. Unsubscribe anytime.</p>
-          </form>
-
-          <div class="lp-wait-done" id="waitDone" hidden tabindex="-1">
-            <p class="lp-wait-thanks">Thank you, <span>you&rsquo;re on the list</span></p>
-            <p class="lp-wait-copy">We&rsquo;ll be in touch before launch.</p>
-          </div>
-          </div>
+        <div class="lp-wait-done" id="waitDone" hidden tabindex="-1">
+          <p class="lp-wait-thanks">xoxo</p>
+          <p class="lp-wait-copy">You&rsquo;re on the list. We&rsquo;ll be in touch the moment Peaces drops.</p>
         </div>
       </div>
     </div>
@@ -1749,7 +1739,7 @@
       if(!first) return fail("Please add your first name.",f.first);
       if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) return fail("That email doesn't look right.",f.email);
       if(phone.replace(/\D/g,"").length<10) return fail("Please add your phone number, area code included.",f.phone);
-      btn.disabled=true; btn.textContent="Joining…";
+      btn.disabled=true; btn.textContent="signing you up…";
       try{
         var r=await fetch("api/waitlist",{method:"POST",headers:{"Content-Type":"application/json"},
           body:JSON.stringify({firstName:first,email:email,phone:phone,company:document.getElementById("wCompany").value})});
@@ -1760,7 +1750,7 @@
       }catch(x){
         fail(x.message||"Something went wrong. Please try again.");
       }finally{
-        btn.disabled=false; btn.textContent="Join the waitlist";
+        btn.disabled=false; btn.textContent="sign me up";
       }
     });
   })();
