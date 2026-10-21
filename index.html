@@ -304,6 +304,74 @@
   html.prelaunch #waitlist{position:fixed; inset:0; overflow-y:auto; overscroll-behavior:contain;}
   @media (max-width:819px){ html.prelaunch .lp-wait{place-items:start center;} html.prelaunch .lp-wait-card{min-height:100%;} }
 </style>
+<style>
+  /* ================= Full site: white with hints of purple =================
+     Clean white pages, ink type in Cormorant Garamond, purple saved for italic
+     accents, the announcement strip and one soft lavender section.
+     Scoped to html:not(.prelaunch) so the waitlist-only page is untouched. */
+  html:not(.prelaunch){
+    --fs-white:#FFFFFF; --fs-mist:#FAF6FE; --fs-wash:#F3E9FC;
+    --fs-orchid:#8A5BB8; --fs-ink:#2E2433; --fs-ink-60:rgba(46,36,51,.62); --fs-hair:rgba(46,36,51,.14);
+    --aqua:#FFFFFF; --pink:var(--fs-orchid); --pink-pale:var(--fs-wash); --pink-deep:var(--fs-ink);
+    --line:#E7DAF3; --lp-blush:var(--fs-mist); --ink:var(--fs-ink);
+  }
+  html:not(.prelaunch) body{background:var(--fs-white); color:var(--fs-ink);}
+
+  /* announcement strip */
+  html:not(.prelaunch) .lp-bar{background:var(--fs-wash); color:var(--fs-ink);}
+  html:not(.prelaunch) .lp-bar-track b{color:var(--fs-orchid);}
+
+  /* header + nav */
+  html:not(.prelaunch) .lp-nav a{color:var(--fs-ink); text-shadow:none;}
+  html:not(.prelaunch) .lp-nav a:hover{color:var(--fs-orchid);}
+  html:not(.prelaunch) .liquid-glass.lp-cart{background:var(--fs-wash); color:var(--fs-ink);}
+  html:not(.prelaunch) .lp-cart:hover{color:var(--fs-orchid);}
+  html:not(.prelaunch) .lp-logo,html:not(.prelaunch) .lp-mono,html:not(.prelaunch) header.top img.logo{filter:none;}
+
+  /* cover: white page, ink headline, purple italics */
+  html:not(.prelaunch) .lp-cover{background:var(--fs-white); color:var(--fs-ink); text-shadow:none;}
+  html:not(.prelaunch) .lp-cover .lp-rule{color:var(--fs-ink-60); text-shadow:none;}
+  html:not(.prelaunch) .lp-cover .lp-rule.lp-top,html:not(.prelaunch) .lp-cover .lp-rule.lp-bottom{border-color:var(--fs-hair);}
+  html:not(.prelaunch) .lp-h1 i,html:not(.prelaunch) .lp-h1 .lp-arrived{color:var(--fs-orchid);}
+  html:not(.prelaunch) .lp-cover .lp-link{color:var(--fs-ink); text-shadow:none;}
+  html:not(.prelaunch) .lp-cover .lp-link:hover{color:var(--fs-orchid);}
+  html:not(.prelaunch) .lp-btn{background:var(--fs-ink); color:#fff;}
+  html:not(.prelaunch) .lp-btn:hover{background:var(--fs-orchid); color:#fff;}
+
+  /* how it works */
+  html:not(.prelaunch) .lp-h2 .lp-script,html:not(.prelaunch) .lp-step-n{color:var(--fs-orchid);}
+  html:not(.prelaunch) .lp-eyebrow{color:var(--fs-orchid);}
+  html:not(.prelaunch) .lp-aside .lp-link:hover{color:var(--fs-orchid);}
+
+  /* lookbook: the one soft lavender band */
+  html:not(.prelaunch) .lp-look{background:var(--fs-mist); color:var(--fs-ink); text-shadow:none;}
+  html:not(.prelaunch) .lp-look-head{border-bottom-color:var(--fs-hair);}
+  html:not(.prelaunch) .lp-look-head span,html:not(.prelaunch) .lp-look figcaption{color:var(--fs-ink-60); text-shadow:none;}
+  html:not(.prelaunch) .lp-quote span{color:var(--fs-orchid);}
+
+  /* builder page */
+  html:not(.prelaunch) header.top{border-bottom-color:var(--line);}
+  html:not(.prelaunch) header.top .tagline{color:var(--fs-orchid); text-shadow:none;}
+  html:not(.prelaunch) .wrap > footer{border-top-color:var(--line); color:var(--fs-ink-60); text-shadow:none;}
+  html:not(.prelaunch) .summary-list,html:not(.prelaunch) .checkout-note,html:not(.prelaunch) .panel > div > .page-back{text-shadow:none;}
+  html:not(.prelaunch) .summary-list .row{color:var(--fs-ink-60);}
+  html:not(.prelaunch) .summary-list .row span:last-child{color:var(--fs-ink);}
+  html:not(.prelaunch) .summary-list .row.discount span{color:var(--fs-orchid);}
+  html:not(.prelaunch) .checkout-note,html:not(.prelaunch) .page-back{color:var(--fs-ink-60);}
+  html:not(.prelaunch) .step-head h2,html:not(.prelaunch) .stage-label .style-name,
+  html:not(.prelaunch) .extra-name,html:not(.prelaunch) .tote-name{color:var(--fs-ink);}
+  html:not(.prelaunch) .tier-title .price-each,html:not(.prelaunch) .base-card .price,html:not(.prelaunch) .wait-num{color:var(--fs-orchid);}
+  html:not(.prelaunch) .tier-title .dot{background:var(--fs-orchid);}
+  html:not(.prelaunch) .stage,html:not(.prelaunch) .step,html:not(.prelaunch) .price-bar{border-color:var(--line);}
+  html:not(.prelaunch) .cta{background:var(--fs-ink); color:#fff;}
+  html:not(.prelaunch) .cta:hover{background:var(--fs-orchid); color:#fff;}
+  html:not(.prelaunch) a.cta.checkout{background:#fff; color:var(--fs-ink); border:1px solid var(--fs-ink);}
+  html:not(.prelaunch) a.cta.checkout:hover{background:var(--fs-ink); color:#fff;}
+  html:not(.prelaunch) .perk{background:var(--fs-mist); border-color:var(--line);}
+
+  /* waitlist band inside the full site: Cormorant, softer lavender */
+  html:not(.prelaunch) .lp-wait{--w-serif:"Cormorant Garamond",Garamond,"Times New Roman",serif; --w-orchid:#A877D6; --w-orchid-deep:#8A5BB8; background:var(--fs-mist)!important;}
+</style>
 </head>
 <body>
 <style>
@@ -668,7 +736,7 @@
   <section class="lp-hero">
     <header class="lp-header">
       <div class="lp-header-left">
-        <a href="#" aria-label="Peaces Swim home"><img class="lp-logo" src="art/logo-ps-white.png" alt="Peaces Swim"></a>
+        <a href="#" aria-label="Peaces Swim home"><img class="lp-logo" src="art/logo-ps.png" alt="Peaces Swim"></a>
         <nav class="lp-nav" aria-label="Main">
           <a href="#design">Design your own</a>
           <a href="#how">How it works</a>
@@ -688,7 +756,7 @@
         <span>November 2026</span>
       </div>
       <div class="lp-cover-main">
-        <img class="lp-mono lp-rise" src="art/logo-ps-white.png" alt="" style="--d:.1s">
+        <img class="lp-mono lp-rise" src="art/logo-ps.png" alt="" style="--d:.1s">
         <h1 class="lp-h1">
           <span class="lp-rise" style="--d:.2s"><i>a</i> NEW</span>
           <span class="lp-rise" style="--d:.32s">ERA <i>of</i></span>
@@ -860,7 +928,7 @@
 
 <div class="wrap" id="builder" hidden>
   <header class="top">
-    <a href="#" aria-label="Back to the Peaces Swim home page"><img class="logo" src="art/logo-ps-white.png" alt="Peaces Swim"></a>
+    <a href="#" aria-label="Back to the Peaces Swim home page"><img class="logo" src="art/logo-ps.png" alt="Peaces Swim"></a>
     <p class="tagline">pick your peaces, design your dream</p>
   </header>
 
