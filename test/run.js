@@ -69,6 +69,14 @@ try {
   assert.equal(mia.emailMarketingConsent.marketingState, "SUBSCRIBED"); assert.equal(mia.smsMarketingConsent, undefined);
   ok("waitlist creates a tagged customer (email yes, SMS no)");
 
+  r = await post("/waitlist", { firstName: "Ana", email: "ana@example.com", phone: "7865550202", sms: true });
+  assert.equal(r.status, 201);
+  assert.equal(db.customers.find((c) => c.email === "ana@example.com").smsMarketingConsent.marketingState, "SUBSCRIBED");
+  ok("ticking the SMS box subscribes a new signup to texts");
+  r = await post("/waitlist", { firstName: "Mia", email: "mia@example.com", phone: "(786) 555-0101", sms: true });
+  assert.equal(r.body.existing, true);
+  assert.equal(mia.smsMarketingConsent.marketingState, "SUBSCRIBED"); ok("ticking the SMS box subscribes an existing customer to texts");
+
   const before = db.customers.length;
   r = await post("/waitlist", { firstName: "Val", email: "val@peacesswim.com", phone: "3055551234" });
   assert.equal(r.body.existing, true); assert.equal(db.customers.length, before);
