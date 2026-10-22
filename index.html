@@ -266,6 +266,9 @@
   .lp-wait input::placeholder{color:rgba(74,52,86,.62);}
   .lp-wait input:focus-visible{background:var(--w-lavender-deep); box-shadow:inset 0 0 0 2px var(--w-orchid);}
   .lp-wait input.bad{box-shadow:inset 0 0 0 2px var(--w-pink);}
+  .lp-wait .lp-check{display:flex; align-items:flex-start; gap:10px; text-align:left; font-size:15px; line-height:1.35; cursor:pointer;}
+  .lp-wait .lp-check input{flex:none; width:20px; height:20px; margin:0; padding:0; border:0; background:var(--w-lavender); cursor:pointer;}
+  .lp-wait .lp-check input:checked{background:var(--w-orchid) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M5 10.5l3.2 3.2L15 7' fill='none' stroke='%23fff' stroke-width='2.2'/%3E%3C/svg%3E") center/100% no-repeat;}
   .lp-wait .lp-hp{position:absolute; left:-9999px; width:1px; height:1px; overflow:hidden;}
   .lp-wait-btn{margin-top:2px; padding:13px 14px; border:0; border-radius:0; background:var(--w-orchid); color:#fff; cursor:pointer;
     font-family:var(--w-serif); font-size:18px; letter-spacing:.04em; transition:background .15s;}
@@ -286,6 +289,7 @@
   }
   .lp-wait .lp-wait-btn,.lp-wait .lp-wait-mark{font-weight:400;}
   .lp-wait form .lp-wait-fine{margin-inline:auto;}
+  .lp-wait label.lp-check{font-weight:500;}
   @media (prefers-reduced-motion:reduce){ .lp-wait-btn{transition:none;} }
 </style>
 <style>
@@ -731,6 +735,7 @@
           <input id="wEmail" name="email" type="email" placeholder="email" autocomplete="email" inputmode="email" required>
           <label class="lp-sr" for="wPhone">Phone number</label>
           <input id="wPhone" name="phone" type="tel" placeholder="phone number" autocomplete="tel" inputmode="tel" required>
+          <label class="lp-check" for="wSms"><input id="wSms" name="sms" type="checkbox"><span>Yes, I agree to receive SMS messages from Peaces</span></label>
           <div class="lp-hp" aria-hidden="true"><label for="wCompany">Company<input id="wCompany" name="company" type="text" tabindex="-1" autocomplete="off"></label></div>
           <p class="lp-wait-err" id="waitErr" role="alert" hidden></p>
           <button class="lp-wait-btn" type="submit" id="waitBtn">sign me up</button>
@@ -1742,7 +1747,7 @@
       btn.disabled=true; btn.textContent="signing you up…";
       try{
         var r=await fetch("api/waitlist",{method:"POST",headers:{"Content-Type":"application/json"},
-          body:JSON.stringify({firstName:first,email:email,phone:phone,company:document.getElementById("wCompany").value})});
+          body:JSON.stringify({firstName:first,email:email,phone:phone,sms:document.getElementById("wSms").checked,company:document.getElementById("wCompany").value})});
         var j={}; try{ j=await r.json(); }catch(x){}
         if(!r.ok) throw new Error(j.error||"Something went wrong. Please try again.");
         form.hidden=true;
