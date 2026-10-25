@@ -371,11 +371,13 @@
 
   /* waitlist band inside the full site: Cormorant, softer lavender */
   html:not(.prelaunch) .lp-wait{--w-serif:"Cormorant Garamond",Garamond,"Times New Roman",serif; --w-orchid:#A877D6; --w-orchid-deep:#8A5BB8; background:var(--fs-mist)!important;}
-  .lp-quick{display:flex; align-items:center; gap:6px;}
-  .lp-quick a{font-size:10px; letter-spacing:.16em; text-transform:uppercase; padding:9px 10px; border:1px solid var(--fs-hair,rgba(46,36,51,.14)); background:var(--fs-wash,#F3E9FC); color:var(--fs-ink,#2E2433); transition:background .2s,color .2s,border-color .2s;}
-  .lp-quick a:hover{background:var(--fs-orchid,#8A5BB8); border-color:var(--fs-orchid,#8A5BB8); color:#fff;}
-  @media (min-width:640px){ .lp-quick{gap:10px;} .lp-quick a{font-size:11px; letter-spacing:.22em; padding:11px 18px;} }
-  @media (max-width:380px){ .lp-quick{gap:4px;} .lp-quick a{letter-spacing:.1em; padding:8px 7px;} }
+  .lp-quick{display:flex; align-items:center; gap:16px;}
+  .lp-quick a{font-size:10px; letter-spacing:.2em; text-transform:uppercase; color:var(--fs-ink,#2E2433); transition:color .2s;}
+  .lp-quick a:hover{color:var(--fs-orchid,#8A5BB8);}
+  @media (min-width:640px){ .lp-quick{gap:28px;} .lp-quick a{font-size:11px; letter-spacing:.22em;} }
+  /* on wide screens the buttons sit over the hero photo, so they go white */
+  @media (min-width:1024px){ .lp-quick a{color:#fff; text-shadow:0 1px 3px rgba(46,36,51,.45),0 0 14px rgba(46,36,51,.35);} .lp-quick a:hover{color:var(--fs-wash,#F3E9FC);} }
+  @media (max-width:380px){ .lp-quick{gap:11px;} .lp-quick a{letter-spacing:.14em;} }
   /* The Peaces Process — product-card rail */
   .pp-rail{position:relative; margin-top:56px;}
   .pp-cards{list-style:none; margin:0; padding:0; display:grid; grid-auto-flow:column; grid-auto-columns:82%; gap:16px; overflow-x:auto; scroll-snap-type:x mandatory; scrollbar-width:none;}
@@ -765,12 +767,6 @@
     <header class="lp-header">
       <div class="lp-header-left">
         <a href="#" aria-label="Peaces Swim home"><img class="lp-logo" src="art/logo-ps.png" alt="Peaces Swim"></a>
-        <nav class="lp-nav" aria-label="Main">
-          <a href="#design">Design your own</a>
-          <a href="#how">How it works</a>
-          <a href="#making">The making of</a>
-          <a href="#waitlist">Join the waitlist</a>
-        </nav>
       </div>
       <nav class="lp-quick" aria-label="Shortcuts">
         <a href="#design">Design</a>
