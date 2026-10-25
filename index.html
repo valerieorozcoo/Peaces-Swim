@@ -683,7 +683,7 @@
     box-shadow:0 24px 60px -24px rgba(70,30,55,.55); text-align:center;
     display:grid; animation:gate-rise .45s cubic-bezier(.22,1,.36,1) both;}
   .gate-body{padding:28px 26px 24px;}
-  .gate-photo{display:none; background:url("art2/hero.jpg") center/cover no-repeat;}
+  .gate-photo{display:block; height:190px; background:url("photos/waitlist.jpg") 50% 62%/cover no-repeat;}
   .gate-close{position:absolute; top:6px; right:8px; z-index:1; width:36px; height:36px; padding:0;
     background:none; border:0; cursor:pointer; color:var(--ink-soft); font-size:26px; line-height:1; font-family:inherit;}
   .gate-card:focus{outline:none;}
@@ -691,7 +691,7 @@
   .gate-close:focus-visible{outline:2px solid var(--pink); outline-offset:-2px;}
   @media (min-width:720px){
     .gate-card{max-width:780px; grid-template-columns:1fr 1fr;}
-    .gate-photo{display:block; min-height:520px;}
+    .gate-photo{display:block; height:auto; min-height:520px; background-position:50% 40%;}
     .gate-body{padding:40px 34px 30px; display:flex; flex-direction:column; justify-content:center;}
   }
   @keyframes gate-fade{from{opacity:0;}}
