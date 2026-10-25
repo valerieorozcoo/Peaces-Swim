@@ -371,6 +371,11 @@
 
   /* waitlist band inside the full site: Cormorant, softer lavender */
   html:not(.prelaunch) .lp-wait{--w-serif:"Cormorant Garamond",Garamond,"Times New Roman",serif; --w-orchid:#A877D6; --w-orchid-deep:#8A5BB8; background:var(--fs-mist)!important;}
+  .lp-quick{display:flex; align-items:center; gap:6px;}
+  .lp-quick a{font-size:10px; letter-spacing:.16em; text-transform:uppercase; padding:9px 10px; border:1px solid var(--fs-hair,rgba(46,36,51,.14)); background:var(--fs-wash,#F3E9FC); color:var(--fs-ink,#2E2433); transition:background .2s,color .2s,border-color .2s;}
+  .lp-quick a:hover{background:var(--fs-orchid,#8A5BB8); border-color:var(--fs-orchid,#8A5BB8); color:#fff;}
+  @media (min-width:640px){ .lp-quick{gap:10px;} .lp-quick a{font-size:11px; letter-spacing:.22em; padding:11px 18px;} }
+  @media (max-width:380px){ .lp-quick{gap:4px;} .lp-quick a{letter-spacing:.1em; padding:8px 7px;} }
 </style>
 </head>
 <body>
@@ -419,7 +424,7 @@
     font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-soft); padding-bottom:10px;
   }
   .stage-label .style-name{font-family:var(--lp-script); font-style:italic; font-size:21px; text-transform:none; letter-spacing:0; color:var(--pink);}
-  .rig{display:flex; flex-direction:column; align-items:center; gap:10px; --u:0.33%;}
+  .rig{display:flex; flex-direction:column; align-items:center; gap:10px; --u:0.27%;}
   .piece{position:relative;}
   .piece .layer{position:absolute; inset:0; -webkit-mask-size:100% 100%; mask-size:100% 100%; -webkit-mask-repeat:no-repeat; mask-repeat:no-repeat;}
   .piece .fill{background:var(--fabric,#8A9A6E);}
@@ -429,7 +434,9 @@
     background-size:74px 74px;
   }
   .piece .laceover{background-image:url("art2/lace-seamless.png"); background-size:52px 52px; opacity:.92;}
-  .piece .lines{background:var(--sketch); opacity:.85;}
+  .piece .lines{background:var(--sketch); opacity:.35;}
+  .piece{isolation:isolate;}
+  .piece .shade{background-size:100% 100%; background-repeat:no-repeat; mix-blend-mode:multiply;}
   .piece .deco{position:absolute; inset:0; width:100%; height:100%; overflow:visible;}
   .piece img.sizer{display:block; width:100%; height:auto; visibility:hidden;}
   .size-chip{
@@ -744,9 +751,12 @@
           <a href="#waitlist">Join the waitlist</a>
         </nav>
       </div>
-      <a class="liquid-glass lp-cart" href="#design" aria-label="Your bag">
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 10a4 4 0 0 1-8 0"/><path d="M3.103 6.034h17.794"/><path d="M3.4 5.467a2 2 0 0 0-.4 1.2V20a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6.667a2 2 0 0 0-.4-1.2l-2-2.667A2 2 0 0 0 17 2H7a2 2 0 0 0-1.6.8z"/></svg>
-      </a>
+      <nav class="lp-quick" aria-label="Shortcuts">
+        <a href="#design">Design</a>
+        <a href="#how">Process</a>
+        <a href="#making">About</a>
+        <a href="#" id="accountBtn">Account</a>
+      </nav>
     </header>
 
     <!-- Cover page, set like the Vol. 01 poster -->
@@ -775,8 +785,8 @@
     </div>
 
     <div class="lp-shot">
-      <img src="photos/lifeguard-tower.jpg" alt="Two women in aqua and coral bikinis waving from a mint lifeguard tower" fetchpriority="high">
-      <span class="lp-fig lp-label">Fig. 01 — Tower no. 8</span>
+      <img src="photos/couch-posters.jpg" alt="Two women upside down on a fuzzy couch holding Peaces Swim posters that read a new era of swimwear has arrived" fetchpriority="high" style="object-position:50% 45%">
+      <span class="lp-fig lp-label">Fig. 01 — A new era</span>
     </div>
   </section>
 
@@ -1130,7 +1140,7 @@
     top:{
       triangle:{art:"b-triangle-top", name:"Triangle top", desc:"Classic triangle cups with neck ties.", family:"triangle", ties:true,  ruffle:'1″',
         addons:["extTies","ruffles","laceTrim","laceOver","bows","roses","beads","buttons","initials","charmsB","charmsP","connectors"]},
-      underwire:{art:"b-underwire-top", name:"Bralette top", desc:"Structured cups with set straps.", family:"underwire", ties:true, ruffle:'½″',
+      underwire:{art:"b-underwire-top", name:"Bralette top", desc:"Twist-front bandeau with halter ties.", family:"underwire", ties:true, ruffle:'½″',
         addons:["extTies","laceTrim","laceOver","bows","roses","buttons","initials","charmsB","charmsP"]}
     },
     bottom:{
@@ -1208,28 +1218,12 @@
     initials:"VAL", perk:false
   };
 
-  /* geometry measured from the watercolor flats, in artwork pixels */
+  /* geometry measured from the photo cut-outs (3x the source photo), in artwork pixels */
   var GEO={
-    "b-triangle-top":{w:310,h:218,
-      strapL:[60,4],strapR:[246,4], junctionL:[56,84],junctionR:[250,78],
-      strapRunL:[[60,10],[56,74]], strapRunR:[[246,10],[250,70]],
-      outerL:[12,188],outerR:[298,188], center:[155,190], centerHigh:[155,180],
-      trimSegs:[[58,86,148,186],[162,186,248,80]]},
-    "b-triangle-bottom":{w:280,h:186,
-      hipL:[14,16],hipR:[266,14], tieTopL:[9,5],tieTopR:[264,5],
-      strapRunL:[[12,8],[16,34]], strapRunR:[[266,8],[262,34]],
-      center:[140,26], mono:[140,100],
-      trimSegs:[[16,10,140,27],[140,27,264,8]]},
-    "b-underwire-top":{w:284,h:224,
-      strapL:[46,4],strapR:[238,4], junctionL:[58,104],junctionR:[216,106],
-      strapRunL:[[46,10],[58,96]], strapRunR:[[238,10],[226,96]],
-      outerL:[12,155],outerR:[272,156], center:[142,170], centerHigh:[142,160],
-      trimSegs:[[62,106,140,166],[144,166,212,110]]},
-    "b-seamless-bottom":{w:281,h:182,
-      hipL:[12,18],hipR:[268,16], tieTopL:[16,4],tieTopR:[264,4],
-      strapRunL:[[14,8],[18,34]], strapRunR:[[266,8],[262,34]],
-      center:[140,20], mono:[140,96],
-      trimSegs:[[16,8,140,21],[140,21,266,8]]}
+    "b-triangle-top":{"w":366,"h":306,"strapL":[111,6],"strapR":[231,6],"junctionL":[90,159],"junctionR":[255,174],"strapRunL":[[111,12],[92,150]],"strapRunR":[[231,12],[253,165]],"outerL":[30,285],"outerR":[327,285],"center":[180,264],"centerHigh":[180,252],"trimSegs":[[92,162,158,266],[210,266,256,176]]},
+    "b-triangle-bottom":{"w":366,"h":192,"hipL":[12,24],"hipR":[354,12],"tieTopL":[6,21],"tieTopR":[360,9],"strapRunL":[[12,24],[85,82]],"strapRunR":[[354,12],[278,80]],"center":[183,90],"mono":[189,125],"trimSegs":[[82,82,183,92],[183,92,282,80]]},
+    "b-underwire-top":{"w":285,"h":258,"strapL":[75,6],"strapR":[201,6],"junctionL":[27,186],"junctionR":[255,186],"strapRunL":[[75,12],[30,180]],"strapRunR":[[201,12],[252,180]],"outerL":[27,204],"outerR":[258,204],"center":[147,210],"centerHigh":[147,192],"trimSegs":[[27,162,147,195],[147,195,255,162]]},
+    "b-seamless-bottom":{"w":330,"h":162,"hipL":[30,30],"hipR":[298,28],"tieTopL":[28,24],"tieTopR":[300,22],"strapRunL":[[30,30],[38,70]],"strapRunR":[[298,28],[292,70]],"center":[165,40],"mono":[165,84],"trimSegs":[[30,30,165,40],[165,40,298,28]]}
   };
 
   function fmt(n){ return "$"+n.toFixed(2); }
@@ -1295,6 +1289,7 @@
       var lo=layer("laceover",silUrl);
       lo.style.backgroundImage='url("art2/lace-tile-'+variantOf("laceOver")+'.png")';
     }
+    var sh=layer("shade",silUrl); sh.style.backgroundImage='url("art2/'+artName+'-shade.png")';
     layer("lines",'url("art2/'+artName+'-line.png")');
     if(!opts.thumb){
       var svg=el("svg",{class:"deco",viewBox:"0 0 "+g.w+" "+g.h,"aria-hidden":"true"});
@@ -1700,6 +1695,7 @@
     if(location.hash==="#design") showBuilder(); else location.hash="design";
   }
   document.getElementById("gateClose").addEventListener("click",closeGate);
+  document.getElementById("accountBtn").addEventListener("click",function(e){ e.preventDefault(); openGate(); });
   gate.addEventListener("click",function(e){ if(e.target===gate) closeGate(); });
   document.addEventListener("keydown",function(e){ if(e.key==="Escape") closeGate(); });
 
