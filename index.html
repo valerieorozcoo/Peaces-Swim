@@ -440,6 +440,14 @@
   @media (min-width:1536px){ html .lp-vid .lp-h1{font-size:96px;} }
   /* waitlist hidden on the full site for now (still used by the pre-launch page) */
   html:not(.prelaunch) #waitlist,html:not(.prelaunch) .lp-cover a[href="#waitlist"]{display:none!important;}
+  /* white header bar under the purple strip; video starts below it */
+  html .lp-vid .lp-header{position:relative; background:#fff; padding:12px 20px; border-bottom:1px solid var(--fs-hair,rgba(46,36,51,.14));}
+  html .lp-vid .lp-quick a{color:var(--fs-ink,#2E2433); text-shadow:none;}
+  html .lp-vid .lp-quick a:hover{color:var(--fs-orchid,#8A5BB8);}
+  html .lp-vid .lp-cover{overflow:hidden; min-height:calc(100svh - 36px - 73px); padding-top:40px;}
+  .lp-vid .lp-bgvid{z-index:-1;}
+  html .lp-vid .lp-cover{isolation:isolate;}
+  @media (min-width:768px){ html .lp-vid .lp-header{padding:14px 40px;} html .lp-vid .lp-cover{min-height:calc(100svh - 36px - 85px); padding-top:56px;} }
 </style>
 </head>
 <body>
@@ -805,12 +813,6 @@
 
 <div id="landing" class="lp">
   <section class="lp-hero lp-vid">
-    <div class="lp-bgvid" aria-hidden="true">
-      <!-- Drop the clip in as photos/hero.mp4; until then the still frame shows. -->
-      <video autoplay muted loop playsinline preload="auto" poster="photos/hero-poster.jpg">
-        <source src="photos/hero.mp4" type="video/mp4">
-      </video>
-    </div>
     <header class="lp-header">
       <div class="lp-header-left">
         <a href="#" aria-label="Peaces Swim home"><img class="lp-logo" src="art/logo-ps.png" alt="Peaces Swim"></a>
@@ -825,6 +827,12 @@
 
     <!-- Cover page, set like the Vol. 01 poster -->
     <div class="lp-cover">
+      <div class="lp-bgvid" aria-hidden="true">
+        <!-- Drop the clip in as photos/hero.mp4; until then the still frame shows. -->
+        <video autoplay muted loop playsinline preload="auto" poster="photos/hero-poster.jpg">
+          <source src="photos/hero.mp4" type="video/mp4">
+        </video>
+      </div>
       <div class="lp-cover-main">
         <h1 class="lp-h1 lp-rise" style="--d:.15s"><i>a</i> NEW ERA <i>of</i> swimwear <span class="lp-arrived">has arrived</span></h1>
         <div class="lp-actions lp-rise" style="--d:.75s">
