@@ -376,6 +376,21 @@
   .lp-quick a:hover{background:var(--fs-orchid,#8A5BB8); border-color:var(--fs-orchid,#8A5BB8); color:#fff;}
   @media (min-width:640px){ .lp-quick{gap:10px;} .lp-quick a{font-size:11px; letter-spacing:.22em; padding:11px 18px;} }
   @media (max-width:380px){ .lp-quick{gap:4px;} .lp-quick a{letter-spacing:.1em; padding:8px 7px;} }
+  /* The Peaces Process — product-card rail */
+  .pp-rail{position:relative; margin-top:56px;}
+  .pp-cards{list-style:none; margin:0; padding:0; display:grid; grid-auto-flow:column; grid-auto-columns:82%; gap:16px; overflow-x:auto; scroll-snap-type:x mandatory; scrollbar-width:none;}
+  .pp-cards::-webkit-scrollbar{display:none;}
+  .pp-card{position:relative; scroll-snap-align:start; aspect-ratio:4/5; background:var(--fs-mist,#FAF6FE); overflow:hidden; display:flex; flex-direction:column;}
+  .pp-text{position:relative; z-index:1; padding:18px 18px 14px;}
+  .pp-card h3{font-family:var(--lp-display); font-weight:500; font-size:34px; line-height:1.02; letter-spacing:-.01em; color:var(--fs-ink,#2E2433);}
+  .pp-n{color:var(--fs-orchid,#8A5BB8);}
+  .pp-card p{margin-top:10px; font-size:15px; line-height:1.45; color:var(--fs-ink-60,rgba(46,36,51,.62)); max-width:260px;}
+  .pp-card img{flex:1; min-height:0; width:100%; max-width:none; object-fit:cover; transition:transform 1.2s ease-out;}
+  .pp-card:hover img{transform:scale(1.04);}
+  .pp-next{position:absolute; right:-6px; top:50%; transform:translateY(-50%); width:56px; height:56px; border-radius:999px; border:0; background:var(--fs-ink,#2E2433); color:#fff; display:grid; place-items:center; cursor:pointer; transition:background .2s;}
+  .pp-next:hover{background:var(--fs-orchid,#8A5BB8);}
+  @media (min-width:768px){ .pp-cards{grid-auto-columns:calc((100% - 32px)/2.4);} .pp-card h3{font-size:40px;} }
+  @media (min-width:1100px){ .pp-rail{margin-top:80px;} .pp-cards{grid-auto-flow:row; grid-template-columns:repeat(4,1fr); overflow:visible;} .pp-next{display:none;} .pp-card{aspect-ratio:3/4.3;} .pp-card h3{font-size:clamp(34px,3.1vw,46px);} }
 </style>
 </head>
 <body>
@@ -827,38 +842,35 @@
     <div class="lp-container">
       <div class="lp-how-head">
         <div class="lp-how-title lp-reveal">
-          <p class="lp-eyebrow lp-label">How it works</p>
-          <h2 class="lp-h2">Pick your peaces,<span class="lp-script">design your dream.</span></h2>
+          <h2 class="lp-h2">The Peaces Process:<span class="lp-script">Design Your Dream</span></h2>
         </div>
         <div class="lp-aside lp-reveal">
-          <p>Every Peaces bikini starts on your screen and ends on our sewing table. Three steps, and it's entirely yours.</p>
+          <p>Every Peaces bikini starts on your screen and ends on our sewing table. Four steps, and it's entirely yours.</p>
           <a class="lp-link" href="#design">Start designing</a>
         </div>
       </div>
 
-      <ol class="lp-steps">
-        <li class="lp-step lp-reveal">
-          <div class="lp-step-img"><img src="photos/flatlay.jpg" alt="Mint and leopard bikini pieces laid out on a pink table with confetti" loading="lazy" style="object-position:55% 50%"></div>
-          <div class="lp-step-meta">
-            <span class="lp-step-n">01</span>
-            <div><h3>Pick your peaces</h3><p>Start with a top and a bottom: triangle, underwire or seamless, in the colors you love.</p></div>
-          </div>
-        </li>
-        <li class="lp-step lp-reveal" style="--d:.12s">
-          <div class="lp-step-img"><img src="photos/styling-overhead.jpg" alt="Hands arranging mint bikini ties among rhinestones and confetti" loading="lazy"></div>
-          <div class="lp-step-meta">
-            <span class="lp-step-n">02</span>
-            <div><h3>Make them yours</h3><p>Layer on lace, ruffles, bows and extra-long ties, then finish with charms and beads.</p></div>
-          </div>
-        </li>
-        <li class="lp-step lp-reveal" style="--d:.24s">
-          <div class="lp-step-img"><img src="photos/sewing-closeup.jpg" alt="A mint bikini being sewn on a pink jeweled sewing machine" loading="lazy" style="object-position:40% 50%"></div>
-          <div class="lp-step-meta">
-            <span class="lp-step-n">03</span>
-            <div><h3>We sew, you swim</h3><p>Your design is sewn to order in Miami. Wait and watch, or pick it up later.</p></div>
-          </div>
-        </li>
-      </ol>
+      <div class="pp-rail">
+        <ol class="pp-cards" id="ppCards">
+          <li class="pp-card lp-reveal">
+            <div class="pp-text"><h3><span class="pp-n">1.</span> Pick your base</h3><p>A top and a bottom: triangle, bralette or seamless, in the colors you love.</p></div>
+            <img src="photos/flatlay.jpg" alt="Mint and leopard bikini pieces laid out on a pink table with confetti" loading="lazy" style="object-position:55% 50%">
+          </li>
+          <li class="pp-card lp-reveal" style="--d:.08s">
+            <div class="pp-text"><h3><span class="pp-n">2.</span> Choose your add-ons</h3><p>Lace, ruffles, bows, extra-long ties, charms and beads.</p></div>
+            <img src="photos/styling-overhead.jpg" alt="Hands arranging mint bikini ties among rhinestones and confetti" loading="lazy">
+          </li>
+          <li class="pp-card lp-reveal" style="--d:.16s">
+            <div class="pp-text"><h3><span class="pp-n">3.</span> Watch it come to life</h3><p>Sewn to order in Miami. Wait and watch, or pick it up later.</p></div>
+            <img src="photos/sewing-closeup.jpg" alt="A mint bikini being sewn on a pink jeweled sewing machine" loading="lazy" style="object-position:40% 50%">
+          </li>
+          <li class="pp-card lp-reveal" style="--d:.24s">
+            <div class="pp-text"><h3><span class="pp-n">4.</span> Wear your perfect peace</h3><p>Made for you, and only you. See you on the sand.</p></div>
+            <img src="photos/lifeguard-tower.jpg" alt="Two women in aqua and coral bikinis waving from a mint lifeguard tower" loading="lazy" style="object-position:36% 50%">
+          </li>
+        </ol>
+        <button class="pp-next" type="button" aria-label="Next step" id="ppNext"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+      </div>
     </div>
   </section>
 
@@ -1695,6 +1707,11 @@
     if(location.hash==="#design") showBuilder(); else location.hash="design";
   }
   document.getElementById("gateClose").addEventListener("click",closeGate);
+  document.getElementById("ppNext").addEventListener("click",function(){
+    var r=document.getElementById("ppCards"), c=r.querySelector(".pp-card");
+    var step=c.getBoundingClientRect().width+16;
+    if(r.scrollLeft+r.clientWidth>=r.scrollWidth-4) r.scrollTo({left:0,behavior:"smooth"}); else r.scrollBy({left:step,behavior:"smooth"});
+  });
   document.getElementById("accountBtn").addEventListener("click",function(e){ e.preventDefault(); openGate(); });
   gate.addEventListener("click",function(e){ if(e.target===gate) closeGate(); });
   document.addEventListener("keydown",function(e){ if(e.key==="Escape") closeGate(); });
