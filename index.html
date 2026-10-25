@@ -438,6 +438,8 @@
   @media (min-width:768px){ html .lp-vid .lp-h1{font-size:7.4vw;} }
   @media (min-width:1024px){ html .lp-vid .lp-h1{font-size:6.2vw; white-space:nowrap;} .lp-vid .lp-cover{padding-top:120px;} }
   @media (min-width:1536px){ html .lp-vid .lp-h1{font-size:96px;} }
+  /* waitlist hidden on the full site for now (still used by the pre-launch page) */
+  html:not(.prelaunch) #waitlist,html:not(.prelaunch) .lp-cover a[href="#waitlist"]{display:none!important;}
 </style>
 </head>
 <body>
