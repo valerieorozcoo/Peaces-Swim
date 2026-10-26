@@ -828,10 +828,8 @@
     <!-- Cover page, set like the Vol. 01 poster -->
     <div class="lp-cover">
       <div class="lp-bgvid" aria-hidden="true">
-        <!-- Drop the clip in as photos/hero.mp4; until then the still frame shows. -->
-        <video autoplay muted loop playsinline preload="auto" poster="photos/hero-poster.jpg">
-          <source src="photos/hero.mp4" type="video/mp4">
-        </video>
+        <!-- Looping montage made with Remotion (hero-video/): wide cut for computers, tall cut for phones. -->
+        <video id="heroVid" autoplay muted loop playsinline preload="auto" disablepictureinpicture poster="photos/hero-poster.jpg"></video>
       </div>
       <div class="lp-cover-main">
         <h1 class="lp-h1 lp-rise" style="--d:.15s"><i>a</i> NEW ERA <i>of</i> swimwear <span class="lp-arrived">has arrived</span></h1>
@@ -1751,6 +1749,20 @@
       if(t.scrollLeft+t.clientWidth>=t.scrollWidth-4) t.scrollTo({left:0}); else t.scrollBy({left:step()}); });
     document.querySelector(".ig-prev").addEventListener("click",function(){
       if(t.scrollLeft<=4) t.scrollTo({left:t.scrollWidth}); else t.scrollBy({left:-step()}); });
+  })();
+  /* hero video: pick the wide or tall cut, and keep it looping forever */
+  (function(){
+    var v=document.getElementById("heroVid"); if(!v) return;
+    var tall=window.matchMedia("(max-aspect-ratio: 4/5)").matches;
+    var ext=v.canPlayType('video/mp4; codecs="avc1.42E01E"')?".mp4":".webm";
+    v.src="photos/hero-loop-"+(tall?"tall":"wide")+ext;
+    v.muted=true; v.loop=true;
+    function go(){ var p=v.play(); if(p&&p.catch) p.catch(function(){}); }
+    v.addEventListener("ended",function(){ v.currentTime=0; go(); });
+    v.addEventListener("pause",function(){ if(!document.hidden) setTimeout(go,200); });
+    document.addEventListener("visibilitychange",function(){ if(!document.hidden) go(); });
+    ["touchstart","click"].forEach(function(e){ document.addEventListener(e,go,{once:true,passive:true}); });
+    go();
   })();
   document.getElementById("accountBtn").addEventListener("click",function(e){ e.preventDefault(); openGate(); });
   gate.addEventListener("click",function(e){ if(e.target===gate) closeGate(); });
