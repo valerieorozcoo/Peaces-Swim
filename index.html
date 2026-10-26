@@ -828,8 +828,8 @@
     <!-- Cover page, set like the Vol. 01 poster -->
     <div class="lp-cover">
       <div class="lp-bgvid" aria-hidden="true">
-        <!-- Looping montage made with Remotion (hero-video/): wide cut for computers, tall cut for phones. -->
-        <video id="heroVid" autoplay muted loop playsinline preload="auto" disablepictureinpicture poster="photos/hero-poster.jpg"></video>
+        <!-- "Peaces Drop Video", re-cut so the end fades into the start and it loops with no jump. -->
+        <video id="heroVid" autoplay muted loop playsinline preload="auto" disablepictureinpicture poster="photos/hero-drop-poster.jpg"></video>
       </div>
       <div class="lp-cover-main">
         <h1 class="lp-h1 lp-rise" style="--d:.15s"><i>a</i> NEW ERA <i>of</i> swimwear <span class="lp-arrived">has arrived</span></h1>
@@ -1753,9 +1753,8 @@
   /* hero video: pick the wide or tall cut, and keep it looping forever */
   (function(){
     var v=document.getElementById("heroVid"); if(!v) return;
-    var tall=window.matchMedia("(max-aspect-ratio: 4/5)").matches;
     var ext=v.canPlayType('video/mp4; codecs="avc1.42E01E"')?".mp4":".webm";
-    v.src="photos/hero-loop-"+(tall?"tall":"wide")+ext;
+    v.src="photos/hero-drop"+ext;
     v.muted=true; v.loop=true;
     function go(){ var p=v.play(); if(p&&p.catch) p.catch(function(){}); }
     v.addEventListener("ended",function(){ v.currentTime=0; go(); });
