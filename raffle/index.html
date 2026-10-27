@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Peaces Swim — Enter our raffle</title>
+<meta name="description" content="Enter the Peaces Swim raffle for a free customized Peaces bikini, made in Miami.">
+<link rel="icon" type="image/png" href="/art/logo-ps.png">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pinyon+Script&display=swap">
+<style>
+  :root{color-scheme:light;}
+  html,body{margin:0; background:#fff;}
+  img{max-width:100%;}
+  [hidden]{display:none!important;}
+  *,*::before,*::after{box-sizing:border-box;}
+  html,body{height:100%;}
+  #raffle{min-height:100%; min-height:100svh; box-sizing:border-box;}
+  .lp-wait .lp-req{font-style:normal; opacity:.75; white-space:nowrap;}
+  .lp-wait .lp-check.bad input{box-shadow:inset 0 0 0 2px var(--w-pink);}
+  .lp-wait-fine a,.lp-wait-copy a{color:inherit;}
+  @media (max-width:819px){ .lp-wait{place-items:start center;} .lp-wait-card{min-height:100svh;} }
+</style>
+<style>
+  /* ================= Waitlist (#waitlist) =================
+     Phone: photo with the white script logo + launch line on top, white sign-up panel below.
+     Desktop: the same card side by side (photo left, sign-up right) on a lavender backdrop. */
+  .lp-wait{
+    --w-lavender:#efddfd; --w-lavender-deep:#e6cdfb; --w-orchid:#d094f9; --w-orchid-deep:#bf78f2;
+    --w-pink:#e75297; --w-ink:#4a3456; --w-serif:"Times New Roman",Times,serif;
+    --w-script:"Pinyon Script","Snell Roundhand","Apple Chancery",cursive;
+    background:#fff; color:var(--w-ink); font-family:var(--w-serif); font-weight:400;
+    display:grid; place-items:center;
+  }
+  .lp-wait-card{width:100%; max-width:440px; background:#fff; display:flex; flex-direction:column;}
+  .lp-wait-photo{position:relative; margin:0; aspect-ratio:4/5; overflow:hidden;}
+  .lp-wait-photo img{width:100%; height:100%; max-width:none; object-fit:cover; object-position:50% 55%; display:block;}
+  .lp-wait-photo::after{content:""; position:absolute; inset:0; pointer-events:none;
+    background:linear-gradient(to bottom,rgba(74,52,86,.38) 0%,rgba(74,52,86,.12) 38%,rgba(74,52,86,0) 60%);}
+  .lp-wait-overlay{position:absolute; inset:0 0 auto 0; z-index:1; padding:9% 20px 0; text-align:center; color:#fff;
+    display:flex; flex-direction:column; align-items:center; gap:10px;}
+  .lp-wait-h{margin:0; line-height:0; width:88%; max-width:380px;}
+  .lp-wait-h img{width:100%; height:auto; display:block; filter:drop-shadow(0 2px 10px rgba(74,52,86,.4));}
+  .lp-wait-pitch{margin:0; font-size:clamp(15px,4vw,18px); line-height:1.35; letter-spacing:.08em; text-transform:uppercase;
+    max-width:28ch; text-wrap:balance; text-shadow:0 1px 8px rgba(74,52,86,.45);}
+  .lp-wait-panel{flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:16px;
+    padding:26px 24px 30px; text-align:center; background:#fff;}
+  .lp-wait-mark{display:none;}
+  .lp-wait form{width:100%; max-width:320px; display:flex; flex-direction:column; gap:12px;}
+  .lp-wait .lp-sr{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap;}
+  .lp-wait input{width:100%; border:0; border-radius:0; background:var(--w-lavender); color:var(--w-ink);
+    font-family:var(--w-serif); font-size:17px; padding:12px 14px; outline:none; -webkit-appearance:none; appearance:none;}
+  .lp-wait input::placeholder{color:rgba(74,52,86,.62);}
+  .lp-wait input:focus-visible{background:var(--w-lavender-deep); box-shadow:inset 0 0 0 2px var(--w-orchid);}
+  .lp-wait input.bad{box-shadow:inset 0 0 0 2px var(--w-pink);}
+  .lp-wait .lp-check{display:flex; align-items:flex-start; gap:10px; text-align:left; font-size:15px; line-height:1.35; cursor:pointer;}
+  .lp-wait .lp-check input{flex:none; width:20px; height:20px; margin:0; padding:0; border:0; background:var(--w-lavender); cursor:pointer;}
+  .lp-wait .lp-check input:checked{background:var(--w-orchid) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M5 10.5l3.2 3.2L15 7' fill='none' stroke='%23fff' stroke-width='2.2'/%3E%3C/svg%3E") center/100% no-repeat;}
+  .lp-wait .lp-hp{position:absolute; left:-9999px; width:1px; height:1px; overflow:hidden;}
+  .lp-wait-btn{margin-top:2px; padding:13px 14px; border:0; border-radius:0; background:var(--w-orchid); color:#fff; cursor:pointer;
+    font-family:var(--w-serif); font-size:18px; letter-spacing:.04em; transition:background .15s;}
+  .lp-wait-btn:hover{background:var(--w-orchid-deep);}
+  .lp-wait-btn:disabled{opacity:.7; cursor:wait;}
+  .lp-wait-btn:focus-visible{outline:2px solid var(--w-pink); outline-offset:3px;}
+  .lp-wait-err{margin:0; color:var(--w-pink); font-size:15px; line-height:1.4;}
+  .lp-wait-fine{margin:0; font-size:12.5px; line-height:1.5; opacity:.7; max-width:34ch;}
+  .lp-wait-done{display:flex; flex-direction:column; align-items:center; gap:8px; outline:none;}
+  .lp-wait-thanks{margin:0; font-family:var(--w-script); font-size:44px; line-height:1; color:var(--w-pink);}
+  .lp-wait-done p.lp-wait-copy{margin:0; font-size:17px; letter-spacing:.03em; max-width:30ch;}
+  @media (min-width:820px){
+    .lp-wait{background:var(--w-lavender); padding:40px 32px;}
+    .lp-wait-card{max-width:940px; flex-direction:row; box-shadow:0 24px 60px -28px rgba(120,60,150,.45);}
+    .lp-wait-photo{flex:0 0 52%; aspect-ratio:3/4;}
+    .lp-wait-panel{padding:48px 44px; gap:18px;}
+    .lp-wait-mark{display:block; margin:0 0 4px; font-family:var(--w-script); font-size:52px; line-height:1; color:var(--w-orchid);}
+  }
+  .lp-wait .lp-wait-btn,.lp-wait .lp-wait-mark{font-weight:400;}
+  .lp-wait form .lp-wait-fine{margin-inline:auto;}
+  .lp-wait label.lp-check{font-weight:500;}
+  @media (prefers-reduced-motion:reduce){ .lp-wait-btn{transition:none;} }
+</style>
+<style>
+  .lp-label,.lp-link,.lp-wait label,.lp-wait-btn,.lp-btn{font-weight:600;}
+  .lp-h2 .lp-script,.lp-quote span,.lp-wait-h i,.lp-wait-thanks span{font-style:italic;}
+</style>
+</head>
+<body>
+<main>
+  <section class="lp-wait" id="raffle" aria-labelledby="waitTitle">
+    <div class="lp-wait-card">
+      <figure class="lp-wait-photo">
+        <img src="/photos/waitlist-couch.jpg" width="1100" height="1709" alt="The two Peaces Swim founders upside down on a pink couch in feather slippers, holding XOXO Peaces Swim posters that read a new era of swimwear has arrived">
+        <figcaption class="lp-wait-overlay">
+          <h2 class="lp-wait-h" id="waitTitle"><img src="/art/logo-script-white.png" width="941" height="199" alt="Peaces Swim"></h2>
+          <p class="lp-wait-pitch">Enter our raffle for a free customized Peaces bikini</p>
+        </figcaption>
+      </figure>
+
+      <div class="lp-wait-panel">
+        <p class="lp-wait-mark" aria-hidden="true">Peaces</p>
+        <form id="waitForm" novalidate>
+          <label class="lp-sr" for="wFirst">First name</label>
+          <input id="wFirst" name="firstName" type="text" placeholder="first name" autocomplete="given-name" required>
+          <label class="lp-sr" for="wEmail">Email</label>
+          <input id="wEmail" name="email" type="email" placeholder="email" autocomplete="email" inputmode="email" required>
+          <label class="lp-sr" for="wPhone">Phone number</label>
+          <input id="wPhone" name="phone" type="tel" placeholder="phone number" autocomplete="tel" inputmode="tel" required>
+          <label class="lp-check" for="wSms"><input id="wSms" name="sms" type="checkbox" required><span>Yes, I agree to receive SMS messages from Peaces <em class="lp-req">(required to enter)</em></span></label>
+          <div class="lp-hp" aria-hidden="true"><label for="wCompany">Company<input id="wCompany" name="company" type="text" tabindex="-1" autocomplete="off"></label></div>
+          <p class="lp-wait-err" id="waitErr" role="alert" hidden></p>
+          <button class="lp-wait-btn" type="submit" id="waitBtn">enter the raffle</button>
+          <p class="lp-wait-fine">By entering you agree to get recurring marketing texts and emails from Peaces Swim at the number and email you gave. Msg &amp; data rates may apply. Reply STOP to opt out anytime. No purchase necessary. One winner, announced on <a href="https://www.instagram.com/peacesswim/" target="_blank" rel="noopener">@peacesswim</a>.</p>
+        </form>
+
+        <div class="lp-wait-done" id="waitDone" hidden tabindex="-1">
+          <p class="lp-wait-thanks">xoxo</p>
+          <p class="lp-wait-copy">You&rsquo;re entered! Watch <a href="https://www.instagram.com/peacesswim/" target="_blank" rel="noopener">@peacesswim</a> for the winner. Good luck!</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+<script>
+  // Raffle form: saves the person to Shopify (tagged "raffle-entry") through /api/raffle.
+  (function(){
+    var form=document.getElementById("waitForm"); if(!form) return;
+    var err=document.getElementById("waitErr"), btn=document.getElementById("waitBtn");
+    var f={first:document.getElementById("wFirst"), email:document.getElementById("wEmail"), phone:document.getElementById("wPhone")};
+    function fail(msg,field){ err.textContent=msg; err.hidden=false; if(field){ field.classList.add("bad"); field.focus(); } }
+    form.addEventListener("submit",async function(e){
+      e.preventDefault();
+      Object.keys(f).forEach(function(k){ f[k].classList.remove("bad"); }); document.getElementById("wSms").parentNode.classList.remove("bad");
+      err.hidden=true;
+      var first=f.first.value.trim(), email=f.email.value.trim(), phone=f.phone.value.trim();
+      if(!first) return fail("Please add your first name.",f.first);
+      if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) return fail("That email doesn't look right.",f.email);
+      if(phone.replace(/\D/g,"").length<10) return fail("Please add your phone number, area code included.",f.phone);
+      var sms=document.getElementById("wSms");
+      if(!sms.checked){ sms.parentNode.classList.add("bad"); return fail("Please check the box to agree to texts from Peaces to enter."); }
+      btn.disabled=true; btn.textContent="entering you…";
+      try{
+        var r=await fetch("/api/raffle",{method:"POST",headers:{"Content-Type":"application/json"},
+          body:JSON.stringify({firstName:first,email:email,phone:phone,sms:document.getElementById("wSms").checked,company:document.getElementById("wCompany").value})});
+        var j={}; try{ j=await r.json(); }catch(x){}
+        if(!r.ok) throw new Error(j.error||"Something went wrong. Please try again.");
+        form.hidden=true;
+        var done=document.getElementById("waitDone"); done.hidden=false; done.focus({preventScroll:true});
+      }catch(x){
+        fail(x.message||"Something went wrong. Please try again.");
+      }finally{
+        btn.disabled=false; btn.textContent="enter the raffle";
+      }
+    });
+  })();
+</script>
+</body>
+</html>
