@@ -93,6 +93,21 @@ try {
   r = await post("/waitlist", { firstName: "Bot", email: "bot@spam.com", phone: "3055559999", company: "acme" });
   assert.equal(r.body.ok, true); assert.ok(!db.customers.some((c) => c.email === "bot@spam.com")); ok("spam bots are ignored");
 
+  r = await post("/raffle", { firstName: "Lila", email: "lila@example.com", phone: "7865550303" });
+  assert.equal(r.status, 400); assert.ok(!db.customers.some((c) => c.email === "lila@example.com"));
+  ok("raffle refuses entries that didn't agree to texts");
+  r = await post("/raffle", { firstName: "Lila", email: "lila@example.com", phone: "7865550303", sms: true });
+  assert.equal(r.status, 201);
+  const lila = db.customers.find((c) => c.email === "lila@example.com");
+  assert.deepEqual(lila.tags, ["raffle-entry"]); assert.equal(lila.smsMarketingConsent.marketingState, "SUBSCRIBED");
+  assert.equal(lila.emailMarketingConsent.marketingState, "SUBSCRIBED");
+  ok("raffle creates a customer tagged raffle-entry, subscribed to texts + email");
+  const n2 = db.customers.length;
+  r = await post("/raffle", { firstName: "Mia", email: "mia@example.com", phone: "(786) 555-0101", sms: true });
+  assert.equal(r.body.existing, true); assert.equal(db.customers.length, n2);
+  assert.ok(mia.tags.includes("waitlist") && mia.tags.includes("raffle-entry"));
+  ok("waitlist customer who enters the raffle keeps both tags, no duplicate");
+
   assert.equal(db.tokenCalls, 1); ok("access token fetched once and cached");
   console.log(`\nAll ${n} checks passed.`);
 } finally { s1.close(); s2.close(); }
