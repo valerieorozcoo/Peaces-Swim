@@ -1214,7 +1214,7 @@
 
   /* family: which silhouettes a fabric is cut for. "both" = available on either. */
   var COLORS=[
-    {id:"green",  name:"Light Green", fill:"#B2D183", family:"triangle"},
+    {id:"green",  name:"Mint", fill:"#93D1BF", family:"triangle"},
     {id:"cheetah",name:"Cheetah",     fill:"leopard", family:"triangle"},
     {id:"teal",   name:"Teal",        fill:"#5FD6D2", family:"underwire"},
     {id:"coral",  name:"Coral",       fill:"#F4785F", family:"underwire"}
@@ -1289,8 +1289,8 @@
   /* back views (photo cut-outs) for the styles that have one */
   var BACK={"b-underwire-top":{w:313,h:377},"b-seamless-bottom":{w:320,h:217},
             "b-triangle-top":{w:431,h:554,k:0.83},"b-triangle-bottom":{w:459,h:307,k:0.83}};
-  /* the triangle set has a real cheetah-print photo, used instead of the pattern tile */
-  var CHEETAH_PHOTO={"b-triangle-top":1,"b-triangle-bottom":1};
+  /* the triangle set is shown from the real product photos (exact mint + cheetah), not recoloured */
+  var PHOTO={"b-triangle-top":{green:"mint",cheetah:"cheetah"},"b-triangle-bottom":{green:"mint",cheetah:"cheetah"}};
   function fmt(n){ return "$"+n.toFixed(2); }
   function colorDef(id){ return COLORS.filter(function(c){return c.id===id;})[0]||COLORS[0]; }
   function styleOf(part){ return STYLES[part][part==="top"?state.topStyle:state.bottomStyle]; }
@@ -1336,7 +1336,7 @@
     var part=partOfArt(artName);
     var col=opts.colorId ? colorDef(opts.colorId) : colorOf(part);
     var hex=col.fill==="leopard" ? "#E2BA84" : col.fill;
-    var realCheetah=col.fill==="leopard" && CHEETAH_PHOTO[artName];
+    var photoKey=PHOTO[artName] && PHOTO[artName][col.id], realCheetah=!!photoKey;
     if(opts.back){ g=BACK[artName]; artName=artName+"-back"; }
     var wrap=document.createElement("div");
     wrap.className="piece"+(col.fill==="leopard"?" leopard":"")+(opts.back?" is-back":"");
@@ -1353,7 +1353,7 @@
     }
     if(realCheetah){
       var ph=document.createElement("img"); ph.className="layer photo"; ph.alt="";
-      ph.src="art2/"+artName+"-cheetah.png"; wrap.appendChild(ph);
+      ph.src="art2/"+artName+"-"+photoKey+".png"; wrap.appendChild(ph);
     } else layer("fill",silUrl);
     if(!opts.thumb && (state.addons.laceOver||state.preview==="laceOver") && allows(part,"laceOver")){
       var lo=layer("laceover",silUrl);
