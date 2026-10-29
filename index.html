@@ -1281,12 +1281,12 @@
   var GEO={
     "b-triangle-top":{"w":366,"h":306,"strapL":[111,6],"strapR":[231,6],"junctionL":[90,159],"junctionR":[255,174],"strapRunL":[[111,12],[92,150]],"strapRunR":[[231,12],[253,165]],"outerL":[30,285],"outerR":[327,285],"center":[180,264],"centerHigh":[180,252],"trimSegs":[[92,162,158,266],[210,266,256,176]]},
     "b-triangle-bottom":{"w":366,"h":192,"hipL":[12,24],"hipR":[354,12],"tieTopL":[6,21],"tieTopR":[360,9],"strapRunL":[[12,24],[85,82]],"strapRunR":[[354,12],[278,80]],"center":[183,90],"mono":[189,125],"trimSegs":[[82,82,183,92],[183,92,282,80]]},
-    "b-underwire-top":{"w":774,"h":760,"k":0.42,"strapL":[237,13],"strapR":[553,20],"junctionL":[73,433],"junctionR":[731,453],"strapRunL":[[225,40],[80,420]],"strapRunR":[[565,45],[720,440]],"outerL":[16,587],"outerR":[747,587],"center":[400,584],"centerHigh":[400,560],"trimSegs":[[80,440,400,565],[400,565,733,456]]},
-    "b-seamless-bottom":{"w":833,"h":407,"k":0.42,"hipL":[30,110],"hipR":[800,100],"tieTopL":[47,20],"tieTopR":[795,45],"strapRunL":[[30,110],[60,190]],"strapRunR":[[800,100],[770,190]],"center":[400,195],"mono":[400,290],"trimSegs":[[30,108,400,193],[400,193,800,95]]}
+    "b-underwire-top":{"w":323,"h":350,"strapL":[140,14],"strapR":[190,14],"junctionL":[40,185],"junctionR":[285,185],"strapRunL":[[130,35],[50,175]],"strapRunR":[[195,35],[278,175]],"outerL":[12,232],"outerR":[312,232],"center":[160,228],"centerHigh":[160,214],"trimSegs":[[8,195,160,218],[160,218,315,192]]},
+    "b-seamless-bottom":{"w":328,"h":217,"hipL":[12,14],"hipR":[316,12],"tieTopL":[10,8],"tieTopR":[318,6],"strapRunL":[[12,14],[20,40]],"strapRunR":[[316,12],[308,40]],"center":[165,36],"mono":[165,95],"trimSegs":[[12,10,165,34],[165,34,315,8]]}
   };
 
   /* back views (photo cut-outs) for the styles that have one */
-  var BACK={"b-underwire-top":{w:716,h:814,k:0.42},"b-seamless-bottom":{w:781,h:427,k:0.42}};
+  var BACK={"b-underwire-top":{w:313,h:377},"b-seamless-bottom":{w:320,h:217}};
   function fmt(n){ return "$"+n.toFixed(2); }
   function colorDef(id){ return COLORS.filter(function(c){return c.id===id;})[0]||COLORS[0]; }
   function styleOf(part){ return STYLES[part][part==="top"?state.topStyle:state.bottomStyle]; }
@@ -1335,7 +1335,7 @@
     if(opts.back){ g=BACK[artName]; artName=artName+"-back"; }
     var wrap=document.createElement("div");
     wrap.className="piece"+(col.fill==="leopard"?" leopard":"")+(opts.back?" is-back":"");
-    wrap.style.width=opts.thumb?"100%":"calc("+(g.w*(g.k||1))+" * var(--u))";
+    wrap.style.width=opts.thumb?"100%":"calc("+g.w+" * var(--u))";
     wrap.style.setProperty("--fabric",hex);
     var sizer=document.createElement("img");
     sizer.className="sizer"; sizer.alt=""; sizer.src="art2/"+artName+"-sil.png";
