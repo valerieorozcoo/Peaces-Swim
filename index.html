@@ -448,6 +448,16 @@
   .lp-vid .lp-bgvid{z-index:-1;}
   html .lp-vid .lp-cover{isolation:isolate;}
   @media (min-width:768px){ html .lp-vid .lp-header{padding:14px 40px;} html .lp-vid .lp-cover{min-height:calc(100svh - 36px - 85px); padding-top:56px;} }
+  /* front / back view switch on the builder stage */
+  .view-toggle{display:flex; flex-wrap:wrap; justify-content:center; align-items:center; gap:6px; margin-top:14px;}
+  .view-toggle button{font-family:var(--lp-sans); font-size:11px; letter-spacing:.2em; text-transform:uppercase; padding:8px 16px; border:1px solid var(--line,#E7DAF3); background:#fff; color:var(--fs-ink,#2E2433); cursor:pointer;}
+  .view-toggle button.on{background:var(--fs-ink,#2E2433); border-color:var(--fs-ink,#2E2433); color:#fff;}
+  .view-toggle .vt-arrow{padding:6px 12px; font-size:18px; letter-spacing:0; line-height:1; border-radius:999px;}
+  .view-toggle .vt-hint{flex-basis:100%; text-align:center; font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--fs-ink-60,rgba(46,36,51,.62));}
+  .rig{touch-action:pan-y; cursor:grab;}
+  .rig.flip{animation:rig-flip .35s ease;}
+  @keyframes rig-flip{from{opacity:.2; transform:translateX(var(--fx,24px));} to{opacity:1; transform:none;}}
+  @media (prefers-reduced-motion:reduce){ .rig.flip{animation:none;} }
 </style>
 </head>
 <body>
@@ -992,6 +1002,13 @@
           <span class="style-name" id="styleName">Triangle, Turquoise</span>
         </div>
         <div class="rig" id="rig"></div>
+        <div class="view-toggle" id="viewToggle" hidden>
+          <button type="button" class="vt-arrow" data-step="-1" aria-label="Show the other side">&#8249;</button>
+          <button type="button" data-view="front" aria-pressed="true">Front</button>
+          <button type="button" data-view="back" aria-pressed="false">Back</button>
+          <button type="button" class="vt-arrow" data-step="1" aria-label="Show the other side">&#8250;</button>
+          <span class="vt-hint">swipe to flip front / back</span>
+        </div>
       </div>
 
       <div class="price-bar">
@@ -1257,17 +1274,19 @@
     topColor:"green", bottomColor:"green",
     sizeTop:"S", sizeBottom:"S", addons:{}, variant:{}, preview:null,
     tote:false, headband:false, fulfil:null, pickupAt:null,
-    initials:"VAL", perk:false
+    initials:"VAL", perk:false, view:"front"
   };
 
   /* geometry measured from the photo cut-outs (3x the source photo), in artwork pixels */
   var GEO={
     "b-triangle-top":{"w":366,"h":306,"strapL":[111,6],"strapR":[231,6],"junctionL":[90,159],"junctionR":[255,174],"strapRunL":[[111,12],[92,150]],"strapRunR":[[231,12],[253,165]],"outerL":[30,285],"outerR":[327,285],"center":[180,264],"centerHigh":[180,252],"trimSegs":[[92,162,158,266],[210,266,256,176]]},
     "b-triangle-bottom":{"w":366,"h":192,"hipL":[12,24],"hipR":[354,12],"tieTopL":[6,21],"tieTopR":[360,9],"strapRunL":[[12,24],[85,82]],"strapRunR":[[354,12],[278,80]],"center":[183,90],"mono":[189,125],"trimSegs":[[82,82,183,92],[183,92,282,80]]},
-    "b-underwire-top":{"w":285,"h":258,"strapL":[75,6],"strapR":[201,6],"junctionL":[27,186],"junctionR":[255,186],"strapRunL":[[75,12],[30,180]],"strapRunR":[[201,12],[252,180]],"outerL":[27,204],"outerR":[258,204],"center":[147,210],"centerHigh":[147,192],"trimSegs":[[27,162,147,195],[147,195,255,162]]},
-    "b-seamless-bottom":{"w":330,"h":162,"hipL":[30,30],"hipR":[298,28],"tieTopL":[28,24],"tieTopR":[300,22],"strapRunL":[[30,30],[38,70]],"strapRunR":[[298,28],[292,70]],"center":[165,40],"mono":[165,84],"trimSegs":[[30,30,165,40],[165,40,298,28]]}
+    "b-underwire-top":{"w":323,"h":350,"strapL":[140,14],"strapR":[190,14],"junctionL":[40,185],"junctionR":[285,185],"strapRunL":[[130,35],[50,175]],"strapRunR":[[195,35],[278,175]],"outerL":[12,232],"outerR":[312,232],"center":[160,228],"centerHigh":[160,214],"trimSegs":[[8,195,160,218],[160,218,315,192]]},
+    "b-seamless-bottom":{"w":328,"h":217,"hipL":[12,14],"hipR":[316,12],"tieTopL":[10,8],"tieTopR":[318,6],"strapRunL":[[12,14],[20,40]],"strapRunR":[[316,12],[308,40]],"center":[165,36],"mono":[165,95],"trimSegs":[[12,10,165,34],[165,34,315,8]]}
   };
 
+  /* back views (photo cut-outs) for the styles that have one */
+  var BACK={"b-underwire-top":{w:313,h:377},"b-seamless-bottom":{w:320,h:217}};
   function fmt(n){ return "$"+n.toFixed(2); }
   function colorDef(id){ return COLORS.filter(function(c){return c.id===id;})[0]||COLORS[0]; }
   function styleOf(part){ return STYLES[part][part==="top"?state.topStyle:state.bottomStyle]; }
@@ -1313,8 +1332,9 @@
     var part=partOfArt(artName);
     var col=opts.colorId ? colorDef(opts.colorId) : colorOf(part);
     var hex=col.fill==="leopard" ? "#E2BA84" : col.fill;
+    if(opts.back){ g=BACK[artName]; artName=artName+"-back"; }
     var wrap=document.createElement("div");
-    wrap.className="piece"+(col.fill==="leopard"?" leopard":"");
+    wrap.className="piece"+(col.fill==="leopard"?" leopard":"")+(opts.back?" is-back":"");
     wrap.style.width=opts.thumb?"100%":"calc("+g.w+" * var(--u))";
     wrap.style.setProperty("--fabric",hex);
     var sizer=document.createElement("img");
@@ -1336,7 +1356,7 @@
     if(!opts.thumb){
       var svg=el("svg",{class:"deco",viewBox:"0 0 "+g.w+" "+g.h,"aria-hidden":"true"});
       wrap.appendChild(svg);
-      decorate(svg,artName,g);
+      if(!opts.back) decorate(svg,artName,g);
       var chip=document.createElement("span");
       chip.className="size-chip";
       chip.textContent=(artName.indexOf("top")>-1?state.sizeTop:state.sizeBottom);
@@ -1430,8 +1450,14 @@
   var rig=document.getElementById("rig");
   function renderRig(){
     rig.innerHTML="";
-    rig.appendChild(makePiece(styleOf("top").art));
-    rig.appendChild(makePiece(styleOf("bottom").art));
+    var ta=styleOf("top").art, ba=styleOf("bottom").art, hasBack=!!(BACK[ta]||BACK[ba]);
+    if(!hasBack) state.view="front";
+    var back=state.view==="back";
+    rig.appendChild(makePiece(ta,{back:back&&!!BACK[ta]}));
+    rig.appendChild(makePiece(ba,{back:back&&!!BACK[ba]}));
+    var vt=document.getElementById("viewToggle");
+    vt.hidden=!hasBack;
+    vt.querySelectorAll("button").forEach(function(b){ var on=b.dataset.view===state.view; b.classList.toggle("on",on); b.setAttribute("aria-pressed",on); });
     document.getElementById("styleName").textContent=
       styleOf("top").name+" · "+styleOf("bottom").name;
     document.getElementById("baseNote").textContent=
@@ -1762,6 +1788,29 @@
     document.addEventListener("visibilitychange",function(){ if(!document.hidden) go(); });
     ["touchstart","click"].forEach(function(e){ document.addEventListener(e,go,{once:true,passive:true}); });
     go();
+  })();
+  /* front / back: buttons, arrows, swipe or drag on the bikini */
+  (function(){
+    var vt=document.getElementById("viewToggle"), r=document.getElementById("rig");
+    function setView(v,dir){
+      if(v===state.view) return;
+      state.view=v; renderRig();
+      r.style.setProperty("--fx",(dir<0?-24:24)+"px");
+      r.classList.remove("flip"); void r.offsetWidth; r.classList.add("flip");
+    }
+    function other(){ return state.view==="back"?"front":"back"; }
+    vt.addEventListener("click",function(e){
+      var b=e.target.closest("button"); if(!b) return;
+      if(b.dataset.view) setView(b.dataset.view, b.dataset.view==="back"?1:-1);
+      else setView(other(), +b.dataset.step);
+    });
+    var x0=null,y0=0;
+    r.addEventListener("pointerdown",function(e){ if(vt.hidden) return; x0=e.clientX; y0=e.clientY; });
+    r.addEventListener("pointerup",function(e){
+      if(x0===null) return; var dx=e.clientX-x0, dy=e.clientY-y0; x0=null;
+      if(Math.abs(dx)>40 && Math.abs(dx)>Math.abs(dy)) setView(other(), dx<0?1:-1);
+    });
+    r.addEventListener("pointercancel",function(){ x0=null; });
   })();
   document.getElementById("accountBtn").addEventListener("click",function(e){ e.preventDefault(); openGate(); });
   gate.addEventListener("click",function(e){ if(e.target===gate) closeGate(); });
