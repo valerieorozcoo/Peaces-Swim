@@ -517,6 +517,7 @@
   }
   .piece .laceover{background-image:url("art2/lace-seamless.png"); background-size:52px 52px; opacity:.92;}
   .piece .lines{background:var(--sketch); opacity:.16;}
+  .piece img.layer.photo{width:100%; height:100%; display:block;}
   .piece{isolation:isolate;}
   .piece .shade{background-size:100% 100%; background-repeat:no-repeat; mix-blend-mode:multiply;}
   .piece .deco{position:absolute; inset:0; width:100%; height:100%; overflow:visible;}
@@ -1279,14 +1280,17 @@
 
   /* geometry measured from the photo cut-outs (3x the source photo), in artwork pixels */
   var GEO={
-    "b-triangle-top":{"w":366,"h":306,"strapL":[111,6],"strapR":[231,6],"junctionL":[90,159],"junctionR":[255,174],"strapRunL":[[111,12],[92,150]],"strapRunR":[[231,12],[253,165]],"outerL":[30,285],"outerR":[327,285],"center":[180,264],"centerHigh":[180,252],"trimSegs":[[92,162,158,266],[210,266,256,176]]},
-    "b-triangle-bottom":{"w":366,"h":192,"hipL":[12,24],"hipR":[354,12],"tieTopL":[6,21],"tieTopR":[360,9],"strapRunL":[[12,24],[85,82]],"strapRunR":[[354,12],[278,80]],"center":[183,90],"mono":[189,125],"trimSegs":[[82,82,183,92],[183,92,282,80]]},
+    "b-triangle-top":{"w":441,"h":441,"k":0.83,"strapL":[160,95],"strapR":[275,90],"junctionL":[107,236],"junctionR":[332,236],"strapRunL":[[160,100],[110,230]],"strapRunR":[[275,95],[330,230]],"outerL":[14,418],"outerR":[432,418],"center":[221,418],"centerHigh":[221,405],"trimSegs":[[107,236,196,410],[246,410,332,236]]},
+    "b-triangle-bottom":{"w":461,"h":311,"k":0.83,"hipL":[93,54],"hipR":[371,40],"tieTopL":[11,12],"tieTopR":[450,12],"strapRunL":[[14,14],[90,52]],"strapRunR":[[447,14],[371,40]],"center":[222,56],"mono":[222,130],"trimSegs":[[93,54,222,56],[222,56,371,40]]},
     "b-underwire-top":{"w":323,"h":350,"strapL":[140,14],"strapR":[190,14],"junctionL":[40,185],"junctionR":[285,185],"strapRunL":[[130,35],[50,175]],"strapRunR":[[195,35],[278,175]],"outerL":[12,232],"outerR":[312,232],"center":[160,228],"centerHigh":[160,214],"trimSegs":[[8,195,160,218],[160,218,315,192]]},
     "b-seamless-bottom":{"w":328,"h":217,"hipL":[12,14],"hipR":[316,12],"tieTopL":[10,8],"tieTopR":[318,6],"strapRunL":[[12,14],[20,40]],"strapRunR":[[316,12],[308,40]],"center":[165,36],"mono":[165,95],"trimSegs":[[12,10,165,34],[165,34,315,8]]}
   };
 
   /* back views (photo cut-outs) for the styles that have one */
-  var BACK={"b-underwire-top":{w:313,h:377},"b-seamless-bottom":{w:320,h:217}};
+  var BACK={"b-underwire-top":{w:313,h:377},"b-seamless-bottom":{w:320,h:217},
+            "b-triangle-top":{w:431,h:554,k:0.83},"b-triangle-bottom":{w:459,h:307,k:0.83}};
+  /* the triangle set has a real cheetah-print photo, used instead of the pattern tile */
+  var CHEETAH_PHOTO={"b-triangle-top":1,"b-triangle-bottom":1};
   function fmt(n){ return "$"+n.toFixed(2); }
   function colorDef(id){ return COLORS.filter(function(c){return c.id===id;})[0]||COLORS[0]; }
   function styleOf(part){ return STYLES[part][part==="top"?state.topStyle:state.bottomStyle]; }
@@ -1332,10 +1336,11 @@
     var part=partOfArt(artName);
     var col=opts.colorId ? colorDef(opts.colorId) : colorOf(part);
     var hex=col.fill==="leopard" ? "#E2BA84" : col.fill;
+    var realCheetah=col.fill==="leopard" && CHEETAH_PHOTO[artName];
     if(opts.back){ g=BACK[artName]; artName=artName+"-back"; }
     var wrap=document.createElement("div");
     wrap.className="piece"+(col.fill==="leopard"?" leopard":"")+(opts.back?" is-back":"");
-    wrap.style.width=opts.thumb?"100%":"calc("+g.w+" * var(--u))";
+    wrap.style.width=opts.thumb?"100%":"calc("+(g.w*(g.k||1))+" * var(--u))";
     wrap.style.setProperty("--fabric",hex);
     var sizer=document.createElement("img");
     sizer.className="sizer"; sizer.alt=""; sizer.src="art2/"+artName+"-sil.png";
@@ -1346,13 +1351,18 @@
       d.style.webkitMaskImage=url; d.style.maskImage=url;
       wrap.appendChild(d); return d;
     }
-    layer("fill",silUrl);
+    if(realCheetah){
+      var ph=document.createElement("img"); ph.className="layer photo"; ph.alt="";
+      ph.src="art2/"+artName+"-cheetah.png"; wrap.appendChild(ph);
+    } else layer("fill",silUrl);
     if(!opts.thumb && (state.addons.laceOver||state.preview==="laceOver") && allows(part,"laceOver")){
       var lo=layer("laceover",silUrl);
       lo.style.backgroundImage='url("art2/lace-tile-'+variantOf("laceOver")+'.png")';
     }
-    var sh=layer("shade",silUrl); sh.style.backgroundImage='url("art2/'+artName+'-shade.png")';
-    layer("lines",'url("art2/'+artName+'-line.png")');
+    if(!realCheetah){
+      var sh=layer("shade",silUrl); sh.style.backgroundImage='url("art2/'+artName+'-shade.png")';
+      layer("lines",'url("art2/'+artName+'-line.png")');
+    }
     if(!opts.thumb){
       var svg=el("svg",{class:"deco",viewBox:"0 0 "+g.w+" "+g.h,"aria-hidden":"true"});
       wrap.appendChild(svg);
