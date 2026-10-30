@@ -1,20 +1,21 @@
-import { route } from "../../lib/http.js";
-import { gql, check, toE164, findCustomerByPhone } from "../../lib/shopify.js";
+import { route, HttpError } from "../../lib/http.js";
+import { gql, check, toE164 } from "../../lib/shopify.js";
 import { priceDesign, DISCOUNT_PERCENT } from "../../lib/catalog.js";
-import { sign } from "../../lib/sign.js";
+import { sign, verifyWelcomeToken } from "../../lib/sign.js";
 
 const CURRENCY = process.env.SHOP_CURRENCY || "USD";
 const money = (n) => ({ amount: n.toFixed(2), currencyCode: CURRENCY });
 
 // POST /api/orders/create  { design, customer: { phone, name, email } }
 // Prices the design on the server, creates a Shopify draft order and returns its
-// checkout link (invoiceUrl). The 10% only applies if the phone belongs to a
-// Shopify customer — the browser can't just ask for it.
+// checkout link (invoiceUrl). Checkout stays a guest flow; a signed signup
+// receipt authorizes only the welcome discount, never customer-account access.
 export default route(["POST"], async (body) => {
   const order = priceDesign(body.design);
   const cust = body.customer || {};
   const phone = toE164(cust.phone);
-  const shopper = phone ? await findCustomerByPhone(phone) : null;
+  const discounted = verifyWelcomeToken(cust.welcomeToken, phone);
+  if (cust.welcomeToken && !discounted) throw new HttpError(409, "Your welcome discount expired. Please enter your contact details again before checking out.");
 
   const input = {
     tags: ["peaces-builder"],
@@ -29,8 +30,7 @@ export default route(["POST"], async (body) => {
       customAttributes: Object.entries(l.attrs).map(([key, value]) => ({ key, value })),
     })),
   };
-  if (shopper) {
-    input.purchasingEntity = { customerId: shopper.id };
+  if (discounted) {
     input.appliedDiscount = { valueType: "PERCENTAGE", value: DISCOUNT_PERCENT, title: "Peaces " + DISCOUNT_PERCENT + "% welcome" };
   }
 
@@ -41,7 +41,7 @@ export default route(["POST"], async (body) => {
     { input }
   );
   const d = check(data.draftOrderCreate, "draftOrderCreate").draftOrder;
-  const expected = shopper ? order.subtotal * (1 - DISCOUNT_PERCENT / 100) : order.subtotal;
+  const expected = discounted ? order.subtotal * (1 - DISCOUNT_PERCENT / 100) : order.subtotal;
   return {
     status: 201,
     body: {
@@ -50,8 +50,9 @@ export default route(["POST"], async (body) => {
       name: d.name,
       checkoutUrl: d.invoiceUrl,
       subtotal: order.subtotal,
-      discounted: !!shopper,
+      discounted,
       total: d.totalPriceSet ? +d.totalPriceSet.shopMoney.amount : +expected.toFixed(2),
     },
   };
 });
+
