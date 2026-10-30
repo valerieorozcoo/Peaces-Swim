@@ -12,10 +12,12 @@ export function startMockShopify(port) {
       if (p.get("grant_type") !== "client_credentials" || p.get("client_secret") !== "test-secret") return send({ error: "invalid_client" }, 401);
       return send({ access_token: "tok_123", scope: "read_customers,write_customers,write_draft_orders", expires_in: 86399 });
     }
+    if (req.url === "/staged-upload") { db.uploads = (db.uploads || 0) + 1; db.uploadBytes = raw.length; res.writeHead(204); return res.end(); }
     if (!/^\/admin\/api\/[\d-]+\/graphql\.json$/.test(req.url)) return send({}, 404);
     if (req.headers["x-shopify-access-token"] !== "tok_123") return send({ errors: "Invalid API key or access token" }, 401);
     const { query, variables } = JSON.parse(raw);
     db.calls.push({ query, variables });
+    if (query.includes("currentAppInstallation")) return send({ data: { currentAppInstallation: { accessScopes: [{ handle: "write_files" }, { handle: "write_draft_orders" }] } } });
     if (query.includes("shop { name }")) return send({ data: { shop: { name: "Peaces Swim (mock)" } } });
     if (query.includes("customers(first:1")) {
       const m = /^(phone|email):"?([^"]*)"?$/.exec(variables.q) || [];
@@ -49,6 +51,16 @@ export function startMockShopify(port) {
       const c = { id: "gid://shopify/Customer/" + (db.customers.length + 1), ...i };
       db.customers.push(c);
       return send({ data: { customerCreate: { customer: { id: c.id, firstName: c.firstName }, userErrors: [] } } });
+    }
+    if (query.includes("stagedUploadsCreate")) {
+      return send({ data: { stagedUploadsCreate: { stagedTargets: [{ url: "http://localhost:" + port + "/staged-upload", resourceUrl: "https://shopify-staged/tmp/" + variables.input[0].filename,
+        parameters: [{ name: "key", value: "tmp/" + variables.input[0].filename }] }], userErrors: [] } } });
+    }
+    if (query.includes("fileCreate")) {
+      return send({ data: { fileCreate: { files: [{ id: "gid://shopify/MediaImage/1", image: null }], userErrors: [] } } });
+    }
+    if (query.includes("node(id:")) {
+      return send({ data: { node: { fileStatus: "READY", image: { url: "https://cdn.shopify.com/s/files/peaces-design.jpg" } } } });
     }
     if (query.includes("draftOrderCreate")) {
       const i = variables.input;

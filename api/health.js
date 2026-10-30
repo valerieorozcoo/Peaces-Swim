@@ -1,5 +1,5 @@
 import { route } from "../lib/http.js";
-import { gql } from "../lib/shopify.js";
+import { gql, grantedScopes } from "../lib/shopify.js";
 
 // GET /api/health — is the backend deployed and are the Shopify settings present?
 // GET /api/health?shopify=1 — also signs in to Shopify and returns the store name,
@@ -30,6 +30,25 @@ export default route(["GET"], async (_body, req) => {
       } catch (e) {
         out.shopify.customers = "blocked";
         out.shopify.customersError = shopifyReason(e);
+      }
+      // Can the app see draft orders? (checkout needs read_draft_orders + write_draft_orders)
+      try {
+        await gql(`{ draftOrders(first:1){ nodes{ id } } }`);
+        out.shopify.draftOrders = "ok";
+      } catch (e) {
+        out.shopify.draftOrders = "blocked";
+        out.shopify.draftOrdersError = shopifyReason(e);
+      }
+      // Can the app save the design picture? (needs write_files) — ask Shopify what this install was actually granted
+      try {
+        const inst = await gql(`{ currentAppInstallation { accessScopes { handle } } }`);
+        const handles = inst.currentAppInstallation.accessScopes.map((a) => a.handle);
+        out.shopify.grantedScopes = handles.join(",");
+        out.shopify.designPictures = handles.includes("write_files") ? "ok" : "missing write_files";
+      } catch (e) {
+        const scopes = await grantedScopes();
+        out.shopify.tokenScopes = scopes;
+        out.shopify.designPictures = /(^|[,\s])write_files([,\s]|$)/.test(scopes) ? "ok" : "missing write_files";
       }
     } catch (e) {
       console.error("[health]", e.message, JSON.stringify(e.details || ""));

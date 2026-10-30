@@ -5,7 +5,7 @@ const html = await readFile(new URL("../index.html", import.meta.url), "utf8");
 assert.ok(html.includes('CHECKOUT READY'));
 assert.ok(!html.includes('ORDER CONFIRMED'));
 const source = html.split('document.getElementById("checkoutBtn").addEventListener("click",async function(e){')[1].split('\n  });')[0];
-const compile = new Function("document", "window", "api", "saveDesign", "designPayload", "state", "syncPerk", "renderAll", "openGate", "resetFulfilmentFeedback",
+const compile = new Function("document", "window", "api", "saveDesign", "designPayload", "state", "syncPerk", "renderAll", "openGate", "resetFulfilmentFeedback", "designImageOrNull", "pickWaitIfOnlyOption", "syncCheckoutPop",
   'var currentOrder={id:"old"},lead={phone:"3055551234",welcomeToken:"receipt"}; return {run:async function(e){' + source + '\n},order:()=>currentOrder};');
 
 for (const scenario of ["success", "blocked-popup", "400", "409", "503", "malformed"]) {
@@ -21,7 +21,7 @@ for (const scenario of ["success", "blocked-popup", "400", "409", "503", "malfor
     calls++; await pending;
     if (/^\d+$/.test(scenario)) throw Object.assign(new Error("Checkout failed " + scenario), { status: +scenario });
     return scenario === "malformed" ? {} : { id: "draft", sig: "signed", name: "#D1", checkoutUrl: "https://example.com/unpaid" };
-  }, () => {}, () => ({}), state, () => {}, () => {}, step => { gate = step; }, () => {});
+  }, () => {}, () => ({}), state, () => {}, () => {}, step => { gate = step; }, () => {}, async () => null, () => {}, () => {});
   const running = fixture.run.call(button, { preventDefault() {} });
   assert.equal(nodes.fulfil.hidden, true); assert.equal(fixture.order(), null);
   await fixture.run.call(button, { preventDefault() {} }); assert.equal(calls, 1);

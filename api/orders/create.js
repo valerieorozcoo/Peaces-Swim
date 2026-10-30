@@ -2,6 +2,7 @@ import { route, HttpError } from "../../lib/http.js";
 import { gql, check, toE164 } from "../../lib/shopify.js";
 import { priceDesign, DISCOUNT_PERCENT } from "../../lib/catalog.js";
 import { sign, verifyWelcomeToken } from "../../lib/sign.js";
+import { saveDesignImage } from "../../lib/design-image.js";
 
 const CURRENCY = process.env.SHOP_CURRENCY || "USD";
 const money = (n) => ({ amount: n.toFixed(2), currencyCode: CURRENCY });
@@ -30,6 +31,13 @@ export default route(["POST"], async (body) => {
       customAttributes: Object.entries(l.attrs).map(([key, value]) => ({ key, value })),
     })),
   };
+  // The picture of the built bikini rides on the bikini line as `_design_image`
+  // (hidden from the checkout, available to the receipt email as line.properties).
+  const imageUrl = await saveDesignImage(body.image, order.lines[0].title);
+  if (imageUrl) {
+    input.lineItems[0].customAttributes.push({ key: "_design_image", value: imageUrl });
+    input.note += "\nDesign picture: " + imageUrl;
+  }
   if (discounted) {
     input.appliedDiscount = { valueType: "PERCENTAGE", value: DISCOUNT_PERCENT, title: "Peaces " + DISCOUNT_PERCENT + "% welcome" };
   }
@@ -51,6 +59,7 @@ export default route(["POST"], async (body) => {
       checkoutUrl: d.invoiceUrl,
       subtotal: order.subtotal,
       discounted,
+      image: imageUrl || null,
       total: d.totalPriceSet ? +d.totalPriceSet.shopMoney.amount : +expected.toFixed(2),
     },
   };
