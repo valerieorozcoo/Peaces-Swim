@@ -20,6 +20,7 @@ export default route(["POST"], async (body) => {
 
   const input = {
     tags: ["peaces-builder"],
+    allowDiscountCodesInCheckout: true, // lets customers type Shopify discount codes (e.g. PEACESPARTY) at checkout
     note: "Made in the Peaces Swim Builder",
     customAttributes: [{ key: "Source", value: "Peaces Swim Builder" }],
     lineItems: order.lines.map((l) => ({

@@ -92,7 +92,7 @@ try {
   assert.equal(r.status, 201); assert.equal(r.body.subtotal, 2 * 10 + 15); assert.equal(r.body.total, 35);
   const acc = db.drafts.at(-1).input;
   assert.deepEqual(acc.lineItems.map((l) => [l.title, l.quantity]), [["Peaces headband — Cheetah", 2], ["Peaces terry tote — Blue", 1]]);
-  assert.deepEqual(acc.tags, ["peaces-accessories"]); ok("accessories on their own: headband + tote priced on the server");
+  assert.deepEqual(acc.tags, ["peaces-accessories"]); assert.equal(acc.allowDiscountCodesInCheckout, true); assert.equal(db.drafts[0].input.allowDiscountCodesInCheckout, true); ok("accessories on their own: headband + tote priced on the server");
   for (const bad of [{}, { tote: { color: "green", qty: 1 } }, { headband: { color: "teal", qty: 99 } }, { tote: { color: "pink", qty: 0 } }]) {
     r = await post("/orders/accessories", { items: bad }); assert.equal(r.status, 400);
   }
