@@ -43,14 +43,14 @@
   :where(.lp) :is(ol,ul){padding:0; list-style:none;}
   :where(.lp) svg{display:block;}
 
-  .lp-label{font-size:10px; letter-spacing:.25em; text-transform:uppercase;}
-  .lp-link{display:inline-block; font-size:11px; letter-spacing:.25em; text-transform:uppercase;
+  .lp-label{font-size:12.5px; letter-spacing:.25em; text-transform:uppercase;}
+  .lp-link{display:inline-block; font-size:12.5px; letter-spacing:.25em; text-transform:uppercase;
     text-decoration:underline; text-decoration-thickness:1px; text-underline-offset:7px; transition:color .2s;}
 
   /* scrolling announcement strip */
   .lp-bar{background:var(--ink); color:rgba(255,255,255,.9); height:36px; overflow:hidden; display:flex; align-items:center;}
   .lp-bar-track{display:flex; width:max-content; animation:lp-marquee 48s linear infinite;}
-  .lp-bar-track span{padding:0 32px; font-size:10px; letter-spacing:.28em; text-transform:uppercase; white-space:nowrap;}
+  .lp-bar-track span{padding:0 32px; font-size:12.5px; letter-spacing:.28em; text-transform:uppercase; white-space:nowrap;}
   .lp-bar-track b{font-weight:400; color:var(--pink); padding-left:64px;}
   @keyframes lp-marquee{to{transform:translateX(-50%);}}
 
@@ -59,7 +59,7 @@
   .lp-header-left{display:flex; align-items:center; gap:32px;}
   .lp-logo{height:48px; width:auto;}
   .lp-nav{display:none; align-items:center; gap:24px;}
-  .lp-nav a{font-size:11px; letter-spacing:.22em; text-transform:uppercase; color:rgba(58,44,52,.8); transition:color .2s;}
+  .lp-nav a{font-size:12.5px; letter-spacing:.22em; text-transform:uppercase; color:rgba(58,44,52,.8); transition:color .2s;}
   .lp-nav a:hover{color:#fff;}
   .liquid-glass.lp-cart{width:40px; height:40px; border-radius:999px; display:grid; place-items:center;
     background:rgba(58,44,52,.15); color:rgba(255,255,255,.9); transition:color .2s;}
@@ -79,7 +79,7 @@
   .lp-h1 i{font-size:.42em; letter-spacing:0;}
   .lp-h1 .lp-arrived{font-style:italic; font-size:.42em; letter-spacing:0; margin-top:12px;}
   .lp-actions{margin-top:40px; display:flex; flex-wrap:wrap; align-items:center; gap:20px 32px;}
-  .lp-btn{display:inline-block; background:#fff; color:var(--ink); padding:16px 32px; font-size:11px; letter-spacing:.25em; text-transform:uppercase; transition:background .2s, color .2s;}
+  .lp-btn{display:inline-block; background:#fff; color:var(--ink); padding:16px 32px; font-size:12.5px; letter-spacing:.25em; text-transform:uppercase; transition:background .2s, color .2s;}
   .lp-btn:hover{background:var(--ink); color:#fff;}
   .lp-cover .lp-link{color:var(--ink);}
   .lp-cover .lp-link:hover{color:#fff;}
@@ -97,7 +97,7 @@
   .lp-eyebrow{color:var(--lp-ink-60); margin-bottom:24px; letter-spacing:.28em;}
   .lp-h2{font-family:var(--lp-display); font-weight:400; font-size:48px; line-height:.95; letter-spacing:-.025em;}
   .lp-h2 .lp-script{display:block; font-family:var(--lp-script); color:var(--pink); font-size:60px; line-height:1.15; letter-spacing:0;}
-  .lp-aside p{font-size:14px; line-height:1.65; color:var(--lp-ink-70);}
+  .lp-aside p{font-size:16px; line-height:1.65; color:var(--lp-ink-70);}
   .lp-aside .lp-link{margin-top:24px;}
   .lp-aside .lp-link:hover{color:var(--pink);}
   .lp-steps{margin-top:64px; display:grid; gap:56px;}
@@ -107,7 +107,7 @@
   .lp-step-meta{margin-top:24px; display:flex; gap:20px;}
   .lp-step-n{font-family:var(--lp-display); font-style:italic; font-size:36px; line-height:1; color:var(--pink);}
   .lp-step h3{font-family:var(--lp-display); font-weight:400; font-size:24px; line-height:1.25;}
-  .lp-step p{margin-top:8px; font-size:14px; line-height:1.65; color:var(--lp-ink-70); max-width:320px;}
+  .lp-step p{margin-top:8px; font-size:16px; line-height:1.65; color:var(--lp-ink-70); max-width:320px;}
 
   /* lookbook */
   .lp-look{background:var(--lp-blush); padding:96px 20px;}
@@ -129,12 +129,12 @@
   .lp-close-tint{position:absolute; inset:0; background:linear-gradient(to bottom, rgba(58,44,52,.1), rgba(58,44,52,.25), rgba(58,44,52,.75));}
   .lp-close-inner{position:relative; z-index:1; width:100%; max-width:1280px; color:#fff;}
   .lp-close h2{font-family:var(--lp-display); font-weight:400; font-size:48px; line-height:.95; max-width:576px; text-shadow:0 2px 24px rgba(58,44,52,.3);}
-  .lp-close-copy{margin-top:20px; font-size:14px; line-height:1.6; color:rgba(255,255,255,.85); max-width:384px;}
+  .lp-close-copy{margin-top:20px; font-size:16px; line-height:1.6; color:rgba(255,255,255,.85); max-width:384px;}
   .lp-signup{margin-top:32px; display:flex; align-items:flex-end; gap:24px; max-width:384px; border-bottom:1px solid rgba(255,255,255,.7); padding-bottom:8px;}
-  .lp-signup input{flex:1; min-width:0; background:transparent; border:0; padding:0; color:#fff; font-family:inherit; font-size:14px;}
+  .lp-signup input{flex:1; min-width:0; background:transparent; border:0; padding:0; color:#fff; font-family:inherit; font-size:16px;}
   .lp-signup input::placeholder{color:rgba(255,255,255,.6);}
   .lp-signup input:focus{outline:none;}
-  .lp-signup button{background:none; border:0; padding:0; color:#fff; cursor:pointer; font-family:inherit; font-size:11px; letter-spacing:.25em; text-transform:uppercase; transition:color .2s;}
+  .lp-signup button{background:none; border:0; padding:0; color:#fff; cursor:pointer; font-family:inherit; font-size:12.5px; letter-spacing:.25em; text-transform:uppercase; transition:color .2s;}
   .lp-signup button:hover{color:var(--pink-soft);}
   .lp-sr{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap;}
 
@@ -168,15 +168,15 @@
   .lp-foot-logo{display:flex; align-items:flex-end; gap:8px; color:#fff; margin-bottom:16px;}
   .lp-foot-logo img{height:44px; width:auto;}
   .lp-foot-logo span{font-size:20px; font-weight:500; padding-bottom:2px;}
-  .lp-foot-brand p{font-size:14px; line-height:1.65; max-width:384px;}
+  .lp-foot-brand p{font-size:16px; line-height:1.65; max-width:384px;}
   .lp-foot-links{display:grid; grid-template-columns:repeat(3,1fr); gap:24px;}
-  .lp-foot-links h4{font-size:14px; text-transform:uppercase; letter-spacing:.05em; color:#fff; font-weight:500; margin-bottom:16px;}
-  .lp-foot-links ul{font-size:12px;}
+  .lp-foot-links h4{font-size:16px; text-transform:uppercase; letter-spacing:.05em; color:#fff; font-weight:500; margin-bottom:16px;}
+  .lp-foot-links ul{font-size:14px;}
   .lp-foot-links li + li{margin-top:8px;}
   .lp-foot-links a{transition:color .2s;}
   .lp-foot-links a:hover{color:#fff;}
   .lp-foot-bottom{padding-top:24px; border-top:1px solid rgba(255,255,255,.1); display:flex; flex-direction:column; align-items:center; justify-content:space-between; gap:24px;}
-  .lp-foot-bottom p,.lp-foot-follow span{font-size:10px; text-transform:uppercase; letter-spacing:.1em; opacity:.5;}
+  .lp-foot-bottom p,.lp-foot-follow span{font-size:12.5px; text-transform:uppercase; letter-spacing:.1em; opacity:.5;}
   .lp-foot-follow{display:flex; align-items:center; gap:16px;}
   .lp-socials{display:flex; align-items:center; gap:16px;}
   .lp-socials a{opacity:.7; transition:opacity .2s, color .2s;}
@@ -214,7 +214,7 @@
     .lp-close{padding:160px 32px 32px;}
     .lp-close-bg{object-position:10% 40%;}
     .lp-close h2{font-size:72px;}
-    .lp-close-copy{font-size:16px;}
+    .lp-close-copy{font-size:18.5px;}
     .lp-footer{padding:40px; margin-top:256px;}
     .lp-foot-top{grid-template-columns:repeat(12,1fr); gap:48px;}
     .lp-foot-brand{grid-column:span 5;}
@@ -262,7 +262,7 @@
   .lp-wait form{width:100%; max-width:320px; display:flex; flex-direction:column; gap:12px;}
   .lp-wait .lp-sr{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap;}
   .lp-wait input{width:100%; border:0; border-radius:0; background:var(--w-lavender); color:var(--w-ink);
-    font-family:var(--w-serif); font-size:17px; padding:12px 14px; outline:none; -webkit-appearance:none; appearance:none;}
+    font-family:var(--w-serif); font-size:19.5px; padding:12px 14px; outline:none; -webkit-appearance:none; appearance:none;}
   .lp-wait input::placeholder{color:rgba(74,52,86,.62);}
   .lp-wait input:focus-visible{background:var(--w-lavender-deep); box-shadow:inset 0 0 0 2px var(--w-orchid);}
   .lp-wait input.bad{box-shadow:inset 0 0 0 2px var(--w-pink);}
@@ -272,11 +272,11 @@
   .lp-wait-btn:hover{background:var(--w-orchid-deep);}
   .lp-wait-btn:disabled{opacity:.7; cursor:wait;}
   .lp-wait-btn:focus-visible{outline:2px solid var(--w-pink); outline-offset:3px;}
-  .lp-wait-err{margin:0; color:var(--w-pink); font-size:15px; line-height:1.4;}
-  .lp-wait-fine{margin:0; font-size:12.5px; line-height:1.5; opacity:.7; max-width:34ch;}
+  .lp-wait-err{margin:0; color:var(--w-pink); font-size:17px; line-height:1.4;}
+  .lp-wait-fine{margin:0; font-size:14.5px; line-height:1.5; opacity:.7; max-width:34ch;}
   .lp-wait-done{display:flex; flex-direction:column; align-items:center; gap:8px; outline:none;}
   .lp-wait-thanks{margin:0; font-family:var(--w-script); font-size:44px; line-height:1; color:var(--w-pink);}
-  .lp-wait-done p.lp-wait-copy{margin:0; font-size:17px; letter-spacing:.03em; max-width:30ch;}
+  .lp-wait-done p.lp-wait-copy{margin:0; font-size:19.5px; letter-spacing:.03em; max-width:30ch;}
   @media (min-width:820px){
     .lp-wait{background:var(--w-lavender); padding:40px 32px;}
     .lp-wait-card{max-width:940px; flex-direction:row; box-shadow:0 24px 60px -28px rgba(120,60,150,.45);}
@@ -372,9 +372,9 @@
   /* waitlist band inside the full site: Cormorant, softer lavender */
   html:not(.prelaunch) .lp-wait{--w-serif:"Cormorant Garamond",Garamond,"Times New Roman",serif; --w-orchid:#A877D6; --w-orchid-deep:#8A5BB8; background:var(--fs-mist)!important;}
   .lp-quick{display:flex; align-items:center; gap:16px;}
-  .lp-quick a{font-size:10px; letter-spacing:.2em; text-transform:uppercase; color:var(--fs-ink,#2E2433); transition:color .2s;}
+  .lp-quick a{font-size:12.5px; letter-spacing:.2em; text-transform:uppercase; color:var(--fs-ink,#2E2433); transition:color .2s;}
   .lp-quick a:hover{color:var(--fs-orchid,#8A5BB8);}
-  @media (min-width:640px){ .lp-quick{gap:28px;} .lp-quick a{font-size:11px; letter-spacing:.22em;} }
+  @media (min-width:640px){ .lp-quick{gap:28px;} .lp-quick a{font-size:12.5px; letter-spacing:.22em;} }
   /* on wide screens the buttons sit over the hero photo, so they go white */
   @media (min-width:1024px){ .lp-quick a{color:#fff; text-shadow:0 1px 3px rgba(46,36,51,.45),0 0 14px rgba(46,36,51,.35);} .lp-quick a:hover{color:var(--fs-wash,#F3E9FC);} }
   @media (max-width:380px){ .lp-quick{gap:11px;} .lp-quick a{letter-spacing:.14em;} }
@@ -390,7 +390,7 @@
   .pp-link::after{content:""; position:absolute; inset:0; background:linear-gradient(to bottom, rgba(46,36,51,.55), rgba(46,36,51,0) 45%); pointer-events:none;}
   .pp-card h3{position:relative; z-index:1; padding:20px 20px 0; font-family:var(--lp-display); font-weight:500; font-size:34px; line-height:1.02; letter-spacing:-.01em; color:#fff; text-shadow:0 1px 14px rgba(46,36,51,.35);}
   .pp-n{color:#fff;}
-  .pp-cta{position:absolute; z-index:1; left:20px; right:20px; bottom:20px; padding:14px 0; text-align:center; background:#fff; color:var(--fs-ink,#2E2433); border:1px solid var(--fs-ink,#2E2433); font-size:12px; letter-spacing:.22em; text-transform:uppercase; opacity:0; transform:translateY(8px); transition:opacity .25s, transform .25s, background .2s, color .2s;}
+  .pp-cta{position:absolute; z-index:1; left:20px; right:20px; bottom:20px; padding:14px 0; text-align:center; background:#fff; color:var(--fs-ink,#2E2433); border:1px solid var(--fs-ink,#2E2433); font-size:14px; letter-spacing:.22em; text-transform:uppercase; opacity:0; transform:translateY(8px); transition:opacity .25s, transform .25s, background .2s, color .2s;}
   .pp-card:hover img{transform:scale(1.04);}
   .pp-card:hover .pp-cta,.pp-link:focus-visible .pp-cta{opacity:1; transform:none;}
   .pp-cta:hover{background:var(--fs-ink,#2E2433); color:#fff;}
@@ -450,10 +450,10 @@
   @media (min-width:768px){ html .lp-vid .lp-header{padding:14px 40px;} html .lp-vid .lp-cover{min-height:calc(100svh - 36px - 85px); padding-top:56px;} }
   /* front / back view switch on the builder stage */
   .view-toggle{display:flex; flex-wrap:wrap; justify-content:center; align-items:center; gap:6px; margin-top:14px;}
-  .view-toggle button{font-family:var(--lp-sans); font-size:11px; letter-spacing:.2em; text-transform:uppercase; padding:8px 16px; border:1px solid var(--line,#E7DAF3); background:#fff; color:var(--fs-ink,#2E2433); cursor:pointer;}
+  .view-toggle button{font-family:var(--lp-sans); font-size:12.5px; letter-spacing:.2em; text-transform:uppercase; padding:8px 16px; border:1px solid var(--line,#E7DAF3); background:#fff; color:var(--fs-ink,#2E2433); cursor:pointer;}
   .view-toggle button.on{background:var(--fs-ink,#2E2433); border-color:var(--fs-ink,#2E2433); color:#fff;}
   .view-toggle .vt-arrow{padding:6px 12px; font-size:18px; letter-spacing:0; line-height:1; border-radius:999px;}
-  .view-toggle .vt-hint{flex-basis:100%; text-align:center; font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--fs-ink-60,rgba(46,36,51,.62));}
+  .view-toggle .vt-hint{flex-basis:100%; text-align:center; font-size:12.5px; letter-spacing:.14em; text-transform:uppercase; color:var(--fs-ink-60,rgba(46,36,51,.62));}
   .rig{touch-action:pan-y; cursor:grab;}
   .rig.wrap-waist{gap:clamp(40px,9vw,80px);}
   .rig.flip{animation:rig-flip .35s ease;}
@@ -462,7 +462,7 @@
   /* running count of customizations on the bikini preview */
   .custom-count{margin:14px 0 0; text-align:center; font-family:var(--lp-display); color:var(--fs-ink,#2E2433); display:flex; align-items:baseline; justify-content:center; gap:8px;}
   .custom-count .cc-n{font-size:46px; line-height:1; font-style:italic; color:var(--fs-orchid,#8A5BB8); transition:transform .25s;}
-  .custom-count .cc-l{font-family:var(--lp-sans); font-size:12px; letter-spacing:.24em; text-transform:uppercase;}
+  .custom-count .cc-l{font-family:var(--lp-sans); font-size:14px; letter-spacing:.24em; text-transform:uppercase;}
   .custom-count.is-zero .cc-n{color:var(--fs-ink-60,rgba(46,36,51,.62));}
 </style>
 </head>
@@ -509,7 +509,7 @@
   }
   .stage-label{
     display:flex; justify-content:space-between; align-items:baseline; gap:8px;
-    font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-soft); padding-bottom:10px;
+    font-size:12.5px; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-soft); padding-bottom:10px;
   }
   .stage-label .style-name{font-family:var(--lp-script); font-style:italic; font-size:21px; text-transform:none; letter-spacing:0; color:var(--pink);}
   .rig{display:flex; flex-direction:column; align-items:center; gap:10px; --u:0.27%;}
@@ -531,23 +531,23 @@
   .piece img.sizer{display:block; width:100%; height:auto; visibility:hidden;}
   .size-chip{
     position:absolute; right:-6px; top:50%; transform:translateY(-50%);
-    font-size:10.5px; letter-spacing:.12em; color:var(--pink-deep);
+    font-size:12.5px; letter-spacing:.12em; color:var(--pink-deep);
     background:var(--pink-pale); border:1px solid var(--line); border-radius:0; padding:2px 8px;
   }
 
   .price-bar{display:flex; align-items:flex-end; justify-content:space-between; gap:10px; margin-top:14px; padding:15px 18px; background:var(--paper); border:1px solid var(--line); border-radius:0;}
-  .price-bar .total-label{font-size:11px; text-transform:uppercase; letter-spacing:.13em; color:var(--ink-soft); margin-bottom:3px;}
+  .price-bar .total-label{font-size:12.5px; text-transform:uppercase; letter-spacing:.13em; color:var(--ink-soft); margin-bottom:3px;}
   .price-bar .total{font-size:30px; font-weight:500; line-height:1; font-variant-numeric:tabular-nums;}
-  .price-bar .total s{color:var(--ink-soft); font-size:17px; margin-right:7px; font-weight:300;}
-  .price-bar .breakdown{font-size:12.5px; color:var(--ink-soft); text-align:right; max-width:160px;}
-  .summary-list{margin-top:12px; display:flex; flex-direction:column; gap:5px; font-size:13.5px;}
+  .price-bar .total s{color:var(--ink-soft); font-size:19.5px; margin-right:7px; font-weight:300;}
+  .price-bar .breakdown{font-size:14.5px; color:var(--ink-soft); text-align:right; max-width:160px;}
+  .summary-list{margin-top:12px; display:flex; flex-direction:column; gap:5px; font-size:15.5px;}
   .summary-list .row{display:flex; justify-content:space-between; gap:10px; color:var(--ink-soft);}
   .summary-list .row span:last-child{font-variant-numeric:tabular-nums; color:var(--ink);}
   .summary-list .row.discount span{color:var(--pink);}
-  .perk{margin-top:12px; display:flex; gap:9px; align-items:flex-start; background:var(--aqua-pale); border:1px solid var(--purple); border-radius:0; padding:11px 13px; font-size:13px; cursor:pointer;}
+  .perk{margin-top:12px; display:flex; gap:9px; align-items:flex-start; background:var(--aqua-pale); border:1px solid var(--purple); border-radius:0; padding:11px 13px; font-size:15px; cursor:pointer;}
   .perk input{accent-color:var(--aqua); margin-top:2px; width:15px; height:15px; flex:none;}
-  .perk small{display:block; color:var(--ink-soft); font-size:11.5px;}
-  .cta{margin-top:12px; width:100%; padding:14px 18px; border:none; border-radius:0; background:var(--pink); color:#fff; font-family:var(--lp-sans); font-weight:500; font-size:15px; cursor:pointer; transition:background .15s, transform .12s;}
+  .perk small{display:block; color:var(--ink-soft); font-size:13px;}
+  .cta{margin-top:12px; width:100%; padding:14px 18px; border:none; border-radius:0; background:var(--pink); color:#fff; font-family:var(--lp-sans); font-weight:500; font-size:17px; cursor:pointer; transition:background .15s, transform .12s;}
   .cta:hover{background:var(--pink-deep);} .cta:active{transform:scale(.985);}
   .cta:focus-visible{outline:2px solid var(--pink); outline-offset:2px;}
   a.cta.checkout{display:block; text-align:center; text-decoration:none; background:var(--ink);
@@ -558,10 +558,10 @@
   .tote-shot img{width:62%; max-width:190px; height:auto; display:block; margin:0 auto;
     filter:drop-shadow(0 12px 16px rgba(58,44,52,.12));}
   .tote-name{font-family:var(--lp-script); font-style:italic; font-size:30px; color:var(--pink); line-height:1.05;}
-  .tote-desc{margin:4px 0 12px; font-size:12.5px; line-height:1.5; color:var(--ink-soft);}
+  .tote-desc{margin:4px 0 12px; font-size:14.5px; line-height:1.5; color:var(--ink-soft);}
   .tote-btn{padding:10px 20px; border:1.5px solid var(--pink);
     background:var(--paper); color:var(--pink-deep); font-family:var(--lp-sans); font-weight:700;
-    font-size:12px; letter-spacing:.1em; text-transform:uppercase; cursor:pointer;}
+    font-size:14px; letter-spacing:.1em; text-transform:uppercase; cursor:pointer;}
   .tote-btn[aria-pressed="true"]{background:var(--pink); color:#fff; border-color:var(--pink);}
   .tote-btn:focus-visible{outline:2px solid var(--pink); outline-offset:2px;}
 
@@ -584,49 +584,49 @@
   .fulfil-opt[aria-pressed="true"]{border-color:var(--pink); background:var(--pink-pale);}
   .fulfil-opt:focus-visible{outline:2px solid var(--pink); outline-offset:2px;}
   .fo-name{font-weight:700; font-size:clamp(17px,3.4vw,21px); letter-spacing:.02em;}
-  .fo-desc{font-size:12.5px; color:var(--ink-soft); line-height:1.45;}
+  .fo-desc{font-size:14.5px; color:var(--ink-soft); line-height:1.45;}
   @media (max-width:430px){ .fulfil-opt{min-height:120px; padding:18px 12px;} }
   .slots{margin:18px 20px 0; text-align:left;}
-  .slots-label{font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-soft); margin-bottom:8px;}
+  .slots-label{font-size:12.5px; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-soft); margin-bottom:8px;}
   .slot-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(88px,1fr)); gap:8px;}
   .slot{padding:10px 6px; border:1.5px solid var(--line); background:var(--card); cursor:pointer;
-    font-family:inherit; font-size:13.5px; color:var(--ink); font-variant-numeric:tabular-nums;}
+    font-family:inherit; font-size:15.5px; color:var(--ink); font-variant-numeric:tabular-nums;}
   .slot[aria-pressed="true"]{border-color:var(--pink); background:var(--pink-pale); color:var(--pink-deep); font-weight:700;}
   .slot:focus-visible{outline:2px solid var(--pink); outline-offset:2px;}
   .wait{margin:20px 20px 0; border-top:1px solid var(--line); padding-top:16px;}
-  .wait-label{font-size:11px; letter-spacing:.18em; text-transform:uppercase; color:var(--ink-soft);}
+  .wait-label{font-size:12.5px; letter-spacing:.18em; text-transform:uppercase; color:var(--ink-soft);}
   .wait-num{font-family:var(--lp-sans); font-weight:700; color:var(--pink);
     font-size:clamp(84px,22vw,132px); line-height:.95; letter-spacing:-.02em; font-variant-numeric:tabular-nums;}
-  .wait-unit{font-size:12px; letter-spacing:.2em; text-transform:uppercase; color:var(--ink-soft); margin-top:2px;}
-  .wait-note{margin:12px 0 0; font-size:13px; color:var(--ink-soft); line-height:1.5;}
+  .wait-unit{font-size:14px; letter-spacing:.2em; text-transform:uppercase; color:var(--ink-soft); margin-top:2px;}
+  .wait-note{margin:12px 0 0; font-size:15px; color:var(--ink-soft); line-height:1.5;}
 
-  .checkout-note{margin:8px 0 0; font-size:11.5px; line-height:1.45; color:var(--ink-soft); text-align:center;}
+  .checkout-note{margin:8px 0 0; font-size:13px; line-height:1.45; color:var(--ink-soft); text-align:center;}
 
   .panel{display:flex; flex-direction:column; gap:20px;}
   .step{background:var(--paper); border:1px solid var(--line); border-radius:0; padding:20px 22px 22px;}
   .step-head{margin-bottom:14px;}
   .step-head h2{margin:0; font-family:var(--lp-script); font-style:italic; font-weight:400; font-size:31px; color:var(--pink); line-height:1.1;}
-  .step-head p.hint{margin:2px 0 0; font-size:13px; color:var(--ink-soft);}
+  .step-head p.hint{margin:2px 0 0; font-size:15px; color:var(--ink-soft);}
 
   .base-grid{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
   @media (max-width:520px){.base-grid{grid-template-columns:1fr;}}
   .base-card{border:1.5px solid var(--line); border-radius:0; padding:12px; background:var(--card); cursor:pointer; text-align:left; display:flex; flex-direction:column; gap:6px; font-family:inherit; color:inherit; transition:border-color .15s, background .15s;}
   .base-card .thumb{display:flex; justify-content:center;}
   .base-card .thumb .piece{width:56%;}
-  .base-card .name{font-weight:500; font-size:15px;}
-  .base-card .desc{font-size:12.5px; color:var(--ink-soft); line-height:1.35;}
-  .base-card .price{font-size:12.5px; color:var(--pink); font-weight:500;}
+  .base-card .name{font-weight:500; font-size:17px;}
+  .base-card .desc{font-size:14.5px; color:var(--ink-soft); line-height:1.35;}
+  .base-card .price{font-size:14.5px; color:var(--pink); font-weight:500;}
   .base-card[aria-pressed="true"]{border-color:var(--pink); background:var(--pink-pale);}
   .base-card:focus-visible{outline:2px solid var(--pink); outline-offset:2px;}
 
-  .sub-head{font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-soft); margin:18px 0 9px;}
+  .sub-head{font-size:12.5px; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-soft); margin:18px 0 9px;}
   .page-back{display:block; width:100%; margin-top:12px; text-align:center;}
-  .done-copy{margin:0; font-size:13.5px; line-height:1.6; color:var(--ink-soft);}
+  .done-copy{margin:0; font-size:15.5px; line-height:1.6; color:var(--ink-soft);}
   .size-block{display:flex; gap:26px; flex-wrap:wrap;}
   .size-group{flex:1; min-width:170px;}
-  .size-group .lbl{font-size:11.5px; letter-spacing:.13em; text-transform:uppercase; color:var(--ink-soft); margin-bottom:8px;}
+  .size-group .lbl{font-size:13px; letter-spacing:.13em; text-transform:uppercase; color:var(--ink-soft); margin-bottom:8px;}
   .size-row{display:flex; gap:8px; flex-wrap:wrap;}
-  .size-btn{min-width:46px; padding:9px 0; border-radius:0; border:1.5px solid var(--line); background:var(--card); cursor:pointer; font-family:inherit; font-size:13.5px; color:var(--ink);}
+  .size-btn{min-width:46px; padding:9px 0; border-radius:0; border:1.5px solid var(--line); background:var(--card); cursor:pointer; font-family:inherit; font-size:15.5px; color:var(--ink);}
   .size-btn[aria-pressed="true"]{border-color:var(--pink); background:var(--pink-pale); color:var(--pink-deep); font-weight:500;}
   .size-btn:focus-visible{outline:2px solid var(--pink); outline-offset:2px;}
 
@@ -635,24 +635,24 @@
   .swatch[aria-pressed="true"]{border-color:var(--pink);}
   .swatch[aria-pressed="true"]::after{content:""; position:absolute; inset:-6px; border:1px solid var(--pink); border-radius:0;}
   .swatch:focus-visible{outline:2px solid var(--pink); outline-offset:3px;}
-  .swatch-name{display:block; margin-top:9px; font-size:12.5px; color:var(--ink-soft);}
+  .swatch-name{display:block; margin-top:9px; font-size:14.5px; color:var(--ink-soft);}
 
   .tier{margin-bottom:16px;} .tier:last-child{margin-bottom:0;}
-  .tier-title{display:flex; align-items:center; gap:8px; font-size:11px; text-transform:uppercase; letter-spacing:.12em; color:var(--ink-soft); margin-bottom:9px;}
+  .tier-title{display:flex; align-items:center; gap:8px; font-size:12.5px; text-transform:uppercase; letter-spacing:.12em; color:var(--ink-soft); margin-bottom:9px;}
   .tier-title .dot{width:7px; height:7px; border-radius:0; background:var(--aqua);}
-  .tier-title .price-each{margin-left:auto; text-transform:none; letter-spacing:0; font-size:12.5px; color:var(--pink); font-weight:500;}
+  .tier-title .price-each{margin-left:auto; text-transform:none; letter-spacing:0; font-size:14.5px; color:var(--pink); font-weight:500;}
   .addon-grid{display:grid; grid-template-columns:1fr 1fr; gap:9px;}
   @media (max-width:520px){.addon-grid{grid-template-columns:1fr;}}
-  .addon{display:flex; align-items:center; gap:9px; padding:8px 11px; border:1px solid var(--line); border-radius:0; background:var(--card); cursor:pointer; font-size:13.5px;}
+  .addon{display:flex; align-items:center; gap:9px; padding:8px 11px; border:1px solid var(--line); border-radius:0; background:var(--card); cursor:pointer; font-size:15.5px;}
   .addon input{accent-color:var(--pink); width:15px; height:15px; flex:none;}
   .addon img.thumbicon{width:26px; height:26px; object-fit:contain; flex:none;}
   .addon .label{flex:1; line-height:1.25;}
-  .addon .label small{display:block; color:var(--ink-soft); font-size:11px;}
+  .addon .label small{display:block; color:var(--ink-soft); font-size:12.5px;}
   .addon.checked{border-color:var(--pink); background:var(--pink-pale);}
   .addon.disabled{opacity:.42; cursor:not-allowed;}
 
   .addon{width:100%; text-align:left;}
-  .addon .addon-state{font-size:12px; color:var(--pink-deep); font-weight:700; white-space:nowrap;}
+  .addon .addon-state{font-size:14px; color:var(--pink-deep); font-weight:700; white-space:nowrap;}
   .addon.checked .addon-state{color:var(--pink);}
   .addon[aria-expanded="true"]{border-color:var(--pink); background:var(--pink-pale);}
   .addon .thumbicon.rhine{display:flex; align-items:center; justify-content:center; font-size:18px; color:var(--pink);}
@@ -672,24 +672,24 @@
     filter:drop-shadow(0 10px 14px rgba(58,44,52,.12));}
   .extra-shot.band img{max-height:130px; width:100%; object-fit:cover; filter:none;}
   .extra-name{font-family:var(--lp-script); font-style:italic; font-size:26px; color:var(--pink); line-height:1.05;}
-  .extra-desc{margin:0 0 10px; font-size:12px; line-height:1.45; color:var(--ink-soft);}
+  .extra-desc{margin:0 0 10px; font-size:14px; line-height:1.45; color:var(--ink-soft);}
   .extra .tote-btn{align-self:center; margin-top:auto;}
   .extra-chips{justify-content:center; margin:2px 0 12px; flex-wrap:wrap;}
-  .extra-chips .chip{font-size:12px; padding:5px 10px;}
+  .extra-chips .chip{font-size:14px; padding:5px 10px;}
   .chip .dotc{width:14px; height:14px; border-radius:50%; display:inline-block; border:1px solid rgba(46,36,51,.15);}
-  .rs-note{display:block; width:100%; font-size:11.5px; color:var(--fs-ink-60,#777); margin-top:4px;}
+  .rs-note{display:block; width:100%; font-size:13px; color:var(--fs-ink-60,#777); margin-top:4px;}
 
   .chip-field{grid-column:1 / -1; padding:2px 2px 6px;}
-  .chip-field .cf-label{font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-soft); margin-bottom:7px;}
+  .chip-field .cf-label{font-size:12.5px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-soft); margin-bottom:7px;}
   .chips{display:flex; gap:7px; flex-wrap:wrap;}
-  .chip{border:1.5px solid var(--line); background:var(--paper); border-radius:0; padding:5px 7px; cursor:pointer; display:flex; align-items:center; gap:5px; font-family:inherit; font-size:12px; color:var(--ink-soft);}
+  .chip{border:1.5px solid var(--line); background:var(--paper); border-radius:0; padding:5px 7px; cursor:pointer; display:flex; align-items:center; gap:5px; font-family:inherit; font-size:14px; color:var(--ink-soft);}
   .chip img{width:20px; height:24px; object-fit:contain;}
   .chip.bead img{height:20px;}
   .chip[aria-pressed="true"]{border-color:var(--pink); background:var(--pink-pale); color:var(--pink-deep);}
   .chip:focus-visible{outline:2px solid var(--pink); outline-offset:2px;}
   .initials-field{grid-column:1 / -1; display:flex; align-items:center; gap:10px; padding:2px 2px 6px;}
-  .initials-field label{font-size:12px; color:var(--ink-soft);}
-  .initials-field input{width:82px; padding:7px 9px; border-radius:0; border:1px solid var(--line); background:var(--paper); color:var(--ink); font-family:var(--lp-sans); font-size:13px; text-transform:uppercase;}
+  .initials-field label{font-size:14px; color:var(--ink-soft);}
+  .initials-field input{width:82px; padding:7px 9px; border-radius:0; border:1px solid var(--line); background:var(--paper); color:var(--ink); font-family:var(--lp-sans); font-size:15px; text-transform:uppercase;}
 
   /* Welcome / 10% pop-up: opens over the site as soon as it loads */
   .gate{
@@ -722,23 +722,23 @@
   .gate-logo{width:min(120px,40%); height:auto; display:block; margin:0 auto 14px;}
   .gate-title{font-family:var(--lp-sans); font-weight:700; text-transform:uppercase;
     letter-spacing:.15em; font-size:clamp(25px,5.4vw,33px); color:var(--pink-deep); margin:2px 0 8px;}
-  .gate-sub{margin:0 0 20px; font-size:15px; color:var(--ink-soft); line-height:1.45;}
+  .gate-sub{margin:0 0 20px; font-size:17px; color:var(--ink-soft); line-height:1.45;}
   .gate-card form{display:flex; flex-direction:column; gap:4px; text-align:left;}
-  .gate-card label{font-size:11.5px; letter-spacing:.13em; text-transform:uppercase; color:var(--ink-soft); margin-top:10px;}
+  .gate-card label{font-size:13px; letter-spacing:.13em; text-transform:uppercase; color:var(--ink-soft); margin-top:10px;}
   .gate-card input{padding:11px 12px; border:1px solid var(--line); border-radius:0; background:var(--card);
-    font-family:var(--lp-sans); font-size:15px; color:var(--ink);}
+    font-family:var(--lp-sans); font-size:17px; color:var(--ink);}
   .gate-card input:focus-visible{outline:2px solid var(--pink); outline-offset:1px;}
   .gate-card input.bad{border-color:var(--pink);}
-  .gate-consent{display:flex; align-items:center; gap:8px; margin:12px 0 4px; font-size:13px; text-transform:none; letter-spacing:0;}
+  .gate-consent{display:flex; align-items:center; gap:8px; margin:12px 0 4px; font-size:15px; text-transform:none; letter-spacing:0;}
   .gate-consent input{width:18px; height:18px; margin:0; accent-color:var(--pink);}
   .gate-cta{font-weight:700; text-transform:uppercase; letter-spacing:.14em;}
-  .gate-err{margin:10px 0 0; font-size:13px; color:var(--pink-deep);}
+  .gate-err{margin:10px 0 0; font-size:15px; color:var(--pink-deep);}
   .gate-skip{margin-top:14px; background:none; border:none; color:var(--ink-soft); font-family:var(--lp-sans);
-    font-size:13.5px; text-decoration:underline; cursor:pointer;}
+    font-size:15.5px; text-decoration:underline; cursor:pointer;}
   .gate-skip:hover{color:var(--pink-deep);}
-  .gate-skip.gate-small{display:block; margin:8px auto 0; font-size:12.5px;}
+  .gate-skip.gate-small{display:block; margin:8px auto 0; font-size:14.5px;}
 
-  .wrap > footer{margin-top:30px; padding-top:16px; border-top:1px solid var(--line); font-size:12.5px; color:var(--ink-soft); display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap;}
+  .wrap > footer{margin-top:30px; padding-top:16px; border-top:1px solid var(--line); font-size:14.5px; color:var(--ink-soft); display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap;}
 
   /* ===== Builder in the landing page's look: turquoise page, same fonts, curved boxes ===== */
   body{background-color:var(--aqua);}
@@ -757,7 +757,7 @@
   .price-bar .total,.wait-num{font-family:var(--lp-display); font-weight:400;}
   .gate-title,.fulfil-title,.fo-name{font-family:var(--lp-display); font-weight:400;}
   .gate-title,.fulfil-title{letter-spacing:.06em;}
-  .cta{font-size:12px; font-weight:400; letter-spacing:.18em; text-transform:uppercase;}
+  .cta{font-size:14px; font-weight:400; letter-spacing:.18em; text-transform:uppercase;}
   a.cta.checkout,.gate-cta,.drawer-actions .cta,.tote-btn,.addon .addon-state,.slot[aria-pressed="true"],.base-card .name{font-weight:400;}
 
   /* curved corners, like the glass footer and cart */
@@ -817,6 +817,47 @@
   .cta:hover{background:rgba(58,44,52,.82); color:#fff;}
   a.cta.checkout{background:#fff; color:var(--ink);}
   a.cta.checkout:hover{background:var(--ink); color:#fff;}
+
+  /* ===== brand pass: purple-gradient buttons (no black), light-purple closing footer, clearer type ===== */
+  :root{--btn-grad:linear-gradient(135deg,#4B2470 0%,#7445A3 55%,#A47ACF 100%); --btn-grad-hover:linear-gradient(135deg,#3C1C5C 0%,#663A93 55%,#9468C2 100%); --deep-purple:#4B2470;}
+  .cta,html:not(.prelaunch) .cta,a.cta.checkout,html:not(.prelaunch) a.cta.checkout,.pp-next,html:not(.prelaunch) .lp-btn,.view-toggle button.on,.gate-cta,.lp-wait-btn{
+    background:var(--btn-grad) !important; color:#fff !important; border-color:transparent !important; text-shadow:none !important;}
+  .cta:hover,a.cta.checkout:hover,html:not(.prelaunch) a.cta.checkout:hover,.pp-next:hover,html:not(.prelaunch) .lp-btn:hover,.gate-cta:hover,.lp-wait-btn:hover{
+    background:var(--btn-grad-hover) !important; color:#fff !important;}
+  html .lp-vid .lp-btn{background:#fff !important; color:var(--deep-purple) !important;}
+  html .lp-vid .lp-btn:hover{background:var(--btn-grad) !important; color:#fff !important;}
+  .tote-btn[aria-pressed="true"]{background:#EFDDFD !important; color:var(--deep-purple) !important; border-color:#A47ACF !important;}
+
+  .lp-close-lav{background:#EFDDFD; padding-top:96px !important;}
+  .lp-close-lav .lp-footer{margin-top:72px !important;}
+  .lp-close-lav .lp-close-inner,.lp-close-lav h2{color:var(--deep-purple); text-shadow:none;}
+  .lp-close-lav .lp-close-copy{color:rgba(75,36,112,.85);}
+  .lp-close-lav .lp-signup{border-bottom-color:rgba(75,36,112,.55);}
+  .lp-close-lav .lp-signup input{color:var(--deep-purple);}
+  .lp-close-lav .lp-signup input::placeholder{color:rgba(75,36,112,.55);}
+  .lp-close-lav .lp-signup button{color:var(--deep-purple); font-weight:600;}
+  .lp-close-lav .lp-footer{color:rgba(75,36,112,.8); background:rgba(255,255,255,.45);}
+  .lp-close-lav .lp-foot-logo,.lp-close-lav .lp-foot-links h4,.lp-close-lav .lp-foot-links a:hover,.lp-close-lav .lp-socials a:hover{color:var(--deep-purple);}
+  .lp-close-lav .lp-foot-logo img{height:56px;}
+  .lp-close-lav .lp-foot-bottom{border-top-color:rgba(75,36,112,.15);}
+  .lp-close-lav .lp-foot-bottom p,.lp-close-lav .lp-foot-follow span{opacity:.8;}
+
+  body{-webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;}
+  .addon .label small,.hint,.desc,.extra-desc,.checkout-note,.vt-hint,.cf-note{color:rgba(46,36,51,.78);}
+  .addon .label,.chip,.size-btn,.addon .addon-state,.base-card .name{font-weight:500;}
+  .cf-label{font-weight:600; letter-spacing:.06em; margin-top:10px;}
+  .cf-note{font-size:14px; line-height:1.45; margin:6px 0 2px; font-style:italic;}
+  .chip img{height:26px; width:auto; vertical-align:middle; margin-right:6px;}
+
+  /* checkout pops up as soon as the tote / headband question is answered */
+  .checkout-pop{position:fixed; left:50%; bottom:18px; z-index:60; transform:translate(-50%,140%); width:min(560px,calc(100% - 32px));
+    display:flex; align-items:center; gap:14px; padding:12px 12px 12px 20px; border-radius:999px; background:#fff; box-shadow:0 12px 40px rgba(75,36,112,.28); border:1.5px solid #D9C2F2;
+    transition:transform .35s cubic-bezier(.2,.9,.3,1.2), visibility 0s .35s; visibility:hidden; color:var(--deep-purple);}
+  .checkout-pop.show{transform:translate(-50%,0); visibility:visible; transition:transform .35s cubic-bezier(.2,.9,.3,1.2);}
+  .checkout-pop .cp-total{font-size:18px; line-height:1.15; white-space:nowrap;}
+  .checkout-pop .cp-total small{display:block; font-size:12.5px; letter-spacing:.14em; text-transform:uppercase; opacity:.75;}
+  .checkout-pop .cta{margin:0; flex:1; padding:15px 18px; font-size:15px; letter-spacing:.16em;}
+  @media (prefers-reduced-motion:reduce){ .checkout-pop{transition:none;} }
 </style>
 
 <!-- ================= Landing page =================
@@ -1101,7 +1142,7 @@
             </div>
           </div>
         </section>
-        <button class="cta" id="extrasNext" type="button">CONTINUE TO CHECKOUT</button>
+        <button class="cta" id="extrasNext" type="button">CHECKOUT</button>
         <button class="gate-skip page-back" id="extrasNo" type="button">No thanks</button>
       </div>
 
@@ -1122,13 +1163,16 @@
   </footer>
 </div>
 
+<div class="checkout-pop" id="checkoutPop" aria-live="polite">
+  <div class="cp-total"><small>Your total</small><span id="cpTotal">$95.00</span></div>
+  <button class="cta" id="cpBtn" type="button" tabindex="-1">CHECKOUT</button>
+</div>
+
 <!-- Shared footer (landing page and builder) -->
-<section class="lp lp-close">
-  <img class="lp-close-bg" src="photos/tower-standing.jpg" alt="" loading="lazy">
-  <div class="lp-close-tint"></div>
+<section class="lp lp-close lp-close-lav">
   <div class="lp-close-inner">
     <div class="lp-reveal">
-      <h2>See you on <i>the sand.</i></h2>
+      <h2>Design Your Peaces, <i>Design Your Dream</i></h2>
       <p class="lp-close-copy">Start with your email and we'll take 10% off your first design.</p>
       <form class="lp-signup" id="lpSignup" novalidate>
         <label class="lp-sr" for="lpEmail">Email address</label>
@@ -1140,7 +1184,7 @@
     <footer class="liquid-glass lp-footer lp-reveal">
       <div class="lp-foot-top">
         <div class="lp-foot-brand">
-          <div class="lp-foot-logo"><img src="art/logo-ps.png" alt=""><span>Peaces Swim</span></div>
+          <div class="lp-foot-logo"><img src="art/logo-ps-leopard.png" alt=""><span>Peaces Swim</span></div>
           <p>Peaces Swim is design-your-own swimwear. Pick your peaces, add lace, ties and charms, and we'll make a bikini that's entirely yours.</p>
         </div>
         <!-- TODO: placeholder links (#) until those pages exist -->
@@ -1248,42 +1292,45 @@
   var CHARMS_B=[["cg-heart","Clear heart"],["cg-clearrect","Clear rectangle"],["cg-halo","Clear rhinestone frame"],["cg-pinkbaguette","Pink rectangle"],["cg-pinksquare","Pink square"]];
   var CHARMS_P=[["cp-shell","Shell"],["cp-hamsa","Evil eye"],["cp-boot","Boots"],["cp-tag","Diamond star"],["cp-pearls","Plain pearl"],["cp-rainbow","Rainbow"]];
 
+  var LACE_COLORS=[["white","White"],["pink","Pink"],["turq","Blue"],["green","Mint"],["coral","Coral"],["black","Black"]];
+  /* premium clasps attach a charm to the suit; without one it hangs from a plain 7mm ring */
+  var CLASPS=[["plain","Plain 7mm ring — included"],["cn-big-gold","Big gold +$10","cn-big-gold"],["cn-skinny-gold","Skinny gold +$10","cn-skinny-gold"],["cn-skinny-rhinestone","Skinny rhinestone +$10","cn-skinny-rhinestone"],["cn-small-rhinestone","Small rhinestone +$10","cn-small-rhinestone"]];
   /* every add-on opens to choose a colour/finish, then Add to cart */
   var ADDONS=[
-    {id:"beadsAcrylic",tier:1,price:5, name:"Acrylic beads", hint:"Glossy beads on the straps",
+    {id:"beadsAcrylic",tier:1,price:5, name:"Acrylic beads", hint:"On the straps or center front",
       opts:BEADS_A, art:function(v){return "ba-"+v;}, def:"pink"},
-    {id:"beadsIri", tier:1,price:5, name:"Iridescent beads", hint:"Pearly-shine beads on the straps",
+    {id:"beadsIri", tier:1,price:5, name:"Iridescent beads", hint:"On the straps or center front",
       opts:BEADS_I, art:function(v){return "bi-"+v;}, def:"pale-pink"},
-    {id:"beadsWavy",tier:1,price:5, name:"Wavy beads",     hint:"Organic ring beads on the straps",
+    {id:"beadsWavy",tier:1,price:5, name:"Wavy beads",     hint:"On the straps or center front",
       opts:BEADS_W, art:function(v){return "bw-"+v;}, def:"pink"},
-    {id:"beadsPearl",tier:1,price:5, name:"Pearl beads",   hint:"Pearls on the straps",
+    {id:"beadsPearl",tier:1,price:5, name:"Pearl beads",   hint:"On the straps or center front",
       opts:[["16mm","16 mm"],["20mm","20 mm"]], art:function(v){return "bp-"+v;}, def:"16mm"},
     {id:"bows",    tier:1,price:5, name:"Mini bows",      hint:"1 center or 2 on the straps",
       opts:[["pink","Light pink"],["white","White"]], art:function(v){return "p-bow-"+v;}, def:"pink"},
     {id:"roses",   tier:1,price:5, name:"Mini roses",     hint:"1 center or 2 on the straps",
       opts:[["pink","Pink"]], art:function(){return "p-rose";}, def:"pink"},
-    {id:"laceRuffles",tier:1,price:5, name:"Lace ruffles", hint:"Lace ruffle along the edges",
-      opts:[["white","White"],["pink","Pink"]], art:function(v){return "p-laceruffle-"+v;}, def:"white"},
-    {id:"fringe",  tier:1,price:5, name:"Fringe",         hint:"Swingy fringe along the edges",
+    {id:"laceRuffles",tier:1,price:5, name:"Lace ruffles", hint:"Cups or straps · bottom front, sides or all around",
+      opts:LACE_COLORS, art:function(v){return "p-laceruffle-"+v;}, def:"white"},
+    {id:"fringe",  tier:1,price:5, name:"Fringe",         hint:"Same spots as the lace",
       opts:[["match","Matching"],["white","White"],["gold","Gold"]], art:function(v){return "fringe-"+v;}, def:"match"},
     {id:"charmsB", tier:2,price:10, name:"Gem charms",     hint:"Crystal & pink gem drops",
       opts:CHARMS_B, art:function(v){return v;}, def:"cg-heart"},
     {id:"charmsP", tier:3,price:15, name:"Premium charms", hint:"Gold & pearl dangles",
       opts:CHARMS_P, art:function(v){return v;}, def:"cp-shell"},
-    {id:"rhinestones",tier:2,price:10,name:"Rhinestones", hint:"Your initial in crystals · $10 per letter",
+    {id:"rhinestones",tier:2,price:10,name:"Rhinestones", hint:"Top left, top right or back of the bottoms · $10 per letter",
       opts:[["script","Script"]], art:function(){return "";}, def:"script"},
     {id:"extTies", tier:2,price:10, name:"Extended ties",  hint:"Matching wrap ties · 2 ways to wear",
       opts:[["match","Matching fabric"]], art:function(){return "";}, def:"match"},
     {id:"laceTrim",tier:3,price:15,name:"Lace trim",      hint:"Top edges · add the bottom",
-      opts:[["white","White"],["pink","Pink"],["turq","Blue"],["green","Mint"],["coral","Coral"]],
+      opts:LACE_COLORS,
       art:function(v){return "p-lacetrim-"+v;}, def:"white"},
     {id:"ruffles", tier:3,price:15,name:"Ruffles",        hint:"Along the edges",
       opts:[["pink","Pink"],["green","Green"],["turq","Turquoise"],["coral","Coral"]],
       art:function(v){return "p-ruffle-"+v;}, def:"pink"},
     {id:"initials",tier:2,price:10,name:"Letter charms",  hint:"Hanging A–Z charms · $10 per letter",
       opts:[["clear","Clear"]], art:function(){return "";}, def:"clear"},
-    {id:"connectors",tier:2,price:10,name:"Connectors",   hint:"Center front · add 2 on the bottom",
-      opts:[["c-heartring","Heart"],["cn-goldring","Gold ring"],["cn-pinkring","Pink ring"],["cn-bluering","Blue ring"],["cn-big-gold","Big gold"],["cn-skinny-gold","Skinny gold"],["cn-skinny-rhinestone","Skinny rhinestone"],["cn-small-rhinestone","Small rhinestone"]],
+    {id:"connectors",tier:2,price:10,name:"Connectors",   hint:"Center front · 2 on the bottom · add extended ties",
+      opts:[["c-heartring","Heart"],["cn-goldring","Gold ring"],["cn-pinkring","Pink ring"],["cn-bluering","Blue ring"]],
       art:function(v){return v;}, def:"c-heartring"}
   ];
   /* per-add-on choices (placement, quantity, metal) and the price rules — mirrored in lib/catalog.js */
@@ -1294,12 +1341,19 @@
     beadsPearl:[["sets","How many",[["1","3 beads"],["2","6 beads"],["3","9 beads"],["4","12 beads"]]],["where","Where",[["center","Center front"],["straps","Halter straps"],["both","Center + straps"],["ties","On the extended ties"]]]],
     bows:[["top","On the top",[["center","1 in the center"],["straps","2 on the straps"]]],["bottom","Bottom",[["no","None"],["center","1 center front"]]]],
     roses:[["top","On the top",[["center","1 in the center"],["straps","2 on the straps"]]],["bottom","Bottom",[["no","None"],["center","1 center front"]]]],
-    rhinestones:[["metal","Finish",[["silver","Silver"],["gold","Gold"]]],["place","Placement",[["one","One cup"],["both","Both cups"]]]],
+    rhinestones:[["metal","Finish",[["silver","Silver"],["gold","Gold"]]],["place","Placement",[["left","Top · left side"],["right","Top · right side"],["both","Top · both sides (×2)"],["back","Back of the bottoms"]]]],
+    laceRuffles:[["edge","On the top",[["cups","Along the cups"],["straps","On the straps"]]],["lower","On the bottom",[["front","Front"],["sides","Sides"],["around","All the way around"],["none","Top only"]]]],
+    fringe:[["edge","On the top",[["hem","Along the bottom edge"],["straps","On the straps"]]],["lower","On the bottom",[["front","Front"],["sides","Sides"],["around","All the way around"],["none","Top only"]]]],
+    charmsB:[["clasp","Clasp",CLASPS]],
+    charmsP:[["clasp","Clasp",CLASPS]],
     laceTrim:[["bottom","Bottom",[["none","Top only"],["front","Front only +$5"],["around","All the way around +$10"]]]],
     extTies:[["style","How they wrap",[["1","Under the bust"],["2","Crisscross at the waist"]]]],
-    connectors:[["bottom","Bottom",[["no","Top only"],["two","2 on the bottom +$15"]]]]
+    connectors:[["bottom","Bottom",[["no","Top only"],["two","2 on the bottom +$15"]]],["ties","Extended ties",[["no","No ties"],["yes","Add extended ties +$10"]]]]
   };
-  function cfg(id,key){ var c=state.cfg[id]||{}; if(c[key]!==undefined) return c[key]; var g=(SETTINGS[id]||[]).filter(function(x){return x[0]===key;})[0]; return g?g[2][0][0]:null; }
+  /* settings that live on the design but aren't charged inside their own add-on */
+  var LINKED={connectors:{ties:function(v){ if(v==="yes") state.addons.extTies=true; else delete state.addons.extTies; }}};
+  var CLASP_NOTE='No premium clasp? Your charm comes on a plain 7mm clasp ring that attaches it to your suit.';
+  function cfg(id,key){ if(id==="connectors"&&key==="ties") return state.addons.extTies?"yes":"no"; var c=state.cfg[id]||{}; if(id==="rhinestones"&&key==="place"&&c.place==="one") return "left"; if(c[key]!==undefined) return c[key]; var g=(SETTINGS[id]||[]).filter(function(x){return x[0]===key;})[0]; return g?g[2][0][0]:null; }
   function letterCount(){ return Math.max(1,(state.initials||"").replace(/[^A-Za-z]/g,"").slice(0,3).length); }
   function rsCount(){ return Math.max(1,(state.rsText||"").replace(/[^A-Za-z]/g,"").slice(0,3).length); }
   function priceOf(id){
@@ -1309,10 +1363,11 @@
     if(id==="rhinestones") p=10*rsCount()*(cfg(id,"place")==="both"?2:1);
     if(id==="laceTrim") p+= {none:0,front:5,around:10}[cfg(id,"bottom")];
     if(id==="connectors" && cfg(id,"bottom")==="two") p+=15;
+    if((id==="charmsB"||id==="charmsP") && cfg(id,"clasp")!=="plain") p+=10;
     return p;
   }
   function cfgText(id){
-    return (SETTINGS[id]||[]).map(function(g){ var v=cfg(id,g[0]); return g[2].filter(function(o){return o[0]===v;})[0][1].replace(/ \+\$\d+/,""); }).join(", ");
+    return (SETTINGS[id]||[]).filter(function(g){ return !(LINKED[id]&&LINKED[id][g[0]]); }).map(function(g){ var v=cfg(id,g[0]); return g[2].filter(function(o){return o[0]===v;})[0][1].replace(/ \+\$\d+/,""); }).join(", ");
   }
   function addonDef(id){ return ADDONS.filter(function(a){return a.id===id;})[0]; }
   function variantOf(id){ var a=addonDef(id); return state.variant[id]||a.def; }
@@ -1333,7 +1388,7 @@
   /* geometry measured from the photo cut-outs (3x the source photo), in artwork pixels */
   var GEO={
     "b-triangle-top":{"w":441,"h":441,"k":0.83,"cupL":[118,352],"cupR":[324,352],"tie1":[[221,428],[150,515],[-14,470]],"strapL":[160,95],"strapR":[275,90],"junctionL":[107,236],"junctionR":[332,236],"strapRunL":[[160,100],[110,230]],"strapRunR":[[275,95],[330,230]],"outerL":[14,418],"outerR":[432,418],"center":[221,418],"centerHigh":[221,405],"trimSegs":[[107,236,196,410],[246,410,332,236]]},
-    "b-triangle-bottom":{"w":461,"h":311,"k":0.83,"hipL":[93,54],"hipR":[371,40],"tieTopL":[11,12],"tieTopR":[450,12],"strapRunL":[[14,14],[90,52]],"strapRunR":[[447,14],[371,40]],"center":[222,56],"mono":[222,130],"trimSegs":[[93,54,222,56],[222,56,371,40]]},
+    "b-triangle-bottom":{"w":461,"h":311,"k":0.83,"hipL":[93,54],"hipR":[371,40],"tieTopL":[11,12],"tieTopR":[450,12],"strapRunL":[[14,14],[90,52]],"strapRunR":[[447,14],[371,40]],"center":[222,56],"mono":[222,130],"trimSegs":[[93,54,222,56],[222,56,371,40]],"legs":[[95,62,146,185],[146,185,192,290],[368,50,316,185],[316,185,266,290]]},
     "b-underwire-top":{"w":602,"h":610,"k":0.537,"cupDrop":1,"cupL":[150,462],"cupR":[452,462],"tie1":[[298,425],[205,560],[-14,505]],"hem":[[24,480,300,492],[300,492,578,480]],"strapL":[261,24],"strapR":[354,24],"junctionL":[75,322],"junctionR":[531,322],"strapRunL":[[242,61],[93,305]],"strapRunR":[[363,61],[518,305]],"outerL":[22,404],"outerR":[581,404],"center":[298,397],"centerHigh":[298,373],"trimSegs":[[15,340,298,380],[298,380,587,335]]},
     "b-seamless-bottom":{"w":600,"h":396,"k":0.537,"hipL":[22,26],"hipR":[578,22],"tieTopL":[18,15],"tieTopR":[582,11],"strapRunL":[[22,26],[37,73]],"strapRunR":[[578,22],[563,73]],"center":[302,66],"mono":[302,173],"trimSegs":[[22,18,302,62],[302,62,576,15]]}
   };
@@ -1355,25 +1410,66 @@
     if(cheetah) el("path",{d:d,fill:"none",stroke:"#3B2416","stroke-width":tw*0.7,"stroke-dasharray":(tw*0.9)+" "+(tw*1.4),"stroke-linecap":"round"},svg);
     else el("path",{d:d,fill:"none",stroke:"rgba(255,255,255,.35)","stroke-width":tw*0.35,"stroke-linecap":"round",transform:"translate(0,-"+(tw*0.18)+")"},svg);
   }
-  function tiePoints(g,W,H){ // points along each tie, used for beads too
+  /* extended ties start at both ends of the underband and wrap round the body:
+     style 1 ties in a bow at the center front under the bust, style 2 crisscrosses over the waist */
+  function tieEnds(g){
+    var L=g.hem?[g.hem[0][0]+4,g.hem[0][1]-6]:[g.outerL[0]+4,g.outerL[1]-2];
+    var R=g.hem?[g.hem[1][2]-4,g.hem[1][3]-6]:[g.outerR[0]-4,g.outerR[1]-2];
+    return [L,R];
+  }
+  function tiePoints(g,W,H){ // straight runs along each tie, used to place beads
+    var e=tieEnds(g), L=e[0], R=e[1], cx=g.center[0], yb=Math.max(L[1],R[1]);
     if(cfg("extTies","style")==="2"){
-      var y0=H*1.02, y1=H*1.1, L=g.outerL[0]-W*0.04, R=g.outerR[0]+W*0.04;
-      return [[[L,y0],[R,y1]],[[R,y0],[L,y1]]];
+      var y2=yb+H*0.3;
+      return [[L,[R[0]-W*0.06,y2]],[R,[L[0]+W*0.06,y2]]];
     }
-    var t=g.tie1, mx=W-t[0][0]; // mirror around the centre knot
-    var c=t[0], m=t[1], e=t[2], cx=g.center[0];
-    return [[c,m,e],[[c[0],c[1]],[2*cx-m[0],m[1]],[2*cx-e[0],e[1]]]];
+    var K=[cx,yb+H*0.07];
+    return [[L,K],[R,K]];
   }
   function drawTies(svg,g,W,H){
-    var P=tiePoints(g,W,H);
+    var e=tieEnds(g), L=e[0], R=e[1], cx=g.center[0], yb=Math.max(L[1],R[1]);
     if(cfg("extTies","style")==="2"){
-      tieStroke(svg,"M"+(g.outerL[0]-W*0.04)+","+(H*0.99)+" L"+(g.outerR[0]+W*0.04)+","+(H*0.99),W); // band under the cups
-      P.forEach(function(l){ tieStroke(svg,"M"+l[0][0]+","+l[0][1]+" L"+l[1][0]+","+l[1][1],W); });
-    } else {
-      P.forEach(function(l){ tieStroke(svg,"M"+l[0][0]+","+l[0][1]+" Q"+l[1][0]+","+(l[1][1]+H*0.04)+" "+l[2][0]+","+l[2][1],W); });
+      var y1=yb+H*0.15, y2=yb+H*0.3;
+      // two long ties cross at the center front and wrap round to the opposite hip
+      tieStroke(svg,"M"+L[0]+","+L[1]+" C"+(L[0]+W*0.25)+","+(yb+H*0.05)+" "+(cx-W*0.12)+","+(y1-H*0.05)+" "+cx+","+y1+" S"+(R[0]-W*0.12)+","+(y2-H*0.02)+" "+(R[0]-W*0.06)+","+y2,W);
+      tieStroke(svg,"M"+R[0]+","+R[1]+" C"+(R[0]-W*0.25)+","+(yb+H*0.05)+" "+(cx+W*0.12)+","+(y1-H*0.05)+" "+cx+","+y1+" S"+(L[0]+W*0.12)+","+(y2-H*0.02)+" "+(L[0]+W*0.06)+","+y2,W);
+      [[L[0]+W*0.06,y2],[R[0]-W*0.06,y2]].forEach(function(p){ tieKnot(svg,p[0],p[1],W); });
+      return;
     }
+    // style 1: both ties sweep in under the bust and finish in a bow at the center front
+    var K=[cx,yb+H*0.07];
+    tieStroke(svg,"M"+L[0]+","+L[1]+" Q"+((L[0]+cx)/2)+","+(K[1]+H*0.03)+" "+K[0]+","+K[1],W);
+    tieStroke(svg,"M"+R[0]+","+R[1]+" Q"+((R[0]+cx)/2)+","+(K[1]+H*0.03)+" "+K[0]+","+K[1],W);
+    var lw=W*0.09, lh=H*0.06;
+    tieStroke(svg,"M"+cx+","+K[1]+" C"+(cx-lw*0.6)+","+(K[1]-lh)+" "+(cx-lw*1.2)+","+(K[1]-lh*0.6)+" "+(cx-lw)+","+(K[1]+lh*0.1)+" C"+(cx-lw*0.8)+","+(K[1]+lh*0.6)+" "+(cx-lw*0.3)+","+(K[1]+lh*0.3)+" "+cx+","+K[1],W);
+    tieStroke(svg,"M"+cx+","+K[1]+" C"+(cx+lw*0.6)+","+(K[1]-lh)+" "+(cx+lw*1.2)+","+(K[1]-lh*0.6)+" "+(cx+lw)+","+(K[1]+lh*0.1)+" C"+(cx+lw*0.8)+","+(K[1]+lh*0.6)+" "+(cx+lw*0.3)+","+(K[1]+lh*0.3)+" "+cx+","+K[1],W);
+    var t1=[cx-W*0.05,K[1]+H*0.2], t2=[cx+W*0.045,K[1]+H*0.22];
+    tieStroke(svg,"M"+cx+","+K[1]+" Q"+(cx-W*0.01)+","+(K[1]+H*0.1)+" "+t1[0]+","+t1[1],W);
+    tieStroke(svg,"M"+cx+","+K[1]+" Q"+(cx+W*0.015)+","+(K[1]+H*0.11)+" "+t2[0]+","+t2[1],W);
+    tieKnot(svg,cx,K[1],W*1.25); tieKnot(svg,t1[0],t1[1],W); tieKnot(svg,t2[0],t2[1],W);
+  }
+  function tieKnot(svg,x,y,W){
+    var cheetah=colorOf("top").fill==="leopard", r=W*0.017;
+    el("circle",{cx:x,cy:y,r:r+0.8,fill:"rgba(46,36,51,.3)"},svg);
+    el("circle",{cx:x,cy:y,r:r,fill:cheetah?"#9C6E44":fabricHex("top")},svg);
+    el("circle",{cx:x-r*0.3,cy:y-r*0.35,r:r*0.35,fill:"rgba(255,255,255,.35)"},svg);
   }
   function dropSeg(sg,d){ return [sg[0],sg[1]+d,sg[2],sg[3]+d]; }
+  function runSeg(run){ var sg=[run[0][0],run[0][1],run[1][0],run[1][1]]; sg.side=1; return sg; }
+  function sideSegs(g){ return g.strapRunL ? [runSeg(g.strapRunL),runSeg(g.strapRunR)] : []; }
+  /* where lace ruffles / fringe sit: the cups (or hem) or the straps on the top; front, sides or all around on the bottom */
+  function spotSegs(g,isTop,id){
+    if(isTop){
+      if(cfg(id,"edge")==="straps") return sideSegs(g);
+      if(id==="laceRuffles") return g.trimSegs;
+      return g.hem ? g.hem : [[g.outerL[0],g.outerL[1],g.center[0],Math.max(g.center[1],g.outerL[1])],[g.center[0],Math.max(g.center[1],g.outerR[1]),g.outerR[0],g.outerR[1]]];
+    }
+    var lw=cfg(id,"lower");
+    if(lw==="none") return [];
+    if(lw==="sides") return sideSegs(g);
+    if(lw==="around") return g.trimSegs.concat(sideSegs(g),id==="laceRuffles"?(g.legs||[]):[]);
+    return g.trimSegs;
+  }
   function strapMid(run){ return [(run[0][0]+run[1][0])/2,(run[0][1]+run[1][1])/2]; }
   function fringeMatch(part){ var c=colorOf(part); return c.fill==="leopard"?"#7A5232":c.fill; }
   function fabricHex(part){ var c=colorOf(part); return c.fill==="leopard"?"#E2BA84":c.fill; }
@@ -1441,7 +1537,7 @@
     if(!opts.thumb){
       var svg=el("svg",{class:"deco",viewBox:"0 0 "+g.w+" "+g.h,"aria-hidden":"true"});
       wrap.appendChild(svg);
-      if(!opts.back) decorate(svg,artName,g);
+      if(!opts.back) decorate(svg,artName,g); else decorateBack(svg,artName.replace(/-back$/,""),g);
       var chip=document.createElement("span");
       chip.className="size-chip";
       chip.textContent=(artName.indexOf("top")>-1?state.sizeTop:state.sizeBottom);
@@ -1450,6 +1546,38 @@
     return wrap;
   }
 
+  function fringeOn(svg,sg,fl,W,fv,match){ // strands hanging from one edge
+    var fc=fv==="white"?"#FFFFFF":fv==="gold"?"#C9A24A":match, fw=Math.max(W*0.006,1.4), gap=W*0.016;
+    var dx=sg[2]-sg[0], dy=sg[3]-sg[1], len=Math.sqrt(dx*dx+dy*dy), n=Math.max(2,Math.round(len/gap));
+    for(var fi=0;fi<=n;fi++){
+      var t=fi/n, x=sg[0]+dx*t, y=sg[1]+dy*t, sw=Math.sin(fi*1.7+x)*fl*0.06, ln=fl*(0.9+0.1*Math.sin(fi*2.3));
+      var d="M"+x+","+y+" q"+(sw)+","+(ln*0.5)+" "+(sw*0.4)+","+ln;
+      if(fv==="white") el("path",{d:d,stroke:"rgba(46,36,51,.25)","stroke-width":fw+1.2,fill:"none","stroke-linecap":"round"},svg);
+      el("path",{d:d,stroke:fc,"stroke-width":fw,fill:"none","stroke-linecap":"round"},svg);
+    }
+  }
+  function rhinestoneText(svg,spots,W){
+    var rt=(state.rsText||"").replace(/[^A-Za-z]/g,"").slice(0,3)||"K";
+    var gold=cfg("rhinestones","metal")==="gold", col=gold?"#E6C46A":"#EEF1F6", fs=W*(rt.length>1?0.13:0.17);
+    spots.forEach(function(pt){
+      var common={x:pt[0],y:pt[1],"font-family":"'Pinyon Script','Snell Roundhand',cursive","font-size":fs,"text-anchor":"middle",fill:"none","stroke-linecap":"round"};
+      var sh=el("text",Object.assign({},common,{stroke:"rgba(46,36,51,.35)","stroke-width":fs*0.07,"stroke-dasharray":"0 "+(fs*0.085)}),svg); sh.textContent=rt;
+      var t=el("text",Object.assign({},common,{stroke:col,"stroke-width":fs*0.055,"stroke-dasharray":"0 "+(fs*0.085)}),svg); t.textContent=rt;
+      var hi=el("text",Object.assign({},common,{stroke:"#FFFFFF","stroke-width":fs*0.022,"stroke-dasharray":"0 "+(fs*0.085)}),svg); hi.textContent=rt;
+      });
+  }
+  /* back view: rhinestones across the top of the bottoms, lace / fringe that goes all the way around */
+  var BACKGEO={"b-triangle-bottom":{rs:[229,100],trimSegs:[[93,50,229,56],[229,56,368,46]],legs:[[95,58,150,190],[150,190,202,292],[368,52,310,190],[310,190,256,292]]},
+               "b-seamless-bottom":{rs:[290,62],trimSegs:[[14,20,290,88],[290,88,566,18]]}};
+  function decorateBack(svg,artName,g){
+    var part=partOfArt(artName), bg=BACKGEO[artName], W=g.w, H=g.h;
+    function on(id){ return (state.addons[id]||state.preview===id) && allows(part,id); }
+    if(part!=="bottom"||!bg) return;
+    if(on("laceTrim") && cfg("laceTrim","bottom")==="around") bg.trimSegs.concat(bg.legs||[]).forEach(function(sg){ strip(svg,"p-lacetrim-"+variantOf("laceTrim"),dropSeg(sg,W*0.04),W*0.08); });
+    if(on("laceRuffles") && cfg("laceRuffles","lower")==="around") bg.trimSegs.concat(bg.legs||[]).forEach(function(sg){ strip(svg,"p-laceruffle-"+variantOf("laceRuffles"),sg,H*0.12); });
+    if(on("fringe") && cfg("fringe","lower")==="around") bg.trimSegs.forEach(function(sg){ fringeOn(svg,sg,H*0.13,W,variantOf("fringe"),fringeMatch("bottom")); });
+    if(on("rhinestones") && cfg("rhinestones","place")==="back") rhinestoneText(svg,[bg.rs],W*0.85);
+  }
   function decorate(svg,artName,g){
     var A=state.addons, part=partOfArt(artName), isTop=(part==="top");
     var tie=styleOf(part).ties;
@@ -1461,23 +1589,17 @@
 
     /* ruffle + trim lace run along the cup edges / waistband */
     if(on("ruffles")) g.trimSegs.forEach(function(sg){ strip(svg,"p-ruffle-"+variantOf("ruffles"),sg,H*0.135); });
-    if(on("laceTrim") && (isTop || cfg("laceTrim","bottom")!=="none")) g.trimSegs.forEach(function(sg){ strip(svg,"p-lacetrim-"+variantOf("laceTrim"),dropSeg(sg,(isTop&&!g.cupDrop?0:(isTop?W*0.12:W*0.1))*0.5),(isTop?W*0.12:W*0.1)); });
-    if(on("laceRuffles")) g.trimSegs.forEach(function(sg){ strip(svg,"p-laceruffle-"+variantOf("laceRuffles"),sg,H*0.14); });
+    if(on("laceTrim") && (isTop || cfg("laceTrim","bottom")!=="none")){
+      var lth=isTop?W*0.12:W*0.1;
+      g.trimSegs.forEach(function(sg){ strip(svg,"p-lacetrim-"+variantOf("laceTrim"),dropSeg(sg,(isTop&&!g.cupDrop?0:lth)*0.5),lth); });
+      if(!isTop && cfg("laceTrim","bottom")==="around") sideSegs(g).concat(g.legs||[]).forEach(function(sg){ strip(svg,"p-lacetrim-"+variantOf("laceTrim"),sg,lth*0.8); });
+    }
+    if(on("laceRuffles")) spotSegs(g,isTop,"laceRuffles").forEach(function(sg){ strip(svg,"p-laceruffle-"+variantOf("laceRuffles"),sg,(sg.side?H*0.1:H*0.14)); });
 
     /* fringe — strands hanging from the bottom edge of the top / the waistband of the bottom */
     if(on("fringe")){
-      var fv=variantOf("fringe"), fc=fv==="white"?"#FFFFFF":fv==="gold"?"#C9A24A":fringeMatch(part);
-      var segs=g.hem ? g.hem : isTop ? [[g.outerL[0],g.outerL[1],g.center[0],Math.max(g.center[1],g.outerL[1])],[g.center[0],Math.max(g.center[1],g.outerR[1]),g.outerR[0],g.outerR[1]]] : g.trimSegs;
-      var fl=H*(isTop?0.09:0.13), fw=Math.max(W*0.006,1.4), gap=W*0.016;
-      segs.forEach(function(sg){
-        var dx=sg[2]-sg[0], dy=sg[3]-sg[1], len=Math.sqrt(dx*dx+dy*dy), n=Math.max(2,Math.round(len/gap));
-        for(var fi=0;fi<=n;fi++){
-          var t=fi/n, x=sg[0]+dx*t, y=sg[1]+dy*t, sw=Math.sin(fi*1.7+x)*fl*0.06, ln=fl*(0.9+0.1*Math.sin(fi*2.3));
-          var d="M"+x+","+y+" q"+(sw)+","+(ln*0.5)+" "+(sw*0.4)+","+ln;
-          if(fv==="white") el("path",{d:d,stroke:"rgba(46,36,51,.25)","stroke-width":fw+1.2,fill:"none","stroke-linecap":"round"},svg);
-          el("path",{d:d,stroke:fc,"stroke-width":fw,fill:"none","stroke-linecap":"round"},svg);
-        }
-      });
+      var fl=H*(isTop?0.09:0.13);
+      spotSegs(g,isTop,"fringe").forEach(function(sg){ fringeOn(svg,sg,sg.side?fl*0.7:fl,W,variantOf("fringe"),fringeMatch(part)); });
     }
 
     /* beads — along the straps and across the center front */
@@ -1504,17 +1626,32 @@
       if(groups.ties.length){
         var TP=tiePoints(g,W,H), TL=[],TR=[]; groups.ties.forEach(function(nm,ix){ (ix%2?TR:TL).push(nm); });
         [[TP[0],TL],[TP[1],TR]].forEach(function(q){ var a=q[0][0], b=q[0][1];
-          q[1].forEach(function(nm,ix){ var t=0.18+ix*0.12; img(svg,nm,a[0]+(b[0]-a[0])*t,a[1]+(b[1]-a[1])*t,bs*0.85,bs*0.85,0); }); });
+          q[1].forEach(function(nm,ix){ var t=0.3+ix*0.11; img(svg,nm,a[0]+(b[0]-a[0])*t,a[1]+(b[1]-a[1])*t,bs*0.8,bs*0.8,0); }); });
       }
+    }
+    /* every charm hangs from a clasp: a plain 7mm ring, or the premium clasp the customer picked */
+    function clasp(id,x,y){
+      var c=cfg(id,"clasp");
+      if(c==="plain"||!c){ var r=W*0.016;
+        el("circle",{cx:x,cy:y+r,r:r,fill:"none",stroke:"rgba(46,36,51,.35)","stroke-width":r*0.55},svg);
+        el("circle",{cx:x,cy:y+r,r:r,fill:"none",stroke:"#D8B565","stroke-width":r*0.38},svg);
+        return y+r*1.6; }
+      var h=W*0.13, w=h*0.42; img(svg,c,x,y+h/2,w,h,0); return y+h*0.9;
     }
     if(on("charmsP")){
       var ph=W*0.30; // premium charms are long dangles, sized off the piece width
       var withTies=(A.extTies||state.preview==="extTies") && addonAvailable("extTies");
+      function hangC(x,y,h){ hang(svg,variantOf("charmsP"),x,clasp("charmsP",x,y),h); }
       if(withTies){ // with extended ties: a single charm hanging down the middle of the top
-        if(isTop) hang(svg,variantOf("charmsP"),g.center[0],g.center[1]-6,W*0.36);
+        if(isTop) hangC(g.center[0],g.center[1]-6,W*0.36);
       }
-      else if(isTop){ hang(svg,variantOf("charmsP"),g.outerL[0]+6,g.outerL[1]-10,ph); hang(svg,variantOf("charmsP"),g.outerR[0]-6,g.outerR[1]-10,ph); }
-      else { hang(svg,variantOf("charmsP"),g.hipL[0]-2,g.hipL[1]-2,ph); hang(svg,variantOf("charmsP"),g.hipR[0]+2,g.hipR[1]-2,ph); }
+      else if(isTop){ hangC(g.outerL[0]+6,g.outerL[1]-10,ph); hangC(g.outerR[0]-6,g.outerR[1]-10,ph); }
+      else { hangC(g.hipL[0]-2,g.hipL[1]-2,ph); hangC(g.hipR[0]+2,g.hipR[1]-2,ph); }
+    }
+    /* gem charm — one in the middle of the top */
+    if(on("charmsB") && isTop){
+      var gy=clasp("charmsB",g.center[0],g.center[1]-4);
+      hang(svg,variantOf("charmsB"),g.center[0],gy,W*0.15);
     }
 
     /* key ring — center front on the top, hips on the bottom */
@@ -1548,16 +1685,10 @@
     }
 
     if(on("rhinestones") && isTop && g.cupL){
-      var rt=(state.rsText||"").replace(/[^A-Za-z]/g,"").slice(0,3)||"K";
-      var gold=cfg("rhinestones","metal")==="gold", col=gold?"#E6C46A":"#EEF1F6", fs=W*(rt.length>1?0.13:0.17);
-      var spots=cfg("rhinestones","place")==="both"?[g.cupL,g.cupR]:[g.cupL];
-      spots.forEach(function(pt){
-        var common={x:pt[0],y:pt[1],"font-family":"'Pinyon Script','Snell Roundhand',cursive","font-size":fs,"text-anchor":"middle",fill:"none","stroke-linecap":"round"};
-        var sh=el("text",Object.assign({},common,{stroke:"rgba(46,36,51,.35)","stroke-width":fs*0.07,"stroke-dasharray":"0 "+(fs*0.085)}),svg); sh.textContent=rt;
-        var t=el("text",Object.assign({},common,{stroke:col,"stroke-width":fs*0.055,"stroke-dasharray":"0 "+(fs*0.085)}),svg); t.textContent=rt;
-        var hi=el("text",Object.assign({},common,{stroke:"#FFFFFF","stroke-width":fs*0.022,"stroke-dasharray":"0 "+(fs*0.085)}),svg); hi.textContent=rt;
-      });
+      var rp=cfg("rhinestones","place");
+      rhinestoneText(svg,rp==="both"?[g.cupL,g.cupR]:rp==="right"?[g.cupR]:rp==="left"?[g.cupL]:[],W);
     }
+
     if(on("initials") && !isTop){
       var letters=(state.initials||"").toUpperCase().replace(/[^A-Z]/g,"").slice(0,3).split("");
       var lh=W*0.17, lw=lh*0.62, gap=lw*1.08, x0=g.mono[0]-gap*(letters.length-1)/2;
@@ -1584,7 +1715,7 @@
     cc.classList.toggle("is-zero",!nAdd);
     var vt=document.getElementById("viewToggle");
     vt.hidden=!hasBack;
-    rig.classList.toggle("wrap-waist", !!(state.addons.extTies||state.preview==="extTies") && cfg("extTies","style")==="2");
+    rig.classList.toggle("wrap-waist", !!(state.addons.extTies||state.preview==="extTies") && allows("top","extTies") && !back);
     vt.querySelectorAll("button").forEach(function(b){ var on=b.dataset.view===state.view; b.classList.toggle("on",on); b.setAttribute("aria-pressed",on); });
     document.getElementById("styleName").textContent=
       styleOf("top").name+" · "+styleOf("bottom").name;
@@ -1621,6 +1752,7 @@
       row(a.name+extra,"+"+fmt(priceOf(a.id)));
     });
     if(state.perk) row("Socials + messages","−"+fmt(sub*DISCOUNT),"discount");
+    if(typeof syncCheckoutPop==="function" && document.getElementById("checkoutPop")) syncCheckoutPop();
   }
   function renderAll(){ renderRig(); renderSummary(); syncControls(); }
 
@@ -1702,12 +1834,24 @@
       document.getElementById(k).hidden=(k!==id);
     });
     document.getElementById("orderBlock").hidden=(id!=="pageDone");
+    curPage=id; syncCheckoutPop();
     window.scrollTo(0,0);
   }
+  var curPage="pageStyle";
+  /* the checkout button pops up as soon as the tote / headband question is answered */
+  function syncCheckoutPop(){
+    var pop=document.getElementById("checkoutPop");
+    var show=!document.getElementById("builder").hidden && ((curPage==="pageExtras" && (state.tote||state.headband)) || curPage==="pageDone");
+    var tp=document.getElementById("totalPrice");
+    document.getElementById("cpTotal").innerHTML=tp?tp.innerHTML:"";
+    pop.classList.toggle("show",show);
+    document.getElementById("cpBtn").tabIndex=show?0:-1;
+  }
+  document.getElementById("cpBtn").addEventListener("click",function(){ document.getElementById("checkoutBtn").click(); });
   document.getElementById("toPeaces").addEventListener("click",function(){ showPage("pagePeaces"); });
   document.getElementById("backToStyle").addEventListener("click",function(){ showPage("pageStyle"); });
   document.getElementById("allDone").addEventListener("click",function(){ showPage("pageExtras"); });
-  document.getElementById("extrasNext").addEventListener("click",function(){ showPage("pageDone"); });
+  document.getElementById("extrasNext").addEventListener("click",function(){ showPage("pageDone"); document.getElementById("checkoutBtn").click(); });
   document.getElementById("extrasNo").addEventListener("click",function(){
     state.tote=false; state.headband=false; syncExtras(); renderSummary(); showPage("pageDone");
   });
@@ -1770,8 +1914,10 @@
       }
       (SETTINGS[a.id]||[]).forEach(function(g){
         html+='<div class="cf-label">'+g[1]+'</div><div class="chips">';
-        g[2].forEach(function(o){ html+='<button type="button" class="chip setting-chip" data-key="'+g[0]+'" data-val="'+o[0]+'">'+o[1]+'</button>'; });
+        g[2].forEach(function(o){ html+='<button type="button" class="chip setting-chip" data-key="'+g[0]+'" data-val="'+o[0]+'">'+(o[2]?'<img src="art2/'+o[2]+'.png" alt="">':'')+o[1]+'</button>'; });
         html+='</div>';
+        if(g[0]==="clasp") html+='<p class="cf-note">'+CLASP_NOTE+'</p>';
+        if(a.id==="connectors"&&g[0]==="ties") html+='<p class="cf-note">Extended ties are added to your cart as their own line ($10).</p>';
       });
       if(a.id==="rhinestones"){
         html+='<div class="initials-field"><label for="rsInput">Letters</label>'+
@@ -1789,7 +1935,9 @@
 
       drawer.querySelectorAll(".setting-chip").forEach(function(ch){
         ch.addEventListener("click",function(){
-          (state.cfg[a.id]=state.cfg[a.id]||{})[ch.dataset.key]=ch.dataset.val;
+          var link=LINKED[a.id]&&LINKED[a.id][ch.dataset.key];
+          if(link) link(ch.dataset.val); else (state.cfg[a.id]=state.cfg[a.id]||{})[ch.dataset.key]=ch.dataset.val;
+          if(a.id==="rhinestones"&&ch.dataset.key==="place") state.view=ch.dataset.val==="back"?"back":"front";
           if(!state.addons[a.id]) state.preview=a.id;
           renderAll();
         });
@@ -1849,7 +1997,7 @@
     tb.textContent=state.tote?"Added ✓":"Add for $15";
   }
   document.getElementById("hbBtn").addEventListener("click",function(){
-    state.headband=!state.headband; syncExtras(); renderSummary();
+    state.headband=!state.headband; syncExtras(); renderSummary(); syncCheckoutPop();
   });
   document.getElementById("toteBtn").addEventListener("click",function(){
     state.tote=!state.tote; syncExtras(); renderSummary();
@@ -2060,7 +2208,7 @@
     var target=location.hash.length>1 && document.getElementById(location.hash.slice(1));
     if(target) target.scrollIntoView(); else window.scrollTo(0,0);
   }
-  function route(){ if(location.hash==="#design") enterDesign(); else leaveDesign(); }
+  function route(){ if(location.hash==="#design") enterDesign(); else leaveDesign(); syncCheckoutPop(); }
   window.addEventListener("hashchange",route);
 
   // The email box on the landing page opens the pop-up with the email already filled in.
@@ -2308,10 +2456,17 @@
       });
       var add=dr.querySelector("[data-add]"), rem=dr.querySelector("[data-remove]");
       add.hidden=!!state.addons[id]; rem.hidden=!state.addons[id];
+      var seamless=state.bottomStyle==="seamless";
       if(id==="laceTrim"){
-        var noAround=state.bottomStyle==="seamless";
-        if(noAround && cfg("laceTrim","bottom")==="around") (state.cfg.laceTrim=state.cfg.laceTrim||{}).bottom="front";
-        dr.querySelectorAll('.setting-chip[data-key="bottom"][data-val="around"]').forEach(function(ch){ ch.hidden=noAround; });
+        if(seamless && cfg("laceTrim","bottom")==="around") (state.cfg.laceTrim=state.cfg.laceTrim||{}).bottom="front";
+        dr.querySelectorAll('.setting-chip[data-key="bottom"][data-val="around"]').forEach(function(ch){ ch.hidden=seamless; });
+      }
+      if(id==="fringe"||id==="laceRuffles"){ // same spots as the lace: no sides / all-around on the seamless bottom, no straps on the bralette
+        var c=(state.cfg[id]=state.cfg[id]||{}), bralette=state.topStyle==="underwire";
+        if(seamless && /sides|around/.test(cfg(id,"lower"))) c.lower="front";
+        if(id==="fringe" && bralette && cfg(id,"edge")==="straps") c.edge="hem";
+        dr.querySelectorAll('.setting-chip[data-key="lower"]').forEach(function(ch){ ch.hidden=seamless&&/sides|around/.test(ch.dataset.val); });
+        dr.querySelectorAll('.setting-chip[data-key="edge"][data-val="straps"]').forEach(function(ch){ ch.hidden=bralette&&id==="fringe"; });
       }
       add.textContent="ADD TO CART — "+fmt(priceOf(id));
       dr.querySelectorAll(".setting-chip").forEach(function(ch){

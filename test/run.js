@@ -54,6 +54,15 @@ try {
   assert.equal(r.status, 400); ok("unknown add-on choice rejected");
   r = await post("/orders/create", { design: { ...opts, topStyle: "underwire", bottomStyle: "seamless", topColor: "teal", bottomColor: "teal", addons: [{ id: "laceTrim", cfg: { bottom: "around" } }] } });
   assert.equal(r.status, 400); ok("no all-the-way-around lace on seamless bottoms");
+  r = await post("/orders/create", { design: { ...opts, addons: [
+    { id: "charmsP", option: "Shell", cfg: { clasp: "cn-big-gold" } }, { id: "charmsB", option: "Clear heart", cfg: { clasp: "plain" } },
+    { id: "laceRuffles", option: "Black", cfg: { edge: "straps", lower: "around" } }, { id: "fringe", option: "Gold", cfg: { edge: "straps", lower: "sides" } },
+    { id: "rhinestones", cfg: { metal: "gold", place: "back" } }] } });
+  assert.equal(r.body.subtotal, 95 + 25 + 10 + 5 + 5 + 10); ok("premium clasp +$10, plain ring included, lace ruffle / fringe spots, rhinestones on the back");
+  r = await post("/orders/create", { design: { ...opts, addons: [{ id: "rhinestones", cfg: { metal: "gold", place: "one" } }] } });
+  assert.equal(r.body.subtotal, 95 + 10); ok("older saved designs (one cup) still price");
+  r = await post("/orders/create", { design: { ...opts, topStyle: "underwire", bottomStyle: "seamless", topColor: "teal", bottomColor: "teal", addons: [{ id: "fringe", cfg: { edge: "hem", lower: "around" } }] } });
+  assert.equal(r.status, 400); ok("fringe all around not offered on seamless bottoms");
 
   r = await post("/orders/create", { design: { ...design, topColor: "teal" } });
   assert.equal(r.status, 400); ok("teal on triangle rejected");
