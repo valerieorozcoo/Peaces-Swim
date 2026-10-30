@@ -674,6 +674,10 @@
   .extra-name{font-family:var(--lp-script); font-style:italic; font-size:26px; color:var(--pink); line-height:1.05;}
   .extra-desc{margin:0 0 10px; font-size:12px; line-height:1.45; color:var(--ink-soft);}
   .extra .tote-btn{align-self:center; margin-top:auto;}
+  .extra-chips{justify-content:center; margin:2px 0 12px; flex-wrap:wrap;}
+  .extra-chips .chip{font-size:12px; padding:5px 10px;}
+  .chip .dotc{width:14px; height:14px; border-radius:50%; display:inline-block; border:1px solid rgba(46,36,51,.15);}
+  .rs-note{display:block; width:100%; font-size:11.5px; color:var(--fs-ink-60,#777); margin-top:4px;}
 
   .chip-field{grid-column:1 / -1; padding:2px 2px 6px;}
   .chip-field .cf-label{font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-soft); margin-bottom:7px;}
@@ -1023,7 +1027,7 @@
       <div class="price-bar">
         <div>
           <div class="total-label">Your total</div>
-          <div class="total" id="totalPrice">$80.00</div>
+          <div class="total" id="totalPrice">$95.00</div>
         </div>
         <div class="breakdown" id="itemCount">Base only</div>
       </div>
@@ -1046,7 +1050,7 @@
 
       <div id="pageStyle">
         <section class="step">
-          <div class="step-head"><h2>Pick your top</h2><p class="hint">Shape, size and fabric — $80 for the set.</p></div>
+          <div class="step-head"><h2>Pick your top</h2><p class="hint">Shape, size and fabric — $95 for the set.</p></div>
           <div class="base-grid" id="topStyleGrid"></div>
           <div class="sub-head">Size</div>
           <div class="size-row" id="sizeTop"></div>
@@ -1082,15 +1086,17 @@
           <div class="step-head"><h2>Anything else?</h2><p class="hint">Two little things that go with everything.</p></div>
           <div class="extras-grid">
             <div class="extra">
-              <div class="extra-shot band"><img src="art2/headband.jpg" alt="Light pink terry headband"></div>
+              <div class="extra-shot band"><img id="hbImg" src="art2/headband-green.jpg" alt="Peaces headband"></div>
               <div class="extra-name">the peaces headband</div>
-              <p class="extra-desc">Soft terry band, same pink as the tote.</p>
+              <p class="extra-desc">Same band in every bikini colour.</p>
+              <div class="chips extra-chips" id="hbColors"></div>
               <button class="tote-btn" id="hbBtn" type="button" aria-pressed="false">Add for $10</button>
             </div>
             <div class="extra">
-              <div class="extra-shot"><img src="art2/tote.png" alt="Light pink terrycloth Peaces tote bag"></div>
+              <div class="extra-shot"><img id="toteImg" src="art2/tote-pink.png" alt="Peaces terrycloth tote bag"></div>
               <div class="extra-name">the peaces tote</div>
-              <p class="extra-desc">Light pink terrycloth, embroidered script.</p>
+              <p class="extra-desc">Terrycloth with embroidered script.</p>
+              <div class="chips extra-chips" id="toteColors"></div>
               <button class="tote-btn" id="toteBtn" type="button" aria-pressed="false">Add for $15</button>
             </div>
           </div>
@@ -1103,7 +1109,7 @@
         <section class="step">
           <div class="step-head"><h2>All done</h2><p class="hint">Here's your peace. Save it, add the tote if you want one, then check out.</p></div>
           <p class="done-copy">Your total and everything you picked are in the panel — use <strong>Save my peace</strong> to keep the design, then <strong>Checkout</strong> when you're ready.</p>
-          <button class="gate-skip page-back" id="backToPeaces" type="button">Back to my Peaces</button>
+          <button class="gate-skip page-back" id="backToPeaces" type="button">Back to my design</button>
         </section>
       </div>
 
@@ -1201,18 +1207,18 @@
 (function(){
   "use strict";
   var NS="http://www.w3.org/2000/svg";
-  var BASE_PRICE=80, DISCOUNT=0.10;
+  var BASE_PRICE=95, DISCOUNT=0.10;
 
   /* each piece style: art file, which fabric family it belongs to, whether it has ties */
   var STYLES={
     top:{
-      triangle:{art:"b-triangle-top", name:"Triangle top", desc:"Classic triangle cups with neck ties.", family:"triangle", ties:true,  ruffle:'1″',
+      triangle:{art:"b-triangle-top", name:"Triangle top", desc:"Double ties — at the neck and across the back.", family:"triangle", ties:true,  ruffle:'1″',
         addons:["extTies","ruffles","laceRuffles","fringe","laceTrim","bows","roses","beadsAcrylic","beadsIri","beadsWavy","beadsPearl","initials","rhinestones","charmsB","charmsP","connectors"]},
-      underwire:{art:"b-underwire-top", name:"Bralette top", desc:"Twist-front bandeau with halter ties.", family:"underwire", ties:true, ruffle:'½″',
+      underwire:{art:"b-underwire-top", name:"Bralette top", desc:"Twist-front bandeau, double ties — neck and back.", family:"underwire", ties:true, ruffle:'½″',
         addons:["extTies","fringe","laceTrim","bows","roses","beadsAcrylic","beadsIri","beadsWavy","beadsPearl","initials","rhinestones","charmsB","charmsP"]}
     },
     bottom:{
-      triangle:{art:"b-triangle-bottom", name:"Triangle bottom", desc:"Triangle front with side ties.", family:"triangle", ties:true,  ruffle:'1″',
+      triangle:{art:"b-triangle-bottom", name:"Triangle bottom", desc:"Triangle front, no side ties.", family:"triangle", ties:false,  ruffle:'1″',
         addons:["ruffles","laceRuffles","fringe","laceTrim","bows","roses","initials","rhinestones","charmsB","charmsP","connectors"]},
       seamless:{art:"b-seamless-bottom", name:"Seamless bottom", desc:"Smooth full-coverage, no ties.", family:"underwire", ties:false, ruffle:'½″',
         addons:["fringe","laceTrim","bows","roses","initials","rhinestones","charmsB","charmsP"]}
@@ -1320,7 +1326,7 @@
     topStyle:"triangle", bottomStyle:"triangle",
     topColor:"green", bottomColor:"green",
     sizeTop:"S", sizeBottom:"S", addons:{}, variant:{}, preview:null,
-    tote:false, headband:false, fulfil:null, pickupAt:null,
+    tote:false, headband:false, toteColor:"pink", headbandColor:"green", fulfil:null, pickupAt:null,
     initials:"VAL", rsText:"K", perk:false, view:"front", cfg:{}
   };
 
@@ -1542,7 +1548,7 @@
     }
 
     if(on("rhinestones") && isTop && g.cupL){
-      var rt=(state.rsText||"").toUpperCase().replace(/[^A-Z]/g,"").slice(0,3)||"K";
+      var rt=(state.rsText||"").replace(/[^A-Za-z]/g,"").slice(0,3)||"K";
       var gold=cfg("rhinestones","metal")==="gold", col=gold?"#E6C46A":"#EEF1F6", fs=W*(rt.length>1?0.13:0.17);
       var spots=cfg("rhinestones","place")==="both"?[g.cupL,g.cupR]:[g.cupL];
       spots.forEach(function(pt){
@@ -1604,7 +1610,7 @@
     list.forEach(function(a){
       var extra="";
       if(a.id==="initials"&&state.initials) extra=" ("+state.initials.slice(0,3).toUpperCase()+")";
-      if(a.id==="rhinestones") extra=" ("+(state.rsText||"").slice(0,3).toUpperCase()+")";
+      if(a.id==="rhinestones") extra=" ("+(state.rsText||"").slice(0,3)+")";
       if(a.opts.length>1) extra=" ("+variantName(a.id).toLowerCase()+")";
       if(a.id==="ruffles"){
         var rs=styleOf("top").ruffle===styleOf("bottom").ruffle
@@ -1705,7 +1711,7 @@
   document.getElementById("extrasNo").addEventListener("click",function(){
     state.tote=false; state.headband=false; syncExtras(); renderSummary(); showPage("pageDone");
   });
-  document.getElementById("backToPeaces").addEventListener("click",function(){ showPage("pageExtras"); });
+  document.getElementById("backToPeaces").addEventListener("click",function(){ showPage("pagePeaces"); });
 
   var TIER_LABEL={1:"Tier 1",2:"Tier 2",3:"Tier 3"};
   var tierContainer=document.getElementById("tierContainer");
@@ -1769,7 +1775,7 @@
       });
       if(a.id==="rhinestones"){
         html+='<div class="initials-field"><label for="rsInput">Letters</label>'+
-              '<input id="rsInput" type="text" maxlength="3" value="'+state.rsText+'"></div>';
+              '<input id="rsInput" type="text" maxlength="3" style="text-transform:none" value="'+state.rsText+'"><small class="rs-note">Upper or lowercase — type it exactly how you want it.</small></div>';
       }
       if(a.id==="initials"){
         html+='<div class="initials-field"><label for="initialsInput">Initials</label>'+
@@ -1796,7 +1802,7 @@
         });
       });
       var rsi=drawer.querySelector("#rsInput");
-      if(rsi) rsi.addEventListener("input",function(e){ state.rsText=e.target.value.toUpperCase(); renderAll(); });
+      if(rsi) rsi.addEventListener("input",function(e){ state.rsText=e.target.value; renderAll(); });
       var ini=drawer.querySelector("#initialsInput");
       if(ini) ini.addEventListener("input",function(e){ state.initials=e.target.value.toUpperCase(); renderAll(); });
 
@@ -1818,7 +1824,24 @@
   });
 
   /* ---------- anything else: headband + tote ---------- */
+  var HB_COLORS=[["green","Mint","#93D1BF"],["teal","Teal","#2FACBE"],["coral","Coral","#FD645D"],["cheetah","Cheetah",""]];
+  var TOTE_COLORS=[["pink","Pink","#F2B8CF"],["blue","Blue","#2FACBE"]];
+  function extraChips(boxId,list,key,imgId,pattern){
+    var box=document.getElementById(boxId);
+    list.forEach(function(c){
+      var b=document.createElement("button"); b.type="button"; b.className="chip"; b.dataset.val=c[0];
+      b.innerHTML='<span class="dotc" style="'+(c[2]?"background:"+c[2]:"background:url(art2/cheetah-swatch.jpg) center/cover")+'"></span>'+c[1];
+      b.addEventListener("click",function(){ state[key]=c[0]; syncExtras(); renderSummary(); });
+      box.appendChild(b);
+    });
+  }
+  extraChips("hbColors",HB_COLORS,"headbandColor");
+  extraChips("toteColors",TOTE_COLORS,"toteColor");
   function syncExtras(){
+    document.getElementById("hbImg").src="art2/headband-"+state.headbandColor+".jpg";
+    document.getElementById("toteImg").src="art2/tote-"+state.toteColor+".png";
+    document.querySelectorAll("#hbColors .chip").forEach(function(b){ b.setAttribute("aria-pressed",b.dataset.val===state.headbandColor?"true":"false"); });
+    document.querySelectorAll("#toteColors .chip").forEach(function(b){ b.setAttribute("aria-pressed",b.dataset.val===state.toteColor?"true":"false"); });
     var hb=document.getElementById("hbBtn"), tb=document.getElementById("toteBtn");
     hb.setAttribute("aria-pressed",state.headband?"true":"false");
     hb.textContent=state.headband?"Added ✓":"Add for $10";
@@ -2162,13 +2185,13 @@
     list.forEach(function(a){
       var extra="";
       if(a.id==="initials"&&state.initials) extra=" — "+state.initials.slice(0,3).toUpperCase();
-      else if(a.id==="rhinestones") extra=" — "+(state.rsText||"").slice(0,3).toUpperCase();
+      else if(a.id==="rhinestones") extra=" — "+(state.rsText||"").slice(0,3);
       else if(a.opts.length>1) extra=" — "+variantName(a.id);
       if(SETTINGS[a.id]) extra+=" — "+cfgText(a.id);
       lines.push("Add-on: "+a.name+extra+" (+"+fmt(priceOf(a.id))+")");
     });
-    if(state.tote) lines.push("Add-on: Peaces tote (+"+fmt(15)+")");
-    if(state.headband) lines.push("Add-on: Peaces headband (+"+fmt(10)+")");
+    if(state.tote) lines.push("Add-on: Peaces tote, "+state.toteColor+" (+"+fmt(15)+")");
+    if(state.headband) lines.push("Add-on: Peaces headband, "+state.headbandColor+" (+"+fmt(10)+")");
     lines.push("Subtotal: "+fmt(sub));
     if(state.perk) lines.push("Discount: -10%");
     lines.push("Total: "+fmt(total));
@@ -2187,7 +2210,8 @@
         var c={}; (SETTINGS[a.id]||[]).forEach(function(g){ c[g[0]]=cfg(a.id,g[0]); });
         return {id:a.id, option:a.opts.length>1?variantName(a.id):"", cfg:c};
       }),
-      initials:state.initials, rsText:state.rsText, tote:!!state.tote, headband:!!state.headband
+      initials:state.initials, rsText:state.rsText, tote:!!state.tote, headband:!!state.headband,
+      toteColor:state.toteColor, headbandColor:state.headbandColor
     };
   }
   function saveDesign(){
@@ -2195,14 +2219,14 @@
       localStorage.setItem(SAVE_KEY,JSON.stringify({
         topStyle:state.topStyle, bottomStyle:state.bottomStyle, topColor:state.topColor, bottomColor:state.bottomColor,
         sizeTop:state.sizeTop, sizeBottom:state.sizeBottom, addons:state.addons, variant:state.variant, cfg:state.cfg,
-        initials:state.initials, tote:state.tote, headband:state.headband
+        initials:state.initials, rsText:state.rsText, tote:state.tote, headband:state.headband, toteColor:state.toteColor, headbandColor:state.headbandColor
       }));
     }catch(e){}
   }
   (function restoreDesign(){
     try{
       var d=JSON.parse(localStorage.getItem(SAVE_KEY)||"null"); if(!d) return;
-      ["topStyle","bottomStyle","topColor","bottomColor","sizeTop","sizeBottom","initials","tote","headband"].forEach(function(k){
+      ["topStyle","bottomStyle","topColor","bottomColor","sizeTop","sizeBottom","initials","rsText","tote","headband","toteColor","headbandColor"].forEach(function(k){
         if(d[k]!==undefined) state[k]=d[k];
       });
       if(!STYLES.top[state.topStyle]||!STYLES.bottom[state.bottomStyle]) throw 0;
@@ -2284,6 +2308,11 @@
       });
       var add=dr.querySelector("[data-add]"), rem=dr.querySelector("[data-remove]");
       add.hidden=!!state.addons[id]; rem.hidden=!state.addons[id];
+      if(id==="laceTrim"){
+        var noAround=state.bottomStyle==="seamless";
+        if(noAround && cfg("laceTrim","bottom")==="around") (state.cfg.laceTrim=state.cfg.laceTrim||{}).bottom="front";
+        dr.querySelectorAll('.setting-chip[data-key="bottom"][data-val="around"]').forEach(function(ch){ ch.hidden=noAround; });
+      }
       add.textContent="ADD TO CART — "+fmt(priceOf(id));
       dr.querySelectorAll(".setting-chip").forEach(function(ch){
         ch.setAttribute("aria-pressed",cfg(id,ch.dataset.key)===ch.dataset.val?"true":"false");
