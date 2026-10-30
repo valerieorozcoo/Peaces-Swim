@@ -17,6 +17,7 @@ export function startMockShopify(port) {
     if (req.headers["x-shopify-access-token"] !== "tok_123") return send({ errors: "Invalid API key or access token" }, 401);
     const { query, variables } = JSON.parse(raw);
     db.calls.push({ query, variables });
+    if (query.includes("currentAppInstallation")) return send({ data: { currentAppInstallation: { accessScopes: [{ handle: "write_files" }, { handle: "write_draft_orders" }] } } });
     if (query.includes("shop { name }")) return send({ data: { shop: { name: "Peaces Swim (mock)" } } });
     if (query.includes("customers(first:1")) {
       const m = /^(phone|email):"?([^"]*)"?$/.exec(variables.q) || [];

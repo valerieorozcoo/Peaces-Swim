@@ -39,9 +39,17 @@ export default route(["GET"], async (_body, req) => {
         out.shopify.draftOrders = "blocked";
         out.shopify.draftOrdersError = shopifyReason(e);
       }
-      // Can the app save the design picture? (needs write_files)
-      const scopes = await grantedScopes();
-      out.shopify.designPictures = !scopes ? "unknown" : /(^|,)write_files(,|$)/.test(scopes) ? "ok" : "missing write_files";
+      // Can the app save the design picture? (needs write_files) — ask Shopify what this install was actually granted
+      try {
+        const inst = await gql(`{ currentAppInstallation { accessScopes { handle } } }`);
+        const handles = inst.currentAppInstallation.accessScopes.map((a) => a.handle);
+        out.shopify.grantedScopes = handles.join(",");
+        out.shopify.designPictures = handles.includes("write_files") ? "ok" : "missing write_files";
+      } catch (e) {
+        const scopes = await grantedScopes();
+        out.shopify.tokenScopes = scopes;
+        out.shopify.designPictures = /(^|[,\s])write_files([,\s]|$)/.test(scopes) ? "ok" : "missing write_files";
+      }
     } catch (e) {
       console.error("[health]", e.message, JSON.stringify(e.details || ""));
       out.shopify = { connected: false, error: e.message, reason: shopifyReason(e) };
