@@ -50,6 +50,14 @@ try {
              { id: "bows", option: "Pink", cfg: { top: "straps", bottom: "center" } }] };
   r = await post("/orders/create", { design: opts, customer: { phone: "9999999999" } });
   assert.equal(r.body.subtotal, 95 + 15 + 25 + 25 + 20 + 10 + 5); ok("add-on choices priced on server (beads x3, lace all around, 2 connectors, rhinestones both cups, ties)");
+  const tinyJpeg = "data:image/jpeg;base64," + Buffer.from("fake-jpeg-bytes").toString("base64");
+  r = await post("/orders/create", { design: opts, image: tinyJpeg });
+  const dImg = db.drafts.at(-1).input;
+  assert.equal(r.body.image, "https://cdn.shopify.com/s/files/peaces-design.jpg");
+  assert.ok(dImg.lineItems[0].customAttributes.some((a) => a.key === "_design_image" && a.value === r.body.image));
+  assert.ok(db.uploads >= 1); ok("built-bikini picture saved to Shopify Files and put on the order");
+  r = await post("/orders/create", { design: opts, image: "data:text/html;base64,PHNjcmlwdD4=" });
+  assert.equal(r.status, 201); assert.equal(r.body.image, null); ok("anything that isn't a picture is ignored and the order still goes through");
   r = await post("/orders/create", { design: { ...opts, addons: [{ id: "laceTrim", cfg: { bottom: "sideways" } }] } });
   assert.equal(r.status, 400); ok("unknown add-on choice rejected");
   r = await post("/orders/create", { design: { ...opts, topStyle: "underwire", bottomStyle: "seamless", topColor: "teal", bottomColor: "teal", addons: [{ id: "laceTrim", cfg: { bottom: "around" } }] } });

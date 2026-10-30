@@ -2460,6 +2460,21 @@
     return lines.join("\n");
   }
 
+  /* what the server needs to price and make the design */
+  function designPayload(){
+    return {
+      topStyle:state.topStyle, bottomStyle:state.bottomStyle,
+      topColor:state.topColor, bottomColor:state.bottomColor,
+      sizeTop:state.sizeTop, sizeBottom:state.sizeBottom,
+      addons:activeAddons().map(function(a){
+        var c={}; (SETTINGS[a.id]||[]).forEach(function(g){ if(!(LINKED[a.id]&&LINKED[a.id][g[0]])) c[g[0]]=cfg(a.id,g[0]); });
+        return {id:a.id, option:a.opts.length>1?variantName(a.id):"", cfg:c};
+      }),
+      initials:state.initials, rsText:state.rsText, tote:!!state.tote, headband:!!state.headband,
+      toteColor:state.toteColor, headbandColor:state.headbandColor
+    };
+  }
+
   /* Designs aren't kept: leaving the builder (or reloading) starts the design over from the beginning. */
   try{ localStorage.removeItem("peaces-design-v1"); }catch(e){}
   function saveDesign(){}
@@ -2478,6 +2493,57 @@
     syncExtras(); showPage("pageStyle"); renderAll();
   }
 
+
+  /* ---------- picture of the built bikini (goes on the order + receipt) ----------
+     Draws the front view exactly like the preview — photo of each piece plus every
+     customization — onto a canvas and returns a JPEG data URL. */
+  var dataCache={};
+  function toDataUrl(url){
+    if(dataCache[url]) return dataCache[url];
+    return dataCache[url]=fetch(url).then(function(r){ return r.blob(); }).then(function(b){
+      return new Promise(function(res){ var fr=new FileReader(); fr.onload=function(){ res(fr.result); }; fr.readAsDataURL(b); }); });
+  }
+  function loadImg(src){ return new Promise(function(res,rej){ var i=new Image(); i.onload=function(){ res(i); }; i.onerror=rej; i.src=src; }); }
+  async function pieceLayers(part){
+    var art=styleOf(part).art, g=GEO[art], col=colorOf(part), key=PHOTO[art]&&PHOTO[art][col.id];
+    var base=key ? await loadImg("art2/"+art+"-"+key+".png") : null;
+    if(!base){ // no product photo for this colour: fill the cut-out silhouette with the fabric colour
+      var sil=await loadImg("art2/"+art+"-sil.png"), c=document.createElement("canvas"); c.width=sil.width; c.height=sil.height;
+      var x=c.getContext("2d"); x.drawImage(sil,0,0); x.globalCompositeOperation="source-in"; x.fillStyle=fabricHex(part); x.fillRect(0,0,c.width,c.height); base=c;
+    }
+    // decorations, with room around the piece for ties and charms that hang past its edges
+    var px=g.w*0.25, pt=g.h*0.1, pb=g.h*(part==="top"?0.6:0.2);
+    var svg=el("svg",{xmlns:NS,viewBox:(-px)+" "+(-pt)+" "+(g.w+2*px)+" "+(g.h+pt+pb),width:g.w+2*px,height:g.h+pt+pb});
+    decorate(svg,art,g);
+    var ims=[].slice.call(svg.querySelectorAll("image"));
+    await Promise.all(ims.map(async function(im){ im.setAttribute("href",await toDataUrl(im.getAttribute("href"))); }));
+    var url=URL.createObjectURL(new Blob([new XMLSerializer().serializeToString(svg)],{type:"image/svg+xml"}));
+    var deco=await loadImg(url); URL.revokeObjectURL(url);
+    return {g:g,base:base,deco:deco,px:px,pt:pt,pb:pb};
+  }
+  async function designImage(){
+    var T=await pieceLayers("top"), B=await pieceLayers("bottom");
+    var W=900, maxW=Math.max(T.g.w*T.g.k,B.g.w*B.g.k), U=640/maxW;
+    var tW=T.g.w*T.g.k*U, tH=T.g.h*T.g.k*U, bW=B.g.w*B.g.k*U, bH=B.g.h*B.g.k*U;
+    var ties=!!state.addons.extTies && allows("top","extTies"), gap=ties?tH*0.38:tH*0.06;
+    var top=70, H=Math.round(top+tH+gap+bH+120);
+    var c=document.createElement("canvas"); c.width=W; c.height=H; var x=c.getContext("2d");
+    x.fillStyle="#F6EEFD"; x.fillRect(0,0,W,H);
+    var tx=(W-tW)/2, bx=(W-bW)/2, by=top+tH+gap;
+    function decoAt(L,X,Y,w,h){ var s=w/L.g.w; x.drawImage(L.deco,X-L.px*s,Y-L.pt*s,(L.g.w+2*L.px)*s,(L.g.h+L.pt+L.pb)*s); }
+    x.drawImage(T.base,tx,top,tW,tH); x.drawImage(B.base,bx,by,bW,bH);
+    decoAt(B,bx,by,bW,bH); decoAt(T,tx,top,tW,tH); // the top's charms and ties hang over the bottom, like the preview
+    x.fillStyle="#4B2470"; x.textAlign="center";
+    x.font="italic 40px 'Cormorant Garamond',Garamond,serif"; x.fillText("your peace",W/2,H-62);
+    x.font="16px 'Cormorant Garamond',Garamond,serif"; x.fillStyle="#8A5BB8";
+    x.fillText((styleOf("top").name+" · "+colorOf("top").name+" · "+state.sizeTop+"   /   "+styleOf("bottom").name+" · "+colorOf("bottom").name+" · "+state.sizeBottom).toUpperCase(),W/2,H-30);
+    return c.toDataURL("image/jpeg",0.86);
+  }
+  function designImageOrNull(ms){
+    return Promise.race([designImage().catch(function(e){ console.warn("[peaces] design picture:",e); return null; }),
+      new Promise(function(r){ setTimeout(function(){ r(null); },ms||4000); })]);
+  }
+  window.peacesDesignImage=designImage; // handy for checking the picture from the console
   var currentOrder=null;
   function sendFulfilment(extra){
     if(!currentOrder) return;
@@ -2494,11 +2560,13 @@
     // open the tab now (inside the click) so pop-up blockers allow it, then point it at checkout
     var tab=window.open("","_blank");
     try{
-      var o=await api("/orders/create",{design:designPayload(), customer:lead?{name:lead.name,email:lead.email,phone:lead.phone}:null});
+      var pic=await designImageOrNull(4000);
+      var o=await api("/orders/create",{design:designPayload(), image:pic, customer:lead?{name:lead.name,email:lead.email,phone:lead.phone}:null});
       currentOrder=o;
       if(tab) tab.location.href=o.checkoutUrl; else window.location.href=o.checkoutUrl;
       note.textContent="Order "+o.name+" is ready — finish paying in the checkout tab.";
     }catch(err){
+      console.warn("[peaces] checkout fell back:",err&&err.message);
       try{ if(navigator.clipboard) navigator.clipboard.writeText(designText()); }catch(x){}
       if(tab) tab.location.href=btn.href;
       note.textContent= (err.status===400 ? err.message+" " : "") + "Design summary copied — paste it into the order notes at checkout.";
