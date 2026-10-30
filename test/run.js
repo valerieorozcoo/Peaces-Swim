@@ -82,7 +82,7 @@ try {
     { id: "charmsP", option: "Shell", cfg: { clasp: "cn-big-gold" } }, { id: "charmsB", option: "Clear heart", cfg: { clasp: "plain" } },
     { id: "laceRuffles", option: "Black", cfg: { edge: "straps", lower: "around" } }, { id: "fringe", option: "Gold", cfg: { edge: "straps", lower: "sides" } },
     { id: "rhinestones", cfg: { metal: "gold", place: "back" } }] } });
-  assert.equal(r.body.subtotal, 95 + 25 + 10 + 5 + 5 + 10); ok("premium clasp +$10, plain ring included, lace ruffle / fringe spots, rhinestones on the back");
+  assert.equal(r.body.subtotal, 95 + 25 + 10 + 15 + 15 + 10); ok("premium clasp +$10, plain ring included, lace ruffle / fringe spots, rhinestones on the back");
   r = await post("/orders/create", { design: { ...opts, addons: [{ id: "rhinestones", cfg: { metal: "gold", place: "one" } }] } });
   assert.equal(r.body.subtotal, 95 + 10); ok("older saved designs (one cup) still price");
   r = await post("/orders/create", { design: { ...opts, topStyle: "underwire", bottomStyle: "seamless", topColor: "teal", bottomColor: "teal", addons: [{ id: "fringe", cfg: { edge: "hem", lower: "around" } }] } });
