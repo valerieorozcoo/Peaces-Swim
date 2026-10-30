@@ -863,6 +863,43 @@
   /* order confirmed: keep the two of them on the lifeguard stand in view */
   .fulfil{background-position:50% 40%; align-items:flex-end;}
   @media (min-width:900px){ .fulfil{background-position:30% 40%; justify-content:flex-end; align-items:center; padding-right:3vw;} .fulfil-card{max-width:440px;} }
+
+  /* ===== Lookbook page ===== */
+  .lb{max-width:1220px; margin:0 auto; padding:24px 20px 72px; color:var(--fs-ink,#2E2433); font-family:var(--lp-sans);}
+  .lb-top{display:flex; align-items:center; justify-content:space-between; gap:16px; padding-bottom:18px; border-bottom:1px solid var(--line,#E7DAF3);}
+  .lb-logo{height:clamp(64px,8vw,88px); width:auto; display:block;}
+  .lb-nav{display:flex; align-items:center; gap:22px;}
+  .lb-nav > a:not(.cta){font-size:14px; letter-spacing:.22em; text-transform:uppercase; color:var(--fs-ink,#2E2433);}
+  .lb-nav > a:not(.cta):hover{color:var(--fs-orchid,#8A5BB8);}
+  .lb .cta{display:inline-block; width:auto; text-decoration:none; text-align:center;}
+  .lb-cta-sm{margin:0; padding:12px 22px; font-size:13.5px;}
+  .lb-head{text-align:center; padding:56px 0 40px;}
+  .lb-kicker{font-size:13.5px; letter-spacing:.28em; text-transform:uppercase; color:var(--fs-orchid,#8A5BB8);}
+  .lb-title{margin-top:14px; font-family:var(--lp-display); font-weight:400; font-size:clamp(46px,8vw,96px); line-height:.95; letter-spacing:-.02em; color:var(--deep-purple,#4B2470);}
+  .lb-title i{color:var(--fs-orchid,#8A5BB8);}
+  .lb-title-sm{font-size:clamp(36px,5.5vw,64px);}
+  .lb-sub{margin:18px auto 0; max-width:520px; font-size:18px; line-height:1.55; color:rgba(46,36,51,.78);}
+  .lb-grid{list-style:none; margin:0; padding:0; columns:3 300px; column-gap:16px;}
+  .lb-tile{break-inside:avoid; margin:0 0 16px;}
+  .lb-tile button{display:block; width:100%; padding:0; border:0; background:var(--fs-mist,#FAF6FE); border-radius:18px; overflow:hidden; cursor:zoom-in; box-shadow:0 1px 0 rgba(75,36,112,.06);}
+  .lb-tile img{display:block; width:100%; height:auto; max-width:none; transition:transform 1s ease-out;}
+  .lb-tile button:hover img{transform:scale(1.04);}
+  .lb-tile button:focus-visible{outline:2px solid var(--fs-orchid,#8A5BB8); outline-offset:3px;}
+  .lb-end{margin-top:56px; padding:56px 20px; text-align:center; border-radius:24px; background:#EFDDFD;}
+  .lb-cta{margin-top:26px; padding:16px 40px;}
+  .lb-box{position:fixed; inset:0; z-index:70; display:flex; align-items:center; justify-content:center; padding:56px 64px; background:rgba(46,24,66,.86); -webkit-backdrop-filter:blur(6px); backdrop-filter:blur(6px);}
+  .lb-box[hidden]{display:none;}
+  .lb-fig{margin:0; text-align:center;}
+  .lb-fig img{max-width:100%; max-height:calc(100svh - 140px); width:auto; height:auto; border-radius:14px; box-shadow:0 20px 60px rgba(0,0,0,.35);}
+  .lb-fig figcaption{margin-top:12px; color:#fff; font-size:13.5px; letter-spacing:.24em; text-transform:uppercase; opacity:.85;}
+  .lb-x{position:absolute; top:14px; right:18px; width:46px; height:46px; border:0; border-radius:999px; background:rgba(255,255,255,.14); color:#fff; font-size:30px; line-height:1; cursor:pointer;}
+  .lb-arrow{position:absolute; top:50%; transform:translateY(-50%); width:52px; height:52px; border:0; border-radius:999px; background:var(--btn-grad); color:#fff; display:grid; place-items:center; cursor:pointer;}
+  .lb-prev{left:14px;} .lb-next{right:14px;}
+  @media (max-width:640px){
+    .lb-nav > a:not(.cta){display:none;}
+    .lb-grid{columns:2 140px; column-gap:10px;} .lb-tile{margin-bottom:10px;} .lb-tile button{border-radius:14px;}
+    .lb-box{padding:56px 10px 80px;} .lb-arrow{top:auto; bottom:16px; transform:none;} .lb-prev{left:calc(50% - 64px);} .lb-next{right:calc(50% - 64px);}
+  }
 </style>
 
 <!-- ================= Landing page =================
@@ -1046,6 +1083,50 @@
   </div>
 </div>
 
+<!-- ================= Lookbook =================
+     #lookbook — every custom we've shot, opens from the footer. -->
+<div class="lb" id="lookbook" hidden>
+  <header class="lb-top">
+    <a href="#" aria-label="Back to the Peaces Swim home page"><img class="lb-logo" src="art/logo-ps.png" alt="Peaces Swim"></a>
+    <nav class="lb-nav" aria-label="Lookbook">
+      <a href="#">Home</a>
+      <a class="cta lb-cta-sm" href="#design">Design your own</a>
+    </nav>
+  </header>
+
+  <section class="lb-head">
+    <p class="lb-kicker">Vol. 01 · Made in Miami</p>
+    <h1 class="lb-title">The Peaces <i>Lookbook</i></h1>
+    <p class="lb-sub">Real customs, worn by real girls — every one of these was designed piece by piece.</p>
+  </section>
+
+  <ul class="lb-grid" id="lbGrid">
+      <li class="lb-tile lp-reveal" style="--d:0.00s"><button type="button" data-i="0" aria-label="Open photo 1 of 10"><img src="photos/lookbook/look-03.jpg" alt="Two friends holding an XOXO Peaces Swim poster under the palms" loading="lazy"></button></li>
+      <li class="lb-tile lp-reveal" style="--d:0.08s"><button type="button" data-i="1" aria-label="Open photo 2 of 10"><img src="photos/lookbook/look-04.jpg" alt="Coral and aqua bikinis on a mint lifeguard tower" loading="lazy"></button></li>
+      <li class="lb-tile lp-reveal" style="--d:0.16s"><button type="button" data-i="2" aria-label="Open photo 3 of 10"><img src="photos/lookbook/look-01.jpg" alt="A coral bikini against a palm tree at the water" loading="lazy"></button></li>
+      <li class="lb-tile lp-reveal" style="--d:0.00s"><button type="button" data-i="3" aria-label="Open photo 4 of 10"><img src="photos/lookbook/look-02.jpg" alt="An aqua bikini on the sand with the Peaces poster" loading="lazy"></button></li>
+      <li class="lb-tile lp-reveal" style="--d:0.08s"><button type="button" data-i="4" aria-label="Open photo 5 of 10"><img src="photos/lookbook/look-05.jpg" alt="Custom bikinis at a pink balloon party" loading="lazy"></button></li>
+      <li class="lb-tile lp-reveal" style="--d:0.16s"><button type="button" data-i="5" aria-label="Open photo 6 of 10"><img src="photos/lookbook/look-07.jpg" alt="Three friends in matching aqua custom sets" loading="lazy"></button></li>
+      <li class="lb-tile lp-reveal" style="--d:0.00s"><button type="button" data-i="6" aria-label="Open photo 7 of 10"><img src="photos/lookbook/look-08.jpg" alt="Aqua custom bikinis with lace cover-ups at a rooftop pool" loading="lazy"></button></li>
+      <li class="lb-tile lp-reveal" style="--d:0.08s"><button type="button" data-i="7" aria-label="Open photo 8 of 10"><img src="photos/lookbook/look-09.jpg" alt="A cheetah custom bikini with a black lace cover-up" loading="lazy"></button></li>
+      <li class="lb-tile lp-reveal" style="--d:0.16s"><button type="button" data-i="8" aria-label="Open photo 9 of 10"><img src="photos/lookbook/look-10.jpg" alt="Close-up of a cheetah bikini with a gold heart connector" loading="lazy"></button></li>
+      <li class="lb-tile lp-reveal" style="--d:0.00s"><button type="button" data-i="9" aria-label="Open photo 10 of 10"><img src="photos/lookbook/look-06.jpg" alt="A studio shoot in an aqua custom set" loading="lazy"></button></li>
+  </ul>
+
+  <section class="lb-end lp-reveal">
+    <p class="lb-kicker">Your turn</p>
+    <h2 class="lb-title lb-title-sm">Ready to <i>make yours?</i></h2>
+    <a class="cta lb-cta" href="#design">Design your own</a>
+  </section>
+
+  <div class="lb-box" id="lbBox" hidden role="dialog" aria-modal="true" aria-label="Lookbook photo">
+    <button class="lb-x" type="button" id="lbClose" aria-label="Close">&times;</button>
+    <button class="lb-arrow lb-prev" type="button" id="lbPrev" aria-label="Previous photo"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg></button>
+    <figure class="lb-fig"><img id="lbImg" src="" alt=""><figcaption id="lbCount"></figcaption></figure>
+    <button class="lb-arrow lb-next" type="button" id="lbNext" aria-label="Next photo"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+  </div>
+</div>
+
 <div class="wrap" id="builder" hidden>
   <header class="top">
     <a href="#" aria-label="Back to the Peaces Swim home page"><img class="logo" src="art/logo-ps.png" alt="Peaces Swim"></a>
@@ -1197,7 +1278,7 @@
             <li><a href="#design">Design Your Own</a></li><li><a href="#design">Peaces Accessories</a></li>
           </ul></div>
           <div><h4>Peaces</h4><ul>
-            <li><a href="#">Our Story</a></li><li><a href="#making">Lookbook</a></li>
+            <li><a href="#">Our Story</a></li><li><a href="#lookbook">Lookbook</a></li>
           </ul></div>
           <div><h4>Support</h4><ul>
             <li><a href="#">Size Guide</a></li><li><a href="#">Get in Touch</a></li>
@@ -2190,20 +2271,52 @@
      The landing page is home. #design means "in the builder", so the buttons,
      the bag, the phone's back button and a QR code to /#design all just work. */
   var landing=document.getElementById("landing");
+  var lookbook=document.getElementById("lookbook"), builderEl=document.getElementById("builder");
   function enterDesign(){
-    if(landing.hidden) return;
-    landing.hidden=true;
+    if(!builderEl.hidden) return;
+    landing.hidden=true; lookbook.hidden=true; closeLightbox();
     showBuilder();
+  }
+  function enterLookbook(){
+    if(!builderEl.hidden) resetDesign();
+    ["builder","fulfil"].forEach(function(id){ document.getElementById(id).hidden=true; });
+    landing.hidden=true; lookbook.hidden=false;
+    window.scrollTo(0,0);
   }
   function leaveDesign(){
     if(!landing.hidden) return;
-    resetDesign();
+    if(!builderEl.hidden) resetDesign();
+    lookbook.hidden=true; closeLightbox();
     ["builder","fulfil"].forEach(function(id){ document.getElementById(id).hidden=true; });
     landing.hidden=false;
     var target=location.hash.length>1 && document.getElementById(location.hash.slice(1));
     if(target) target.scrollIntoView(); else window.scrollTo(0,0);
   }
-  function route(){ if(location.hash==="#design") enterDesign(); else leaveDesign(); syncCheckoutPop(); }
+  function route(){ if(location.hash==="#design") enterDesign(); else if(location.hash==="#lookbook") enterLookbook(); else leaveDesign(); syncCheckoutPop(); }
+
+  /* ---------- lookbook lightbox ---------- */
+  var lbTiles=[].slice.call(document.querySelectorAll("#lbGrid img")), lbBox=document.getElementById("lbBox"), lbAt=0, lbFrom=null;
+  function showLook(i){
+    lbAt=(i+lbTiles.length)%lbTiles.length;
+    var src=lbTiles[lbAt];
+    document.getElementById("lbImg").src=src.getAttribute("src");
+    document.getElementById("lbImg").alt=src.alt;
+    document.getElementById("lbCount").textContent=(lbAt+1)+" / "+lbTiles.length;
+  }
+  function openLightbox(i){ lbFrom=document.activeElement; showLook(i); lbBox.hidden=false; document.body.style.overflow="hidden"; document.getElementById("lbClose").focus(); }
+  function closeLightbox(){ if(lbBox.hidden) return; lbBox.hidden=true; document.body.style.overflow=""; if(lbFrom&&lbFrom.focus) lbFrom.focus(); }
+  document.getElementById("lbGrid").addEventListener("click",function(e){ var b=e.target.closest("button[data-i]"); if(b) openLightbox(+b.dataset.i); });
+  document.getElementById("lbClose").addEventListener("click",closeLightbox);
+  document.getElementById("lbPrev").addEventListener("click",function(){ showLook(lbAt-1); });
+  document.getElementById("lbNext").addEventListener("click",function(){ showLook(lbAt+1); });
+  lbBox.addEventListener("click",function(e){ if(e.target===lbBox) closeLightbox(); });
+  document.addEventListener("keydown",function(e){
+    if(lbBox.hidden) return;
+    if(e.key==="Escape") closeLightbox(); else if(e.key==="ArrowLeft") showLook(lbAt-1); else if(e.key==="ArrowRight") showLook(lbAt+1);
+  });
+  var lbX=null;
+  lbBox.addEventListener("touchstart",function(e){ lbX=e.touches[0].clientX; },{passive:true});
+  lbBox.addEventListener("touchend",function(e){ if(lbX==null) return; var dx=e.changedTouches[0].clientX-lbX; lbX=null; if(Math.abs(dx)>40) showLook(lbAt+(dx<0?1:-1)); });
   window.addEventListener("hashchange",route);
 
   // The email box on the landing page opens the pop-up with the email already filled in.
