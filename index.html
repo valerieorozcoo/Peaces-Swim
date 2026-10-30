@@ -1053,6 +1053,8 @@
       <p class="wait-note" id="waitNote"></p>
     </div>
 
+    <p id="fulfilStatus" role="status" aria-live="polite" style="margin:20px;" hidden></p>
+    <button type="button" class="cta" id="fulfilRetry" style="margin:0 20px 20px;" hidden>Retry saving preference</button>
     <div style="margin:0 20px;"><button class="cta" id="fulfilBack" type="button">Back to my design</button></div>
   </div>
 </div>
@@ -1791,27 +1793,28 @@
       b.setAttribute("aria-pressed","false");
       b.dataset.at=t.getTime();
       b.addEventListener("click",function(){
+        if(fulfilmentSaving) return;
         grid.querySelectorAll(".slot").forEach(function(x){ x.setAttribute("aria-pressed","false"); });
         this.setAttribute("aria-pressed","true");
         var mins=Math.max(1,Math.round((+this.dataset.at-Date.now())/60000));
         state.pickupAt=this.textContent;
-        showWait(mins,"Pick up at "+this.textContent+" — we'll text you when it's ready.","Ready in");
         sendFulfilment(mins);
       });
       grid.appendChild(b);
     }
   }
   document.getElementById("fulfilChoices").addEventListener("click",function(e){
-    var btn=e.target.closest(".fulfil-opt"); if(!btn) return;
+    var btn=e.target.closest(".fulfil-opt"); if(!btn || fulfilmentSaving) return;
+    resetFulfilmentFeedback();
     this.querySelectorAll(".fulfil-opt").forEach(function(x){ x.setAttribute("aria-pressed","false"); });
     btn.setAttribute("aria-pressed","true");
     state.fulfil=btn.dataset.mode;
     if(state.fulfil==="wait"){
       document.getElementById("slotBlock").hidden=true;
       state.pickupAt=null;
-      showWait(makeMinutes(),"Stay close — we'll customize your peace right in front of you.","Estimated wait");
       sendFulfilment(makeMinutes());
     } else {
+      state.pickupAt=null;
       document.getElementById("slotBlock").hidden=false;
       document.getElementById("waitBlock").hidden=true;
       buildSlots();
@@ -1879,11 +1882,45 @@
   })();
 
   var currentOrder=null;
-  function sendFulfilment(extra){
-    if(!currentOrder) return;
-    var body={id:currentOrder.id, sig:currentOrder.sig, mode:state.fulfil, pickupAt:state.pickupAt||"", minutes:extra||0};
-    api("/orders/fulfillment",body).catch(function(e){ console.warn("[peaces] fulfilment not saved:",e.message); });
+  var fulfilmentSaving=false, pendingFulfilment=null;
+  function resetFulfilmentFeedback(){
+    pendingFulfilment=null;
+    document.getElementById("fulfilStatus").hidden=true;
+    document.getElementById("fulfilRetry").hidden=true;
   }
+  async function sendFulfilment(extra, retry){
+    if(!currentOrder || fulfilmentSaving) return;
+    var order=currentOrder;
+    var body=retry || {id:order.id, sig:order.sig, mode:state.fulfil, pickupAt:state.pickupAt||"", minutes:extra||0};
+    if(body.id!==order.id || body.sig!==order.sig) return;
+    pendingFulfilment=body;
+    fulfilmentSaving=true;
+    var status=document.getElementById("fulfilStatus"), retryButton=document.getElementById("fulfilRetry");
+    var controls=Array.from(document.querySelectorAll("#fulfilChoices button, #slotGrid button, #fulfilRetry"));
+    controls.forEach(function(b){b.disabled=true;});
+    retryButton.hidden=true;
+    document.getElementById("waitBlock").hidden=true;
+    status.hidden=false; status.textContent="Saving your preference…";
+    try{
+      var result=await api("/orders/fulfillment",body);
+      if(!result.ok) throw new Error("The shop couldn't save your preference. Please try again.");
+      if(currentOrder!==order) return;
+      pendingFulfilment=null;
+      status.textContent="Your preference is saved. Finish paying in Shopify to confirm your order.";
+      if(body.mode==="pickup") showWait(body.minutes,"Pick up at "+body.pickupAt+" — preference saved.","Ready in");
+      else showWait(body.minutes,"Stay close — we'll customize your peace right in front of you.","Estimated wait");
+    }catch(e){
+      if(currentOrder!==order) return;
+      status.textContent="Your preference wasn't saved. "+(e.message||"Please try again.");
+      retryButton.hidden=false;
+    }finally{
+      fulfilmentSaving=false;
+      controls.forEach(function(b){b.disabled=false;});
+    }
+  }
+  document.getElementById("fulfilRetry").addEventListener("click",function(){
+    if(pendingFulfilment) sendFulfilment(pendingFulfilment.minutes,pendingFulfilment);
+  });
 
   document.getElementById("checkoutBtn").addEventListener("click",async function(e){
     e.preventDefault();
@@ -1899,6 +1936,7 @@
       var o=await api("/orders/create",{design:designPayload(), customer:lead?{phone:lead.phone,welcomeToken:lead.welcomeToken}:null});
       if(!o.id || !o.sig || !o.checkoutUrl) throw new Error("We couldn't prepare checkout. Please try again.");
       currentOrder=o;
+      resetFulfilmentFeedback();
       state.fulfil=null; state.pickupAt=null;
       document.getElementById("slotBlock").hidden=true;
       document.getElementById("waitBlock").hidden=true;
