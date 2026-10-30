@@ -1567,7 +1567,7 @@
       var b=document.createElement("button");
       b.type="button"; b.className="swatch"; b.title=c.name; b.dataset.color=c.id;
       b.setAttribute("aria-pressed",(part==="top"?state.topColor:state.bottomColor)===c.id?"true":"false");
-      if(c.fill==="leopard"){ b.style.backgroundImage='url("art2/leopard.png")'; b.style.backgroundSize="46px 46px"; }
+      if(c.fill==="leopard"){ b.style.backgroundImage='url("art2/cheetah-swatch.jpg")'; b.style.backgroundSize="cover"; b.style.backgroundPosition="center"; }
       else b.style.background=c.fill;
       b.addEventListener("click",function(){
         if(part==="top") state.topColor=c.id; else state.bottomColor=c.id;
