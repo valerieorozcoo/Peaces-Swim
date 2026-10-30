@@ -12,6 +12,7 @@ export default route(["POST"], async (body) => {
   const order = priceAccessories(body.items);
   const input = {
     tags: ["peaces-accessories"],
+    allowDiscountCodesInCheckout: true, // lets customers type Shopify discount codes (e.g. PEACESPARTY) at checkout
     note: "Peaces Accessories (no bikini)",
     customAttributes: [{ key: "Source", value: "Peaces Accessories page" }],
     lineItems: order.lines.map((l) => ({
