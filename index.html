@@ -1235,7 +1235,7 @@
     ["lightblue","Light blue"],["purpleblue","Light purple"],["lightturq","Light turquoise"]
   ];
   var CHARMS_B=[["c-shell","Shell"],["c-heart","Heart"],["c-star","Star"]];
-  var CHARMS_P=[["c-bead1","Bead charm 1"],["c-bead2","Bead charm 2"]];
+  var CHARMS_P=[["cp-shell","Seashell & pearls"],["cp-hamsa","Hamsa"],["cp-boot","Cowgirl boot"],["cp-tag","Gold tag"],["cp-pearls","Pearl drop"],["cp-rainbow","Rainbow"]];
 
   /* every add-on opens to choose a colour/finish, then Add to cart */
   var ADDONS=[
@@ -1249,8 +1249,8 @@
       opts:[["pearl","Pearl"]], art:function(){return "button";}, def:"pearl"},
     {id:"charmsB", tier:2,price:5, name:"Basic charms",   hint:"Shell, heart or star",
       opts:CHARMS_B, art:function(v){return v;}, def:"c-heart"},
-    {id:"charmsP", tier:3,price:7, name:"Premium charms", hint:"Beaded dangles",
-      opts:CHARMS_P, art:function(v){return v;}, def:"c-bead1"},
+    {id:"charmsP", tier:3,price:7, name:"Premium charms", hint:"Gold & pearl dangles",
+      opts:CHARMS_P, art:function(v){return v;}, def:"cp-shell"},
     {id:"extTies", tier:3,price:7, name:"Extended ties",  hint:"55″ beaded wrap ties",
       opts:[["pink","Pink"],["green","Green"],["turq","Turquoise"],["coral","Coral"]],
       art:function(v){return "p-extties-l-"+v;}, def:"pink"},
@@ -1417,8 +1417,9 @@
       else { hang(svg,variantOf("charmsB"),g.hipL[0]-2,g.hipL[1]-2,H*0.24); hang(svg,variantOf("charmsB"),g.hipR[0]+2,g.hipR[1]-2,H*0.24); }
     }
     if(on("charmsP")){
-      if(isTop){ hang(svg,variantOf("charmsP"),g.outerL[0]+6,g.outerL[1]-10,H*0.21); hang(svg,variantOf("charmsP"),g.outerR[0]-6,g.outerR[1]-10,H*0.21); }
-      else { hang(svg,variantOf("charmsP"),g.hipL[0]-2,g.hipL[1]-2,H*0.26); hang(svg,variantOf("charmsP"),g.hipR[0]+2,g.hipR[1]-2,H*0.26); }
+      var ph=W*0.30; // premium charms are long dangles, sized off the piece width
+      if(isTop){ hang(svg,variantOf("charmsP"),g.outerL[0]+6,g.outerL[1]-10,ph); hang(svg,variantOf("charmsP"),g.outerR[0]-6,g.outerR[1]-10,ph); }
+      else { hang(svg,variantOf("charmsP"),g.hipL[0]-2,g.hipL[1]-2,ph); hang(svg,variantOf("charmsP"),g.hipR[0]+2,g.hipR[1]-2,ph); }
     }
 
     /* key ring — center front on the top, hips on the bottom */
@@ -1648,7 +1649,7 @@
       drawer.className="addon-drawer"; drawer.dataset.for=a.id; drawer.hidden=true;
       var html='';
       if(a.opts.length>1){
-        html+='<div class="cf-label">Choose a colour</div><div class="chips">';
+        html+='<div class="cf-label">'+(/^charms/.test(a.id)?"Choose a charm":"Choose a colour")+'</div><div class="chips">';
         a.opts.forEach(function(o){
           var art=a.art(o[0]);
           html+='<button type="button" class="chip" data-val="'+o[0]+'">'+
