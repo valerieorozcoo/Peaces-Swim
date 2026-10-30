@@ -1427,6 +1427,32 @@
     nameEl.textContent=colorOf(part).name;
   }
 
+  var SAVE_KEY="peaces-design-v1";
+  (function restoreDesign(){
+    try{
+      var d=JSON.parse(localStorage.getItem(SAVE_KEY)||"null");
+      if(!d || typeof d!=="object" || Array.isArray(d)) return;
+      var candidate={};
+      ["topStyle","bottomStyle","topColor","bottomColor","sizeTop","sizeBottom"].forEach(function(k){
+        candidate[k]=d[k]===undefined?state[k]:d[k];
+      });
+      var top=STYLES.top[candidate.topStyle], bottom=STYLES.bottom[candidate.bottomStyle];
+      if(!Object.prototype.hasOwnProperty.call(STYLES.top,candidate.topStyle) ||
+         !Object.prototype.hasOwnProperty.call(STYLES.bottom,candidate.bottomStyle)) return;
+      if(!colorsFor(top.family).some(function(c){return c.id===candidate.topColor;}) ||
+         !colorsFor(bottom.family).some(function(c){return c.id===candidate.bottomColor;}) ||
+         SIZES.indexOf(candidate.sizeTop)<0 || SIZES.indexOf(candidate.sizeBottom)<0) return;
+      candidate.addons={}; candidate.variant={};
+      ADDONS.forEach(function(a){
+        if(d.addons && d.addons[a.id]===true && (top.addons.indexOf(a.id)>-1 || bottom.addons.indexOf(a.id)>-1)) candidate.addons[a.id]=true;
+        if(d.variant && a.opts.some(function(o){return o[0]===d.variant[a.id];})) candidate.variant[a.id]=d.variant[a.id];
+      });
+      candidate.initials=typeof d.initials==="string"?d.initials.replace(/[^a-z]/gi,"").slice(0,3).toUpperCase():state.initials;
+      candidate.tote=d.tote===true; candidate.headband=d.headband===true;
+      Object.keys(candidate).forEach(function(k){state[k]=candidate[k];});
+    }catch(e){ /* Corrupt or unavailable storage leaves the default design intact. */ }
+  })();
+
   ["top","bottom"].forEach(function(part){ buildStyleGrid(part); buildSwatches(part); });
 
   ["Top","Bottom"].forEach(function(which){
@@ -1854,7 +1880,6 @@
   }
 
   /* "Save my peace" keeps the design on this device so it's still there next visit. */
-  var SAVE_KEY="peaces-design-v1";
   function designPayload(){
     return {
       topStyle:state.topStyle, bottomStyle:state.bottomStyle,
@@ -1873,17 +1898,6 @@
       }));
     }catch(e){}
   }
-  (function restoreDesign(){
-    try{
-      var d=JSON.parse(localStorage.getItem(SAVE_KEY)||"null"); if(!d) return;
-      ["topStyle","bottomStyle","topColor","bottomColor","sizeTop","sizeBottom","initials","tote","headband"].forEach(function(k){
-        if(d[k]!==undefined) state[k]=d[k];
-      });
-      if(!STYLES.top[state.topStyle]||!STYLES.bottom[state.bottomStyle]) throw 0;
-      state.addons=d.addons||{}; state.variant=d.variant||{};
-    }catch(e){}
-  })();
-
   var currentOrder=null;
   function sendFulfilment(extra){
     if(!currentOrder) return;
