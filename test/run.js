@@ -39,17 +39,17 @@ try {
   assert.equal(r.body.total, 130.5); assert.equal(r.body.discounted, true);
   const d0 = db.drafts[0].input;
   assert.equal(d0.purchasingEntity.customerId, "gid://shopify/Customer/1");
-  assert.ok(d0.lineItems.some((l) => l.title === "Add-on: Rhinestone letters (VAL · gold, center)")); ok("order priced on server, 10% for known customer");
+  assert.ok(d0.lineItems.some((l) => l.title === "Add-on: Letter charms (VAL)")); ok("order priced on server, 10% for known customer");
 
   r = await post("/orders/create", { design, customer: { phone: "9999999999" } });
   assert.equal(r.body.total, 145); assert.equal(r.body.discounted, false); ok("no discount for unknown phone");
 
-  const opts = { topStyle: "triangle", bottomStyle: "triangle", topColor: "green", bottomColor: "cheetah", sizeTop: "S", sizeBottom: "S", initials: "A",
+  const opts = { topStyle: "triangle", bottomStyle: "triangle", topColor: "green", bottomColor: "cheetah", sizeTop: "S", sizeBottom: "S", initials: "A", rsText: "K",
     addons: [{ id: "beadsWavy", option: "Pink", cfg: { sets: "3" } }, { id: "laceTrim", option: "White", cfg: { bottom: "around" } },
-             { id: "connectors", option: "Heart", cfg: { bottom: "two" } }, { id: "initials", cfg: { metal: "silver", place: "both" } },
+             { id: "connectors", option: "Heart", cfg: { bottom: "two" } }, { id: "rhinestones", cfg: { metal: "silver", place: "both" } }, { id: "extTies", cfg: { style: "2" } },
              { id: "bows", option: "Pink", cfg: { top: "straps", bottom: "center" } }] };
   r = await post("/orders/create", { design: opts, customer: { phone: "9999999999" } });
-  assert.equal(r.body.subtotal, 80 + 15 + 25 + 25 + 20 + 5); ok("add-on choices priced on server (beads x3, lace all around, 2 connectors, letters both sides)");
+  assert.equal(r.body.subtotal, 80 + 15 + 25 + 25 + 20 + 10 + 5); ok("add-on choices priced on server (beads x3, lace all around, 2 connectors, rhinestones both cups, ties)");
   r = await post("/orders/create", { design: { ...opts, addons: [{ id: "laceTrim", cfg: { bottom: "sideways" } }] } });
   assert.equal(r.status, 400); ok("unknown add-on choice rejected");
 

@@ -455,6 +455,7 @@
   .view-toggle .vt-arrow{padding:6px 12px; font-size:18px; letter-spacing:0; line-height:1; border-radius:999px;}
   .view-toggle .vt-hint{flex-basis:100%; text-align:center; font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--fs-ink-60,rgba(46,36,51,.62));}
   .rig{touch-action:pan-y; cursor:grab;}
+  .rig.wrap-waist{gap:clamp(40px,9vw,80px);}
   .rig.flip{animation:rig-flip .35s ease;}
   @keyframes rig-flip{from{opacity:.2; transform:translateX(var(--fx,24px));} to{opacity:1; transform:none;}}
   @media (prefers-reduced-motion:reduce){ .rig.flip{animation:none;} }
@@ -1206,15 +1207,15 @@
   var STYLES={
     top:{
       triangle:{art:"b-triangle-top", name:"Triangle top", desc:"Classic triangle cups with neck ties.", family:"triangle", ties:true,  ruffle:'1″',
-        addons:["extTies","ruffles","laceRuffles","fringe","laceTrim","bows","roses","beadsAcrylic","beadsIri","beadsWavy","beadsPearl","initials","charmsB","charmsP","connectors"]},
+        addons:["extTies","ruffles","laceRuffles","fringe","laceTrim","bows","roses","beadsAcrylic","beadsIri","beadsWavy","beadsPearl","initials","rhinestones","charmsB","charmsP","connectors"]},
       underwire:{art:"b-underwire-top", name:"Bralette top", desc:"Twist-front bandeau with halter ties.", family:"underwire", ties:true, ruffle:'½″',
-        addons:["extTies","fringe","laceTrim","bows","roses","initials","charmsB","charmsP"]}
+        addons:["extTies","fringe","laceTrim","bows","roses","beadsAcrylic","beadsIri","beadsWavy","beadsPearl","initials","rhinestones","charmsB","charmsP"]}
     },
     bottom:{
       triangle:{art:"b-triangle-bottom", name:"Triangle bottom", desc:"Triangle front with side ties.", family:"triangle", ties:true,  ruffle:'1″',
-        addons:["ruffles","laceRuffles","fringe","laceTrim","bows","roses","initials","charmsB","charmsP","connectors"]},
+        addons:["ruffles","laceRuffles","fringe","laceTrim","bows","roses","initials","rhinestones","charmsB","charmsP","connectors"]},
       seamless:{art:"b-seamless-bottom", name:"Seamless bottom", desc:"Smooth full-coverage, no ties.", family:"underwire", ties:false, ruffle:'½″',
-        addons:["fringe","laceTrim","bows","roses","initials","charmsB","charmsP"]}
+        addons:["fringe","laceTrim","bows","roses","initials","rhinestones","charmsB","charmsP"]}
     }
   };
   var SIZES=["XS","S","M","L"];
@@ -1263,16 +1264,17 @@
       opts:CHARMS_B, art:function(v){return v;}, def:"cg-heart"},
     {id:"charmsP", tier:3,price:15, name:"Premium charms", hint:"Gold & pearl dangles",
       opts:CHARMS_P, art:function(v){return v;}, def:"cp-shell"},
-    {id:"extTies", tier:2,price:10, name:"Extended ties",  hint:"55″ beaded wrap ties",
-      opts:[["pink","Pink"],["green","Green"],["turq","Turquoise"],["coral","Coral"]],
-      art:function(v){return "p-extties-l-"+v;}, def:"pink"},
+    {id:"rhinestones",tier:2,price:10,name:"Rhinestones", hint:"Your initial in crystals · $10 per letter",
+      opts:[["script","Script"]], art:function(){return "";}, def:"script"},
+    {id:"extTies", tier:2,price:10, name:"Extended ties",  hint:"Matching wrap ties · 2 ways to wear",
+      opts:[["match","Matching fabric"]], art:function(){return "";}, def:"match"},
     {id:"laceTrim",tier:3,price:15,name:"Lace trim",      hint:"Top edges · add the bottom",
-      opts:[["white","White"],["pink","Pink"],["coral","Coral"],["turq","Turquoise"],["green","Green"]],
+      opts:[["white","White"],["pink","Pink"],["turq","Blue"],["green","Mint"],["coral","Coral"]],
       art:function(v){return "p-lacetrim-"+v;}, def:"white"},
     {id:"ruffles", tier:3,price:15,name:"Ruffles",        hint:"Along the edges",
       opts:[["pink","Pink"],["green","Green"],["turq","Turquoise"],["coral","Coral"]],
       art:function(v){return "p-ruffle-"+v;}, def:"pink"},
-    {id:"initials",tier:2,price:10,name:"Rhinestone letters", hint:"$10 per letter · gold or silver",
+    {id:"initials",tier:2,price:10,name:"Letter charms",  hint:"Hanging A–Z charms · $10 per letter",
       opts:[["clear","Clear"]], art:function(){return "";}, def:"clear"},
     {id:"connectors",tier:2,price:10,name:"Connectors",   hint:"Center front · add 2 on the bottom",
       opts:[["c-heartring","Heart"],["cn-goldring","Gold ring"],["cn-pinkring","Pink ring"],["cn-bluering","Blue ring"],["cn-big-gold","Big gold"],["cn-skinny-gold","Skinny gold"],["cn-skinny-rhinestone","Skinny rhinestone"],["cn-small-rhinestone","Small rhinestone"]],
@@ -1280,22 +1282,25 @@
   ];
   /* per-add-on choices (placement, quantity, metal) and the price rules — mirrored in lib/catalog.js */
   var SETTINGS={
-    beadsAcrylic:[["sets","How many",[["1","3 beads"],["2","6 beads"],["3","9 beads"],["4","12 beads"]]]],
-    beadsIri:[["sets","How many",[["1","3 beads"],["2","6 beads"],["3","9 beads"],["4","12 beads"]]]],
-    beadsWavy:[["sets","How many",[["1","3 beads"],["2","6 beads"],["3","9 beads"],["4","12 beads"]]]],
-    beadsPearl:[["sets","How many",[["1","3 beads"],["2","6 beads"],["3","9 beads"],["4","12 beads"]]]],
+    beadsAcrylic:[["sets","How many",[["1","3 beads"],["2","6 beads"],["3","9 beads"],["4","12 beads"]]],["where","Where",[["center","Center front"],["straps","Halter straps"],["both","Center + straps"],["ties","On the extended ties"]]]],
+    beadsIri:[["sets","How many",[["1","3 beads"],["2","6 beads"],["3","9 beads"],["4","12 beads"]]],["where","Where",[["center","Center front"],["straps","Halter straps"],["both","Center + straps"],["ties","On the extended ties"]]]],
+    beadsWavy:[["sets","How many",[["1","3 beads"],["2","6 beads"],["3","9 beads"],["4","12 beads"]]],["where","Where",[["center","Center front"],["straps","Halter straps"],["both","Center + straps"],["ties","On the extended ties"]]]],
+    beadsPearl:[["sets","How many",[["1","3 beads"],["2","6 beads"],["3","9 beads"],["4","12 beads"]]],["where","Where",[["center","Center front"],["straps","Halter straps"],["both","Center + straps"],["ties","On the extended ties"]]]],
     bows:[["top","On the top",[["center","1 in the center"],["straps","2 on the straps"]]],["bottom","Bottom",[["no","None"],["center","1 center front"]]]],
     roses:[["top","On the top",[["center","1 in the center"],["straps","2 on the straps"]]],["bottom","Bottom",[["no","None"],["center","1 center front"]]]],
-    initials:[["metal","Finish",[["gold","Gold"],["silver","Silver"]]],["place","Placement",[["center","Center front"],["both","Both sides"]]]],
+    rhinestones:[["metal","Finish",[["silver","Silver"],["gold","Gold"]]],["place","Placement",[["one","One cup"],["both","Both cups"]]]],
     laceTrim:[["bottom","Bottom",[["none","Top only"],["front","Front only +$5"],["around","All the way around +$10"]]]],
+    extTies:[["style","How they wrap",[["1","Under the bust"],["2","Crisscross at the waist"]]]],
     connectors:[["bottom","Bottom",[["no","Top only"],["two","2 on the bottom +$15"]]]]
   };
   function cfg(id,key){ var c=state.cfg[id]||{}; if(c[key]!==undefined) return c[key]; var g=(SETTINGS[id]||[]).filter(function(x){return x[0]===key;})[0]; return g?g[2][0][0]:null; }
   function letterCount(){ return Math.max(1,(state.initials||"").replace(/[^A-Za-z]/g,"").slice(0,3).length); }
+  function rsCount(){ return Math.max(1,(state.rsText||"").replace(/[^A-Za-z]/g,"").slice(0,3).length); }
   function priceOf(id){
     var a=addonDef(id), p=a.price;
     if(/^beads/.test(id)) p=5*(+cfg(id,"sets"));
-    if(id==="initials") p=10*letterCount()*(cfg(id,"place")==="both"?2:1);
+    if(id==="initials") p=10*letterCount();
+    if(id==="rhinestones") p=10*rsCount()*(cfg(id,"place")==="both"?2:1);
     if(id==="laceTrim") p+= {none:0,front:5,around:10}[cfg(id,"bottom")];
     if(id==="connectors" && cfg(id,"bottom")==="two") p+=15;
     return p;
@@ -1316,14 +1321,14 @@
     topColor:"green", bottomColor:"green",
     sizeTop:"S", sizeBottom:"S", addons:{}, variant:{}, preview:null,
     tote:false, headband:false, fulfil:null, pickupAt:null,
-    initials:"VAL", perk:false, view:"front", cfg:{}
+    initials:"VAL", rsText:"K", perk:false, view:"front", cfg:{}
   };
 
   /* geometry measured from the photo cut-outs (3x the source photo), in artwork pixels */
   var GEO={
-    "b-triangle-top":{"w":441,"h":441,"k":0.83,"strapL":[160,95],"strapR":[275,90],"junctionL":[107,236],"junctionR":[332,236],"strapRunL":[[160,100],[110,230]],"strapRunR":[[275,95],[330,230]],"outerL":[14,418],"outerR":[432,418],"center":[221,418],"centerHigh":[221,405],"trimSegs":[[107,236,196,410],[246,410,332,236]]},
+    "b-triangle-top":{"w":441,"h":441,"k":0.83,"cupL":[118,352],"cupR":[324,352],"tie1":[[221,428],[150,515],[-14,470]],"strapL":[160,95],"strapR":[275,90],"junctionL":[107,236],"junctionR":[332,236],"strapRunL":[[160,100],[110,230]],"strapRunR":[[275,95],[330,230]],"outerL":[14,418],"outerR":[432,418],"center":[221,418],"centerHigh":[221,405],"trimSegs":[[107,236,196,410],[246,410,332,236]]},
     "b-triangle-bottom":{"w":461,"h":311,"k":0.83,"hipL":[93,54],"hipR":[371,40],"tieTopL":[11,12],"tieTopR":[450,12],"strapRunL":[[14,14],[90,52]],"strapRunR":[[447,14],[371,40]],"center":[222,56],"mono":[222,130],"trimSegs":[[93,54,222,56],[222,56,371,40]]},
-    "b-underwire-top":{"w":602,"h":610,"k":0.537,"hem":[[24,480,300,492],[300,492,578,480]],"strapL":[261,24],"strapR":[354,24],"junctionL":[75,322],"junctionR":[531,322],"strapRunL":[[242,61],[93,305]],"strapRunR":[[363,61],[518,305]],"outerL":[22,404],"outerR":[581,404],"center":[298,397],"centerHigh":[298,373],"trimSegs":[[15,340,298,380],[298,380,587,335]]},
+    "b-underwire-top":{"w":602,"h":610,"k":0.537,"cupDrop":1,"cupL":[150,462],"cupR":[452,462],"tie1":[[298,425],[205,560],[-14,505]],"hem":[[24,480,300,492],[300,492,578,480]],"strapL":[261,24],"strapR":[354,24],"junctionL":[75,322],"junctionR":[531,322],"strapRunL":[[242,61],[93,305]],"strapRunR":[[363,61],[518,305]],"outerL":[22,404],"outerR":[581,404],"center":[298,397],"centerHigh":[298,373],"trimSegs":[[15,340,298,380],[298,380,587,335]]},
     "b-seamless-bottom":{"w":600,"h":396,"k":0.537,"hipL":[22,26],"hipR":[578,22],"tieTopL":[18,15],"tieTopR":[582,11],"strapRunL":[[22,26],[37,73]],"strapRunR":[[578,22],[563,73]],"center":[302,66],"mono":[302,173],"trimSegs":[[22,18,302,62],[302,62,576,15]]}
   };
 
@@ -1337,6 +1342,32 @@
   function colorDef(id){ return COLORS.filter(function(c){return c.id===id;})[0]||COLORS[0]; }
   function styleOf(part){ return STYLES[part][part==="top"?state.topStyle:state.bottomStyle]; }
   function colorOf(part){ return colorDef(part==="top"?state.topColor:state.bottomColor); }
+  function tieStroke(svg,d,W){
+    var cheetah=colorOf("top").fill==="leopard", base=cheetah?"#B9895C":fabricHex("top"), tw=W*0.022;
+    el("path",{d:d,fill:"none",stroke:"rgba(46,36,51,.28)","stroke-width":tw+1.6,"stroke-linecap":"round","stroke-linejoin":"round"},svg);
+    el("path",{d:d,fill:"none",stroke:base,"stroke-width":tw,"stroke-linecap":"round","stroke-linejoin":"round"},svg);
+    if(cheetah) el("path",{d:d,fill:"none",stroke:"#3B2416","stroke-width":tw*0.7,"stroke-dasharray":(tw*0.9)+" "+(tw*1.4),"stroke-linecap":"round"},svg);
+    else el("path",{d:d,fill:"none",stroke:"rgba(255,255,255,.35)","stroke-width":tw*0.35,"stroke-linecap":"round",transform:"translate(0,-"+(tw*0.18)+")"},svg);
+  }
+  function tiePoints(g,W,H){ // points along each tie, used for beads too
+    if(cfg("extTies","style")==="2"){
+      var y0=H*1.02, y1=H*1.1, L=g.outerL[0]-W*0.04, R=g.outerR[0]+W*0.04;
+      return [[[L,y0],[R,y1]],[[R,y0],[L,y1]]];
+    }
+    var t=g.tie1, mx=W-t[0][0]; // mirror around the centre knot
+    var c=t[0], m=t[1], e=t[2], cx=g.center[0];
+    return [[c,m,e],[[c[0],c[1]],[2*cx-m[0],m[1]],[2*cx-e[0],e[1]]]];
+  }
+  function drawTies(svg,g,W,H){
+    var P=tiePoints(g,W,H);
+    if(cfg("extTies","style")==="2"){
+      tieStroke(svg,"M"+(g.outerL[0]-W*0.04)+","+(H*0.99)+" L"+(g.outerR[0]+W*0.04)+","+(H*0.99),W); // band under the cups
+      P.forEach(function(l){ tieStroke(svg,"M"+l[0][0]+","+l[0][1]+" L"+l[1][0]+","+l[1][1],W); });
+    } else {
+      P.forEach(function(l){ tieStroke(svg,"M"+l[0][0]+","+l[0][1]+" Q"+l[1][0]+","+(l[1][1]+H*0.04)+" "+l[2][0]+","+l[2][1],W); });
+    }
+  }
+  function dropSeg(sg,d){ return [sg[0],sg[1]+d,sg[2],sg[3]+d]; }
   function strapMid(run){ return [(run[0][0]+run[1][0])/2,(run[0][1]+run[1][1])/2]; }
   function fringeMatch(part){ var c=colorOf(part); return c.fill==="leopard"?"#7A5232":c.fill; }
   function fabricHex(part){ var c=colorOf(part); return c.fill==="leopard"?"#E2BA84":c.fill; }
@@ -1419,21 +1450,12 @@
     var W=g.w, H=g.h;
     function on(id){ return (A[id]||state.preview===id) && allows(part,id); }
 
-    /* extended ties — tied at the top of each strap, strands falling outside */
-    if(on("extTies") && tie){
-      var tw=W*0.145, th=tw*182/63;
-      if(isTop){
-        el("image",{href:"art2/p-extties-l-"+variantOf("extTies")+".png",x:(g.strapL[0]-tw*0.62),y:(g.strapL[1]-4),width:tw,height:th},svg);
-        el("image",{href:"art2/p-extties-r-"+variantOf("extTies")+".png",x:(g.strapR[0]-tw*0.38),y:(g.strapR[1]-4),width:tw,height:th},svg);
-      } else {
-        el("image",{href:"art2/p-extties-l-"+variantOf("extTies")+".png",x:(g.hipL[0]-tw*0.62),y:(g.hipL[1]-8),width:tw,height:th},svg);
-        el("image",{href:"art2/p-extties-r-"+variantOf("extTies")+".png",x:(g.hipR[0]-tw*0.38),y:(g.hipR[1]-8),width:tw,height:th},svg);
-      }
-    }
+    /* extended ties — matching fabric ties, worn under the bust (1) or crisscrossed at the waist (2) */
+    if(on("extTies") && isTop) drawTies(svg,g,W,H);
 
     /* ruffle + trim lace run along the cup edges / waistband */
     if(on("ruffles")) g.trimSegs.forEach(function(sg){ strip(svg,"p-ruffle-"+variantOf("ruffles"),sg,H*0.135); });
-    if(on("laceTrim") && (isTop || cfg("laceTrim","bottom")!=="none")) g.trimSegs.forEach(function(sg){ strip(svg,"p-lacetrim-"+variantOf("laceTrim"),sg,H*0.115); });
+    if(on("laceTrim") && (isTop || cfg("laceTrim","bottom")!=="none")) g.trimSegs.forEach(function(sg){ strip(svg,"p-lacetrim-"+variantOf("laceTrim"),dropSeg(sg,(isTop&&!g.cupDrop?0:(isTop?W*0.12:W*0.1))*0.5),(isTop?W*0.12:W*0.1)); });
     if(on("laceRuffles")) g.trimSegs.forEach(function(sg){ strip(svg,"p-laceruffle-"+variantOf("laceRuffles"),sg,H*0.14); });
 
     /* fringe — strands hanging from the bottom edge of the top / the waistband of the bottom */
@@ -1454,21 +1476,30 @@
 
     /* beads — along the straps and across the center front */
     var BEAD_FAM=[["beadsAcrylic","ba-"],["beadsIri","bi-"],["beadsWavy","bw-"],["beadsPearl","bp-"]].filter(function(b){return on(b[0]);});
-    if(BEAD_FAM.length){ // 3 beads per set, split across the two straps, families alternating
-      var bs=W*0.055, list=[], left=[], right=[];
-      var maxN=Math.max.apply(null,BEAD_FAM.map(function(b){return 3*cfg(b[0],"sets");}));
-      for(var r=0;r<maxN;r++) BEAD_FAM.forEach(function(b){ if(r<3*cfg(b[0],"sets")) list.push(b[1]+variantOf(b[0])); });
-      list.forEach(function(nm,ix){ (ix%2?right:left).push(nm); });
-      [[g.strapRunL,left],[g.strapRunR,right]].forEach(function(pr){
-        var run=pr[0], arr=pr[1];
-        arr.forEach(function(nm,ix){ var t=(ix+0.5)/arr.length; img(svg,nm,run[0][0]+(run[1][0]-run[0][0])*t,run[0][1]+(run[1][1]-run[0][1])*t,bs,bs,0); });
+    if(BEAD_FAM.length && isTop){ // 3 beads per set; each family goes where the customer chose
+      var bs=W*0.062, groups={center:[],straps:[],ties:[]};
+      BEAD_FAM.forEach(function(b){
+        var n=3*cfg(b[0],"sets"), wh=cfg(b[0],"where"), nm=b[1]+variantOf(b[0]);
+        if(wh==="ties" && !on("extTies")) wh="center";
+        for(var k=0;k<n;k++){
+          var spot = wh==="both" ? (k%2?"straps":"center") : wh;
+          groups[spot].push(nm);
+        }
       });
-    }
-
-    /* charms hang from the outer edges / hips */
-    if(on("charmsB")){
-      var gh=W*0.13; // gem drops are short, sized off the piece width
-      if(isTop) hang(svg,variantOf("charmsB"),g.center[0],g.center[1]-6,gh*0.71); // one gem, centre front
+      if(groups.center.length){ // a neat row across the centre front, like strung rondelles
+        var nC=groups.center.length, gap=bs*0.92, x0=g.center[0]-gap*(nC-1)/2;
+        groups.center.forEach(function(nm,ix){ img(svg,nm,x0+ix*gap,g.center[1]+bs*0.05,bs,bs,0); });
+      }
+      [["straps",[g.strapRunL,g.strapRunR]]].forEach(function(pr){
+        var arr=groups.straps, L=[],R=[]; arr.forEach(function(nm,ix){ (ix%2?R:L).push(nm); });
+        [[pr[1][0],L],[pr[1][1],R]].forEach(function(q){ var run=q[0];
+          q[1].forEach(function(nm,ix){ var t=0.62+ix*0.09; img(svg,nm,run[0][0]+(run[1][0]-run[0][0])*t,run[0][1]+(run[1][1]-run[0][1])*t,bs*0.9,bs*0.9,0); }); });
+      });
+      if(groups.ties.length){
+        var TP=tiePoints(g,W,H), TL=[],TR=[]; groups.ties.forEach(function(nm,ix){ (ix%2?TR:TL).push(nm); });
+        [[TP[0],TL],[TP[1],TR]].forEach(function(q){ var a=q[0][0], b=q[0][1];
+          q[1].forEach(function(nm,ix){ var t=0.18+ix*0.12; img(svg,nm,a[0]+(b[0]-a[0])*t,a[1]+(b[1]-a[1])*t,bs*0.85,bs*0.85,0); }); });
+      }
     }
     if(on("charmsP")){
       var ph=W*0.30; // premium charms are long dangles, sized off the piece width
@@ -1510,6 +1541,17 @@
       else if(cfg("bows","bottom")==="center") img(svg,"p-bow-"+variantOf("bows"),g.center[0],g.center[1]+4,bw,bh,0);
     }
 
+    if(on("rhinestones") && isTop && g.cupL){
+      var rt=(state.rsText||"").toUpperCase().replace(/[^A-Z]/g,"").slice(0,3)||"K";
+      var gold=cfg("rhinestones","metal")==="gold", col=gold?"#E6C46A":"#EEF1F6", fs=W*(rt.length>1?0.13:0.17);
+      var spots=cfg("rhinestones","place")==="both"?[g.cupL,g.cupR]:[g.cupL];
+      spots.forEach(function(pt){
+        var common={x:pt[0],y:pt[1],"font-family":"'Pinyon Script','Snell Roundhand',cursive","font-size":fs,"text-anchor":"middle",fill:"none","stroke-linecap":"round"};
+        var sh=el("text",Object.assign({},common,{stroke:"rgba(46,36,51,.35)","stroke-width":fs*0.07,"stroke-dasharray":"0 "+(fs*0.085)}),svg); sh.textContent=rt;
+        var t=el("text",Object.assign({},common,{stroke:col,"stroke-width":fs*0.055,"stroke-dasharray":"0 "+(fs*0.085)}),svg); t.textContent=rt;
+        var hi=el("text",Object.assign({},common,{stroke:"#FFFFFF","stroke-width":fs*0.022,"stroke-dasharray":"0 "+(fs*0.085)}),svg); hi.textContent=rt;
+      });
+    }
     if(on("initials") && !isTop){
       var letters=(state.initials||"").toUpperCase().replace(/[^A-Z]/g,"").slice(0,3).split("");
       var lh=W*0.17, lw=lh*0.62, gap=lw*1.08, x0=g.mono[0]-gap*(letters.length-1)/2;
@@ -1536,6 +1578,7 @@
     cc.classList.toggle("is-zero",!nAdd);
     var vt=document.getElementById("viewToggle");
     vt.hidden=!hasBack;
+    rig.classList.toggle("wrap-waist", !!(state.addons.extTies||state.preview==="extTies") && cfg("extTies","style")==="2");
     vt.querySelectorAll("button").forEach(function(b){ var on=b.dataset.view===state.view; b.classList.toggle("on",on); b.setAttribute("aria-pressed",on); });
     document.getElementById("styleName").textContent=
       styleOf("top").name+" · "+styleOf("bottom").name;
@@ -1561,6 +1604,7 @@
     list.forEach(function(a){
       var extra="";
       if(a.id==="initials"&&state.initials) extra=" ("+state.initials.slice(0,3).toUpperCase()+")";
+      if(a.id==="rhinestones") extra=" ("+(state.rsText||"").slice(0,3).toUpperCase()+")";
       if(a.opts.length>1) extra=" ("+variantName(a.id).toLowerCase()+")";
       if(a.id==="ruffles"){
         var rs=styleOf("top").ruffle===styleOf("bottom").ruffle
@@ -1723,6 +1767,10 @@
         g[2].forEach(function(o){ html+='<button type="button" class="chip setting-chip" data-key="'+g[0]+'" data-val="'+o[0]+'">'+o[1]+'</button>'; });
         html+='</div>';
       });
+      if(a.id==="rhinestones"){
+        html+='<div class="initials-field"><label for="rsInput">Letters</label>'+
+              '<input id="rsInput" type="text" maxlength="3" value="'+state.rsText+'"></div>';
+      }
       if(a.id==="initials"){
         html+='<div class="initials-field"><label for="initialsInput">Initials</label>'+
               '<input id="initialsInput" type="text" maxlength="3" value="'+state.initials+'"></div>';
@@ -1747,6 +1795,8 @@
           renderAll();
         });
       });
+      var rsi=drawer.querySelector("#rsInput");
+      if(rsi) rsi.addEventListener("input",function(e){ state.rsText=e.target.value.toUpperCase(); renderAll(); });
       var ini=drawer.querySelector("#initialsInput");
       if(ini) ini.addEventListener("input",function(e){ state.initials=e.target.value.toUpperCase(); renderAll(); });
 
@@ -2112,6 +2162,7 @@
     list.forEach(function(a){
       var extra="";
       if(a.id==="initials"&&state.initials) extra=" — "+state.initials.slice(0,3).toUpperCase();
+      else if(a.id==="rhinestones") extra=" — "+(state.rsText||"").slice(0,3).toUpperCase();
       else if(a.opts.length>1) extra=" — "+variantName(a.id);
       if(SETTINGS[a.id]) extra+=" — "+cfgText(a.id);
       lines.push("Add-on: "+a.name+extra+" (+"+fmt(priceOf(a.id))+")");
@@ -2136,7 +2187,7 @@
         var c={}; (SETTINGS[a.id]||[]).forEach(function(g){ c[g[0]]=cfg(a.id,g[0]); });
         return {id:a.id, option:a.opts.length>1?variantName(a.id):"", cfg:c};
       }),
-      initials:state.initials, tote:!!state.tote, headband:!!state.headband
+      initials:state.initials, rsText:state.rsText, tote:!!state.tote, headband:!!state.headband
     };
   }
   function saveDesign(){
