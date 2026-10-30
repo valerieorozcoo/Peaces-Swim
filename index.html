@@ -568,8 +568,8 @@
   .fulfil{position:fixed; inset:0; z-index:40; overflow-y:auto;
     display:flex; align-items:center; justify-content:center;
     padding:max(28px, env(safe-area-inset-top,0px)) 20px max(28px, env(safe-area-inset-bottom,0px));
-    background-image:linear-gradient(rgba(255,255,255,.12), rgba(255,255,255,.12)), url("art2/pool.jpg");
-    background-size:cover; background-position:center; background-repeat:no-repeat; background-attachment:scroll;}
+    background-image:linear-gradient(rgba(255,255,255,.12), rgba(255,255,255,.12)), url("photos/tower-standing.jpg");
+    background-size:cover; background-position:62% 40%; background-repeat:no-repeat; background-attachment:scroll;}
   .fulfil-card{width:100%; max-width:600px; background:rgba(255,255,255,.93);
     -webkit-backdrop-filter:blur(7px); backdrop-filter:blur(7px);
     border:1px solid rgba(255,255,255,.75); padding:24px 0 22px; text-align:center;
@@ -858,6 +858,11 @@
   .checkout-pop .cp-total small{display:block; font-size:12.5px; letter-spacing:.14em; text-transform:uppercase; opacity:.75;}
   .checkout-pop .cta{margin:0; flex:1; padding:15px 18px; font-size:15px; letter-spacing:.16em;}
   @media (prefers-reduced-motion:reduce){ .checkout-pop{transition:none;} }
+  .fulfil-opt[hidden]{display:none !important;}
+  .fulfil-choices{grid-template-columns:repeat(auto-fit,minmax(0,1fr));}
+  /* order confirmed: keep the two of them on the lifeguard stand in view */
+  .fulfil{background-position:50% 40%; align-items:flex-end;}
+  @media (min-width:900px){ .fulfil{background-position:30% 40%; justify-content:flex-end; align-items:center; padding-right:3vw;} .fulfil-card{max-width:440px;} }
 </style>
 
 <!-- ================= Landing page =================
@@ -1225,7 +1230,8 @@
         <span class="fo-name">Wait &amp; watch</span>
         <span class="fo-desc">Stay with us and watch your peace get customized.</span>
       </button>
-      <button class="fulfil-opt" type="button" data-mode="pickup" aria-pressed="false">
+      <!-- pickup is off for today: everyone waits & watches. Remove `hidden` to bring it back. -->
+      <button class="fulfil-opt" type="button" data-mode="pickup" aria-pressed="false" hidden>
         <span class="fo-name">Pick it up later</span>
         <span class="fo-desc">Choose a pickup time and come back for it.</span>
       </button>
@@ -1263,9 +1269,9 @@
     },
     bottom:{
       triangle:{art:"b-triangle-bottom", name:"Triangle bottom", desc:"Triangle front, no side ties.", family:"triangle", ties:false,  ruffle:'1″',
-        addons:["ruffles","laceRuffles","fringe","laceTrim","bows","roses","initials","rhinestones","charmsB","charmsP","connectors"]},
+        addons:["ruffles","laceRuffles","fringe","laceTrim","bows","roses","rhinestones","connectors"]},
       seamless:{art:"b-seamless-bottom", name:"Seamless bottom", desc:"Smooth full-coverage, no ties.", family:"underwire", ties:false, ruffle:'½″',
-        addons:["fringe","laceTrim","bows","roses","initials","rhinestones","charmsB","charmsP"]}
+        addons:["fringe","laceTrim","bows","roses","rhinestones"]}
     }
   };
   var SIZES=["XS","S","M","L"];
@@ -1313,9 +1319,9 @@
       opts:LACE_COLORS, art:function(v){return "p-laceruffle-"+v;}, def:"white"},
     {id:"fringe",  tier:1,price:5, name:"Fringe",         hint:"Same spots as the lace",
       opts:[["match","Matching"],["white","White"],["gold","Gold"]], art:function(v){return "fringe-"+v;}, def:"match"},
-    {id:"charmsB", tier:2,price:10, name:"Gem charms",     hint:"Crystal & pink gem drops",
+    {id:"charmsB", tier:2,price:10, name:"Gem charms",     hint:"One gem down the middle of the top",
       opts:CHARMS_B, art:function(v){return v;}, def:"cg-heart"},
-    {id:"charmsP", tier:3,price:15, name:"Premium charms", hint:"Gold & pearl dangles",
+    {id:"charmsP", tier:3,price:15, name:"Premium charms", hint:"One dangle down the middle of the top",
       opts:CHARMS_P, art:function(v){return v;}, def:"cp-shell"},
     {id:"rhinestones",tier:2,price:10,name:"Rhinestones", hint:"Top left, top right or back of the bottoms · $10 per letter",
       opts:[["script","Script"]], art:function(){return "";}, def:"script"},
@@ -1327,7 +1333,7 @@
     {id:"ruffles", tier:3,price:15,name:"Ruffles",        hint:"Along the edges",
       opts:[["pink","Pink"],["green","Green"],["turq","Turquoise"],["coral","Coral"]],
       art:function(v){return "p-ruffle-"+v;}, def:"pink"},
-    {id:"initials",tier:2,price:10,name:"Letter charms",  hint:"Hanging A–Z charms · $10 per letter",
+    {id:"initials",tier:2,price:10,name:"Letter charms",  hint:"Hang down the middle of the top · $10 per letter",
       opts:[["clear","Clear"]], art:function(){return "";}, def:"clear"},
     {id:"connectors",tier:2,price:10,name:"Connectors",   hint:"Center front · 2 on the bottom · add extended ties",
       opts:[["c-heartring","Heart"],["cn-goldring","Gold ring"],["cn-pinkring","Pink ring"],["cn-bluering","Blue ring"]],
@@ -1346,6 +1352,7 @@
     fringe:[["edge","On the top",[["hem","Along the bottom edge"],["straps","On the straps"]]],["lower","On the bottom",[["front","Front"],["sides","Sides"],["around","All the way around"],["none","Top only"]]]],
     charmsB:[["clasp","Clasp",CLASPS]],
     charmsP:[["clasp","Clasp",CLASPS]],
+    initials:[["clasp","Clasp",CLASPS]],
     laceTrim:[["bottom","Bottom",[["none","Top only"],["front","Front only +$5"],["around","All the way around +$10"]]]],
     extTies:[["style","How they wrap",[["1","Under the bust"],["2","Crisscross at the waist"]]]],
     connectors:[["bottom","Bottom",[["no","Top only"],["two","2 on the bottom +$15"]]],["ties","Extended ties",[["no","No ties"],["yes","Add extended ties +$10"]]]]
@@ -1363,7 +1370,7 @@
     if(id==="rhinestones") p=10*rsCount()*(cfg(id,"place")==="both"?2:1);
     if(id==="laceTrim") p+= {none:0,front:5,around:10}[cfg(id,"bottom")];
     if(id==="connectors" && cfg(id,"bottom")==="two") p+=15;
-    if((id==="charmsB"||id==="charmsP") && cfg(id,"clasp")!=="plain") p+=10;
+    if(/^charms|^initials$/.test(id) && cfg(id,"clasp")!=="plain") p+=10;
     return p;
   }
   function cfgText(id){
@@ -1638,20 +1645,19 @@
         return y+r*1.6; }
       var h=W*0.13, w=h*0.42; img(svg,c,x,y+h/2,w,h,0); return y+h*0.9;
     }
-    if(on("charmsP")){
-      var ph=W*0.30; // premium charms are long dangles, sized off the piece width
-      var withTies=(A.extTies||state.preview==="extTies") && addonAvailable("extTies");
-      function hangC(x,y,h){ hang(svg,variantOf("charmsP"),x,clasp("charmsP",x,y),h); }
-      if(withTies){ // with extended ties: a single charm hanging down the middle of the top
-        if(isTop) hangC(g.center[0],g.center[1]-6,W*0.36);
-      }
-      else if(isTop){ hangC(g.outerL[0]+6,g.outerL[1]-10,ph); hangC(g.outerR[0]-6,g.outerR[1]-10,ph); }
-      else { hangC(g.hipL[0]-2,g.hipL[1]-2,ph); hangC(g.hipR[0]+2,g.hipR[1]-2,ph); }
-    }
-    /* gem charm — one in the middle of the top */
-    if(on("charmsB") && isTop){
-      var gy=clasp("charmsB",g.center[0],g.center[1]-4);
-      hang(svg,variantOf("charmsB"),g.center[0],gy,W*0.15);
+    /* charms — gem, premium and letter charms each hang once, down the middle of the top */
+    if(isTop){
+      var CH=["charmsB","charmsP","initials"].filter(on), nC=CH.length, sp=W*0.11;
+      CH.forEach(function(id,ix){
+        var x=g.center[0]+(ix-(nC-1)/2)*sp, y=clasp(id,x,g.center[1]-4);
+        if(id==="charmsB") hang(svg,variantOf("charmsB"),x,y,W*0.15);
+        else if(id==="charmsP") hang(svg,variantOf("charmsP"),x,y,W*0.32);
+        else {
+          var letters=(state.initials||"").toUpperCase().replace(/[^A-Z]/g,"").slice(0,3).split("");
+          var lh=W*0.13, lw=lh*0.62;
+          letters.forEach(function(ch,li){ img(svg,"lt-"+ch,x,y+lh*0.5+li*lh*0.92,lw,lh,0); }); // stacked on one ring
+        }
+      });
     }
 
     /* key ring — center front on the top, hips on the bottom */
@@ -1689,15 +1695,6 @@
       rhinestoneText(svg,rp==="both"?[g.cupL,g.cupR]:rp==="right"?[g.cupR]:rp==="left"?[g.cupL]:[],W);
     }
 
-    if(on("initials") && !isTop){
-      var letters=(state.initials||"").toUpperCase().replace(/[^A-Z]/g,"").slice(0,3).split("");
-      var lh=W*0.17, lw=lh*0.62, gap=lw*1.08, x0=g.mono[0]-gap*(letters.length-1)/2;
-      var silver=cfg("initials","metal")==="silver";
-      function put(cx,cy,sc){ var gp=gap*sc, xs=cx-gp*(letters.length-1)/2;
-        letters.forEach(function(ch,li){ var im=img(svg,"lt-"+ch,xs+li*gp,cy,lw*sc,lh*sc,0); if(silver) im.setAttribute("style","filter:grayscale(1) brightness(1.18) contrast(1.05)"); }); }
-      if(cfg("initials","place")==="both"){ put(g.hipL[0]+W*0.07,g.hipL[1]+H*0.22,0.7); put(g.hipR[0]-W*0.07,g.hipR[1]+H*0.22,0.7); }
-      else put(g.mono[0],g.mono[1],1);
-    }
   }
 
   /* ---------- render ---------- */
@@ -1841,7 +1838,7 @@
   /* the checkout button pops up as soon as the tote / headband question is answered */
   function syncCheckoutPop(){
     var pop=document.getElementById("checkoutPop");
-    var show=!document.getElementById("builder").hidden && ((curPage==="pageExtras" && (state.tote||state.headband)) || curPage==="pageDone");
+    var show=!document.getElementById("builder").hidden && document.getElementById("fulfil").hidden && ((curPage==="pageExtras" && (state.tote||state.headband)) || curPage==="pageDone");
     var tp=document.getElementById("totalPrice");
     document.getElementById("cpTotal").innerHTML=tp?tp.innerHTML:"";
     pop.classList.toggle("show",show);
@@ -2315,8 +2312,13 @@
       buildSlots();
     }
   });
+  /* with pickup switched off, wait & watch is the only choice, so it's picked for them */
+  function pickWaitIfOnlyOption(){
+    var opts=[].filter.call(document.querySelectorAll("#fulfilChoices .fulfil-opt"),function(b){ return !b.hidden; });
+    if(opts.length===1 && opts[0].getAttribute("aria-pressed")!=="true") opts[0].click();
+  }
   document.getElementById("fulfilBack").addEventListener("click",function(){
-    document.getElementById("fulfil").hidden=true;
+    document.getElementById("fulfil").hidden=true; syncCheckoutPop();
     window.scrollTo(0,0);
   });
 
@@ -2410,6 +2412,7 @@
     }
     btn.textContent="CHECKOUT"; delete btn.dataset.busy;
     document.getElementById("fulfil").hidden=false;
+    pickWaitIfOnlyOption(); syncCheckoutPop();
     window.scrollTo(0,0);
   });
 
