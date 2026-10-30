@@ -458,6 +458,11 @@
   .rig.flip{animation:rig-flip .35s ease;}
   @keyframes rig-flip{from{opacity:.2; transform:translateX(var(--fx,24px));} to{opacity:1; transform:none;}}
   @media (prefers-reduced-motion:reduce){ .rig.flip{animation:none;} }
+  /* running count of customizations on the bikini preview */
+  .custom-count{margin:14px 0 0; text-align:center; font-family:var(--lp-display); color:var(--fs-ink,#2E2433); display:flex; align-items:baseline; justify-content:center; gap:8px;}
+  .custom-count .cc-n{font-size:46px; line-height:1; font-style:italic; color:var(--fs-orchid,#8A5BB8); transition:transform .25s;}
+  .custom-count .cc-l{font-family:var(--lp-sans); font-size:12px; letter-spacing:.24em; text-transform:uppercase;}
+  .custom-count.is-zero .cc-n{color:var(--fs-ink-60,rgba(46,36,51,.62));}
 </style>
 </head>
 <body>
@@ -1003,6 +1008,7 @@
           <span class="style-name" id="styleName">Triangle, Turquoise</span>
         </div>
         <div class="rig" id="rig"></div>
+        <p class="custom-count" id="customCount" aria-live="polite"><span class="cc-n">0</span> <span class="cc-l">customizations</span></p>
         <div class="view-toggle" id="viewToggle" hidden>
           <button type="button" class="vt-arrow" data-step="-1" aria-label="Show the other side">&#8249;</button>
           <button type="button" data-view="front" aria-pressed="true">Front</button>
@@ -1465,6 +1471,10 @@
     var back=state.view==="back";
     rig.appendChild(makePiece(ta,{back:back&&!!BACK[ta]}));
     rig.appendChild(makePiece(ba,{back:back&&!!BACK[ba]}));
+    var cc=document.getElementById("customCount"), nAdd=activeAddons().length;
+    cc.querySelector(".cc-n").textContent=nAdd;
+    cc.querySelector(".cc-l").textContent=nAdd===1?"customization":"customizations";
+    cc.classList.toggle("is-zero",!nAdd);
     var vt=document.getElementById("viewToggle");
     vt.hidden=!hasBack;
     vt.querySelectorAll("button").forEach(function(b){ var on=b.dataset.view===state.view; b.classList.toggle("on",on); b.setAttribute("aria-pressed",on); });
