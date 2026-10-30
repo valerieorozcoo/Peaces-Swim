@@ -1027,7 +1027,8 @@
 
 <div class="fulfil" id="fulfil" hidden>
   <div class="fulfil-card">
-    <h1 class="fulfil-title">ORDER CONFIRMED</h1>
+    <h1 class="fulfil-title">CHECKOUT READY</h1>
+    <p style="margin:0 20px 20px;">Finish paying in Shopify to confirm your order. You can choose your pickup preference below.</p>
 
     <div class="fulfil-choices" id="fulfilChoices">
       <button class="fulfil-opt" type="button" data-mode="wait" aria-pressed="false">
@@ -1889,22 +1890,31 @@
     var btn=this, note=document.getElementById("checkoutNote");
     if(btn.dataset.busy) return;
     btn.dataset.busy="1"; btn.textContent="PREPARING…";
+    currentOrder=null;
+    document.getElementById("fulfil").hidden=true;
     saveDesign();
     // open the tab now (inside the click) so pop-up blockers allow it, then point it at checkout
     var tab=window.open("","_blank");
     try{
       var o=await api("/orders/create",{design:designPayload(), customer:lead?{phone:lead.phone,welcomeToken:lead.welcomeToken}:null});
+      if(!o.id || !o.sig || !o.checkoutUrl) throw new Error("We couldn't prepare checkout. Please try again.");
       currentOrder=o;
+      state.fulfil=null; state.pickupAt=null;
+      document.getElementById("slotBlock").hidden=true;
+      document.getElementById("waitBlock").hidden=true;
+      document.getElementById("fulfilChoices").querySelectorAll(".fulfil-opt").forEach(function(x){ x.setAttribute("aria-pressed","false"); });
       if(tab) tab.location.href=o.checkoutUrl; else window.location.href=o.checkoutUrl;
       note.textContent="Order "+o.name+" is ready — finish paying in the checkout tab.";
+      document.getElementById("fulfil").hidden=false;
+      window.scrollTo(0,0);
     }catch(err){
-      try{ if(navigator.clipboard) navigator.clipboard.writeText(designText()); }catch(x){}
-      if(tab) tab.location.href=btn.href;
-      note.textContent= (err.status===400 ? err.message+" " : "") + "Design summary copied — paste it into the order notes at checkout.";
+      currentOrder=null;
+      if(tab) tab.close();
+      note.textContent=err.message||"We couldn't prepare checkout. Please try again.";
+      if(err.status===409){ lead=null; state.perk=false; syncPerk(); renderAll(); openGate("stepPhone"); }
+    }finally{
+      btn.textContent="CHECKOUT"; delete btn.dataset.busy;
     }
-    btn.textContent="CHECKOUT"; delete btn.dataset.busy;
-    document.getElementById("fulfil").hidden=false;
-    window.scrollTo(0,0);
   });
 
   /* ---------- keep every control in sync ---------- */
