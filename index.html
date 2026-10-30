@@ -1223,8 +1223,8 @@
   var COLORS=[
     {id:"green",  name:"Mint", fill:"#93D1BF", family:"triangle"},
     {id:"cheetah",name:"Cheetah",     fill:"leopard", family:"triangle"},
-    {id:"teal",   name:"Teal",        fill:"#5FD6D2", family:"underwire"},
-    {id:"coral",  name:"Coral",       fill:"#F4785F", family:"underwire"}
+    {id:"teal",   name:"Teal",        fill:"#2FACBE", family:"underwire"},
+    {id:"coral",  name:"Coral",       fill:"#FD645D", family:"underwire"}
   ];
   function colorsFor(family){
     return COLORS.filter(function(c){ return c.family==="both" || c.family===family; });
@@ -1289,15 +1289,16 @@
   var GEO={
     "b-triangle-top":{"w":441,"h":441,"k":0.83,"strapL":[160,95],"strapR":[275,90],"junctionL":[107,236],"junctionR":[332,236],"strapRunL":[[160,100],[110,230]],"strapRunR":[[275,95],[330,230]],"outerL":[14,418],"outerR":[432,418],"center":[221,418],"centerHigh":[221,405],"trimSegs":[[107,236,196,410],[246,410,332,236]]},
     "b-triangle-bottom":{"w":461,"h":311,"k":0.83,"hipL":[93,54],"hipR":[371,40],"tieTopL":[11,12],"tieTopR":[450,12],"strapRunL":[[14,14],[90,52]],"strapRunR":[[447,14],[371,40]],"center":[222,56],"mono":[222,130],"trimSegs":[[93,54,222,56],[222,56,371,40]]},
-    "b-underwire-top":{"w":323,"h":350,"strapL":[140,14],"strapR":[190,14],"junctionL":[40,185],"junctionR":[285,185],"strapRunL":[[130,35],[50,175]],"strapRunR":[[195,35],[278,175]],"outerL":[12,232],"outerR":[312,232],"center":[160,228],"centerHigh":[160,214],"trimSegs":[[8,195,160,218],[160,218,315,192]]},
-    "b-seamless-bottom":{"w":328,"h":217,"hipL":[12,14],"hipR":[316,12],"tieTopL":[10,8],"tieTopR":[318,6],"strapRunL":[[12,14],[20,40]],"strapRunR":[[316,12],[308,40]],"center":[165,36],"mono":[165,95],"trimSegs":[[12,10,165,34],[165,34,315,8]]}
+    "b-underwire-top":{"w":602,"h":610,"k":0.537,"strapL":[261,24],"strapR":[354,24],"junctionL":[75,322],"junctionR":[531,322],"strapRunL":[[242,61],[93,305]],"strapRunR":[[363,61],[518,305]],"outerL":[22,404],"outerR":[581,404],"center":[298,397],"centerHigh":[298,373],"trimSegs":[[15,340,298,380],[298,380,587,335]]},
+    "b-seamless-bottom":{"w":600,"h":396,"k":0.537,"hipL":[22,26],"hipR":[578,22],"tieTopL":[18,15],"tieTopR":[582,11],"strapRunL":[[22,26],[37,73]],"strapRunR":[[578,22],[563,73]],"center":[302,66],"mono":[302,173],"trimSegs":[[22,18,302,62],[302,62,576,15]]}
   };
 
   /* back views (photo cut-outs) for the styles that have one */
-  var BACK={"b-underwire-top":{w:313,h:377},"b-seamless-bottom":{w:320,h:217},
+  var BACK={"b-underwire-top":{w:565,h:643,k:0.537},"b-seamless-bottom":{w:580,h:385,k:0.537},
             "b-triangle-top":{w:431,h:554,k:0.83},"b-triangle-bottom":{w:459,h:307,k:0.83}};
   /* the triangle set is shown from the real product photos (exact mint + cheetah), not recoloured */
-  var PHOTO={"b-triangle-top":{green:"mint",cheetah:"cheetah"},"b-triangle-bottom":{green:"mint",cheetah:"cheetah"}};
+  var PHOTO={"b-triangle-top":{green:"mint",cheetah:"cheetah"},"b-triangle-bottom":{green:"mint",cheetah:"cheetah"},
+             "b-underwire-top":{teal:"teal",coral:"coral"},"b-seamless-bottom":{teal:"teal",coral:"coral"}};
   function fmt(n){ return "$"+n.toFixed(2); }
   function colorDef(id){ return COLORS.filter(function(c){return c.id===id;})[0]||COLORS[0]; }
   function styleOf(part){ return STYLES[part][part==="top"?state.topStyle:state.bottomStyle]; }
