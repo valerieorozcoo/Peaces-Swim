@@ -1206,7 +1206,7 @@
   var STYLES={
     top:{
       triangle:{art:"b-triangle-top", name:"Triangle top", desc:"Classic triangle cups with neck ties.", family:"triangle", ties:true,  ruffle:'1″',
-        addons:["extTies","ruffles","laceRuffles","fringe","laceTrim","bows","roses","beads","initials","charmsB","charmsP","connectors"]},
+        addons:["extTies","ruffles","laceRuffles","fringe","laceTrim","bows","roses","beadsAcrylic","beadsIri","beadsWavy","beadsPearl","initials","charmsB","charmsP","connectors"]},
       underwire:{art:"b-underwire-top", name:"Bralette top", desc:"Twist-front bandeau with halter ties.", family:"underwire", ties:true, ruffle:'½″',
         addons:["extTies","fringe","laceTrim","bows","roses","initials","charmsB","charmsP"]}
     },
@@ -1235,13 +1235,22 @@
     ["lightgreen","Light green"],["coral","Coral"],["pink","Pink"],
     ["lightblue","Light blue"],["purpleblue","Light purple"],["lightturq","Light turquoise"]
   ];
-  var CHARMS_B=[["cg-heart","Crystal heart"],["cg-pinksquare","Pink square"],["cg-clearrect","Crystal rectangle"],["cg-pinkbaguette","Pink baguette"],["cg-halo","Halo crystal"]];
-  var CHARMS_P=[["cp-shell","Seashell & pearls"],["cp-hamsa","Hamsa"],["cp-boot","Cowgirl boot"],["cp-tag","Gold tag"],["cp-pearls","Pearl drop"],["cp-rainbow","Rainbow"]];
+  var BEADS_A=[["blue","Blue"],["green","Green"],["hot-pink","Hot pink"],["mint","Mint"],["orange","Orange"],["pink","Pink"],["purple","Purple"],["red","Red"],["white","White"],["yellow","Yellow"]];
+  var BEADS_I=[["aqua","Aqua"],["black","Black"],["lavender","Lavender"],["lime","Lime"],["mint","Mint"],["orange","Orange"],["pale-pink","Pale pink"],["pink","Pink"],["purple","Purple"],["red","Red"],["white","White"],["yellow","Yellow"]];
+  var BEADS_W=[["brown","Brown"],["burgundy","Burgundy"],["dark-blue","Dark blue"],["green","Green"],["hot-pink","Hot pink"],["lavender","Lavender"],["light-blue","Light blue"],["orange","Orange"],["pink","Pink"],["red","Red"],["white","White"],["yellow","Yellow"]];
+  var CHARMS_B=[["cg-heart","Clear heart"],["cg-clearrect","Clear rectangle"],["cg-halo","Clear rhinestone frame"],["cg-pinkbaguette","Pink rectangle"],["cg-pinksquare","Pink square"]];
+  var CHARMS_P=[["cp-shell","Shell"],["cp-hamsa","Evil eye"],["cp-boot","Boots"],["cp-tag","Diamond star"],["cp-pearls","Plain pearl"],["cp-rainbow","Rainbow"]];
 
   /* every add-on opens to choose a colour/finish, then Add to cart */
   var ADDONS=[
-    {id:"beads",   tier:1,price:3, name:"Beads",          hint:"Straps + center front",
-      opts:BEADS, art:function(v){return "bead-"+v;}, def:"lightpink"},
+    {id:"beadsAcrylic",tier:1,price:3, name:"Acrylic beads", hint:"Glossy beads on the straps",
+      opts:BEADS_A, art:function(v){return "ba-"+v;}, def:"pink"},
+    {id:"beadsIri", tier:1,price:3, name:"Iridescent beads", hint:"Pearly-shine beads on the straps",
+      opts:BEADS_I, art:function(v){return "bi-"+v;}, def:"pale-pink"},
+    {id:"beadsWavy",tier:1,price:3, name:"Wavy beads",     hint:"Organic ring beads on the straps",
+      opts:BEADS_W, art:function(v){return "bw-"+v;}, def:"pink"},
+    {id:"beadsPearl",tier:1,price:3, name:"Pearl beads",   hint:"Pearls on the straps",
+      opts:[["16mm","16 mm"],["20mm","20 mm"]], art:function(v){return "bp-"+v;}, def:"16mm"},
     {id:"bows",    tier:2,price:5, name:"Mini bows",      hint:"Center front, top + bottom",
       opts:[["pink","Light pink"],["white","White"]], art:function(v){return "p-bow-"+v;}, def:"pink"},
     {id:"roses",   tier:2,price:5, name:"Mini roses",     hint:"Center front, top + bottom",
@@ -1263,10 +1272,11 @@
     {id:"ruffles", tier:4,price:10,name:"Ruffles",        hint:"Along the edges",
       opts:[["pink","Pink"],["green","Green"],["turq","Turquoise"],["coral","Coral"]],
       art:function(v){return "p-ruffle-"+v;}, def:"pink"},
-    {id:"initials",tier:4,price:10,name:"Rhinestones",    hint:"Your initials on the bottom",
+    {id:"initials",tier:4,price:10,name:"Letter charms",  hint:"Up to 3 rhinestone letters",
       opts:[["clear","Clear"]], art:function(){return "";}, def:"clear"},
-    {id:"connectors",tier:4,price:10,name:"Connectors",   hint:"Gold heart ring",
-      opts:[["gold","Gold"]], art:function(){return "c-heartring";}, def:"gold"}
+    {id:"connectors",tier:4,price:10,name:"Connectors",   hint:"Gold, rhinestone & colour rings",
+      opts:[["c-heartring","Heart"],["cn-goldring","Gold ring"],["cn-pinkring","Pink ring"],["cn-bluering","Blue ring"],["cn-big-gold","Big gold"],["cn-skinny-gold","Skinny gold"],["cn-skinny-rhinestone","Skinny rhinestone"],["cn-small-rhinestone","Small rhinestone"]],
+      art:function(v){return v;}, def:"c-heartring"}
   ];
   function addonDef(id){ return ADDONS.filter(function(a){return a.id===id;})[0]; }
   function variantOf(id){ var a=addonDef(id); return state.variant[id]||a.def; }
@@ -1329,13 +1339,6 @@
     var wr=/^cg-/.test(name)?0.5:0.19;
     el("image",{href:"art2/"+name+".png",x:(x-h*wr),y:y,width:h*wr*2,height:h,
       preserveAspectRatio:"xMidYMid meet"},svg);
-  }
-  function beadRun(svg,run,n,size){
-    var p1=run[0],p2=run[1];
-    for(var i=0;i<n;i++){
-      var t=(i+0.5)/n;
-      img(svg,"bead-"+variantOf("beads"),p1[0]+(p2[0]-p1[0])*t,p1[1]+(p2[1]-p1[1])*t,size,size,0);
-    }
   }
 
   /* ---------- pieces ---------- */
@@ -1424,11 +1427,15 @@
     }
 
     /* beads — along the straps and across the center front */
-    if(on("beads")){
-      var bs=W*0.05;
-      beadRun(svg,g.strapRunL,4,bs);
-      beadRun(svg,g.strapRunR,4,bs);
-      for(var i=-1;i<2;i++) img(svg,"bead-"+variantOf("beads"),g.center[0]+i*bs*1.02,g.center[1],bs,bs,0);
+    var BEAD_FAM=[["beadsAcrylic","ba-"],["beadsIri","bi-"],["beadsWavy","bw-"],["beadsPearl","bp-"]].filter(function(b){return on(b[0]);});
+    if(BEAD_FAM.length){
+      var bs=W*0.055, per=4, tot=BEAD_FAM.length*per;
+      [g.strapRunL,g.strapRunR].forEach(function(run){
+        for(var bi2=0;bi2<tot;bi2++){
+          var fam=BEAD_FAM[bi2%BEAD_FAM.length], t=(bi2+0.5)/tot;
+          img(svg,fam[1]+variantOf(fam[0]),run[0][0]+(run[1][0]-run[0][0])*t,run[0][1]+(run[1][1]-run[0][1])*t,bs,bs,0);
+        }
+      });
     }
 
     /* charms hang from the outer edges / hips */
@@ -1449,8 +1456,9 @@
     /* key ring — center front on the top, hips on the bottom */
     if(on("connectors")){
       var kw=W*0.1;
-      if(isTop) img(svg,"c-heartring",g.center[0],g.center[1]+2,kw,kw,0);
-      else { img(svg,"c-heartring",g.hipL[0],g.hipL[1]+2,kw,kw,0); img(svg,"c-heartring",g.hipR[0],g.hipR[1]+2,kw,kw,0); }
+      var cv=variantOf("connectors"), tall=/big|skinny|small/.test(cv), ch=tall?kw*1.9:kw;
+      if(isTop) img(svg,cv,g.center[0],g.center[1]+2,kw,ch,0);
+      else { img(svg,cv,g.hipL[0],g.hipL[1]+2,kw,ch,0); img(svg,cv,g.hipR[0],g.hipR[1]+2,kw,ch,0); }
     }
 
     /* pearl buttons — centre front */
@@ -1476,14 +1484,9 @@
     }
 
     if(on("initials") && !isTop){
-      var t=el("text",{x:g.mono[0],y:g.mono[1],"font-family":"'Pinyon Script', cursive",
-        "font-size":(W*0.14),fill:"#FFFFFF",stroke:"#EFDDFD","stroke-width":.7,"text-anchor":"middle",opacity:.96},svg);
-      t.textContent=(state.initials||"").slice(0,3).toUpperCase();
-      for(var k=0;k<12;k++){
-        var ang=k/12*Math.PI*2;
-        el("circle",{cx:g.mono[0]+Math.cos(ang)*(W*0.11),cy:g.mono[1]-W*0.045+Math.sin(ang)*(W*0.06),
-          r:1.4,fill:"#FFFFFF",stroke:"#EFDDFD","stroke-width":.4},svg);
-      }
+      var letters=(state.initials||"").toUpperCase().replace(/[^A-Z]/g,"").slice(0,3).split("");
+      var lh=W*0.17, lw=lh*0.62, gap=lw*1.08, x0=g.mono[0]-gap*(letters.length-1)/2;
+      letters.forEach(function(ch,li){ img(svg,"lt-"+ch,x0+li*gap,g.mono[1],lw,lh,0); });
     }
   }
 
@@ -1673,7 +1676,7 @@
       drawer.className="addon-drawer"; drawer.dataset.for=a.id; drawer.hidden=true;
       var html='';
       if(a.opts.length>1){
-        html+='<div class="cf-label">'+(/^charms/.test(a.id)?"Choose a charm":"Choose a colour")+'</div><div class="chips">';
+        html+='<div class="cf-label">'+(/^charms/.test(a.id)?"Choose a charm":a.id==="connectors"?"Choose a connector":a.id==="beadsPearl"?"Choose a size":"Choose a colour")+'</div><div class="chips">';
         a.opts.forEach(function(o){
           var art=a.art(o[0]);
           html+='<button type="button" class="chip" data-val="'+o[0]+'">'+

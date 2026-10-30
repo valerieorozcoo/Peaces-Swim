@@ -39,7 +39,7 @@ try {
   assert.equal(r.body.total, 108); assert.equal(r.body.discounted, true);
   const d0 = db.drafts[0].input;
   assert.equal(d0.purchasingEntity.customerId, "gid://shopify/Customer/1");
-  assert.ok(d0.lineItems.some((l) => l.title === "Add-on: Rhinestones (VAL)")); ok("order priced on server, 10% for known customer");
+  assert.ok(d0.lineItems.some((l) => l.title === "Add-on: Letter charms (VAL)")); ok("order priced on server, 10% for known customer");
 
   r = await post("/orders/create", { design, customer: { phone: "9999999999" } });
   assert.equal(r.body.total, 120); assert.equal(r.body.discounted, false); ok("no discount for unknown phone");
