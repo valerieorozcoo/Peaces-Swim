@@ -32,6 +32,13 @@ export function startMockShopify(port) {
       Object.assign(c, rest);
       return send({ data: { customerUpdate: { customer: { id }, userErrors: [] } } });
     }
+    if (query.includes("customerSmsMarketingConsentUpdate")) {
+      const { customerId, smsMarketingConsent } = variables.input;
+      const c = db.customers.find((x) => x.id === customerId);
+      if (!c || !c.phone) return send({ data: { customerSmsMarketingConsentUpdate: { userErrors: [{ field: ["customerId"], message: "Customer must have a phone number" }] } } });
+      c.smsMarketingConsent = smsMarketingConsent;
+      return send({ data: { customerSmsMarketingConsentUpdate: { userErrors: [] } } });
+    }
     if (query.includes("tagsAdd")) {
       const c = db.customers.find((x) => x.id === variables.id);
       if (!c) return send({ data: { tagsAdd: { userErrors: [{ field: ["id"], message: "not found" }] } } });

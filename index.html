@@ -1301,7 +1301,8 @@
 
 <div class="fulfil" id="fulfil" hidden>
   <div class="fulfil-card">
-    <h1 class="fulfil-title">ORDER CONFIRMED</h1>
+    <h1 class="fulfil-title">CHECKOUT READY</h1>
+    <p class="fulfil-sub">Finish paying in the Shopify tab to confirm your order.</p>
 
     <div class="fulfil-choices" id="fulfilChoices">
       <button class="fulfil-opt" type="button" data-mode="wait" aria-pressed="false">
@@ -1327,6 +1328,8 @@
       <p class="wait-note" id="waitNote"></p>
     </div>
 
+    <p id="fulfilStatus" role="status" aria-live="polite" style="margin:20px;" hidden></p>
+    <button type="button" class="cta" id="fulfilRetry" style="margin:0 20px 20px;" hidden>Retry saving preference</button>
     <div style="margin:0 20px;"><button class="cta" id="fulfilBack" type="button">Back to my design</button></div>
   </div>
 </div>
@@ -2099,15 +2102,8 @@
     if(!r.ok){ var err=new Error(j.error||("HTTP "+r.status)); err.status=r.status; throw err; }
     return j;
   }
-  async function lookupCustomer(phone){
-    try{
-      var j=await api("/customers/lookup",{phone:phone});
-      return j.found ? {name:j.firstName||"friend"} : null;
-    }catch(e){ return null; }
-  }
   async function saveCustomer(c){
-    try{ await api("/customers/create",{name:c.name,email:c.email,phone:c.phone,marketing:!!c.marketing}); }
-    catch(e){ console.warn("[peaces] customer not saved:",e.message); }
+    return api("/customers/create",{name:c.name,email:c.email,phone:c.phone,marketing:!!c.marketing});
   }
   function storeLead(){ /* the Shopify customer record is the lead now */ }
 
@@ -2209,30 +2205,18 @@
     e.preventDefault();
     var ph=document.getElementById("gPhone"), err=document.getElementById("phoneErr"), btn=document.getElementById("phoneBtn");
     ph.classList.remove("bad");
-    if(digitsOf(ph.value).length<7){
+    if(digitsOf(ph.value).length<10){
       ph.classList.add("bad"); err.hidden=false; err.textContent="That phone number doesn't look right."; ph.focus();
       return;
     }
     err.hidden=true;
     pendingPhone=prettyPhone(ph.value.trim());
-    btn.textContent="CHECKING…";
-    var found=await lookupCustomer(pendingPhone);
-    btn.textContent="CONTINUE";
-    if(found && found.name){
-      lead={name:found.name, email:found.email||"", phone:pendingPhone, returning:true};
-      state.perk=true;
-      document.getElementById("backTitle").textContent="WELCOME "+String(found.name).split(" ")[0].toUpperCase();
-      document.getElementById("backSub").textContent="We're so glad you're back. Your 10% is already on.";
-      document.getElementById("notYou").hidden=false;
-      storeLead(lead);
-      showStep("stepBack");
-    } else {
-      showStep("stepNew");
-      document.getElementById("gName").focus({preventScroll:true});
-    }
+    lead=null; state.perk=false;
+    showStep("stepNew");
+    document.getElementById("gName").focus({preventScroll:true});
   });
 
-  document.getElementById("newForm").addEventListener("submit",function(e){
+  document.getElementById("newForm").addEventListener("submit",async function(e){
     e.preventDefault();
     var n=document.getElementById("gName"), em=document.getElementById("gEmail"), err=document.getElementById("newErr");
     var bad=[];
@@ -2248,15 +2232,24 @@
       return;
     }
     err.hidden=true;
-    lead={name:n.value.trim(), email:em.value.trim(), phone:pendingPhone, returning:false,
+    var candidate={name:n.value.trim(), email:em.value.trim(), phone:pendingPhone, returning:false,
           marketing:document.getElementById("gMarketing").checked};
-    state.perk=true;
-    saveCustomer(lead);
+    var form=this, button=form.querySelector('[type="submit"]');
+    if(form.dataset.busy) return;
+    form.dataset.busy="1"; if(button) button.disabled=true;
+    lead=null; state.perk=false;
+    try{
+    var saved=await saveCustomer(candidate);
+    if(!saved.ok || !saved.welcomeToken) throw new Error("We couldn't save your details. Please try again.");
+    candidate.welcomeToken=saved.welcomeToken;
+    lead=candidate; state.perk=true;
     storeLead(lead);
     document.getElementById("backTitle").textContent="YOU'RE IN, "+lead.name.split(" ")[0].toUpperCase();
     document.getElementById("backSub").textContent="Your 10% is saved and comes off your first design.";
     document.getElementById("notYou").hidden=true;
     showStep("stepBack");
+    }catch(x){ err.hidden=false; err.textContent=x.message||"We couldn't save your details. Please try again."; }
+    finally{ delete form.dataset.busy; if(button) button.disabled=false; syncPerk(); renderAll(); }
   });
 
   document.getElementById("backGo").addEventListener("click",startDesigning);
@@ -2397,27 +2390,28 @@
       b.setAttribute("aria-pressed","false");
       b.dataset.at=t.getTime();
       b.addEventListener("click",function(){
+        if(fulfilmentSaving) return;
         grid.querySelectorAll(".slot").forEach(function(x){ x.setAttribute("aria-pressed","false"); });
         this.setAttribute("aria-pressed","true");
         var mins=Math.max(1,Math.round((+this.dataset.at-Date.now())/60000));
         state.pickupAt=this.textContent;
-        showWait(mins,"Pick up at "+this.textContent+" — we'll text you when it's ready.","Ready in");
         sendFulfilment(mins);
       });
       grid.appendChild(b);
     }
   }
   document.getElementById("fulfilChoices").addEventListener("click",function(e){
-    var btn=e.target.closest(".fulfil-opt"); if(!btn) return;
+    var btn=e.target.closest(".fulfil-opt"); if(!btn || fulfilmentSaving) return;
+    resetFulfilmentFeedback();
     this.querySelectorAll(".fulfil-opt").forEach(function(x){ x.setAttribute("aria-pressed","false"); });
     btn.setAttribute("aria-pressed","true");
     state.fulfil=btn.dataset.mode;
     if(state.fulfil==="wait"){
       document.getElementById("slotBlock").hidden=true;
       state.pickupAt=null;
-      showWait(makeMinutes(),"Stay close — we'll customize your peace right in front of you.","Estimated wait");
       sendFulfilment(makeMinutes());
     } else {
+      state.pickupAt=null;
       document.getElementById("slotBlock").hidden=false;
       document.getElementById("waitBlock").hidden=true;
       buildSlots();
@@ -2545,36 +2539,79 @@
   }
   window.peacesDesignImage=designImage; // handy for checking the picture from the console
   var currentOrder=null;
-  function sendFulfilment(extra){
-    if(!currentOrder) return;
-    var body={id:currentOrder.id, sig:currentOrder.sig, mode:state.fulfil, pickupAt:state.pickupAt||"", minutes:extra||0};
-    api("/orders/fulfillment",body).catch(function(e){ console.warn("[peaces] fulfilment not saved:",e.message); });
+  var fulfilmentSaving=false, pendingFulfilment=null;
+  function resetFulfilmentFeedback(){
+    pendingFulfilment=null;
+    document.getElementById("fulfilStatus").hidden=true;
+    document.getElementById("fulfilRetry").hidden=true;
   }
+  async function sendFulfilment(extra, retry){
+    if(!currentOrder || fulfilmentSaving) return;
+    var order=currentOrder;
+    var body=retry || {id:order.id, sig:order.sig, mode:state.fulfil, pickupAt:state.pickupAt||"", minutes:extra||0};
+    if(body.id!==order.id || body.sig!==order.sig) return;
+    pendingFulfilment=body;
+    fulfilmentSaving=true;
+    var status=document.getElementById("fulfilStatus"), retryButton=document.getElementById("fulfilRetry");
+    var controls=Array.from(document.querySelectorAll("#fulfilChoices button, #slotGrid button, #fulfilRetry"));
+    controls.forEach(function(b){b.disabled=true;});
+    retryButton.hidden=true;
+    document.getElementById("waitBlock").hidden=true;
+    status.hidden=false; status.textContent="Saving your preference…";
+    try{
+      var result=await api("/orders/fulfillment",body);
+      if(!result.ok) throw new Error("The shop couldn't save your preference. Please try again.");
+      if(currentOrder!==order) return;
+      pendingFulfilment=null;
+      status.textContent="Your preference is saved."; status.hidden=true;
+      if(body.mode==="pickup") showWait(body.minutes,"Pick up at "+body.pickupAt+" — preference saved.","Ready in");
+      else showWait(body.minutes,"Stay close — we'll customize your peace right in front of you.","Estimated wait");
+    }catch(e){
+      if(currentOrder!==order) return;
+      status.textContent="Your preference wasn't saved. "+(e.message||"Please try again.");
+      retryButton.hidden=false;
+    }finally{
+      fulfilmentSaving=false;
+      controls.forEach(function(b){b.disabled=false;});
+    }
+  }
+  document.getElementById("fulfilRetry").addEventListener("click",function(){
+    if(pendingFulfilment) sendFulfilment(pendingFulfilment.minutes,pendingFulfilment);
+  });
 
   document.getElementById("checkoutBtn").addEventListener("click",async function(e){
     e.preventDefault();
     var btn=this, note=document.getElementById("checkoutNote");
     if(btn.dataset.busy) return;
     btn.dataset.busy="1"; btn.textContent="PREPARING…";
+    currentOrder=null;
+    document.getElementById("fulfil").hidden=true;
     saveDesign();
     // open the tab now (inside the click) so pop-up blockers allow it, then point it at checkout
     var tab=window.open("","_blank");
     try{
       var pic=await designImageOrNull(4000);
-      var o=await api("/orders/create",{design:designPayload(), image:pic, customer:lead?{name:lead.name,email:lead.email,phone:lead.phone}:null});
+      var o=await api("/orders/create",{design:designPayload(), image:pic, customer:lead?{phone:lead.phone,welcomeToken:lead.welcomeToken}:null});
+      if(!o.id || !o.sig || !o.checkoutUrl) throw new Error("We couldn't prepare checkout. Please try again.");
       currentOrder=o;
+      resetFulfilmentFeedback();
+      state.fulfil=null; state.pickupAt=null;
+      document.getElementById("slotBlock").hidden=true;
+      document.getElementById("waitBlock").hidden=true;
+      document.getElementById("fulfilChoices").querySelectorAll(".fulfil-opt").forEach(function(x){ x.setAttribute("aria-pressed","false"); });
       if(tab) tab.location.href=o.checkoutUrl; else window.location.href=o.checkoutUrl;
       note.textContent="Order "+o.name+" is ready — finish paying in the checkout tab.";
+      document.getElementById("fulfil").hidden=false;
+      pickWaitIfOnlyOption(); syncCheckoutPop();
+      window.scrollTo(0,0);
     }catch(err){
-      console.warn("[peaces] checkout fell back:",err&&err.message);
-      try{ if(navigator.clipboard) navigator.clipboard.writeText(designText()); }catch(x){}
-      if(tab) tab.location.href=btn.href;
-      note.textContent= (err.status===400 ? err.message+" " : "") + "Design summary copied — paste it into the order notes at checkout.";
+      currentOrder=null;
+      if(tab) tab.close();
+      note.textContent=err.message||"We couldn't prepare checkout. Please try again.";
+      if(err.status===409){ lead=null; state.perk=false; syncPerk(); renderAll(); openGate("stepPhone"); }
+    }finally{
+      btn.textContent="CHECKOUT"; delete btn.dataset.busy;
     }
-    btn.textContent="CHECKOUT"; delete btn.dataset.busy;
-    document.getElementById("fulfil").hidden=false;
-    pickWaitIfOnlyOption(); syncCheckoutPop();
-    window.scrollTo(0,0);
   });
 
   /* ---------- keep every control in sync ---------- */

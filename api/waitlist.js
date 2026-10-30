@@ -1,9 +1,13 @@
-import { route } from "../lib/http.js";
-import { gql, check, toE164, findCustomer, ShopifyError } from "../lib/shopify.js";
+import { route, HttpError } from "../lib/http.js";
+import { gql, check, toE164, findSignupCustomer, ShopifyError } from "../lib/shopify.js";
 
 const TAG = "waitlist";
 const clean = (v, n) => String(v == null ? "" : v).replace(/[\u0000-\u001f<>]/g, "").trim().slice(0, n);
-const q = (v) => '"' + String(v).replace(/["\\]/g, "") + '"';
+async function matchingCustomer(email, phone) {
+  const match = await findSignupCustomer(email, phone);
+  if (match.conflict) throw new HttpError(409, "We couldn't save these contact details together. Please check your email and phone, or contact Peaces Swim for help.");
+  return match.customer;
+}
 
 async function addTag(id) {
   const data = await gql(
@@ -35,11 +39,26 @@ async function fillMissing(c, { firstName, phone }) {
   }
 }
 
-// POST /api/waitlist  { firstName, email, phone }
+// Texting needs its own explicit opt-in: only someone who ticked the SMS box gets
+// subscribed. Never fails the signup; the person is on the list either way.
+async function subscribeSms(id) {
+  try {
+    const data = await gql(
+      `mutation($input:CustomerSmsMarketingConsentUpdateInput!){ customerSmsMarketingConsentUpdate(input:$input){ userErrors{ field message } } }`,
+      { input: { customerId: id, smsMarketingConsent: { marketingState: "SUBSCRIBED", marketingOptInLevel: "SINGLE_OPT_IN" } } }
+    );
+    const errs = data.customerSmsMarketingConsentUpdate.userErrors || [];
+    if (errs.length) console.warn("[waitlist] could not subscribe to SMS:", errs.map((e) => e.message).join("; "));
+  } catch (e) {
+    console.warn("[waitlist] could not subscribe to SMS:", e.message);
+  }
+}
+
+// POST /api/waitlist  { firstName, email, phone, sms }
 // Saves the person as a Shopify customer tagged "waitlist". People already in Shopify
 // (same email or phone) just get the tag added, so nobody is duplicated.
 // The form says joining means launch emails, so new signups are subscribed to email
-// marketing. SMS marketing is NOT turned on: texting needs its own explicit opt-in.
+// marketing. SMS marketing is turned on only when they ticked the SMS checkbox.
 export default route(["POST"], async (body) => {
   if (body.company) return { ok: true }; // hidden spam-bot field — pretend it worked, save nothing
 
@@ -49,11 +68,13 @@ export default route(["POST"], async (body) => {
   if (!firstName) throw new Error("Please add your first name.");
   if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) throw new Error("That email doesn't look right.");
   if (!phone) throw new Error("That phone number doesn't look right.");
+  const sms = body.sms === true;
 
-  const existing = (await findCustomer("email:" + q(email))) || (await findCustomer("phone:" + q(phone)));
+  const existing = await matchingCustomer(email, phone);
   if (existing) {
     if (!(existing.tags || []).includes(TAG)) await addTag(existing.id);
     await fillMissing(existing, { firstName, phone });
+    if (sms) await subscribeSms(existing.id);
     return { ok: true, existing: true };
   }
 
@@ -65,6 +86,7 @@ export default route(["POST"], async (body) => {
         tags: [TAG],
         note: "Joined the Peaces Swim waitlist " + new Date().toISOString().slice(0, 10),
         emailMarketingConsent: { marketingState: "SUBSCRIBED", marketingOptInLevel: "SINGLE_OPT_IN" },
+        ...(sms && { smsMarketingConsent: { marketingState: "SUBSCRIBED", marketingOptInLevel: "SINGLE_OPT_IN" } }),
       },
     }
   );
@@ -72,11 +94,12 @@ export default route(["POST"], async (body) => {
   if (p.userErrors && p.userErrors.length) {
     // Raced with another signup, or the phone belongs to someone Shopify search missed.
     if (p.userErrors.some((e) => /taken/i.test(e.message))) {
-      const again = (await findCustomer("email:" + q(email))) || (await findCustomer("phone:" + q(phone)));
-      if (again) { await addTag(again.id); await fillMissing(again, { firstName, phone }); return { ok: true, existing: true }; }
+      const again = await matchingCustomer(email, phone);
+      if (again) { await addTag(again.id); await fillMissing(again, { firstName, phone }); if (sms) await subscribeSms(again.id); return { ok: true, existing: true }; }
     }
     check(p, "customerCreate");
   }
   if (!p.customer) throw new ShopifyError("customerCreate returned no customer", p);
   return { status: 201, body: { ok: true, existing: false } };
 });
+

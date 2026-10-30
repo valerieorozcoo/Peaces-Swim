@@ -3,10 +3,12 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "description": "Peaces Swim Builder — bikini customizer front end + Shopify backend (Vercel functions)",
-  "engines": { "node": ">=20" },
+  "description": "Peaces Swim Builder \u2014 bikini customizer front end + Shopify backend (Vercel functions)",
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
     "dev": "vercel dev",
-    "test": "node test/run.js"
+    "test": "node test/run.js && node test/checkout.js && node --test test/*.test.js"
   }
 }
