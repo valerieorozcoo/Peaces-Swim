@@ -64,7 +64,7 @@ export function startMockShopify(port) {
     }
     if (query.includes("draftOrderCreate")) {
       const i = variables.input;
-      const sub = i.lineItems.reduce((s, l) => s + +l.originalUnitPriceWithCurrency.amount, 0);
+      const sub = i.lineItems.reduce((s, l) => s + +l.originalUnitPriceWithCurrency.amount * (l.quantity || 1), 0);
       const tot = i.appliedDiscount ? sub * (1 - i.appliedDiscount.value / 100) : sub;
       const d = { id: "gid://shopify/DraftOrder/" + (1000 + db.drafts.length), name: "#D" + (db.drafts.length + 1), input: i };
       db.drafts.push(d);

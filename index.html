@@ -900,6 +900,23 @@
     .lb-grid{columns:2 140px; column-gap:10px;} .lb-tile{margin-bottom:10px;} .lb-tile button{border-radius:14px;}
     .lb-box{padding:56px 10px 80px;} .lb-arrow{top:auto; bottom:16px; transform:none;} .lb-prev{left:calc(50% - 64px);} .lb-next{right:calc(50% - 64px);}
   }
+
+  /* ===== Peaces Accessories page ===== */
+  .acc-grid{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:24px; max-width:900px; margin:0 auto;}
+  .acc-card{display:flex; flex-direction:column; align-items:center; text-align:center; gap:10px; padding:18px 18px 26px; border:1px solid var(--line,#E7DAF3); border-radius:24px; background:#fff;}
+  .acc-shot{position:relative; width:100%; aspect-ratio:4/3; border-radius:18px; overflow:hidden; background:#F1E6FC;}
+  .acc-shot img{position:absolute; inset:6% 0; width:100%; height:88%; max-width:none; object-fit:contain;}
+  .acc-shot.band img{inset:0; height:100%; object-fit:cover;}
+  .acc-card > *{margin:0;}
+  .acc-card .extra-name{font-family:var(--lp-display); font-style:italic; font-weight:400; font-size:30px; margin-top:8px;}
+  .lb.acc{padding-bottom:140px;}
+  .acc-price{font-size:20px; color:var(--deep-purple,#4B2470); letter-spacing:.06em;}
+  .acc-qty{display:flex; align-items:center; gap:18px; margin-top:6px;}
+  .acc-qty button{width:46px; height:46px; border-radius:999px; border:1.5px solid #C9A9EA; background:#fff; color:var(--deep-purple,#4B2470); font-size:24px; line-height:1; cursor:pointer;}
+  .acc-qty button:hover{background:#F3E9FC;}
+  .acc-qty span{min-width:28px; font-size:24px; color:var(--deep-purple,#4B2470);}
+  .acc-note{text-align:center; margin:22px auto 0; max-width:520px; font-size:16px; color:var(--deep-purple,#4B2470); min-height:1.4em;}
+  @media (max-width:640px){ .acc-grid{grid-template-columns:1fr;} }
 </style>
 
 <!-- ================= Landing page =================
@@ -1081,6 +1098,63 @@
     </div>
     </div>
   </div>
+</div>
+
+<!-- ================= Peaces Accessories =================
+     #accessories — the headband and the tote on their own, no bikini. -->
+<div class="lb acc" id="accessories" hidden>
+  <header class="lb-top">
+    <a href="#" aria-label="Back to the Peaces Swim home page"><img class="lb-logo" src="art/logo-ps.png" alt="Peaces Swim"></a>
+    <nav class="lb-nav" aria-label="Accessories">
+      <a href="#">Home</a>
+      <a class="cta lb-cta-sm" href="#design">Design your own</a>
+    </nav>
+  </header>
+
+  <section class="lb-head">
+    <p class="lb-kicker">Made in Miami</p>
+    <h1 class="lb-title">Peaces <i>Accessories</i></h1>
+    <p class="lb-sub">The headband and the tote, on their own. No bikini needed.</p>
+  </section>
+
+  <div class="acc-grid">
+    <article class="acc-card" data-item="headband">
+      <div class="acc-shot band"><img id="accHbImg" src="art2/headband-green.jpg" alt="Peaces headband"></div>
+      <h2 class="extra-name">the peaces headband</h2>
+      <p class="extra-desc">Same band in every bikini colour.</p>
+      <p class="acc-price">$10</p>
+      <div class="chips extra-chips" id="accHbColors"></div>
+      <div class="acc-qty" role="group" aria-label="How many headbands">
+        <button type="button" data-step="-1" aria-label="One less headband">&minus;</button>
+        <span id="accHbQty" aria-live="polite">0</span>
+        <button type="button" data-step="1" aria-label="One more headband">+</button>
+      </div>
+    </article>
+    <article class="acc-card" data-item="tote">
+      <div class="acc-shot"><img id="accToteImg" src="art2/tote-pink.png" alt="Peaces terrycloth tote bag"></div>
+      <h2 class="extra-name">the peaces tote</h2>
+      <p class="extra-desc">Terrycloth with embroidered script.</p>
+      <p class="acc-price">$15</p>
+      <div class="chips extra-chips" id="accToteColors"></div>
+      <div class="acc-qty" role="group" aria-label="How many totes">
+        <button type="button" data-step="-1" aria-label="One less tote">&minus;</button>
+        <span id="accToteQty" aria-live="polite">0</span>
+        <button type="button" data-step="1" aria-label="One more tote">+</button>
+      </div>
+    </article>
+  </div>
+  <p class="acc-note" id="accNote" role="status" aria-live="polite"></p>
+
+  <section class="lb-end lp-reveal">
+    <p class="lb-kicker">Want the full look?</p>
+    <h2 class="lb-title lb-title-sm">Design Your <i>Peaces</i></h2>
+    <a class="cta lb-cta" href="#design">Design your own</a>
+  </section>
+</div>
+
+<div class="checkout-pop" id="accPop" aria-live="polite">
+  <div class="cp-total"><small>Your total</small><span id="accTotal">$0.00</span></div>
+  <button class="cta" id="accCheckout" type="button" tabindex="-1">CHECKOUT</button>
 </div>
 
 <!-- ================= Lookbook =================
@@ -1275,7 +1349,7 @@
         <!-- TODO: placeholder links (#) until those pages exist -->
         <div class="lp-foot-links">
           <div><h4>Shop</h4><ul>
-            <li><a href="#design">Design Your Own</a></li><li><a href="#design">Peaces Accessories</a></li>
+            <li><a href="#design">Design Your Own</a></li><li><a href="#accessories">Peaces Accessories</a></li>
           </ul></div>
           <div><h4>Peaces</h4><ul>
             <li><a href="#">Our Story</a></li><li><a href="#lookbook">Lookbook</a></li>
@@ -2264,29 +2338,84 @@
      The landing page is home. #design means "in the builder", so the buttons,
      the bag, the phone's back button and a QR code to /#design all just work. */
   var landing=document.getElementById("landing");
-  var lookbook=document.getElementById("lookbook"), builderEl=document.getElementById("builder");
+  var lookbook=document.getElementById("lookbook"), builderEl=document.getElementById("builder"), accPage=document.getElementById("accessories");
   function enterDesign(){
     if(!builderEl.hidden) return;
-    landing.hidden=true; lookbook.hidden=true; closeLightbox();
+    landing.hidden=true; lookbook.hidden=true; accPage.hidden=true; closeLightbox(); syncAccPop();
     showBuilder();
   }
   function enterLookbook(){
     if(!builderEl.hidden) resetDesign();
     ["builder","fulfil"].forEach(function(id){ document.getElementById(id).hidden=true; });
-    landing.hidden=true; lookbook.hidden=false;
+    landing.hidden=true; accPage.hidden=true; lookbook.hidden=false; syncAccPop();
+    window.scrollTo(0,0);
+  }
+  function enterAccessories(){
+    if(!builderEl.hidden) resetDesign();
+    ["builder","fulfil"].forEach(function(id){ document.getElementById(id).hidden=true; });
+    landing.hidden=true; lookbook.hidden=true; closeLightbox(); accPage.hidden=false; syncAccPop();
     window.scrollTo(0,0);
   }
   function leaveDesign(){
     if(!landing.hidden) return;
     if(!builderEl.hidden) resetDesign();
-    lookbook.hidden=true; closeLightbox();
+    lookbook.hidden=true; accPage.hidden=true; syncAccPop(); closeLightbox();
     ["builder","fulfil"].forEach(function(id){ document.getElementById(id).hidden=true; });
     landing.hidden=false;
     var target=location.hash.length>1 && document.getElementById(location.hash.slice(1));
     if(target) target.scrollIntoView(); else window.scrollTo(0,0);
   }
-  function route(){ if(location.hash==="#design") enterDesign(); else if(location.hash==="#lookbook") enterLookbook(); else leaveDesign(); syncCheckoutPop(); }
+  function route(){ if(location.hash==="#design") enterDesign(); else if(location.hash==="#lookbook") enterLookbook(); else if(location.hash==="#accessories") enterAccessories(); else leaveDesign(); syncCheckoutPop(); }
 
+
+  /* ---------- Peaces Accessories page ---------- */
+  var acc={headband:{color:"green",qty:0}, tote:{color:"pink",qty:0}}, ACC_PRICE={headband:10,tote:15};
+  function accChips(boxId,list,item){
+    var box=document.getElementById(boxId);
+    list.forEach(function(c){
+      var b=document.createElement("button"); b.type="button"; b.className="chip"; b.dataset.val=c[0];
+      b.innerHTML='<span class="dotc" style="'+(c[2]?"background:"+c[2]:"background:url(art2/cheetah-swatch.jpg) center/cover")+'"></span>'+c[1];
+      b.addEventListener("click",function(){ acc[item].color=c[0]; syncAcc(); });
+      box.appendChild(b);
+    });
+  }
+  accChips("accHbColors",HB_COLORS,"headband"); accChips("accToteColors",TOTE_COLORS,"tote");
+  function accTotal(){ return acc.headband.qty*ACC_PRICE.headband+acc.tote.qty*ACC_PRICE.tote; }
+  function syncAccPop(){
+    var show=!accPage.hidden && accTotal()>0, pop=document.getElementById("accPop");
+    pop.classList.toggle("show",show); document.getElementById("accCheckout").tabIndex=show?0:-1;
+    document.getElementById("accTotal").textContent=fmt(accTotal());
+  }
+  function syncAcc(){
+    document.getElementById("accHbImg").src="art2/headband-"+acc.headband.color+".jpg";
+    document.getElementById("accToteImg").src="art2/tote-"+acc.tote.color+".png";
+    document.querySelectorAll("#accHbColors .chip").forEach(function(b){ b.setAttribute("aria-pressed",b.dataset.val===acc.headband.color?"true":"false"); });
+    document.querySelectorAll("#accToteColors .chip").forEach(function(b){ b.setAttribute("aria-pressed",b.dataset.val===acc.tote.color?"true":"false"); });
+    document.getElementById("accHbQty").textContent=acc.headband.qty;
+    document.getElementById("accToteQty").textContent=acc.tote.qty;
+    syncAccPop();
+  }
+  document.querySelectorAll("#accessories .acc-card").forEach(function(card){
+    card.querySelectorAll(".acc-qty button").forEach(function(b){
+      b.addEventListener("click",function(){ var it=acc[card.dataset.item]; it.qty=Math.max(0,Math.min(10,it.qty+(+b.dataset.step))); document.getElementById("accNote").textContent=""; syncAcc(); });
+    });
+  });
+  document.getElementById("accCheckout").addEventListener("click",async function(){
+    var btn=this, note=document.getElementById("accNote");
+    if(btn.dataset.busy||!accTotal()) return;
+    btn.dataset.busy="1"; btn.textContent="PREPARING…"; note.textContent="";
+    var tab=window.open("","_blank"); // opened inside the click so pop-up blockers allow it
+    try{
+      var o=await api("/orders/accessories",{items:{headband:{color:acc.headband.color,qty:acc.headband.qty},tote:{color:acc.tote.color,qty:acc.tote.qty}}});
+      if(!o.checkoutUrl) throw new Error("We couldn't prepare checkout. Please try again.");
+      if(tab) tab.location.href=o.checkoutUrl; else window.location.href=o.checkoutUrl;
+      note.textContent="Order "+o.name+" is ready — finish paying in the Shopify tab.";
+    }catch(err){
+      if(tab) tab.close();
+      note.textContent=err.message||"We couldn't prepare checkout. Please try again.";
+    }finally{ btn.textContent="CHECKOUT"; delete btn.dataset.busy; }
+  });
+  syncAcc();
   /* ---------- lookbook lightbox ---------- */
   var lbTiles=[].slice.call(document.querySelectorAll("#lbGrid img")), lbBox=document.getElementById("lbBox"), lbAt=0, lbFrom=null;
   function showLook(i){
