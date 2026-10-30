@@ -1243,41 +1243,66 @@
 
   /* every add-on opens to choose a colour/finish, then Add to cart */
   var ADDONS=[
-    {id:"beadsAcrylic",tier:1,price:3, name:"Acrylic beads", hint:"Glossy beads on the straps",
+    {id:"beadsAcrylic",tier:1,price:5, name:"Acrylic beads", hint:"Glossy beads on the straps",
       opts:BEADS_A, art:function(v){return "ba-"+v;}, def:"pink"},
-    {id:"beadsIri", tier:1,price:3, name:"Iridescent beads", hint:"Pearly-shine beads on the straps",
+    {id:"beadsIri", tier:1,price:5, name:"Iridescent beads", hint:"Pearly-shine beads on the straps",
       opts:BEADS_I, art:function(v){return "bi-"+v;}, def:"pale-pink"},
-    {id:"beadsWavy",tier:1,price:3, name:"Wavy beads",     hint:"Organic ring beads on the straps",
+    {id:"beadsWavy",tier:1,price:5, name:"Wavy beads",     hint:"Organic ring beads on the straps",
       opts:BEADS_W, art:function(v){return "bw-"+v;}, def:"pink"},
-    {id:"beadsPearl",tier:1,price:3, name:"Pearl beads",   hint:"Pearls on the straps",
+    {id:"beadsPearl",tier:1,price:5, name:"Pearl beads",   hint:"Pearls on the straps",
       opts:[["16mm","16 mm"],["20mm","20 mm"]], art:function(v){return "bp-"+v;}, def:"16mm"},
-    {id:"bows",    tier:2,price:5, name:"Mini bows",      hint:"Center front, top + bottom",
+    {id:"bows",    tier:1,price:5, name:"Mini bows",      hint:"1 center or 2 on the straps",
       opts:[["pink","Light pink"],["white","White"]], art:function(v){return "p-bow-"+v;}, def:"pink"},
-    {id:"roses",   tier:2,price:5, name:"Mini roses",     hint:"Center front, top + bottom",
+    {id:"roses",   tier:1,price:5, name:"Mini roses",     hint:"1 center or 2 on the straps",
       opts:[["pink","Pink"]], art:function(){return "p-rose";}, def:"pink"},
-    {id:"laceRuffles",tier:2,price:5, name:"Lace ruffles", hint:"Lace ruffle along the edges",
+    {id:"laceRuffles",tier:1,price:5, name:"Lace ruffles", hint:"Lace ruffle along the edges",
       opts:[["white","White"],["pink","Pink"]], art:function(v){return "p-laceruffle-"+v;}, def:"white"},
-    {id:"fringe",  tier:2,price:5, name:"Fringe",         hint:"Swingy fringe along the edges",
+    {id:"fringe",  tier:1,price:5, name:"Fringe",         hint:"Swingy fringe along the edges",
       opts:[["match","Matching"],["white","White"],["gold","Gold"]], art:function(v){return "fringe-"+v;}, def:"match"},
-    {id:"charmsB", tier:2,price:5, name:"Gem charms",     hint:"Crystal & pink gem drops",
+    {id:"charmsB", tier:2,price:10, name:"Gem charms",     hint:"Crystal & pink gem drops",
       opts:CHARMS_B, art:function(v){return v;}, def:"cg-heart"},
-    {id:"charmsP", tier:3,price:7, name:"Premium charms", hint:"Gold & pearl dangles",
+    {id:"charmsP", tier:3,price:15, name:"Premium charms", hint:"Gold & pearl dangles",
       opts:CHARMS_P, art:function(v){return v;}, def:"cp-shell"},
-    {id:"extTies", tier:3,price:7, name:"Extended ties",  hint:"55″ beaded wrap ties",
+    {id:"extTies", tier:2,price:10, name:"Extended ties",  hint:"55″ beaded wrap ties",
       opts:[["pink","Pink"],["green","Green"],["turq","Turquoise"],["coral","Coral"]],
       art:function(v){return "p-extties-l-"+v;}, def:"pink"},
-    {id:"laceTrim",tier:4,price:10,name:"Lace trim",      hint:"1.25″ along the edges",
+    {id:"laceTrim",tier:3,price:15,name:"Lace trim",      hint:"Top edges · add the bottom",
       opts:[["white","White"],["pink","Pink"],["coral","Coral"],["turq","Turquoise"],["green","Green"]],
       art:function(v){return "p-lacetrim-"+v;}, def:"white"},
-    {id:"ruffles", tier:4,price:10,name:"Ruffles",        hint:"Along the edges",
+    {id:"ruffles", tier:3,price:15,name:"Ruffles",        hint:"Along the edges",
       opts:[["pink","Pink"],["green","Green"],["turq","Turquoise"],["coral","Coral"]],
       art:function(v){return "p-ruffle-"+v;}, def:"pink"},
-    {id:"initials",tier:4,price:10,name:"Letter charms",  hint:"Up to 3 rhinestone letters",
+    {id:"initials",tier:2,price:10,name:"Rhinestone letters", hint:"$10 per letter · gold or silver",
       opts:[["clear","Clear"]], art:function(){return "";}, def:"clear"},
-    {id:"connectors",tier:4,price:10,name:"Connectors",   hint:"Gold, rhinestone & colour rings",
+    {id:"connectors",tier:2,price:10,name:"Connectors",   hint:"Center front · add 2 on the bottom",
       opts:[["c-heartring","Heart"],["cn-goldring","Gold ring"],["cn-pinkring","Pink ring"],["cn-bluering","Blue ring"],["cn-big-gold","Big gold"],["cn-skinny-gold","Skinny gold"],["cn-skinny-rhinestone","Skinny rhinestone"],["cn-small-rhinestone","Small rhinestone"]],
       art:function(v){return v;}, def:"c-heartring"}
   ];
+  /* per-add-on choices (placement, quantity, metal) and the price rules — mirrored in lib/catalog.js */
+  var SETTINGS={
+    beadsAcrylic:[["sets","How many",[["1","3 beads"],["2","6 beads"],["3","9 beads"],["4","12 beads"]]]],
+    beadsIri:[["sets","How many",[["1","3 beads"],["2","6 beads"],["3","9 beads"],["4","12 beads"]]]],
+    beadsWavy:[["sets","How many",[["1","3 beads"],["2","6 beads"],["3","9 beads"],["4","12 beads"]]]],
+    beadsPearl:[["sets","How many",[["1","3 beads"],["2","6 beads"],["3","9 beads"],["4","12 beads"]]]],
+    bows:[["top","On the top",[["center","1 in the center"],["straps","2 on the straps"]]],["bottom","Bottom",[["no","None"],["center","1 center front"]]]],
+    roses:[["top","On the top",[["center","1 in the center"],["straps","2 on the straps"]]],["bottom","Bottom",[["no","None"],["center","1 center front"]]]],
+    initials:[["metal","Finish",[["gold","Gold"],["silver","Silver"]]],["place","Placement",[["center","Center front"],["both","Both sides"]]]],
+    laceTrim:[["bottom","Bottom",[["none","Top only"],["front","Front only +$5"],["around","All the way around +$10"]]]],
+    connectors:[["bottom","Bottom",[["no","Top only"],["two","2 on the bottom +$15"]]]]
+  };
+  function cfg(id,key){ var c=state.cfg[id]||{}; if(c[key]!==undefined) return c[key]; var g=(SETTINGS[id]||[]).filter(function(x){return x[0]===key;})[0]; return g?g[2][0][0]:null; }
+  function letterCount(){ return Math.max(1,(state.initials||"").replace(/[^A-Za-z]/g,"").slice(0,3).length); }
+  function priceOf(id){
+    var a=addonDef(id), p=a.price;
+    if(/^beads/.test(id)) p=5*(+cfg(id,"sets"));
+    if(id==="initials") p=10*letterCount()*(cfg(id,"place")==="both"?2:1);
+    if(id==="laceTrim") p+= {none:0,front:5,around:10}[cfg(id,"bottom")];
+    if(id==="connectors" && cfg(id,"bottom")==="two") p+=15;
+    return p;
+  }
+  function cfgText(id){
+    return (SETTINGS[id]||[]).map(function(g){ var v=cfg(id,g[0]); return g[2].filter(function(o){return o[0]===v;})[0][1].replace(/ \+\$\d+/,""); }).join(", ");
+  }
   function addonDef(id){ return ADDONS.filter(function(a){return a.id===id;})[0]; }
   function variantOf(id){ var a=addonDef(id); return state.variant[id]||a.def; }
   function variantName(id){
@@ -1291,7 +1316,7 @@
     topColor:"green", bottomColor:"green",
     sizeTop:"S", sizeBottom:"S", addons:{}, variant:{}, preview:null,
     tote:false, headband:false, fulfil:null, pickupAt:null,
-    initials:"VAL", perk:false, view:"front"
+    initials:"VAL", perk:false, view:"front", cfg:{}
   };
 
   /* geometry measured from the photo cut-outs (3x the source photo), in artwork pixels */
@@ -1312,6 +1337,7 @@
   function colorDef(id){ return COLORS.filter(function(c){return c.id===id;})[0]||COLORS[0]; }
   function styleOf(part){ return STYLES[part][part==="top"?state.topStyle:state.bottomStyle]; }
   function colorOf(part){ return colorDef(part==="top"?state.topColor:state.bottomColor); }
+  function strapMid(run){ return [(run[0][0]+run[1][0])/2,(run[0][1]+run[1][1])/2]; }
   function fringeMatch(part){ var c=colorOf(part); return c.fill==="leopard"?"#7A5232":c.fill; }
   function fabricHex(part){ var c=colorOf(part); return c.fill==="leopard"?"#E2BA84":c.fill; }
   function partOfArt(artName){ return artName.indexOf("top")>-1 ? "top" : "bottom"; }
@@ -1407,7 +1433,7 @@
 
     /* ruffle + trim lace run along the cup edges / waistband */
     if(on("ruffles")) g.trimSegs.forEach(function(sg){ strip(svg,"p-ruffle-"+variantOf("ruffles"),sg,H*0.135); });
-    if(on("laceTrim")) g.trimSegs.forEach(function(sg){ strip(svg,"p-lacetrim-"+variantOf("laceTrim"),sg,H*0.115); });
+    if(on("laceTrim") && (isTop || cfg("laceTrim","bottom")!=="none")) g.trimSegs.forEach(function(sg){ strip(svg,"p-lacetrim-"+variantOf("laceTrim"),sg,H*0.115); });
     if(on("laceRuffles")) g.trimSegs.forEach(function(sg){ strip(svg,"p-laceruffle-"+variantOf("laceRuffles"),sg,H*0.14); });
 
     /* fringe — strands hanging from the bottom edge of the top / the waistband of the bottom */
@@ -1428,13 +1454,14 @@
 
     /* beads — along the straps and across the center front */
     var BEAD_FAM=[["beadsAcrylic","ba-"],["beadsIri","bi-"],["beadsWavy","bw-"],["beadsPearl","bp-"]].filter(function(b){return on(b[0]);});
-    if(BEAD_FAM.length){
-      var bs=W*0.055, per=4, tot=BEAD_FAM.length*per;
-      [g.strapRunL,g.strapRunR].forEach(function(run){
-        for(var bi2=0;bi2<tot;bi2++){
-          var fam=BEAD_FAM[bi2%BEAD_FAM.length], t=(bi2+0.5)/tot;
-          img(svg,fam[1]+variantOf(fam[0]),run[0][0]+(run[1][0]-run[0][0])*t,run[0][1]+(run[1][1]-run[0][1])*t,bs,bs,0);
-        }
+    if(BEAD_FAM.length){ // 3 beads per set, split across the two straps, families alternating
+      var bs=W*0.055, list=[], left=[], right=[];
+      var maxN=Math.max.apply(null,BEAD_FAM.map(function(b){return 3*cfg(b[0],"sets");}));
+      for(var r=0;r<maxN;r++) BEAD_FAM.forEach(function(b){ if(r<3*cfg(b[0],"sets")) list.push(b[1]+variantOf(b[0])); });
+      list.forEach(function(nm,ix){ (ix%2?right:left).push(nm); });
+      [[g.strapRunL,left],[g.strapRunR,right]].forEach(function(pr){
+        var run=pr[0], arr=pr[1];
+        arr.forEach(function(nm,ix){ var t=(ix+0.5)/arr.length; img(svg,nm,run[0][0]+(run[1][0]-run[0][0])*t,run[0][1]+(run[1][1]-run[0][1])*t,bs,bs,0); });
       });
     }
 
@@ -1458,7 +1485,7 @@
       var kw=W*0.1;
       var cv=variantOf("connectors"), tall=/big|skinny|small/.test(cv), ch=tall?kw*1.9:kw;
       if(isTop) img(svg,cv,g.center[0],g.center[1]+2,kw,ch,0);
-      else { img(svg,cv,g.hipL[0],g.hipL[1]+2,kw,ch,0); img(svg,cv,g.hipR[0],g.hipR[1]+2,kw,ch,0); }
+      else if(cfg("connectors","bottom")==="two"){ img(svg,cv,g.hipL[0],g.hipL[1]+2,kw,ch,0); img(svg,cv,g.hipR[0],g.hipR[1]+2,kw,ch,0); }
     }
 
     /* pearl buttons — centre front */
@@ -1474,19 +1501,23 @@
     /* mini rose + mini bow — center front, top and bottom */
     if(on("roses")){
       var rw=W*0.115, rh=rw*92/95;
-      if(isTop) img(svg,"p-rose",g.centerHigh[0],g.centerHigh[1],rw,rh,0);
-      else img(svg,"p-rose",g.center[0],g.center[1]+4,rw,rh,0);
+      if(isTop){ if(cfg("roses","top")==="straps"){ var rl=strapMid(g.strapRunL), rr=strapMid(g.strapRunR); img(svg,"p-rose",rl[0],rl[1],rw*0.8,rh*0.8,0); img(svg,"p-rose",rr[0],rr[1],rw*0.8,rh*0.8,0); } else img(svg,"p-rose",g.centerHigh[0],g.centerHigh[1],rw,rh,0); }
+      else if(cfg("roses","bottom")==="center") img(svg,"p-rose",g.center[0],g.center[1]+4,rw,rh,0);
     }
     if(on("bows")){
       var bw=W*0.17, bh=bw*97/138;
-      if(isTop) img(svg,"p-bow-"+variantOf("bows"),g.center[0],g.center[1]-2,bw,bh,0);
-      else img(svg,"p-bow-"+variantOf("bows"),g.center[0],g.center[1]+4,bw,bh,0);
+      if(isTop){ if(cfg("bows","top")==="straps"){ var bl=strapMid(g.strapRunL), br=strapMid(g.strapRunR); img(svg,"p-bow-"+variantOf("bows"),bl[0],bl[1],bw*0.75,bh*0.75,0); img(svg,"p-bow-"+variantOf("bows"),br[0],br[1],bw*0.75,bh*0.75,0); } else img(svg,"p-bow-"+variantOf("bows"),g.center[0],g.center[1]-2,bw,bh,0); }
+      else if(cfg("bows","bottom")==="center") img(svg,"p-bow-"+variantOf("bows"),g.center[0],g.center[1]+4,bw,bh,0);
     }
 
     if(on("initials") && !isTop){
       var letters=(state.initials||"").toUpperCase().replace(/[^A-Z]/g,"").slice(0,3).split("");
       var lh=W*0.17, lw=lh*0.62, gap=lw*1.08, x0=g.mono[0]-gap*(letters.length-1)/2;
-      letters.forEach(function(ch,li){ img(svg,"lt-"+ch,x0+li*gap,g.mono[1],lw,lh,0); });
+      var silver=cfg("initials","metal")==="silver";
+      function put(cx,cy,sc){ var gp=gap*sc, xs=cx-gp*(letters.length-1)/2;
+        letters.forEach(function(ch,li){ var im=img(svg,"lt-"+ch,xs+li*gp,cy,lw*sc,lh*sc,0); if(silver) im.setAttribute("style","filter:grayscale(1) brightness(1.18) contrast(1.05)"); }); }
+      if(cfg("initials","place")==="both"){ put(g.hipL[0]+W*0.07,g.hipL[1]+H*0.22,0.7); put(g.hipR[0]-W*0.07,g.hipR[1]+H*0.22,0.7); }
+      else put(g.mono[0],g.mono[1],1);
     }
   }
 
@@ -1514,7 +1545,7 @@
   function activeAddons(){ return ADDONS.filter(function(a){return state.addons[a.id] && addonAvailable(a.id);}); }
   function renderSummary(){
     var list=activeAddons(), sub=BASE_PRICE;
-    list.forEach(function(a){ sub+=a.price; });
+    list.forEach(function(a){ sub+=priceOf(a.id); });
     if(state.tote) sub+=15;
     if(state.headband) sub+=10;
     var total=state.perk?sub*(1-DISCOUNT):sub;
@@ -1536,7 +1567,8 @@
           ? styleOf("top").ruffle : styleOf("top").ruffle+" / "+styleOf("bottom").ruffle;
         extra=" ("+rs+")";
       }
-      row(a.name+extra,"+"+fmt(a.price));
+      if(SETTINGS[a.id]) extra=extra.replace(/\)$/,"")+(extra?", ":" (")+cfgText(a.id).toLowerCase()+")";
+      row(a.name+extra,"+"+fmt(priceOf(a.id)));
     });
     if(state.perk) row("Socials + messages","−"+fmt(sub*DISCOUNT),"discount");
   }
@@ -1631,7 +1663,7 @@
   });
   document.getElementById("backToPeaces").addEventListener("click",function(){ showPage("pageExtras"); });
 
-  var TIER_LABEL={1:"Tier 1",2:"Tier 2",3:"Tier 3",4:"Tier 4"};
+  var TIER_LABEL={1:"Tier 1",2:"Tier 2",3:"Tier 3"};
   var tierContainer=document.getElementById("tierContainer");
 
   function closeDrawers(except){
@@ -1655,10 +1687,10 @@
     renderAll();
   }
 
-  [1,2,3,4].forEach(function(t){
+  [1,2,3].forEach(function(t){
     var items=ADDONS.filter(function(a){return a.tier===t;});
     var div=document.createElement("div"); div.className="tier";
-    div.innerHTML='<div class="tier-title"><span class="dot"></span><span>'+TIER_LABEL[t]+'</span><span class="price-each">'+fmt(items[0].price)+' each</span></div>';
+    div.innerHTML='<div class="tier-title"><span class="dot"></span><span>'+TIER_LABEL[t]+'</span><span class="price-each">'+'from '+fmt(items[0].price)+'</span></div>';
     var grid=document.createElement("div"); grid.className="addon-grid";
 
     items.forEach(function(a){
@@ -1668,7 +1700,7 @@
       var iconName=a.art(a.def);
       tile.innerHTML=(iconName?'<img class="thumbicon" src="art2/'+iconName+'.png" alt="">':'<span class="thumbicon rhine">&#10022;</span>')+
         '<span class="label">'+a.name+'<small>'+a.hint+'</small></span>'+
-        '<span class="addon-state">'+fmt(a.price)+'</span>';
+        '<span class="addon-state">'+(SETTINGS[a.id]||a.id==="initials"?"from ":"")+fmt(a.price)+'</span>';
       tile.addEventListener("click",function(){ openDrawer(a.id); });
       grid.appendChild(tile);
 
@@ -1686,6 +1718,11 @@
       } else {
         html+='<div class="cf-label">'+a.opts[0][1]+'</div>';
       }
+      (SETTINGS[a.id]||[]).forEach(function(g){
+        html+='<div class="cf-label">'+g[1]+'</div><div class="chips">';
+        g[2].forEach(function(o){ html+='<button type="button" class="chip setting-chip" data-key="'+g[0]+'" data-val="'+o[0]+'">'+o[1]+'</button>'; });
+        html+='</div>';
+      });
       if(a.id==="initials"){
         html+='<div class="initials-field"><label for="initialsInput">Initials</label>'+
               '<input id="initialsInput" type="text" maxlength="3" value="'+state.initials+'"></div>';
@@ -1696,7 +1733,14 @@
             '</div>';
       drawer.innerHTML=html;
 
-      drawer.querySelectorAll(".chip").forEach(function(ch){
+      drawer.querySelectorAll(".setting-chip").forEach(function(ch){
+        ch.addEventListener("click",function(){
+          (state.cfg[a.id]=state.cfg[a.id]||{})[ch.dataset.key]=ch.dataset.val;
+          if(!state.addons[a.id]) state.preview=a.id;
+          renderAll();
+        });
+      });
+      drawer.querySelectorAll(".chip:not(.setting-chip)").forEach(function(ch){
         ch.addEventListener("click",function(){
           state.variant[a.id]=ch.dataset.val;
           if(!state.addons[a.id]) state.preview=a.id;
@@ -2058,7 +2102,7 @@
   /* ---------- order summary text + save ---------- */
   function designText(){
     var list=activeAddons(), sub=BASE_PRICE;
-    list.forEach(function(a){ sub+=a.price; });
+    list.forEach(function(a){ sub+=priceOf(a.id); });
     if(state.tote) sub+=15;
     if(state.headband) sub+=10;
     var total=state.perk?sub*(1-DISCOUNT):sub;
@@ -2069,7 +2113,8 @@
       var extra="";
       if(a.id==="initials"&&state.initials) extra=" — "+state.initials.slice(0,3).toUpperCase();
       else if(a.opts.length>1) extra=" — "+variantName(a.id);
-      lines.push("Add-on: "+a.name+extra+" (+"+fmt(a.price)+")");
+      if(SETTINGS[a.id]) extra+=" — "+cfgText(a.id);
+      lines.push("Add-on: "+a.name+extra+" (+"+fmt(priceOf(a.id))+")");
     });
     if(state.tote) lines.push("Add-on: Peaces tote (+"+fmt(15)+")");
     if(state.headband) lines.push("Add-on: Peaces headband (+"+fmt(10)+")");
@@ -2087,7 +2132,10 @@
       topStyle:state.topStyle, bottomStyle:state.bottomStyle,
       topColor:state.topColor, bottomColor:state.bottomColor,
       sizeTop:state.sizeTop, sizeBottom:state.sizeBottom,
-      addons:activeAddons().map(function(a){ return {id:a.id, option:a.opts.length>1?variantName(a.id):""}; }),
+      addons:activeAddons().map(function(a){
+        var c={}; (SETTINGS[a.id]||[]).forEach(function(g){ c[g[0]]=cfg(a.id,g[0]); });
+        return {id:a.id, option:a.opts.length>1?variantName(a.id):"", cfg:c};
+      }),
       initials:state.initials, tote:!!state.tote, headband:!!state.headband
     };
   }
@@ -2095,7 +2143,7 @@
     try{
       localStorage.setItem(SAVE_KEY,JSON.stringify({
         topStyle:state.topStyle, bottomStyle:state.bottomStyle, topColor:state.topColor, bottomColor:state.bottomColor,
-        sizeTop:state.sizeTop, sizeBottom:state.sizeBottom, addons:state.addons, variant:state.variant,
+        sizeTop:state.sizeTop, sizeBottom:state.sizeBottom, addons:state.addons, variant:state.variant, cfg:state.cfg,
         initials:state.initials, tote:state.tote, headband:state.headband
       }));
     }catch(e){}
@@ -2107,7 +2155,8 @@
         if(d[k]!==undefined) state[k]=d[k];
       });
       if(!STYLES.top[state.topStyle]||!STYLES.bottom[state.bottomStyle]) throw 0;
-      state.addons=d.addons||{}; state.variant=d.variant||{};
+      state.addons=d.addons||{}; state.variant=d.variant||{}; state.cfg=d.cfg||{};
+      Object.keys(state.addons).forEach(function(k){ if(!addonDef(k)) delete state.addons[k]; });
     }catch(e){}
   })();
 
@@ -2168,7 +2217,7 @@
         : styleOf("top").ruffle+" top / "+styleOf("bottom").ruffle+" bottom";
       tile.querySelector("small").textContent = off ? "Not available on these styles"
         : (def.id==="ruffles" ? rs : def.hint);
-      tile.querySelector(".addon-state").textContent = off ? "—" : (added ? "Added ✓" : fmt(def.price));
+      tile.querySelector(".addon-state").textContent = off ? "—" : (added ? "Added ✓ "+fmt(priceOf(def.id)) : (SETTINGS[def.id]?"from ":"")+fmt(def.price));
       var icon=tile.querySelector("img.thumbicon");
       if(icon){ var art=def.art(variantOf(def.id)); if(art) icon.src="art2/"+art+".png"; }
       if(off){
@@ -2179,11 +2228,15 @@
     });
     tierContainer.querySelectorAll(".addon-drawer").forEach(function(dr){
       var id=dr.dataset.for;
-      dr.querySelectorAll(".chip").forEach(function(ch){
+      dr.querySelectorAll(".chip:not(.setting-chip)").forEach(function(ch){
         ch.setAttribute("aria-pressed",ch.dataset.val===variantOf(id)?"true":"false");
       });
       var add=dr.querySelector("[data-add]"), rem=dr.querySelector("[data-remove]");
       add.hidden=!!state.addons[id]; rem.hidden=!state.addons[id];
+      add.textContent="ADD TO CART — "+fmt(priceOf(id));
+      dr.querySelectorAll(".setting-chip").forEach(function(ch){
+        ch.setAttribute("aria-pressed",cfg(id,ch.dataset.key)===ch.dataset.val?"true":"false");
+      });
     });
   }
 

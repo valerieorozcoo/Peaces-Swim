@@ -35,14 +35,23 @@ try {
   const design = { topStyle: "triangle", bottomStyle: "seamless", topColor: "cheetah", bottomColor: "coral", sizeTop: "S", sizeBottom: "M",
     addons: [{ id: "bows", option: "White" }, { id: "ruffles", option: "Pink" }, { id: "initials" }], initials: "val", tote: true, headband: false };
   r = await post("/orders/create", { design, customer: { phone: "3055551234" } });
-  assert.equal(r.status, 201); assert.equal(r.body.subtotal, 80 + 5 + 10 + 10 + 15);
-  assert.equal(r.body.total, 108); assert.equal(r.body.discounted, true);
+  assert.equal(r.status, 201); assert.equal(r.body.subtotal, 80 + 5 + 15 + 3 * 10 + 15);
+  assert.equal(r.body.total, 130.5); assert.equal(r.body.discounted, true);
   const d0 = db.drafts[0].input;
   assert.equal(d0.purchasingEntity.customerId, "gid://shopify/Customer/1");
-  assert.ok(d0.lineItems.some((l) => l.title === "Add-on: Letter charms (VAL)")); ok("order priced on server, 10% for known customer");
+  assert.ok(d0.lineItems.some((l) => l.title === "Add-on: Rhinestone letters (VAL · gold, center)")); ok("order priced on server, 10% for known customer");
 
   r = await post("/orders/create", { design, customer: { phone: "9999999999" } });
-  assert.equal(r.body.total, 120); assert.equal(r.body.discounted, false); ok("no discount for unknown phone");
+  assert.equal(r.body.total, 145); assert.equal(r.body.discounted, false); ok("no discount for unknown phone");
+
+  const opts = { topStyle: "triangle", bottomStyle: "triangle", topColor: "green", bottomColor: "cheetah", sizeTop: "S", sizeBottom: "S", initials: "A",
+    addons: [{ id: "beadsWavy", option: "Pink", cfg: { sets: "3" } }, { id: "laceTrim", option: "White", cfg: { bottom: "around" } },
+             { id: "connectors", option: "Heart", cfg: { bottom: "two" } }, { id: "initials", cfg: { metal: "silver", place: "both" } },
+             { id: "bows", option: "Pink", cfg: { top: "straps", bottom: "center" } }] };
+  r = await post("/orders/create", { design: opts, customer: { phone: "9999999999" } });
+  assert.equal(r.body.subtotal, 80 + 15 + 25 + 25 + 20 + 5); ok("add-on choices priced on server (beads x3, lace all around, 2 connectors, letters both sides)");
+  r = await post("/orders/create", { design: { ...opts, addons: [{ id: "laceTrim", cfg: { bottom: "sideways" } }] } });
+  assert.equal(r.status, 400); ok("unknown add-on choice rejected");
 
   r = await post("/orders/create", { design: { ...design, topColor: "teal" } });
   assert.equal(r.status, 400); ok("teal on triangle rejected");
