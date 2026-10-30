@@ -31,6 +31,14 @@ export default route(["GET"], async (_body, req) => {
         out.shopify.customers = "blocked";
         out.shopify.customersError = shopifyReason(e);
       }
+      // Can the app see draft orders? (checkout needs read_draft_orders + write_draft_orders)
+      try {
+        await gql(`{ draftOrders(first:1){ nodes{ id } } }`);
+        out.shopify.draftOrders = "ok";
+      } catch (e) {
+        out.shopify.draftOrders = "blocked";
+        out.shopify.draftOrdersError = shopifyReason(e);
+      }
     } catch (e) {
       console.error("[health]", e.message, JSON.stringify(e.details || ""));
       out.shopify = { connected: false, error: e.message, reason: shopifyReason(e) };
