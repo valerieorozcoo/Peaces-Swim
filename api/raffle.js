@@ -1,9 +1,13 @@
-import { route } from "../lib/http.js";
-import { gql, check, toE164, findCustomer, ShopifyError } from "../lib/shopify.js";
+import { route, HttpError } from "../lib/http.js";
+import { gql, check, toE164, findSignupCustomer, ShopifyError } from "../lib/shopify.js";
 
 const TAG = "raffle-entry";
 const clean = (v, n) => String(v == null ? "" : v).replace(/[\u0000-\u001f<>]/g, "").trim().slice(0, n);
-const q = (v) => '"' + String(v).replace(/["\\]/g, "") + '"';
+async function matchingCustomer(email, phone) {
+  const match = await findSignupCustomer(email, phone);
+  if (match.conflict) throw new HttpError(409, "We couldn't save these contact details together. Please check your email and phone, or contact Peaces Swim for help.");
+  return match.customer;
+}
 
 async function addTag(id) {
   const data = await gql(
@@ -69,7 +73,7 @@ export default route(["POST"], async (body) => {
   if (body.sms !== true) throw new Error("Please check the box to agree to texts from Peaces to enter.");
   const sms = true;
 
-  const existing = (await findCustomer("email:" + q(email))) || (await findCustomer("phone:" + q(phone)));
+  const existing = await matchingCustomer(email, phone);
   if (existing) {
     if (!(existing.tags || []).includes(TAG)) await addTag(existing.id);
     await fillMissing(existing, { firstName, phone });
@@ -93,7 +97,7 @@ export default route(["POST"], async (body) => {
   if (p.userErrors && p.userErrors.length) {
     // Raced with another signup, or the phone belongs to someone Shopify search missed.
     if (p.userErrors.some((e) => /taken/i.test(e.message))) {
-      const again = (await findCustomer("email:" + q(email))) || (await findCustomer("phone:" + q(phone)));
+      const again = await matchingCustomer(email, phone);
       if (again) { await addTag(again.id); await fillMissing(again, { firstName, phone }); if (sms) await subscribeSms(again.id); return { ok: true, existing: true }; }
     }
     check(p, "customerCreate");
@@ -101,3 +105,4 @@ export default route(["POST"], async (body) => {
   if (!p.customer) throw new ShopifyError("customerCreate returned no customer", p);
   return { status: 201, body: { ok: true, existing: false } };
 });
+

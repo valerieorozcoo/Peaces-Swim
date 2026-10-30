@@ -10,15 +10,17 @@ Design-your-own bikini app for Peaces Swim — pick your peaces, design your dre
 
 | Screen in the app | Endpoint | What happens in Shopify |
 |---|---|---|
-| Phone number → "WELCOME VAL, we're so glad you're back" | `POST /api/customers/lookup` | Finds the customer by phone. Only their first name goes back to the app. |
-| New here → name + email → SAVE 10% | `POST /api/customers/create` | Creates a customer tagged `peaces-builder`. Email marketing is only turned on if they tick the box. |
-| CHECKOUT | `POST /api/orders/create` | Re-prices the design on the server, creates a **draft order** (tagged `peaces-builder`) with every add-on as its own line, applies 10% if the phone belongs to a customer, and opens Shopify checkout. |
+| Phone number → name + email | `POST /api/customers/lookup` | Legacy endpoint returns no customer details. Phone numbers are not account authentication. |
+| Name + email → SAVE 10% | `POST /api/customers/create` | Creates a customer tagged `peaces-builder`, or accepts matching existing contact details. Conflicting email/phone pairs return an error without changing records. A successful save returns a one-hour signed welcome-discount receipt. Email marketing is only turned on for new customers if they tick the box. |
+| CHECKOUT | `POST /api/orders/create` | Re-prices the design on the server and creates a **guest draft order** (tagged `peaces-builder`) with every add-on as its own line. A valid welcome receipt applies 10%; expired or invalid receipts stop checkout with an error. No existing Shopify account is attached from a phone number. |
 | Wait & watch / Pick it up later | `POST /api/orders/fulfillment` | Adds `wait-and-watch` or `pickup` tags + the pickup time to that draft order. |
 | — | `GET /api/health` | Shows whether the Shopify settings are filled in. |
 
 Prices live in `lib/catalog.js`. If you change a price or an add-on in `index.html`, change it there too — the server's number is the one the customer pays.
 
-If the backend is offline, the app still works: everyone is treated as new and CHECKOUT falls back to your Shopify account link with the design copied to the clipboard.
+The builder can still be used if the backend is offline. Saving customer records and creating a Shopify checkout require a working backend.
+
+Waitlist and raffle signups update an existing customer only when both the email and phone match that record. A conflict requires correcting the details or contacting Peaces Swim; the public form cannot replace an existing contact detail or subscribe a different stored phone to SMS. Welcome receipts grant a promotion only and are never login credentials.
 
 ---
 
@@ -82,3 +84,4 @@ node test/local-server.js    # app on http://localhost:3000 (add real env vars t
 - Wait-time formula: 12 min + 4 per add-on + 2 tote + 1 headband (`makeMinutes` in `index.html`)
 - Pickup slots: next 8 × 15-minute slots, no limit per slot yet
 - Taxes/shipping come from your Shopify settings; line items are marked "no shipping" (in-person pickup)
+

@@ -1585,15 +1585,8 @@
     if(!r.ok){ var err=new Error(j.error||("HTTP "+r.status)); err.status=r.status; throw err; }
     return j;
   }
-  async function lookupCustomer(phone){
-    try{
-      var j=await api("/customers/lookup",{phone:phone});
-      return j.found ? {name:j.firstName||"friend"} : null;
-    }catch(e){ return null; }
-  }
   async function saveCustomer(c){
-    try{ await api("/customers/create",{name:c.name,email:c.email,phone:c.phone,marketing:!!c.marketing}); }
-    catch(e){ console.warn("[peaces] customer not saved:",e.message); }
+    return api("/customers/create",{name:c.name,email:c.email,phone:c.phone,marketing:!!c.marketing});
   }
   function storeLead(){ /* the Shopify customer record is the lead now */ }
 
@@ -1645,30 +1638,18 @@
     e.preventDefault();
     var ph=document.getElementById("gPhone"), err=document.getElementById("phoneErr"), btn=document.getElementById("phoneBtn");
     ph.classList.remove("bad");
-    if(digitsOf(ph.value).length<7){
+    if(digitsOf(ph.value).length<10){
       ph.classList.add("bad"); err.hidden=false; err.textContent="That phone number doesn't look right."; ph.focus();
       return;
     }
     err.hidden=true;
     pendingPhone=prettyPhone(ph.value.trim());
-    btn.textContent="CHECKING…";
-    var found=await lookupCustomer(pendingPhone);
-    btn.textContent="CONTINUE";
-    if(found && found.name){
-      lead={name:found.name, email:found.email||"", phone:pendingPhone, returning:true};
-      state.perk=true;
-      document.getElementById("backTitle").textContent="WELCOME "+String(found.name).split(" ")[0].toUpperCase();
-      document.getElementById("backSub").textContent="We're so glad you're back. Your 10% is already on.";
-      document.getElementById("notYou").hidden=false;
-      storeLead(lead);
-      showStep("stepBack");
-    } else {
-      showStep("stepNew");
-      document.getElementById("gName").focus({preventScroll:true});
-    }
+    lead=null; state.perk=false;
+    showStep("stepNew");
+    document.getElementById("gName").focus({preventScroll:true});
   });
 
-  document.getElementById("newForm").addEventListener("submit",function(e){
+  document.getElementById("newForm").addEventListener("submit",async function(e){
     e.preventDefault();
     var n=document.getElementById("gName"), em=document.getElementById("gEmail"), err=document.getElementById("newErr");
     var bad=[];
@@ -1684,15 +1665,24 @@
       return;
     }
     err.hidden=true;
-    lead={name:n.value.trim(), email:em.value.trim(), phone:pendingPhone, returning:false,
+    var candidate={name:n.value.trim(), email:em.value.trim(), phone:pendingPhone, returning:false,
           marketing:document.getElementById("gMarketing").checked};
-    state.perk=true;
-    saveCustomer(lead);
+    var form=this, button=form.querySelector('[type="submit"]');
+    if(form.dataset.busy) return;
+    form.dataset.busy="1"; if(button) button.disabled=true;
+    lead=null; state.perk=false;
+    try{
+    var saved=await saveCustomer(candidate);
+    if(!saved.ok || !saved.welcomeToken) throw new Error("We couldn't save your details. Please try again.");
+    candidate.welcomeToken=saved.welcomeToken;
+    lead=candidate; state.perk=true;
     storeLead(lead);
     document.getElementById("backTitle").textContent="YOU'RE IN, "+lead.name.split(" ")[0].toUpperCase();
     document.getElementById("backSub").textContent="Your 10% is saved and comes off your first design.";
     document.getElementById("notYou").hidden=true;
     showStep("stepBack");
+    }catch(x){ err.hidden=false; err.textContent=x.message||"We couldn't save your details. Please try again."; }
+    finally{ delete form.dataset.busy; if(button) button.disabled=false; syncPerk(); renderAll(); }
   });
 
   document.getElementById("backGo").addEventListener("click",startDesigning);
@@ -1903,7 +1893,7 @@
     // open the tab now (inside the click) so pop-up blockers allow it, then point it at checkout
     var tab=window.open("","_blank");
     try{
-      var o=await api("/orders/create",{design:designPayload(), customer:lead?{name:lead.name,email:lead.email,phone:lead.phone}:null});
+      var o=await api("/orders/create",{design:designPayload(), customer:lead?{phone:lead.phone,welcomeToken:lead.welcomeToken}:null});
       currentOrder=o;
       if(tab) tab.location.href=o.checkoutUrl; else window.location.href=o.checkoutUrl;
       note.textContent="Order "+o.name+" is ready — finish paying in the checkout tab.";
@@ -1978,3 +1968,4 @@
 </script>
 </body>
 </html>
+
