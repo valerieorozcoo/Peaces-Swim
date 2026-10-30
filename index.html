@@ -1235,7 +1235,7 @@
     ["lightgreen","Light green"],["coral","Coral"],["pink","Pink"],
     ["lightblue","Light blue"],["purpleblue","Light purple"],["lightturq","Light turquoise"]
   ];
-  var CHARMS_B=[["c-shell","Shell"],["c-heart","Heart"],["c-star","Star"]];
+  var CHARMS_B=[["cg-heart","Crystal heart"],["cg-pinksquare","Pink square"],["cg-clearrect","Crystal rectangle"],["cg-pinkbaguette","Pink baguette"],["cg-halo","Halo crystal"]];
   var CHARMS_P=[["cp-shell","Seashell & pearls"],["cp-hamsa","Hamsa"],["cp-boot","Cowgirl boot"],["cp-tag","Gold tag"],["cp-pearls","Pearl drop"],["cp-rainbow","Rainbow"]];
 
   /* every add-on opens to choose a colour/finish, then Add to cart */
@@ -1250,8 +1250,8 @@
       opts:[["white","White"],["pink","Pink"]], art:function(v){return "p-laceruffle-"+v;}, def:"white"},
     {id:"fringe",  tier:2,price:5, name:"Fringe",         hint:"Swingy fringe along the edges",
       opts:[["match","Matching"],["white","White"],["gold","Gold"]], art:function(v){return "fringe-"+v;}, def:"match"},
-    {id:"charmsB", tier:2,price:5, name:"Basic charms",   hint:"Shell, heart or star",
-      opts:CHARMS_B, art:function(v){return v;}, def:"c-heart"},
+    {id:"charmsB", tier:2,price:5, name:"Gem charms",     hint:"Crystal & pink gem drops",
+      opts:CHARMS_B, art:function(v){return v;}, def:"cg-heart"},
     {id:"charmsP", tier:3,price:7, name:"Premium charms", hint:"Gold & pearl dangles",
       opts:CHARMS_P, art:function(v){return v;}, def:"cp-shell"},
     {id:"extTies", tier:3,price:7, name:"Extended ties",  hint:"55″ beaded wrap ties",
@@ -1326,7 +1326,8 @@
       preserveAspectRatio:"none",transform:"translate("+seg[0]+","+seg[1]+") rotate("+ang+")"},svg);
   }
   function hang(svg,name,x,y,h){ // charm hanging from a point
-    el("image",{href:"art2/"+name+".png",x:(x-h*0.19),y:y,width:h*0.38,height:h,
+    var wr=/^cg-/.test(name)?0.5:0.19;
+    el("image",{href:"art2/"+name+".png",x:(x-h*wr),y:y,width:h*wr*2,height:h,
       preserveAspectRatio:"xMidYMid meet"},svg);
   }
   function beadRun(svg,run,n,size){
@@ -1432,8 +1433,9 @@
 
     /* charms hang from the outer edges / hips */
     if(on("charmsB")){
-      if(isTop){ hang(svg,variantOf("charmsB"),g.outerL[0]+6,g.outerL[1]-10,H*0.19); hang(svg,variantOf("charmsB"),g.outerR[0]-6,g.outerR[1]-10,H*0.19); }
-      else { hang(svg,variantOf("charmsB"),g.hipL[0]-2,g.hipL[1]-2,H*0.24); hang(svg,variantOf("charmsB"),g.hipR[0]+2,g.hipR[1]-2,H*0.24); }
+      var gh=W*0.13; // gem drops are short, sized off the piece width
+      if(isTop){ hang(svg,variantOf("charmsB"),g.outerL[0]+6,g.outerL[1]-10,gh); hang(svg,variantOf("charmsB"),g.outerR[0]-6,g.outerR[1]-10,gh); }
+      else { hang(svg,variantOf("charmsB"),g.hipL[0]-2,g.hipL[1]-2,gh); hang(svg,variantOf("charmsB"),g.hipR[0]+2,g.hipR[1]-2,gh); }
     }
     if(on("charmsP")){
       var ph=W*0.30; // premium charms are long dangles, sized off the piece width
