@@ -9,6 +9,6 @@
   },
   "scripts": {
     "dev": "vercel dev",
-    "test": "node test/run.js && node test/checkout.js && node --test test/*.test.js"
+    "test": "node test/run.js && node test/checkout.js && node --test test/*.test.js && node test/customizations.js"
   }
 }

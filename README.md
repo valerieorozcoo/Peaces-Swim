@@ -85,3 +85,36 @@ node test/local-server.js    # app on http://localhost:3000 (add real env vars t
 - Pickup slots: next 8 × 15-minute slots, no limit per slot yet
 - Taxes/shipping come from your Shopify settings; line items are marked "no shipping" (in-person pickup)
 
+
+
+## Customization placements
+
+The existing add-on tiles now include placement chips. Prices remain per add-on,
+with selected locations included. `lib/customizations.js` shares option IDs,
+placement names, silhouette rules and validation between the browser and order API.
+The browser submits `placements` alongside each add-on's `id` and `option`;
+Shopify draft-order line attributes retain Placement, Finish and any Initials.
+
+- Bralette: strap beads, center charms, center-origin wrap ties, and silver/gold
+  initials on both cups or an individual wearer-left/right cup.
+- Triangle: crossed and center-origin wrap routes. A selected wrap adds the
+  existing $10 center connector; the UI explains this before selection.
+- Lace trim: neckline, lower cup edges, front waistband or hip-to-hip trim.
+- Beads and charms can follow the extended ties; removing their prerequisite or
+  changing styles removes incompatible placements and announces the change.
+- Existing bows, roses, buttons, ruffles, lace overlay, hip charms and connectors
+  retain their tiles and artwork, with explicit supported locations.
+- Existing saved designs migrate to deterministic legacy placements. New saves
+  preserve placement IDs and finish, and orders are revalidated on the server.
+
+All views are front views, with left/right defined from the wearer's perspective.
+The source sketches are implementation references, not customer-facing assets.
+Exact attachment, routing behind the body, dimensions and comfort need maker
+approval; the preview does not claim a physical fit simulation.
+
+The root page retains its existing `prelaunch` setting. Remove that class only
+when launching the full storefront. For local builder QA, make a temporary copy
+of index.html without the class; do not commit that preview copy.
+
+`npm test` includes the placement, finish, dependency, production-attribute and
+legacy-design regressions in addition to the customer/checkout checks.

@@ -142,7 +142,22 @@ try {
   assert.ok(verifyWelcomeToken(r.body.welcomeToken, "+17865550101"));
   ok("matching existing contacts receive a welcome receipt without account access");
 
+  const customized = { topStyle:"underwire", bottomStyle:"seamless", topColor:"coral", bottomColor:"teal", sizeTop:"S", sizeBottom:"M", initials:"VO",
+    addons:[{id:"initials",option:"gold",placements:["top-cups"]},{id:"laceTrim",option:"white",placements:["top-underbust","bottom-hips"]}] };
+  r = await post("/orders/create", { design:customized });
+  assert.equal(r.status,201); assert.equal(r.body.subtotal,100);
+  const productionLines = db.drafts.at(-1).input.lineItems;
+  assert.ok(productionLines.some(l=>l.customAttributes.some(a=>a.key==="Placement"&&a.value==="Top · both cups")));
+  assert.ok(productionLines.some(l=>l.customAttributes.some(a=>a.key==="Finish"&&a.value==="Gold")));
+  assert.ok(productionLines.some(l=>l.customAttributes.some(a=>a.key==="Placement"&&a.value.includes("lower cup edges; Bottom · both hips"))));
+  ok("Shopify draft-order lines retain exact placements, finish and initials at server prices");
+  const draftCount=db.drafts.length;
+  r=await post("/orders/create",{design:{...customized,addons:[{id:"initials",option:"gold",placements:["unknown"]}]}});
+  assert.equal(r.status,400); assert.equal(db.drafts.length,draftCount);
+  ok("invalid placement cannot create a Shopify draft order");
+
   assert.equal(db.tokenCalls, 1); ok("access token fetched once and cached");
   console.log(`\nAll ${n} checks passed.`);
 } finally { s1.close(); s2.close(); }
+
 
