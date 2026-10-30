@@ -1086,7 +1086,6 @@
       </div>
 
       <div id="orderBlock" hidden>
-      <button class="cta" id="ctaBtn" type="button">Save my peace</button>
       <a class="cta checkout" id="checkoutBtn" href="https://shopify.com/85529657569/account" target="_blank" rel="noopener">CHECKOUT</a>
       <p class="checkout-note" id="checkoutNote">Your design summary is copied to your clipboard — paste it in the order notes at checkout.</p>
       </div>
@@ -1153,8 +1152,8 @@
 
       <div id="pageDone" hidden>
         <section class="step">
-          <div class="step-head"><h2>All done</h2><p class="hint">Here's your peace. Save it, add the tote if you want one, then check out.</p></div>
-          <p class="done-copy">Your total and everything you picked are in the panel — use <strong>Save my peace</strong> to keep the design, then <strong>Checkout</strong> when you're ready.</p>
+          <div class="step-head"><h2>All done</h2><p class="hint">Here's your peace. Check out whenever you're ready.</p></div>
+          <p class="done-copy">Your total and everything you picked are in the panel — hit <strong>Checkout</strong> when you're ready.</p>
           <button class="gate-skip page-back" id="backToPeaces" type="button">Back to my design</button>
         </section>
       </div>
@@ -2200,6 +2199,7 @@
   }
   function leaveDesign(){
     if(!landing.hidden) return;
+    resetDesign();
     ["builder","fulfil"].forEach(function(id){ document.getElementById(id).hidden=true; });
     landing.hidden=false;
     var target=location.hash.length>1 && document.getElementById(location.hash.slice(1));
@@ -2349,41 +2349,23 @@
     return lines.join("\n");
   }
 
-  /* "Save my peace" keeps the design on this device so it's still there next visit. */
-  var SAVE_KEY="peaces-design-v1";
-  function designPayload(){
-    return {
-      topStyle:state.topStyle, bottomStyle:state.bottomStyle,
-      topColor:state.topColor, bottomColor:state.bottomColor,
-      sizeTop:state.sizeTop, sizeBottom:state.sizeBottom,
-      addons:activeAddons().map(function(a){
-        var c={}; (SETTINGS[a.id]||[]).forEach(function(g){ c[g[0]]=cfg(a.id,g[0]); });
-        return {id:a.id, option:a.opts.length>1?variantName(a.id):"", cfg:c};
-      }),
-      initials:state.initials, rsText:state.rsText, tote:!!state.tote, headband:!!state.headband,
-      toteColor:state.toteColor, headbandColor:state.headbandColor
-    };
+  /* Designs aren't kept: leaving the builder (or reloading) starts the design over from the beginning. */
+  try{ localStorage.removeItem("peaces-design-v1"); }catch(e){}
+  function saveDesign(){}
+  var FRESH=JSON.stringify({topStyle:state.topStyle,bottomStyle:state.bottomStyle,topColor:state.topColor,bottomColor:state.bottomColor,
+    sizeTop:state.sizeTop,sizeBottom:state.sizeBottom,addons:{},variant:{},cfg:{},preview:null,tote:false,headband:false,
+    toteColor:state.toteColor,headbandColor:state.headbandColor,initials:state.initials,rsText:state.rsText,view:"front",fulfil:null,pickupAt:null});
+  function resetDesign(){
+    var f=JSON.parse(FRESH); Object.keys(f).forEach(function(k){ state[k]=f[k]; });
+    closeDrawers(null);
+    var rsi=document.getElementById("rsInput"); if(rsi) rsi.value=state.rsText;
+    var ini=document.getElementById("initialsInput"); if(ini) ini.value=state.initials;
+    document.querySelectorAll("#fulfilChoices .fulfil-opt").forEach(function(x){ x.setAttribute("aria-pressed","false"); });
+    ["slotBlock","waitBlock"].forEach(function(id){ document.getElementById(id).hidden=true; });
+    currentOrder=null;
+    ["top","bottom"].forEach(function(part){ buildStyleGrid(part); buildSwatches(part); });
+    syncExtras(); showPage("pageStyle"); renderAll();
   }
-  function saveDesign(){
-    try{
-      localStorage.setItem(SAVE_KEY,JSON.stringify({
-        topStyle:state.topStyle, bottomStyle:state.bottomStyle, topColor:state.topColor, bottomColor:state.bottomColor,
-        sizeTop:state.sizeTop, sizeBottom:state.sizeBottom, addons:state.addons, variant:state.variant, cfg:state.cfg,
-        initials:state.initials, rsText:state.rsText, tote:state.tote, headband:state.headband, toteColor:state.toteColor, headbandColor:state.headbandColor
-      }));
-    }catch(e){}
-  }
-  (function restoreDesign(){
-    try{
-      var d=JSON.parse(localStorage.getItem(SAVE_KEY)||"null"); if(!d) return;
-      ["topStyle","bottomStyle","topColor","bottomColor","sizeTop","sizeBottom","initials","rsText","tote","headband","toteColor","headbandColor"].forEach(function(k){
-        if(d[k]!==undefined) state[k]=d[k];
-      });
-      if(!STYLES.top[state.topStyle]||!STYLES.bottom[state.bottomStyle]) throw 0;
-      state.addons=d.addons||{}; state.variant=d.variant||{}; state.cfg=d.cfg||{};
-      Object.keys(state.addons).forEach(function(k){ if(!addonDef(k)) delete state.addons[k]; });
-    }catch(e){}
-  })();
 
   var currentOrder=null;
   function sendFulfilment(extra){
@@ -2477,12 +2459,6 @@
       });
     });
   }
-
-  document.getElementById("ctaBtn").addEventListener("click",function(){
-    var b=this,t=b.textContent; b.textContent="Saved ✓";
-    setTimeout(function(){ b.textContent=t; },1600);
-    saveDesign();
-  });
 
   renderAll();
 
