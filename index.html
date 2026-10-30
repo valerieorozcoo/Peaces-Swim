@@ -1710,7 +1710,13 @@
     var target=location.hash.length>1 && document.getElementById(location.hash.slice(1));
     if(target) target.scrollIntoView(); else window.scrollTo(0,0);
   }
-  function route(){ if(location.hash==="#design") enterDesign(); else leaveDesign(); }
+  function route(){
+    if(document.documentElement.classList.contains("prelaunch")){
+      leaveDesign();
+      return;
+    }
+    if(location.hash==="#design") enterDesign(); else leaveDesign();
+  }
   window.addEventListener("hashchange",route);
 
   // The email box on the landing page opens the pop-up with the email already filled in.
