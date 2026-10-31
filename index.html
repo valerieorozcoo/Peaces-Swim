@@ -2,6 +2,12 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<script>
+  /* Prelaunch switch: these addresses show only the waitlist; every other address
+     (shop.peacesswim.com, previews) shows the full site. Empty the list on launch day. */
+  var PRELAUNCH_HOSTS=["peacesswim.com","www.peacesswim.com"];
+  if(PRELAUNCH_HOSTS.indexOf(location.hostname)>-1 || /[?&]prelaunch=1/.test(location.search)) document.documentElement.classList.add("prelaunch");
+</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Peaces Swim: A new era of swimwear has arrived</title>
 <meta name="description" content="Design-your-own bikinis, made in Miami. Pick your peaces, add lace, ties and charms, and wear a swimsuit that's entirely yours.">
@@ -917,6 +923,12 @@
   .acc-qty span{min-width:28px; font-size:24px; color:var(--deep-purple,#4B2470);}
   .acc-note{text-align:center; margin:22px auto 0; max-width:520px; font-size:16px; color:var(--deep-purple,#4B2470); min-height:1.4em;}
   @media (max-width:640px){ .acc-grid{grid-template-columns:1fr;} }
+
+  /* waitlist SMS opt-in */
+  .lp-wait .lp-check{display:flex; align-items:flex-start; gap:10px; text-align:left; font-size:15px; line-height:1.35; cursor:pointer;}
+  .lp-wait .lp-check input{flex:none; width:20px; height:20px; margin:0; padding:0; border:0; background:var(--w-lavender); cursor:pointer;}
+  .lp-wait .lp-check input:checked{background:var(--w-orchid) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M5 10.5l3.2 3.2L15 7' fill='none' stroke='%23fff' stroke-width='2.2'/%3E%3C/svg%3E") center/100% no-repeat;}
+  .lp-wait label.lp-check{font-weight:500;}
 </style>
 
 <!-- ================= Landing page =================
@@ -986,6 +998,7 @@
           <input id="wEmail" name="email" type="email" placeholder="email" autocomplete="email" inputmode="email" required>
           <label class="lp-sr" for="wPhone">Phone number</label>
           <input id="wPhone" name="phone" type="tel" placeholder="phone number" autocomplete="tel" inputmode="tel" required>
+          <label class="lp-check" for="wSms"><input id="wSms" name="sms" type="checkbox"><span>Yes, I agree to receive SMS messages from Peaces</span></label>
           <div class="lp-hp" aria-hidden="true"><label for="wCompany">Company<input id="wCompany" name="company" type="text" tabindex="-1" autocomplete="off"></label></div>
           <p class="lp-wait-err" id="waitErr" role="alert" hidden></p>
           <button class="lp-wait-btn" type="submit" id="waitBtn">sign me up</button>
@@ -2365,7 +2378,9 @@
     var target=location.hash.length>1 && document.getElementById(location.hash.slice(1));
     if(target) target.scrollIntoView(); else window.scrollTo(0,0);
   }
-  function route(){ if(location.hash==="#design") enterDesign(); else if(location.hash==="#lookbook") enterLookbook(); else if(location.hash==="#accessories") enterAccessories(); else leaveDesign(); syncCheckoutPop(); }
+  function route(){
+    if(document.documentElement.classList.contains("prelaunch")){ leaveDesign(); return; } // waitlist only
+    if(location.hash==="#design") enterDesign(); else if(location.hash==="#lookbook") enterLookbook(); else if(location.hash==="#accessories") enterAccessories(); else leaveDesign(); syncCheckoutPop(); }
 
 
   /* ---------- Peaces Accessories page ---------- */
@@ -2466,7 +2481,7 @@
       btn.disabled=true; btn.textContent="signing you up…";
       try{
         var r=await fetch("api/waitlist",{method:"POST",headers:{"Content-Type":"application/json"},
-          body:JSON.stringify({firstName:first,email:email,phone:phone,company:document.getElementById("wCompany").value})});
+          body:JSON.stringify({firstName:first,email:email,phone:phone,sms:document.getElementById("wSms").checked,company:document.getElementById("wCompany").value})});
         var j={}; try{ j=await r.json(); }catch(x){}
         if(!r.ok) throw new Error(j.error||"Something went wrong. Please try again.");
         form.hidden=true;
