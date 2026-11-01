@@ -1028,7 +1028,7 @@
         <a href="#design">Design</a>
         <a href="#how">Process</a>
         <a href="#making">About</a>
-        <a href="#" id="accountBtn">Account</a>
+        <a href="https://shopify.com/85529657569/account" id="accountBtn">Account</a>
       </nav>
       <button class="lp-menu-btn" id="menuBtn" type="button" aria-expanded="false" aria-controls="lpMenu"><span></span><span></span><span></span><b>Menu</b></button>
     </header>
@@ -1041,7 +1041,7 @@
         <a href="#making">About</a>
         <a href="#lookbook">Lookbook</a>
         <a href="#accessories">Accessories</a>
-        <a href="#" data-account>Account</a>
+        <a href="https://shopify.com/85529657569/account" data-account>Account</a>
       </nav>
       <img src="art/logo-ps-leopard.png" alt="" class="lp-menu-logo">
     </div>
@@ -2372,7 +2372,7 @@
     });
     r.addEventListener("pointercancel",function(){ x0=null; });
   })();
-  document.getElementById("accountBtn").addEventListener("click",function(e){ e.preventDefault(); openGate(); });
+  /* Account goes to the customer's Shopify account (orders + profile), like other Shopify stores */
   /* phone menu */
   var lpMenu=document.getElementById("lpMenu"), menuBtn=document.getElementById("menuBtn");
   function setMenu(open){ lpMenu.hidden=!open; menuBtn.setAttribute("aria-expanded",open?"true":"false"); document.documentElement.style.overflow=open?"hidden":""; if(open) document.getElementById("menuClose").focus(); else menuBtn.focus({preventScroll:true}); }
@@ -2380,7 +2380,6 @@
   document.getElementById("menuClose").addEventListener("click",function(){ setMenu(false); });
   lpMenu.addEventListener("click",function(e){
     var a=e.target.closest("a"); if(!a) return;
-    if(a.hasAttribute("data-account")){ e.preventDefault(); setMenu(false); openGate(); return; }
     lpMenu.hidden=true; menuBtn.setAttribute("aria-expanded","false"); document.documentElement.style.overflow="";
   });
   document.addEventListener("keydown",function(e){ if(e.key==="Escape" && !lpMenu.hidden) setMenu(false); });
