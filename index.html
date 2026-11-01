@@ -929,6 +929,79 @@
   .lp-wait .lp-check input{flex:none; width:20px; height:20px; margin:0; padding:0; border:0; background:var(--w-lavender); cursor:pointer;}
   .lp-wait .lp-check input:checked{background:var(--w-orchid) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M5 10.5l3.2 3.2L15 7' fill='none' stroke='%23fff' stroke-width='2.2'/%3E%3C/svg%3E") center/100% no-repeat;}
   .lp-wait label.lp-check{font-weight:500;}
+
+  /* ===== Phone pass: sticky preview, bigger taps, readable small print, menu button ===== */
+  .mini-total{display:none;}
+  .lp-menu-btn,.lp-menu{display:none;}
+  @media (max-width:880px){
+    /* the bikini stays at the top of the screen while you pick */
+    .layout{display:flex; flex-direction:column; align-items:stretch; gap:16px;}
+    .stage-col{display:contents;}
+    .stage{position:sticky; top:0; z-index:20; order:0; margin:0 -20px; padding:8px 14px 10px; border-radius:0 0 22px 22px !important;
+      background:rgba(255,255,255,.96); -webkit-backdrop-filter:blur(8px); backdrop-filter:blur(8px); box-shadow:0 8px 24px rgba(75,36,112,.12);}
+    .stage-label{padding-bottom:4px; align-items:center;}
+    .stage-label > span:first-child{display:none;}
+    .stage-label .style-name{font-size:18px; flex:1; min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+    .mini-total{display:block; font-family:var(--lp-display); font-size:22px; color:var(--deep-purple,#4B2470); white-space:nowrap;}
+    .mini-total s{font-size:14px; opacity:.6; margin-right:5px;}
+    .stage{display:grid; grid-template-columns:auto auto; justify-content:center; align-items:center; column-gap:14px;}
+    .stage > .stage-label,.stage > .rig{grid-column:1 / -1;}
+    .rig{--u:min(0.27%, 0.046svh); gap:4px;}
+    .rig.wrap-waist{gap:clamp(18px,4svh,40px);}
+    .size-chip{display:none;}
+    .custom-count{margin:4px 0 0 !important; font-size:15px !important;}
+    .view-toggle[hidden]{display:none;}
+    .custom-count .cc-n{font-size:22px !important;}
+    .view-toggle{margin-top:4px; gap:6px; flex-wrap:nowrap;}
+    .view-toggle button{padding:10px 12px !important; letter-spacing:.12em !important;}
+    .custom-count .cc-l{letter-spacing:.1em !important;}
+    .stage{grid-template-columns:minmax(0,auto) minmax(0,auto); column-gap:10px;}
+    .stage > .stage-label{min-width:0;}
+    .view-toggle .vt-hint,.view-toggle .vt-arrow{display:none;}
+    .panel{order:1;}
+    .price-bar{order:2; margin-top:0;} .summary-list{order:3;} .perk{order:4;} #orderBlock{order:5;}
+    /* two shapes side by side instead of one huge card each */
+    .base-grid{grid-template-columns:1fr 1fr !important; gap:10px;}
+    .base-card{padding:8px;}
+    .base-card .thumb .piece{width:86%;}
+    .base-card .name{font-size:16px;}
+    .base-card .desc{font-size:14px;}
+  }
+  @media (max-width:880px), (pointer:coarse){
+    /* finger-sized buttons (44px is Apple's guideline) */
+    .chip,.extra-chips .chip{min-height:44px; padding:6px 14px;}
+    .size-btn{min-width:52px; min-height:48px;}
+    .view-toggle button{min-height:44px; padding:10px 20px;}
+    .tote-btn{min-height:46px;}
+    .page-back,.gate-skip{display:inline-block; padding:12px 6px;}
+    .addon{min-height:60px;}
+    .lp-foot-links a{display:inline-block; padding:8px 0;}
+    .lp-foot-links li + li{margin-top:0;}
+    .lp-socials a{display:inline-grid; place-items:center; width:44px; height:44px;}
+    .lp-signup button{padding:14px 4px; font-size:14px;}
+    .lp-signup input{padding:12px 0; font-size:16px;}
+    .acc-qty button{width:50px; height:50px;}
+    /* nothing smaller than 14px */
+    .lp-bar-track span,.price-bar .total-label,.sub-head,.tier-title,.addon .label small,.vt-hint,.stage-label,
+    .lp-foot-bottom p,.lp-foot-follow span,.lp-label,.lp-rule,.lb-kicker,.slots-label,.wait-label{font-size:14px !important;}
+    .lp-foot-links ul{font-size:15px;}
+  }
+  @media (max-width:640px){
+    /* landing header: a Menu button instead of four tiny links */
+    .lp-quick{display:none !important;}
+    .lp-menu-btn{display:flex; align-items:center; gap:10px; min-height:44px; padding:8px 14px; border:0; border-radius:999px; background:rgba(255,255,255,.88);
+      color:var(--deep-purple,#4B2470); font-family:var(--lp-sans); cursor:pointer; position:relative; box-shadow:0 2px 10px rgba(46,36,51,.15);}
+    .lp-menu-btn span{display:block; width:18px; height:2px; background:currentColor; border-radius:2px; position:absolute; left:14px;}
+    .lp-menu-btn span:nth-child(1){top:15px;} .lp-menu-btn span:nth-child(2){top:21px;} .lp-menu-btn span:nth-child(3){top:27px;}
+    .lp-menu-btn b{font-weight:500; font-size:15px; letter-spacing:.2em; text-transform:uppercase; margin-left:26px;}
+    .lp-menu:not([hidden]){display:flex; position:fixed; inset:0; z-index:80; flex-direction:column; justify-content:center; align-items:center; gap:28px;
+      background:#EFDDFD; padding:72px 24px 40px;}
+    .lp-menu nav{display:flex; flex-direction:column; align-items:center; gap:6px;}
+    .lp-menu nav a{font-family:var(--lp-display); font-size:38px; line-height:1.1; color:var(--deep-purple,#4B2470); padding:8px 16px;}
+    .lp-menu nav a:first-child{font-style:italic; color:var(--fs-orchid,#8A5BB8);}
+    .lp-menu-x{position:absolute; top:16px; right:16px; width:48px; height:48px; border:0; border-radius:999px; background:#fff; color:var(--deep-purple,#4B2470); font-size:30px; line-height:1; cursor:pointer;}
+    .lp-menu-logo{height:64px; width:auto; opacity:.9;}
+  }
 </style>
 
 <!-- ================= Landing page =================
@@ -957,7 +1030,21 @@
         <a href="#making">About</a>
         <a href="#" id="accountBtn">Account</a>
       </nav>
+      <button class="lp-menu-btn" id="menuBtn" type="button" aria-expanded="false" aria-controls="lpMenu"><span></span><span></span><span></span><b>Menu</b></button>
     </header>
+    <!-- phone menu: the four header links (plus Lookbook + Accessories) as a full-screen list -->
+    <div class="lp-menu" id="lpMenu" hidden role="dialog" aria-modal="true" aria-label="Menu">
+      <button class="lp-menu-x" id="menuClose" type="button" aria-label="Close menu">&times;</button>
+      <nav>
+        <a href="#design">Design your own</a>
+        <a href="#how">The process</a>
+        <a href="#making">About</a>
+        <a href="#lookbook">Lookbook</a>
+        <a href="#accessories">Accessories</a>
+        <a href="#" data-account>Account</a>
+      </nav>
+      <img src="art/logo-ps-leopard.png" alt="" class="lp-menu-logo">
+    </div>
 
     <!-- Cover page, set like the Vol. 01 poster -->
     <div class="lp-cover">
@@ -1226,6 +1313,7 @@
         <div class="stage-label">
           <span>Your peace</span>
           <span class="style-name" id="styleName">Triangle, Turquoise</span>
+          <span class="mini-total" id="miniTotal" aria-hidden="true">$95.00</span>
         </div>
         <div class="rig" id="rig"></div>
         <p class="custom-count" id="customCount" aria-live="polite"><span class="cc-n">0</span> <span class="cc-l">customizations</span></p>
@@ -1917,6 +2005,7 @@
       row(a.name+extra,"+"+fmt(priceOf(a.id)));
     });
     if(state.perk) row("Socials + messages","−"+fmt(sub*DISCOUNT),"discount");
+    var mt=document.getElementById("miniTotal"); if(mt) mt.innerHTML=document.getElementById("totalPrice").innerHTML;
     if(typeof syncCheckoutPop==="function" && document.getElementById("checkoutPop")) syncCheckoutPop();
   }
   function renderAll(){ renderRig(); renderSummary(); syncControls(); }
@@ -2284,6 +2373,17 @@
     r.addEventListener("pointercancel",function(){ x0=null; });
   })();
   document.getElementById("accountBtn").addEventListener("click",function(e){ e.preventDefault(); openGate(); });
+  /* phone menu */
+  var lpMenu=document.getElementById("lpMenu"), menuBtn=document.getElementById("menuBtn");
+  function setMenu(open){ lpMenu.hidden=!open; menuBtn.setAttribute("aria-expanded",open?"true":"false"); document.documentElement.style.overflow=open?"hidden":""; if(open) document.getElementById("menuClose").focus(); else menuBtn.focus({preventScroll:true}); }
+  menuBtn.addEventListener("click",function(){ setMenu(true); });
+  document.getElementById("menuClose").addEventListener("click",function(){ setMenu(false); });
+  lpMenu.addEventListener("click",function(e){
+    var a=e.target.closest("a"); if(!a) return;
+    if(a.hasAttribute("data-account")){ e.preventDefault(); setMenu(false); openGate(); return; }
+    lpMenu.hidden=true; menuBtn.setAttribute("aria-expanded","false"); document.documentElement.style.overflow="";
+  });
+  document.addEventListener("keydown",function(e){ if(e.key==="Escape" && !lpMenu.hidden) setMenu(false); });
   gate.addEventListener("click",function(e){ if(e.target===gate) closeGate(); });
   document.addEventListener("keydown",function(e){ if(e.key==="Escape") closeGate(); });
 
