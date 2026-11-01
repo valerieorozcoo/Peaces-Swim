@@ -2834,7 +2834,7 @@
     var tab=window.open("","_blank");
     try{
       var pic=await designImageOrNull(4000);
-      var o=await api("/orders/create",{design:designPayload(), image:pic, customer:lead?{phone:lead.phone,welcomeToken:lead.welcomeToken}:null});
+      var o=await api("/orders/create",{design:designPayload(), image:pic, customer:lead?{phone:lead.phone,welcomeToken:lead.welcomeToken,name:lead.name}:null});
       if(!o.id || !o.sig || !o.checkoutUrl) throw new Error("We couldn't prepare checkout. Please try again.");
       currentOrder=o;
       resetFulfilmentFeedback();

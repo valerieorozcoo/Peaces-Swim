@@ -16,6 +16,7 @@ export default route(["GET"], async (_body, req) => {
   const out = {
     ok: true,
     shopDomainSet: !!(process.env.SHOPIFY_STORE_DOMAIN || process.env.SHOPIFY_BASE_URL),
+    seamstressPasscodeSet: !!process.env.SEAMSTRESS_PASSCODE,
     credentialsSet: !!((process.env.SHOPIFY_CLIENT_ID && process.env.SHOPIFY_CLIENT_SECRET) || process.env.SHOPIFY_ADMIN_TOKEN),
   };
   const params = new URL(req.url || "/", "http://local").searchParams;
