@@ -6,65 +6,85 @@ import { saveDesignImage } from "../../lib/design-image.js";
 
 const CURRENCY = process.env.SHOP_CURRENCY || "USD";
 const money = (n) => ({ amount: n.toFixed(2), currencyCode: CURRENCY });
+// The welcome 10% is applied as this Shopify code, so a customer can't add it a second time at checkout.
+const WELCOME_CODE = process.env.WELCOME_DISCOUNT_CODE || "PEACESPARTY";
+const MAX_BIKINIS = 5;
 
-// POST /api/orders/create  { design, customer: { phone, name, email } }
-// Prices the design on the server, creates a Shopify draft order and returns its
-// checkout link (invoiceUrl). Checkout stays a guest flow; a signed signup
-// receipt authorizes only the welcome discount, never customer-account access.
+// POST /api/orders/create  { designs:[design…], images:[dataUrl…], customer:{ phone, name, email, welcomeToken } }
+// (a single { design, image } still works). Prices every bikini in the bag on the server,
+// creates ONE Shopify draft order and returns its checkout link (invoiceUrl). A signed
+// signup receipt authorizes only the welcome discount, never customer-account access.
 export default route(["POST"], async (body) => {
-  const order = priceDesign(body.design);
+  const designs = Array.isArray(body.designs) ? body.designs : [body.design];
+  const images = Array.isArray(body.images) ? body.images : [body.image];
+  if (!designs.length || designs.length > MAX_BIKINIS) throw new Error("You can check out 1 to " + MAX_BIKINIS + " bikinis at a time");
+  const orders = designs.map((d) => priceDesign(d));
+  const subtotal = orders.reduce((s, o) => s + o.subtotal, 0);
+
   const cust = body.customer || {};
   const phone = toE164(cust.phone);
   const discounted = verifyWelcomeToken(cust.welcomeToken, phone);
   if (cust.welcomeToken && !discounted) throw new HttpError(409, "Your welcome discount expired. Please enter your contact details again before checking out.");
 
-  const input = {
-    tags: ["peaces-builder"],
-    allowDiscountCodesInCheckout: true, // lets customers type Shopify discount codes (e.g. PEACESPARTY) at checkout
-    note: "Made in the Peaces Swim Builder",
-    customAttributes: [{ key: "Source", value: "Peaces Swim Builder" }],
-    lineItems: order.lines.map((l) => ({
-      title: l.title,
-      quantity: 1,
-      originalUnitPriceWithCurrency: money(l.price),
-      requiresShipping: false,
-      taxable: true,
-      customAttributes: Object.entries(l.attrs).map(([key, value]) => ({ key, value })),
-    })),
-  };
-  // The picture of the built bikini rides on the bikini line as `_design_image`
-  // (hidden from the checkout, available to the receipt email as line.properties).
-  const imageUrl = await saveDesignImage(body.image, order.lines[0].title);
-  if (imageUrl) {
-    input.lineItems[0].customAttributes.push({ key: "_design_image", value: imageUrl });
-    input.note += "\nDesign picture: " + imageUrl;
-  }
-  const customerName = String(cust.name || "").replace(/[\u0000-\u001f<>]/g, "").trim().slice(0, 60);
-  if (customerName) input.customAttributes.push({ key: "Customer name", value: customerName });
-  if (discounted) {
-    input.appliedDiscount = { valueType: "PERCENTAGE", value: DISCOUNT_PERCENT, title: "Peaces " + DISCOUNT_PERCENT + "% welcome" };
+  const many = orders.length > 1;
+  const lineItems = [], pictures = [];
+  for (let i = 0; i < orders.length; i++) {
+    const tag = many ? [{ key: "Bikini", value: (i + 1) + " of " + orders.length }] : [];
+    const first = lineItems.length;
+    for (const l of orders[i].lines) {
+      lineItems.push({
+        title: l.title, quantity: 1, originalUnitPriceWithCurrency: money(l.price),
+        requiresShipping: false, taxable: true,
+        customAttributes: tag.concat(Object.entries(l.attrs).map(([key, value]) => ({ key, value }))),
+      });
+    }
+    // The picture of each built bikini rides on its bikini line as `_design_image`
+    // (hidden at checkout, available to the receipt email as line.properties).
+    const url = await saveDesignImage(images[i], orders[i].lines[0].title);
+    pictures.push(url || null);
+    if (url) lineItems[first].customAttributes.push({ key: "_design_image", value: url });
   }
 
-  const data = await gql(
+  const input = {
+    tags: ["peaces-builder"],
+    allowDiscountCodesInCheckout: true, // lets customers type Shopify discount codes (e.g. FREETOTE) at checkout
+    note: "Made in the Peaces Swim Builder" + (many ? " · " + orders.length + " bikinis" : "")
+      + pictures.map((u, i) => (u ? "\nDesign picture" + (many ? " " + (i + 1) : "") + ": " + u : "")).join(""),
+    customAttributes: [{ key: "Source", value: "Peaces Swim Builder" }],
+    lineItems,
+  };
+  const customerName = String(cust.name || "").replace(/[\u0000-\u001f<>]/g, "").trim().slice(0, 60);
+  if (customerName) input.customAttributes.push({ key: "Customer name", value: customerName });
+  const email = String(cust.email || "").trim().toLowerCase().slice(0, 120);
+  // Signed-up customers: their email goes on the order so it shows in their Shopify account.
+  if (discounted && /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) input.email = email;
+  if (discounted) input.discountCodes = [WELCOME_CODE];
+
+  const create = await gql(
     `mutation($input:DraftOrderInput!){ draftOrderCreate(input:$input){
        draftOrder{ id name invoiceUrl subtotalPriceSet{ shopMoney{ amount } } totalPriceSet{ shopMoney{ amount } } }
        userErrors{ field message } } }`,
     { input }
   );
-  const d = check(data.draftOrderCreate, "draftOrderCreate").draftOrder;
-  const expected = discounted ? order.subtotal * (1 - DISCOUNT_PERCENT / 100) : order.subtotal;
+  let d = check(create.draftOrderCreate, "draftOrderCreate").draftOrder;
+  const total = (x) => (x && x.totalPriceSet ? +x.totalPriceSet.shopMoney.amount : null);
+  // If Shopify skipped the code (e.g. it was paused or changed), still honour the 10% we promised.
+  if (discounted && total(d) !== null && total(d) >= subtotal) {
+    const upd = await gql(
+      `mutation($id:ID!,$input:DraftOrderInput!){ draftOrderUpdate(id:$id,input:$input){
+         draftOrder{ id name invoiceUrl totalPriceSet{ shopMoney{ amount } } } userErrors{ field message } } }`,
+      { id: d.id, input: { discountCodes: [], appliedDiscount: { valueType: "PERCENTAGE", value: DISCOUNT_PERCENT, title: "Peaces " + DISCOUNT_PERCENT + "% welcome" } } }
+    );
+    d = { ...d, ...(check(upd.draftOrderUpdate, "draftOrderUpdate").draftOrder || {}) };
+  }
+  const expected = discounted ? subtotal * (1 - DISCOUNT_PERCENT / 100) : subtotal;
   return {
     status: 201,
     body: {
-      id: d.id,
-      sig: sign(d.id),
-      name: d.name,
-      checkoutUrl: d.invoiceUrl,
-      subtotal: order.subtotal,
-      discounted,
-      image: imageUrl || null,
-      total: d.totalPriceSet ? +d.totalPriceSet.shopMoney.amount : +expected.toFixed(2),
+      id: d.id, sig: sign(d.id), name: d.name, checkoutUrl: d.invoiceUrl,
+      subtotal, discounted, bikinis: orders.length,
+      image: pictures[0] || null, images: pictures,
+      total: total(d) !== null ? total(d) : +expected.toFixed(2),
     },
   };
 });
-
