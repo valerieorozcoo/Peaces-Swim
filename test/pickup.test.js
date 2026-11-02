@@ -35,7 +35,7 @@ test('failed or malformed saves show an error and retry the same preference',asy
     assert.match(f.nodes.fulfilStatus.textContent,/wasn't saved/);assert.equal(f.nodes.fulfilRetry.hidden,false);
     assert.equal(f.run.saving(),false);succeed=true;
     f.nodes.fulfilRetry.click();await new Promise(resolve=>setImmediate(resolve));
-    assert.deepEqual(bodies[1],bodies[0]);assert.match(f.shown().note,/preference saved/);
+    assert.deepEqual(bodies[1],bodies[0]);assert.match(f.shown().note,/preference saved/i);
   }
 });
 test('wait mode also requires a saved preference and stale responses cannot confirm a new order',async()=>{

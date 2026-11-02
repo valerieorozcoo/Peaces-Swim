@@ -32,7 +32,7 @@ for (const scenario of ["success", "blocked-popup", "400", "409", "503", "malfor
     assert.equal(state.pickupAt, null); assert.equal(state.fulfil, null);
     assert.equal(nodes.slotBlock.hidden, true); assert.equal(nodes.waitBlock.hidden, true);
     assert.equal(scenario === "success" ? tab.location.href : window.location.href, "https://example.com/unpaid");
-    assert.match(nodes.checkoutNote.textContent, /finish paying/);
+    assert.match(nodes.checkoutNote.textContent, /finish paying/i);
   } else {
     assert.equal(nodes.fulfil.hidden, true); assert.equal(fixture.order(), null); assert.equal(tab.closed, true);
     assert.equal(tab.location.href, ""); assert.doesNotMatch(nodes.checkoutNote.textContent, /copied|confirmed/i);

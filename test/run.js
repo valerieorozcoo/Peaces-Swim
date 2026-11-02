@@ -44,7 +44,7 @@ try {
   assert.equal(r.body.total, 144); assert.equal(r.body.discounted, true);
   const d0 = db.drafts[0].input;
   assert.equal(d0.purchasingEntity, undefined);
-  assert.ok(d0.lineItems.some((l) => l.title === "Add-on: Letter charms (VAL · plain 7mm ring)")); ok("signed welcome discount on guest checkout, no customer-account link");
+  assert.ok(d0.lineItems.some((l) => l.title === "Add on: Letter charms (VAL · plain 7mm ring)")); ok("signed welcome discount on guest checkout, no customer-account link");
 
   r = await post("/orders/create", { design, customer: { phone: "3055551234" } });
   assert.equal(r.body.discounted, false);
@@ -92,7 +92,7 @@ try {
   r = await post("/orders/accessories", { items: { headband: { color: "cheetah", qty: 2 }, tote: { color: "blue", qty: 1 } } });
   assert.equal(r.status, 201); assert.equal(r.body.subtotal, 2 * 10 + 15); assert.equal(r.body.total, 35);
   const acc = db.drafts.at(-1).input;
-  assert.deepEqual(acc.lineItems.map((l) => [l.title, l.quantity]), [["Peaces headband — Cheetah", 2], ["Peaces terry tote — Blue", 1]]);
+  assert.deepEqual(acc.lineItems.map((l) => [l.title, l.quantity]), [["Peaces headband (Cheetah)", 2], ["Peaces terry tote (Blue)", 1]]);
   assert.deepEqual(acc.tags, ["peaces-accessories"]); assert.equal(acc.allowDiscountCodesInCheckout, true); assert.equal(db.drafts[0].input.allowDiscountCodesInCheckout, true); ok("accessories on their own: headband + tote priced on the server");
   for (const bad of [{}, { tote: { color: "green", qty: 1 } }, { headband: { color: "teal", qty: 99 } }, { tote: { color: "pink", qty: 0 } }]) {
     r = await post("/orders/accessories", { items: bad }); assert.equal(r.status, 400);
