@@ -6,8 +6,19 @@
 <meta name="robots" content="noindex, nofollow">
 <title>Peaces Seamstress Queue</title>
 <link rel="icon" type="image/png" href="/art/logo-ps.png">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Pinyon+Script&display=swap">
 <style>
+@font-face{font-family:"Open Sauce Sans";font-style:normal;font-weight:300;font-display:swap;src:url("../fonts/open-sauce-sans-latin-300-normal.woff2") format("woff2");}
+@font-face{font-family:"Open Sauce Sans";font-style:italic;font-weight:300;font-display:swap;src:url("../fonts/open-sauce-sans-latin-300-italic.woff2") format("woff2");}
+@font-face{font-family:"Open Sauce Sans";font-style:normal;font-weight:400;font-display:swap;src:url("../fonts/open-sauce-sans-latin-400-normal.woff2") format("woff2");}
+@font-face{font-family:"Open Sauce Sans";font-style:italic;font-weight:400;font-display:swap;src:url("../fonts/open-sauce-sans-latin-400-italic.woff2") format("woff2");}
+@font-face{font-family:"Open Sauce Sans";font-style:normal;font-weight:500;font-display:swap;src:url("../fonts/open-sauce-sans-latin-500-normal.woff2") format("woff2");}
+@font-face{font-family:"Open Sauce Sans";font-style:italic;font-weight:500;font-display:swap;src:url("../fonts/open-sauce-sans-latin-500-italic.woff2") format("woff2");}
+@font-face{font-family:"Open Sauce Sans";font-style:normal;font-weight:600;font-display:swap;src:url("../fonts/open-sauce-sans-latin-600-normal.woff2") format("woff2");}
+@font-face{font-family:"Open Sauce Sans";font-style:italic;font-weight:600;font-display:swap;src:url("../fonts/open-sauce-sans-latin-600-italic.woff2") format("woff2");}
+@font-face{font-family:"Open Sauce Sans";font-style:normal;font-weight:700;font-display:swap;src:url("../fonts/open-sauce-sans-latin-700-normal.woff2") format("woff2");}
+@font-face{font-family:"Open Sauce Sans";font-style:italic;font-weight:700;font-display:swap;src:url("../fonts/open-sauce-sans-latin-700-italic.woff2") format("woff2");}
+  :root{--font:"Open Sauce Sans",system-ui,-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;}
+
   :root{
     color-scheme:light;
     --bg:#fbeef3; --card:#fff; --ink:#3a2c34; --ink-60:rgba(58,44,52,.62); --line:rgba(58,44,52,.14);
@@ -17,12 +28,12 @@
   }
   *,*::before,*::after{box-sizing:border-box;}
   [hidden]{display:none!important;}
-  html,body{margin:0; background:var(--bg); color:var(--ink); font-family:var(--serif); font-size:18px; -webkit-font-smoothing:antialiased;}
+  html,body{margin:0; background:var(--bg); color:var(--ink); font-family:var(--font); font-size:18px; -webkit-font-smoothing:antialiased;}
   button,input{font:inherit; color:inherit;}
   button{cursor:pointer; border-radius:0;}
   .wrap{max-width:1280px; margin:0 auto; padding:16px;}
   header{display:flex; align-items:baseline; justify-content:space-between; gap:12px; flex-wrap:wrap; padding:6px 0 14px;}
-  h1{font-family:var(--script); font-weight:400; font-size:44px; margin:0; line-height:1;}
+  h1{font-family:var(--font); font-weight:400; font-size:44px; margin:0; line-height:1;}
   .status{font-size:15px; color:var(--ink-60);}
   .status button{background:none; border:0; text-decoration:underline; padding:0 0 0 8px; color:var(--ink-60);}
 
@@ -55,9 +66,9 @@
   /* order card */
   .card{background:var(--card); display:grid; grid-template-columns:150px 1fr; gap:14px; padding:12px; border-left:4px solid var(--teal);}
   .card.unpaid{border-left-color:var(--pink);}
-  .pic{width:150px; aspect-ratio:3/4; background:var(--lav); display:block; overflow:hidden;}
-  .pic img{width:100%; height:100%; object-fit:contain; display:block; background:#fff;}
-  .pic span{display:grid; place-items:center; height:100%; font-size:14px; color:var(--ink-60); text-align:center; padding:8px;}
+  .pic{width:150px; background:var(--lav); display:block; overflow:hidden; align-self:start;}
+  .pic img{width:100%; aspect-ratio:3/4; height:auto; object-fit:contain; display:block; background:#fff;}
+  .pic span{display:grid; place-items:center; aspect-ratio:3/4; font-size:14px; color:var(--ink-60); text-align:center; padding:8px;}
   .top{display:flex; justify-content:space-between; align-items:baseline; gap:8px; flex-wrap:wrap;}
   .num{font-size:26px; font-weight:700; letter-spacing:.02em;}
   .pos{font-size:14px; color:var(--ink-60); letter-spacing:.08em; text-transform:uppercase;}
@@ -79,6 +90,8 @@
 
   .toast{position:fixed; left:50%; bottom:20px; transform:translateX(-50%); background:var(--ink); color:#fff; padding:12px 16px; display:flex; gap:14px; align-items:center; font-size:16px; max-width:calc(100% - 32px);}
   .toast button{background:none; border:0; color:#fff; text-decoration:underline; padding:0; font-weight:600;}
+  dt.bk{grid-column:1/-1; font-weight:700; color:#4B2470; margin-top:6px;} dd.bk{display:none;}
+  .pic img.extra-pic{margin-top:8px;}
 </style>
 </head>
 <body>
@@ -179,9 +192,14 @@
       if (Array.isArray(v)) { var ul = el("ul"); v.forEach(function(x){ ul.appendChild(el("li", null, x)); }); dd.appendChild(ul); }
       else dd.textContent = v;
       dl.appendChild(dd); }
-    row("Top", o.top);
-    row("Bottom", o.bottom);
-    row("Add ons", o.addons.length ? o.addons : ["None"]);
+    var bks = (o.bikinis && o.bikinis.length) ? o.bikinis : [{ top:o.top, bottom:o.bottom, addons:o.addons, image:o.image }];
+    bks.forEach(function(b, bi){
+      if (bks.length > 1) { dl.appendChild(el("dt", "bk", "Bikini " + (bi + 1) + " of " + bks.length)); dl.appendChild(el("dd", "bk", ""));
+        if (bi > 0 && b.image) { var im2 = el("img"); im2.src = b.image; im2.alt = "Bikini " + (bi + 1); im2.className = "extra-pic"; im2.loading = "lazy"; pic.appendChild(im2); } }
+      row("Top", b.top);
+      row("Bottom", b.bottom);
+      row("Add ons", b.addons.length ? b.addons : ["None"]);
+    });
     row("Extras", o.extras);
     body.appendChild(dl);
 

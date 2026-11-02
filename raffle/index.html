@@ -6,8 +6,19 @@
 <title>Peaces Swim: Enter our raffle</title>
 <meta name="description" content="Enter the Peaces Swim raffle for a free customized Peaces bikini, made in Miami.">
 <link rel="icon" type="image/png" href="/art/logo-ps.png">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pinyon+Script&display=swap">
 <style>
+@font-face{font-family:"Open Sauce Sans";font-style:normal;font-weight:300;font-display:swap;src:url("../fonts/open-sauce-sans-latin-300-normal.woff2") format("woff2");}
+@font-face{font-family:"Open Sauce Sans";font-style:italic;font-weight:300;font-display:swap;src:url("../fonts/open-sauce-sans-latin-300-italic.woff2") format("woff2");}
+@font-face{font-family:"Open Sauce Sans";font-style:normal;font-weight:400;font-display:swap;src:url("../fonts/open-sauce-sans-latin-400-normal.woff2") format("woff2");}
+@font-face{font-family:"Open Sauce Sans";font-style:italic;font-weight:400;font-display:swap;src:url("../fonts/open-sauce-sans-latin-400-italic.woff2") format("woff2");}
+@font-face{font-family:"Open Sauce Sans";font-style:normal;font-weight:500;font-display:swap;src:url("../fonts/open-sauce-sans-latin-500-normal.woff2") format("woff2");}
+@font-face{font-family:"Open Sauce Sans";font-style:italic;font-weight:500;font-display:swap;src:url("../fonts/open-sauce-sans-latin-500-italic.woff2") format("woff2");}
+@font-face{font-family:"Open Sauce Sans";font-style:normal;font-weight:600;font-display:swap;src:url("../fonts/open-sauce-sans-latin-600-normal.woff2") format("woff2");}
+@font-face{font-family:"Open Sauce Sans";font-style:italic;font-weight:600;font-display:swap;src:url("../fonts/open-sauce-sans-latin-600-italic.woff2") format("woff2");}
+@font-face{font-family:"Open Sauce Sans";font-style:normal;font-weight:700;font-display:swap;src:url("../fonts/open-sauce-sans-latin-700-normal.woff2") format("woff2");}
+@font-face{font-family:"Open Sauce Sans";font-style:italic;font-weight:700;font-display:swap;src:url("../fonts/open-sauce-sans-latin-700-italic.woff2") format("woff2");}
+  :root{--font:"Open Sauce Sans",system-ui,-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;}
+
   :root{color-scheme:light;}
   html,body{margin:0; background:#fff;}
   img{max-width:100%;}
@@ -28,7 +39,7 @@
     --w-lavender:#efddfd; --w-lavender-deep:#e6cdfb; --w-orchid:#d094f9; --w-orchid-deep:#bf78f2;
     --w-pink:#e75297; --w-ink:#4a3456; --w-serif:"Times New Roman",Times,serif;
     --w-script:"Pinyon Script","Snell Roundhand","Apple Chancery",cursive;
-    background:#fff; color:var(--w-ink); font-family:var(--w-serif); font-weight:400;
+    background:#fff; color:var(--w-ink); font-family:var(--font); font-weight:400;
     display:grid; place-items:center;
   }
   .lp-wait-card{width:100%; max-width:440px; background:#fff; display:flex; flex-direction:column;}
@@ -48,7 +59,7 @@
   .lp-wait form{width:100%; max-width:320px; display:flex; flex-direction:column; gap:12px;}
   .lp-wait .lp-sr{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap;}
   .lp-wait input{width:100%; border:0; border-radius:0; background:var(--w-lavender); color:var(--w-ink);
-    font-family:var(--w-serif); font-size:17px; padding:12px 14px; outline:none; -webkit-appearance:none; appearance:none;}
+    font-family:var(--font); font-size:17px; padding:12px 14px; outline:none; -webkit-appearance:none; appearance:none;}
   .lp-wait input::placeholder{color:rgba(74,52,86,.62);}
   .lp-wait input:focus-visible{background:var(--w-lavender-deep); box-shadow:inset 0 0 0 2px var(--w-orchid);}
   .lp-wait input.bad{box-shadow:inset 0 0 0 2px var(--w-pink);}
@@ -56,22 +67,22 @@
   .lp-wait .lp-check input{flex:none; width:20px; height:20px; margin:0; padding:0; border:0; background:var(--w-lavender); cursor:pointer;}
   .lp-wait .lp-check input:checked{background:var(--w-orchid) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M5 10.5l3.2 3.2L15 7' fill='none' stroke='%23fff' stroke-width='2.2'/%3E%3C/svg%3E") center/100% no-repeat;}
   .lp-wait .lp-hp{position:absolute; left:-9999px; width:1px; height:1px; overflow:hidden;}
-  .lp-wait-btn{margin-top:2px; padding:13px 14px; border:0; border-radius:0; background:var(--w-orchid); color:#fff; cursor:pointer;
-    font-family:var(--w-serif); font-size:18px; letter-spacing:.04em; transition:background .15s;}
-  .lp-wait-btn:hover{background:var(--w-orchid-deep);}
+  .lp-wait-btn{margin-top:2px; padding:13px 14px; border:0; border-radius:0; background:#EFDDFD; color:#4B2470; border:1.5px solid rgba(75,36,112,.22); cursor:pointer;
+    font-family:var(--font); font-size:18px; letter-spacing:.04em; transition:background .15s;}
+  .lp-wait-btn:hover{background:#EFDDFD; border-color:#4B2470;}
   .lp-wait-btn:disabled{opacity:.7; cursor:wait;}
   .lp-wait-btn:focus-visible{outline:2px solid var(--w-pink); outline-offset:3px;}
   .lp-wait-err{margin:0; color:var(--w-pink); font-size:15px; line-height:1.4;}
   .lp-wait-fine{margin:0; font-size:12.5px; line-height:1.5; opacity:.7; max-width:34ch;}
   .lp-wait-done{display:flex; flex-direction:column; align-items:center; gap:8px; outline:none;}
-  .lp-wait-thanks{margin:0; font-family:var(--w-script); font-size:44px; line-height:1; color:var(--w-pink);}
+  .lp-wait-thanks{margin:0; font-family:var(--font); font-size:44px; line-height:1; color:var(--w-pink);}
   .lp-wait-done p.lp-wait-copy{margin:0; font-size:17px; letter-spacing:.03em; max-width:30ch;}
   @media (min-width:820px){
     .lp-wait{background:var(--w-lavender); padding:40px 32px;}
     .lp-wait-card{max-width:940px; flex-direction:row; box-shadow:0 24px 60px -28px rgba(120,60,150,.45);}
     .lp-wait-photo{flex:0 0 52%; aspect-ratio:3/4;}
     .lp-wait-panel{padding:48px 44px; gap:18px;}
-    .lp-wait-mark{display:block; margin:0 0 4px; font-family:var(--w-script); font-size:52px; line-height:1; color:var(--w-orchid);}
+    .lp-wait-mark{display:block; margin:0 0 4px; font-family:var(--font); font-size:52px; line-height:1; color:var(--w-orchid);}
   }
   .lp-wait .lp-wait-btn,.lp-wait .lp-wait-mark{font-weight:400;}
   .lp-wait form .lp-wait-fine{margin-inline:auto;}

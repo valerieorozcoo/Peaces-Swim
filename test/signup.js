@@ -4,7 +4,7 @@ import { readFile } from "node:fs/promises";
 const html = await readFile(new URL("../index.html", import.meta.url), "utf8");
 const source = html.split('document.getElementById("newForm").addEventListener("submit",async function(e){')[1].split('\n  });')[0];
 const compile = new Function("document", "saveCustomer", "showStep", "storeLead", "syncPerk", "renderAll", "state",
-  'var lead=null,pendingPhone="3055551234"; return {run:async function(e){' + source + '\n},lead:()=>lead};');
+  'var lead=null,pendingPhone="3055551234"; function rememberLead(){} function syncAccountLinks(){} return {run:async function(e){' + source + '\n},lead:()=>lead};');
 
 for (const scenario of ["success", "conflict", "offline", "malformed"]) {
   const nodes = Object.fromEntries(["gName", "gEmail", "newErr", "gMarketing", "backTitle", "backSub", "notYou"].map(id => [id, {

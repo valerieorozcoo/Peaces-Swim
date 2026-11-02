@@ -50,13 +50,37 @@ try {
   assert.equal(r.body.discounted, false);
   assert.equal(db.drafts.at(-1).input.purchasingEntity, undefined);
   ok("knowing an existing phone cannot link its account or claim the welcome discount");
-  for (const token of [welcome + "forged", welcomeToken("+13055551234", Date.now() - 3_600_001)]) {
+  for (const token of [welcome + "forged", welcomeToken("+13055551234", Date.now() - 30 * 24 * 3_600_000 - 1)]) {
     const count = db.drafts.length;
     r = await post("/orders/create", { design, customer: { phone: "3055551234", welcomeToken: token } });
     assert.equal(r.status, 409); assert.equal(db.drafts.length, count);
   }
   r = await post("/orders/create", { design, customer: { phone: "3055559999", welcomeToken: welcome } });
   assert.equal(r.status, 409); ok("forged, expired, and wrong-phone discount claims cannot silently change checkout pricing");
+
+  r = await post("/orders/create", { design, customer: { phone: "3055551234", welcomeToken: welcome, email: "Val@PeacesSwim.com" } });
+  const dw = db.drafts.at(-1);
+  assert.deepEqual(dw.input.discountCodes, ["PEACESPARTY"]); assert.equal(dw.input.appliedDiscount, undefined);
+  assert.equal(dw.input.email, "val@peacesswim.com"); assert.equal(r.body.total, 144);
+  ok("welcome 10% is applied as PEACESPARTY (can't be stacked again at checkout) and the order carries their email");
+  db.welcomeCode = "SOMETHINGELSE";
+  r = await post("/orders/create", { design, customer: { phone: "3055551234", welcomeToken: welcome } });
+  assert.equal(r.body.total, 144); assert.equal(db.drafts.at(-1).update.appliedDiscount.value, 10);
+  delete db.welcomeCode; ok("if Shopify skips the code, the promised 10% is still applied");
+  r = await post("/orders/create", { design, customer: { phone: "3055551234", email: "x@y.com" } });
+  assert.equal(db.drafts.at(-1).input.email, undefined); ok("no signup, no email or discount on the order");
+
+  const second = { topStyle: "underwire", bottomStyle: "seamless", topColor: "teal", bottomColor: "teal", sizeTop: "M", sizeBottom: "M", addons: [] };
+  const pic = "data:image/jpeg;base64," + Buffer.from("fake-jpeg-bytes").toString("base64");
+  r = await post("/orders/create", { designs: [design, second], images: [pic, pic] });
+  assert.equal(r.status, 201); assert.equal(r.body.bikinis, 2); assert.equal(r.body.subtotal, 160 + 95);
+  const bag = db.drafts.at(-1).input.lineItems;
+  assert.equal(bag.filter((l) => /^Custom bikini/.test(l.title)).length, 2);
+  assert.ok(bag.every((l) => l.customAttributes.some((a) => a.key === "Bikini")));
+  assert.equal(bag.filter((l) => l.customAttributes.some((a) => a.key === "_design_image")).length, 2);
+  ok("bag of 2 bikinis: one checkout, each bikini numbered with its own picture");
+  r = await post("/orders/create", { designs: [design, design, design, design, design, design] });
+  assert.equal(r.status, 400); ok("no more than 5 bikinis per checkout");
 
   r = await post("/orders/create", { design, customer: { phone: "9999999999" } });
   assert.equal(r.body.total, 160); assert.equal(r.body.discounted, false); ok("no discount for unknown phone");
