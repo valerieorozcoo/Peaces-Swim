@@ -39,6 +39,8 @@ export default route(["POST"], async (body) => {
     input.lineItems[0].customAttributes.push({ key: "_design_image", value: imageUrl });
     input.note += "\nDesign picture: " + imageUrl;
   }
+  const customerName = String(cust.name || "").replace(/[\u0000-\u001f<>]/g, "").trim().slice(0, 60);
+  if (customerName) input.customAttributes.push({ key: "Customer name", value: customerName });
   if (discounted) {
     input.appliedDiscount = { valueType: "PERCENTAGE", value: DISCOUNT_PERCENT, title: "Peaces " + DISCOUNT_PERCENT + "% welcome" };
   }

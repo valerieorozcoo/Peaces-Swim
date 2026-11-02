@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Peaces Seamstress Queue</title>
+<link rel="icon" type="image/png" href="/art/logo-ps.png">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Pinyon+Script&display=swap">
+<style>
+  :root{
+    color-scheme:light;
+    --bg:#fbeef3; --card:#fff; --ink:#3a2c34; --ink-60:rgba(58,44,52,.62); --line:rgba(58,44,52,.14);
+    --teal:#1f8f8a; --teal-deep:#17716d; --pink:#e75297; --lav:#efddfd;
+    --serif:"Cormorant Garamond",Garamond,"Times New Roman",serif;
+    --script:"Pinyon Script","Snell Roundhand","Apple Chancery",cursive;
+  }
+  *,*::before,*::after{box-sizing:border-box;}
+  [hidden]{display:none!important;}
+  html,body{margin:0; background:var(--bg); color:var(--ink); font-family:var(--serif); font-size:18px; -webkit-font-smoothing:antialiased;}
+  button,input{font:inherit; color:inherit;}
+  button{cursor:pointer; border-radius:0;}
+  .wrap{max-width:1280px; margin:0 auto; padding:16px;}
+  header{display:flex; align-items:baseline; justify-content:space-between; gap:12px; flex-wrap:wrap; padding:6px 0 14px;}
+  h1{font-family:var(--script); font-weight:400; font-size:44px; margin:0; line-height:1;}
+  .status{font-size:15px; color:var(--ink-60);}
+  .status button{background:none; border:0; text-decoration:underline; padding:0 0 0 8px; color:var(--ink-60);}
+
+  /* passcode */
+  .lock{min-height:80vh; display:grid; place-items:center;}
+  .lock form{background:var(--card); padding:28px 24px; width:100%; max-width:360px; display:flex; flex-direction:column; gap:12px; text-align:center;}
+  .lock input{border:0; background:var(--lav); padding:12px 14px; font-size:18px; outline:none;}
+  .lock input:focus-visible{box-shadow:inset 0 0 0 2px var(--teal);}
+  .btn{border:0; background:var(--teal); color:#fff; padding:12px 16px; letter-spacing:.12em; text-transform:uppercase; font-size:15px; font-weight:600;}
+  .btn:hover{background:var(--teal-deep);}
+  .btn:disabled{opacity:.55; cursor:default;}
+  .err{color:var(--pink); font-size:16px; min-height:1.2em; margin:0;}
+
+  /* lists */
+  .tabs{display:none; gap:0; margin-bottom:12px;}
+  .tabs button{flex:1; border:1px solid var(--teal); background:transparent; color:var(--teal); padding:10px; font-weight:600; letter-spacing:.06em; text-transform:uppercase; font-size:14px;}
+  .tabs button[aria-selected="true"]{background:var(--teal); color:#fff;}
+  .cols{display:grid; grid-template-columns:1fr 1fr; gap:20px; align-items:start;}
+  .col h2{margin:0 0 4px; font-size:22px; letter-spacing:.14em; text-transform:uppercase; font-weight:600; color:var(--teal);}
+  .col .sub{margin:0 0 12px; font-size:15px; color:var(--ink-60);}
+  .list{display:flex; flex-direction:column; gap:12px;}
+  .empty{padding:24px 16px; background:var(--card); color:var(--ink-60); text-align:center; font-style:italic;}
+  @media (max-width:819px){
+    .tabs{display:flex;}
+    .cols{grid-template-columns:1fr;}
+    .col:not(.on){display:none;}
+    .col h2{display:none;}
+  }
+
+  /* order card */
+  .card{background:var(--card); display:grid; grid-template-columns:150px 1fr; gap:14px; padding:12px; border-left:4px solid var(--teal);}
+  .card.unpaid{border-left-color:var(--pink);}
+  .pic{width:150px; aspect-ratio:3/4; background:var(--lav); display:block; overflow:hidden;}
+  .pic img{width:100%; height:100%; object-fit:contain; display:block; background:#fff;}
+  .pic span{display:grid; place-items:center; height:100%; font-size:14px; color:var(--ink-60); text-align:center; padding:8px;}
+  .top{display:flex; justify-content:space-between; align-items:baseline; gap:8px; flex-wrap:wrap;}
+  .num{font-size:26px; font-weight:700; letter-spacing:.02em;}
+  .pos{font-size:14px; color:var(--ink-60); letter-spacing:.08em; text-transform:uppercase;}
+  .who{font-size:21px; margin:2px 0 6px;}
+  .when{display:inline-block; background:var(--teal); color:#fff; padding:3px 10px; font-weight:600; font-size:16px; margin-bottom:8px;}
+  .badge{display:inline-block; border:1px solid var(--pink); color:var(--pink); padding:2px 8px; font-size:13px; letter-spacing:.06em; text-transform:uppercase; margin:0 0 8px 6px; vertical-align:top;}
+  dl{margin:0; display:grid; grid-template-columns:auto 1fr; gap:3px 10px; font-size:17px;}
+  dt{color:var(--ink-60); text-transform:uppercase; font-size:13px; letter-spacing:.1em; padding-top:3px;}
+  dd{margin:0;}
+  ul{margin:0; padding-left:18px;}
+  .actions{margin-top:10px; display:flex; gap:10px; align-items:center;}
+  .actions .btn{padding:10px 18px; white-space:nowrap;}
+  .note{font-size:14px; color:var(--ink-60);}
+  @media (max-width:479px){
+    .card{grid-template-columns:96px 1fr; gap:10px;}
+    .pic{width:96px;}
+    .num{font-size:22px;}
+  }
+
+  .toast{position:fixed; left:50%; bottom:20px; transform:translateX(-50%); background:var(--ink); color:#fff; padding:12px 16px; display:flex; gap:14px; align-items:center; font-size:16px; max-width:calc(100% - 32px);}
+  .toast button{background:none; border:0; color:#fff; text-decoration:underline; padding:0; font-weight:600;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Seamstress queue</h1>
+    <div class="status" id="status" hidden><span id="updated"></span><button type="button" id="refresh">Refresh</button><button type="button" id="logout">Lock</button></div>
+  </header>
+
+  <section class="lock" id="lock">
+    <form id="lockForm">
+      <label for="pass">Enter the seamstress passcode</label>
+      <input id="pass" type="password" autocomplete="current-password" required>
+      <button class="btn" type="submit">Open queue</button>
+      <p class="err" id="lockErr" role="alert"></p>
+    </form>
+  </section>
+
+  <main id="queue" hidden>
+    <div class="tabs" role="tablist">
+      <button type="button" role="tab" data-tab="wait" aria-selected="true">Wait &amp; Watch (<span data-count="wait">0</span>)</button>
+      <button type="button" role="tab" data-tab="pickup" aria-selected="false">Pickup Later (<span data-count="pickup">0</span>)</button>
+    </div>
+    <p class="err" id="loadErr" role="alert"></p>
+    <div class="cols">
+      <section class="col on" data-col="wait">
+        <h2>Wait &amp; Watch (<span data-count="wait">0</span>)</h2>
+        <p class="sub">Customer is here. First come, first served.</p>
+        <div class="list" id="list-wait"></div>
+      </section>
+      <section class="col" data-col="pickup">
+        <h2>Pickup Later (<span data-count="pickup">0</span>)</h2>
+        <p class="sub">Soonest pickup first.</p>
+        <div class="list" id="list-pickup"></div>
+      </section>
+    </div>
+  </main>
+</div>
+<div class="toast" id="toast" hidden><span id="toastText"></span><button type="button" id="undo">Undo</button></div>
+
+<script>
+(function(){
+  var KEY = "peaces-seamstress-pass";
+  var passcode = "";
+  try { passcode = localStorage.getItem(KEY) || ""; } catch (e) {}
+  var timer = null, loading = false, undoId = null, toastTimer = null;
+  var $ = function(id){ return document.getElementById(id); };
+
+  async function call(path, body){
+    var r = await fetch("/api/seamstress/" + path, { method:"POST", headers:{ "Content-Type":"application/json" },
+      body: JSON.stringify(Object.assign({ passcode: passcode }, body || {})) });
+    var j = await r.json().catch(function(){ return {}; });
+    if (!r.ok) { var e = new Error(j.error || "Something went wrong"); e.status = r.status; throw e; }
+    return j;
+  }
+
+  function el(tag, cls, text){
+    var n = document.createElement(tag);
+    if (cls) n.className = cls;
+    if (text != null) n.textContent = text;
+    return n;
+  }
+  function ago(iso){
+    var m = Math.round((Date.now() - Date.parse(iso)) / 60000);
+    if (!isFinite(m)) return "";
+    if (m < 1) return "just now";
+    if (m < 60) return m + " min ago";
+    return Math.floor(m / 60) + " h " + (m % 60) + " min ago";
+  }
+  function dayLabel(iso){
+    var d = new Date(iso), t = new Date();
+    if (d.toDateString() === t.toDateString()) return "";
+    var tm = new Date(t); tm.setDate(t.getDate() + 1);
+    return d.toDateString() === tm.toDateString() ? " tomorrow" : " " + d.toLocaleDateString(undefined, { weekday:"short" });
+  }
+
+  function card(o, i){
+    var c = el("article", "card" + (o.paid ? "" : " unpaid"));
+    var pic = el("div", "pic");
+    if (o.image) { var img = el("img"); img.src = o.image; img.alt = "Bikini design for order " + o.number; img.loading = "lazy"; pic.appendChild(img); }
+    else pic.appendChild(el("span", null, "No picture saved"));
+    c.appendChild(pic);
+
+    var body = el("div");
+    var top = el("div", "top");
+    top.appendChild(el("span", "num", o.number));
+    top.appendChild(el("span", "pos", "#" + (i + 1) + " in line"));
+    body.appendChild(top);
+    body.appendChild(el("div", "who", o.customer || "No name given"));
+
+    if (o.mode === "pickup") body.appendChild(el("span", "when", "Pickup " + o.pickupAt + (o.pickupDate ? dayLabel(o.pickupDate) : "")));
+    else body.appendChild(el("span", "when", (o.mode ? "Waiting " : "Paid, didn't choose · waiting ") + ago(o.chosenAt)));
+    if (!o.paid) body.appendChild(el("span", "badge", "Not paid yet"));
+
+    var dl = el("dl");
+    function row(k, v){ if (!v || (Array.isArray(v) && !v.length)) return; dl.appendChild(el("dt", null, k));
+      var dd = el("dd");
+      if (Array.isArray(v)) { var ul = el("ul"); v.forEach(function(x){ ul.appendChild(el("li", null, x)); }); dd.appendChild(ul); }
+      else dd.textContent = v;
+      dl.appendChild(dd); }
+    row("Top", o.top);
+    row("Bottom", o.bottom);
+    row("Add-ons", o.addons.length ? o.addons : ["None"]);
+    row("Extras", o.extras);
+    body.appendChild(dl);
+
+    var actions = el("div", "actions");
+    var done = el("button", "btn", "Mark done");
+    done.type = "button";
+    done.addEventListener("click", function(){ markDone(o, done); });
+    actions.appendChild(done);
+    if (o.minutes && o.mode === "wait") actions.appendChild(el("span", "note", "Customer was told ~" + o.minutes + " min"));
+    body.appendChild(actions);
+    c.appendChild(body);
+    return c;
+  }
+
+  function render(q){
+    ["wait", "pickup"].forEach(function(k){
+      var list = $("list-" + k);
+      list.textContent = "";
+      if (!q[k].length) list.appendChild(el("div", "empty", k === "wait" ? "No one waiting right now." : "No pickups coming up."));
+      q[k].forEach(function(o, i){ list.appendChild(card(o, i)); });
+      document.querySelectorAll('[data-count="' + k + '"]').forEach(function(n){ n.textContent = q[k].length; });
+    });
+    $("updated").textContent = "Updated " + new Date().toLocaleTimeString([], { hour:"numeric", minute:"2-digit" });
+  }
+
+  async function load(){
+    if (loading || !passcode) return;
+    loading = true;
+    try {
+      var q = await call("queue", { tzOffset: new Date().getTimezoneOffset() });
+      $("loadErr").textContent = "";
+      show(true);
+      render(q);
+    } catch (e) {
+      if (e.status === 401 || e.status === 503) { lock(e.message); }
+      else $("loadErr").textContent = "Couldn't refresh: " + e.message + ". Retrying…";
+    } finally { loading = false; }
+  }
+
+  async function markDone(o, btn){
+    btn.disabled = true; btn.textContent = "Saving…";
+    try {
+      await call("done", { id: o.id, done: true });
+      undoId = o.id;
+      $("toastText").textContent = o.number + " marked done.";
+      $("toast").hidden = false;
+      clearTimeout(toastTimer); toastTimer = setTimeout(function(){ $("toast").hidden = true; undoId = null; }, 8000);
+      load();
+    } catch (e) {
+      btn.disabled = false; btn.textContent = "Mark done";
+      $("loadErr").textContent = "Couldn't mark " + o.number + " done: " + e.message;
+    }
+  }
+  $("undo").addEventListener("click", async function(){
+    if (!undoId) return;
+    var id = undoId; undoId = null; $("toast").hidden = true;
+    try { await call("done", { id: id, done: false }); } catch (e) { $("loadErr").textContent = "Couldn't undo: " + e.message; }
+    load();
+  });
+
+  function show(open){
+    $("lock").hidden = open; $("queue").hidden = !open; $("status").hidden = !open;
+    clearInterval(timer);
+    if (open) timer = setInterval(load, 20000);
+  }
+  function lock(msg){
+    passcode = "";
+    try { localStorage.removeItem(KEY); } catch (e) {}
+    show(false);
+    $("lockErr").textContent = msg || "";
+  }
+
+  $("lockForm").addEventListener("submit", function(e){
+    e.preventDefault();
+    passcode = $("pass").value;
+    try { localStorage.setItem(KEY, passcode); } catch (err) {}
+    $("lockErr").textContent = "";
+    load();
+  });
+  $("refresh").addEventListener("click", load);
+  $("logout").addEventListener("click", function(){ lock(""); $("pass").value = ""; });
+  document.querySelectorAll(".tabs button").forEach(function(b){
+    b.addEventListener("click", function(){
+      document.querySelectorAll(".tabs button").forEach(function(x){ x.setAttribute("aria-selected", String(x === b)); });
+      document.querySelectorAll(".col").forEach(function(c){ c.classList.toggle("on", c.dataset.col === b.dataset.tab); });
+    });
+  });
+  document.addEventListener("visibilitychange", function(){ if (!document.hidden) load(); });
+
+  if (passcode) load();
+})();
+</script>
+</body>
+</html>

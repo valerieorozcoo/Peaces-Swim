@@ -23,6 +23,7 @@ export function startLocal(p = port) {
       return mod.default(req, res);
     }
     let f = path.join(root, decodeURIComponent(url.pathname === "/" ? "/index.html" : url.pathname));
+    if (f.startsWith(root) && fs.existsSync(f) && fs.statSync(f).isDirectory()) f = path.join(f, "index.html"); // /seamstress → seamstress/index.html
     if (!f.startsWith(root) || !fs.existsSync(f) || fs.statSync(f).isDirectory()) { res.writeHead(404); return res.end(); }
     res.writeHead(200, { "Content-Type": types[path.extname(f)] || "application/octet-stream" });
     fs.createReadStream(f).pipe(res);
