@@ -1112,6 +1112,29 @@
     .custom-count{font-size:13px !important;}
   }
   @media (min-width:881px){ .stage-col{top:88px !important;} }
+
+  /* ===== No outlined, rounded boxes around the steps (Nov 2) ===== */
+  .step,html:not(.prelaunch) .step{border:0 !important; border-radius:0 !important; box-shadow:none !important; background:transparent !important; padding:6px 0 18px !important;}
+  .stage,html:not(.prelaunch) .stage{border:0 !important; box-shadow:none;}
+  @media (min-width:881px){ .stage{border-radius:0 !important; background:transparent !important;} }
+  .price-bar,html:not(.prelaunch) .price-bar{border:0 !important; border-radius:0 !important; border-top:1px solid #EFDDFD !important; border-bottom:1px solid #EFDDFD !important; background:transparent !important; padding-left:0; padding-right:0;}
+  .addon{border:0 !important; border-radius:0 !important; border-bottom:1px solid #EFDDFD !important; background:transparent !important; padding-left:4px; padding-right:4px;}
+  .addon.checked{background:#EFDDFD !important;}
+  .addon-drawer{border:0 !important; border-radius:0 !important; background:#F7EFFE !important;}
+  .extra{border:0 !important; border-radius:0 !important; background:transparent !important;}
+  .tier + .tier{border-top:0;}
+  /* style choices: just the drawing, about the size of the colour circles */
+  #pageStyle .shape-row{gap:18px !important; align-items:flex-start;}
+  #pageStyle .shape-btn{width:auto !important; min-width:64px; padding:4px 4px 8px !important; border:0 !important; border-radius:0 !important; background:transparent !important; gap:4px;}
+  #pageStyle .shape-btn img{width:52px !important; height:46px !important;}
+  #pageStyle .shape-btn .name{font-size:13px;}
+  #pageStyle .shape-btn[aria-pressed="true"]{background:transparent !important;}
+  #pageStyle .shape-btn[aria-pressed="true"] .name{font-weight:600;}
+  #pageStyle .shape-btn[aria-pressed="true"]::before{content:""; position:absolute; left:14px; right:14px; bottom:2px; height:2px; background:#4B2470;}
+  #pageStyle .shape-btn.crossed::after{top:-10% !important; height:120% !important;}
+  .shape-desc{margin:6px 0 0; font-size:14px; color:rgba(46,36,51,.75);}
+  .shape-desc strong{font-weight:600; color:#4B2470;}
+  .base-part{border-top:1px solid #EFDDFD;}
 </style>
 
 <!-- ================= Landing page =================
@@ -1483,6 +1506,7 @@
             <div class="swatch-row" id="topSwatches"></div>
             <div class="bp-label">Style</div>
             <div class="shape-row base-grid" id="topStyleGrid"></div>
+            <p class="shape-desc" id="topStyleDesc"></p>
             <div class="bp-label">Size</div>
             <div class="size-row" id="sizeTop"></div>
           </div>
@@ -1492,6 +1516,7 @@
             <div class="swatch-row" id="bottomSwatches"></div>
             <div class="bp-label">Style</div>
             <div class="shape-row base-grid" id="bottomStyleGrid"></div>
+            <p class="shape-desc" id="bottomStyleDesc"></p>
             <div class="bp-label">Size</div>
             <div class="size-row" id="sizeBottom"></div>
           </div>
@@ -1652,9 +1677,9 @@
         addons:["extTies","fringe","laceTrim","bows","roses","beadsAcrylic","beadsIri","beadsWavy","beadsPearl","initials","rhinestones","charmsB","charmsP"]}
     },
     bottom:{
-      triangle:{art:"b-triangle-bottom", name:"Triangle bottom", desc:"Triangle front, no side ties.", family:"triangle", ties:false,  ruffle:'1″',
+      triangle:{art:"b-triangle-bottom", name:"Triangle bottom", desc:"No ties, medium coverage.", family:"triangle", ties:false,  ruffle:'1″',
         addons:["ruffles","laceRuffles","fringe","laceTrim","bows","roses","rhinestones","connectors"]},
-      seamless:{art:"b-seamless-bottom", name:"Seamless bottom", desc:"Smooth full coverage, no ties.", family:"underwire", ties:false, ruffle:'½″',
+      seamless:{art:"b-seamless-bottom", name:"Seamless bottom", desc:"Ruched, medium coverage.", family:"underwire", ties:false, ruffle:'½″',
         addons:["fringe","laceTrim","bows","roses","rhinestones"]}
     }
   };
@@ -2210,6 +2235,7 @@
     ["top","bottom"].forEach(function(part){
       var el=document.getElementById(part+"Sel"); if(!el) return;
       el.textContent=styleOf(part).name+" · "+colorOf(part).name+" · "+(part==="top"?state.sizeTop:state.sizeBottom);
+      var dd=document.getElementById(part+"StyleDesc"); if(dd) dd.innerHTML="<strong>"+styleOf(part).name+":</strong> "+styleOf(part).desc.replace(/\.$/,"").replace(/^./,function(c){return c.toLowerCase();});
     });
   }
 
