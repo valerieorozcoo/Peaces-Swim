@@ -710,7 +710,7 @@
 
   /* Welcome / 10% pop-up: opens over the site as soon as it loads */
   .gate{
-    position:fixed; inset:0; z-index:30; overflow-y:auto;
+    position:fixed; inset:0; z-index:120; overflow-y:auto;
     display:flex; align-items:center; justify-content:center;
     padding:max(24px, env(safe-area-inset-top, 0px)) 20px max(24px, env(safe-area-inset-bottom, 0px));
     background:rgba(58,44,52,.42);
@@ -1135,6 +1135,10 @@
   .shape-desc{margin:6px 0 0; font-size:14px; color:rgba(46,36,51,.75);}
   .shape-desc strong{font-weight:600; color:#4B2470;}
   .base-part{border-top:1px solid #EFDDFD;}
+
+  /* "Your Peace" label above the preview, smaller */
+  .stage-label > span:first-child{display:none !important;}
+  .stage-label .style-name{font-size:15px !important; font-style:normal !important; letter-spacing:.22em !important; text-transform:uppercase !important; color:#4B2470 !important;}
 </style>
 
 <!-- ================= Landing page =================
@@ -1460,7 +1464,7 @@
       <div class="stage">
         <div class="stage-label">
           <span>Your peace</span>
-          <span class="style-name" id="styleName">Triangle, Turquoise</span>
+          <span class="style-name" id="styleName">Your Peace</span>
           <span class="mini-total" id="miniTotal" aria-hidden="true">$95.00</span>
         </div>
         <div class="rig" id="rig"></div>
@@ -1672,9 +1676,9 @@
   var STYLES={
     top:{
       triangle:{art:"b-triangle-top", name:"Triangle top", desc:"Double ties at the neck and across the back.", family:"triangle", ties:true,  ruffle:'1″',
-        addons:["extTies","ruffles","laceRuffles","fringe","laceTrim","bows","roses","beadsAcrylic","beadsIri","beadsWavy","beadsPearl","initials","rhinestones","charmsB","charmsP","connectors"]},
+        addons:["extTies","ruffles","laceRuffles","fringe","laceTrim","bows","roses","beadsAcrylic","beadsIri","beadsWavy","beadsPearl","initials","rhinestones","charmsB","charmsP","connectors","buttons"]},
       underwire:{art:"b-underwire-top", name:"Bralette top", desc:"Twist front bandeau, double ties at the neck and back.", family:"underwire", ties:true, ruffle:'½″',
-        addons:["extTies","fringe","laceTrim","bows","roses","beadsAcrylic","beadsIri","beadsWavy","beadsPearl","initials","rhinestones","charmsB","charmsP"]}
+        addons:["extTies","fringe","laceTrim","bows","roses","beadsAcrylic","beadsIri","beadsWavy","beadsPearl","initials","rhinestones","charmsB","charmsP","buttons"]}
     },
     bottom:{
       triangle:{art:"b-triangle-bottom", name:"Triangle bottom", desc:"No ties, medium coverage.", family:"triangle", ties:false,  ruffle:'1″',
@@ -1712,38 +1716,40 @@
   var CLASPS=[["plain","Plain 7mm ring, included"],["cn-big-gold","Big gold +$10","cn-big-gold"],["cn-skinny-gold","Skinny gold +$10","cn-skinny-gold"],["cn-skinny-rhinestone","Skinny rhinestone +$10","cn-skinny-rhinestone"],["cn-small-rhinestone","Small rhinestone +$10","cn-small-rhinestone"]];
   /* every add-on opens to choose a colour/finish, then Add to cart */
   var ADDONS=[
-    {id:"beadsAcrylic",tier:1,price:5, name:"Acrylic beads", hint:"On the straps or center front",
+    {id:"beadsAcrylic",tier:4,price:5, name:"Acrylic beads", hint:"On the straps or center front",
       opts:BEADS_A, art:function(v){return "ba-"+v;}, def:"pink"},
-    {id:"beadsIri", tier:1,price:5, name:"Iridescent beads", hint:"On the straps or center front",
+    {id:"beadsIri", tier:4,price:5, name:"Iridescent beads", hint:"On the straps or center front",
       opts:BEADS_I, art:function(v){return "bi-"+v;}, def:"pale-pink"},
-    {id:"beadsWavy",tier:1,price:5, name:"Wavy beads",     hint:"On the straps or center front",
+    {id:"beadsWavy",tier:4,price:5, name:"Wavy beads",     hint:"On the straps or center front",
       opts:BEADS_W, art:function(v){return "bw-"+v;}, def:"pink"},
-    {id:"beadsPearl",tier:1,price:5, name:"Pearl beads",   hint:"On the straps or center front",
+    {id:"beadsPearl",tier:4,price:5, name:"Pearl beads",   hint:"On the straps or center front",
       opts:[["16mm","16 mm"],["20mm","20 mm"]], art:function(v){return "bp-"+v;}, def:"16mm"},
-    {id:"bows",    tier:1,price:5, name:"Mini bows",      hint:"1 center or 2 on the straps",
+    {id:"bows",    tier:3,price:5, name:"Mini bows",      hint:"1 center or 2 on the straps",
       opts:[["pink","Light pink"],["white","White"]], art:function(v){return "p-bow-"+v;}, def:"pink"},
-    {id:"roses",   tier:1,price:5, name:"Mini roses",     hint:"1 center or 2 on the straps",
+    {id:"roses",   tier:3,price:5, name:"Mini roses",     hint:"1 center or 2 on the straps",
       opts:[["pink","Pink"]], art:function(){return "p-rose";}, def:"pink"},
-    {id:"laceRuffles",tier:3,price:15, name:"Lace ruffles", hint:"Cups or straps · bottom front, sides or all around",
+    {id:"laceRuffles",tier:1,price:15, name:"Lace ruffles", hint:"Cups or straps · bottom front, sides or all around",
       opts:LACE_COLORS, art:function(v){return "p-laceruffle-"+v;}, def:"white"},
-    {id:"fringe",  tier:3,price:15, name:"Fringe",         hint:"Same spots as the lace",
+    {id:"fringe",  tier:1,price:15, name:"Fringe",         hint:"Same spots as the lace",
       opts:[["match","Matching"],["white","White"],["gold","Gold"]], art:function(v){return "fringe-"+v;}, def:"match"},
-    {id:"charmsB", tier:2,price:10, name:"Gem charms",     hint:"One gem down the middle of the top",
+    {id:"charmsB", tier:4,price:10, name:"Gem charms",     hint:"One gem down the middle of the top",
       opts:CHARMS_B, art:function(v){return v;}, def:"cg-heart"},
-    {id:"charmsP", tier:3,price:15, name:"Premium charms", hint:"One dangle down the middle of the top",
+    {id:"charmsP", tier:4,price:15, name:"Premium charms", hint:"One dangle down the middle of the top",
       opts:CHARMS_P, art:function(v){return v;}, def:"cp-shell"},
     {id:"rhinestones",tier:2,price:10,name:"Rhinestones", hint:"Top left, top right or back of the bottoms · $10 per letter",
       opts:[["script","Script"]], art:function(){return "";}, def:"script"},
     {id:"extTies", tier:2,price:10, name:"Extended ties",  hint:"Matching wrap ties · 2 ways to wear",
       opts:[["match","Matching fabric"]], art:function(){return "";}, def:"match"},
-    {id:"laceTrim",tier:3,price:15,name:"Lace trim",      hint:"Top edges · add the bottom",
+    {id:"laceTrim",tier:1,price:15,name:"Lace trim",      hint:"Top edges · add the bottom",
       opts:LACE_COLORS,
       art:function(v){return "p-lacetrim-"+v;}, def:"white"},
-    {id:"ruffles", tier:3,price:15,name:"Ruffles",        hint:"Along the edges",
+    {id:"ruffles", tier:1,price:15,name:"Ruffles",        hint:"Along the edges",
       opts:[["pink","Pink"],["green","Green"],["turq","Turquoise"],["coral","Coral"]],
       art:function(v){return "p-ruffle-"+v;}, def:"pink"},
-    {id:"initials",tier:2,price:10,name:"Letter charms",  hint:"Hang down the middle of the top · $10 per letter",
+    {id:"initials",tier:4,price:10,name:"Letter charms",  hint:"Hang down the middle of the top · $10 per letter",
       opts:[["clear","Clear"]], art:function(){return "";}, def:"clear"},
+    {id:"buttons", tier:3,price:5, name:"Pearl buttons", hint:"3 down the center front",
+      opts:[["pearl","Pearl"]], art:function(){return "button";}, def:"pearl"},
     {id:"connectors",tier:2,price:10,name:"Connectors",   hint:"Center front · 2 on the bottom · add extended ties",
       opts:[["c-heartring","Heart"],["cn-goldring","Gold ring"],["cn-pinkring","Pink ring"],["cn-bluering","Blue ring"]],
       art:function(v){return v;}, def:"c-heartring"}
@@ -2078,7 +2084,7 @@
     }
 
     /* pearl buttons — centre front */
-    if(on("buttons")){
+    if(on("buttons") && isTop){
       var bw=W*0.062;
       if(isTop){
         for(var bi=0;bi<3;bi++) img(svg,"button",g.center[0],g.center[1]-6+bi*bw*1.15,bw,bw,0);
@@ -2123,8 +2129,7 @@
     vt.hidden=!hasBack;
     rig.classList.toggle("wrap-waist", !!(state.addons.extTies||state.preview==="extTies") && allows("top","extTies") && !back);
     vt.querySelectorAll("button").forEach(function(b){ var on=b.dataset.view===state.view; b.classList.toggle("on",on); b.setAttribute("aria-pressed",on); });
-    document.getElementById("styleName").textContent=
-      styleOf("top").name+" · "+styleOf("bottom").name;
+    document.getElementById("styleName").textContent="Your Peace";
     document.getElementById("baseNote").textContent=
       colorOf("top").name+" top + "+colorOf("bottom").name+" bottom";
   }
@@ -2281,7 +2286,7 @@
   });
   document.getElementById("backToPeaces").addEventListener("click",function(){ showPage("pagePeaces"); });
 
-  var TIER_LABEL={1:"Tier 1",2:"Tier 2",3:"Tier 3"};
+  var TIER_LABEL={1:"Tier 1",2:"Tier 2",3:"Tier 3",4:"Tier 4"};
   var tierContainer=document.getElementById("tierContainer");
 
   function closeDrawers(except){
@@ -2305,10 +2310,11 @@
     renderAll();
   }
 
-  [1,2,3].forEach(function(t){
-    var items=ADDONS.filter(function(a){return a.tier===t;});
+  var TIER_ORDER=["laceTrim","ruffles","laceRuffles","fringe","connectors","extTies","rhinestones","bows","roses","buttons","beadsAcrylic","beadsIri","beadsWavy","beadsPearl","charmsP","charmsB","initials"];
+  [1,2,3,4].forEach(function(t){
+    var items=ADDONS.filter(function(a){return a.tier===t;}).sort(function(a,b){ return TIER_ORDER.indexOf(a.id)-TIER_ORDER.indexOf(b.id); });
     var div=document.createElement("div"); div.className="tier";
-    div.innerHTML='<div class="tier-title"><span class="dot"></span><span>'+TIER_LABEL[t]+'</span><span class="price-each">'+'from '+fmt(items[0].price)+'</span></div>';
+    div.innerHTML='<div class="tier-title"><span class="dot"></span><span>'+TIER_LABEL[t]+'</span><span class="price-each">'+'from '+fmt(Math.min.apply(null,items.map(function(a){return a.price;})))+'</span></div>';
     var grid=document.createElement("div"); grid.className="addon-grid";
 
     items.forEach(function(a){
