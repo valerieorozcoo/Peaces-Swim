@@ -1756,7 +1756,7 @@
   function priceOf(id){ return R.price(id,cfgFor(id),ctx(),variantOf(id)); }
   function cfgText(id){ return R.describe(id,cfgFor(id),ctx(),variantOf(id)); }
   /* tile hints that depend on the shapes picked */
-  var HINTS={connectors:{underwire:"On both halter straps"},extTies:{triangle:"3 ways to wear",underwire:"Just under the middle band"},
+  var HINTS={connectors:{underwire:"On both halter straps"},extTies:{triangle:"3 ways to wear",underwire:"From the middle knot, around the ribs"},
     buttons:{triangle:"Along the lace line · $5 each",underwire:"1 to 3 in each corner · $5 each"},laceTrim:{underwire:"Along the top · bottom front"},
     rhinestones:{triangle:"Top left or right, or the back of the bottoms · $10 per letter",underwire:"Top left or right · $10 per letter"}};
   function hintOf(a){ var h=HINTS[a.id]; if(a.id==="laceTrim") return state.bottomStyle==="seamless"?h.underwire:a.hint; if(h&&a.id==="rhinestones"&&state.bottomStyle!=="triangle") return h.underwire; return (h&&h[a.id==="rhinestones"?"triangle":state.topStyle])||a.hint; }
@@ -1812,33 +1812,39 @@
   function tieStyle(){ return state.topStyle==="triangle" ? cfg("extTies","style") : "band"; }
   function tieRuns(g,W,H){ // straight runs along each tie, used to place beads and charms
     var e=tieEnds(g), L=e[0], Rt=e[1], cx=g.center[0], cy=g.center[1], yb=Math.max(L[1],Rt[1]), st=tieStyle();
-    if(st==="wrap") return [[[cx,cy+2],[g.outerL[0]+W*0.03,cy+H*0.17]],[[cx,cy+2],[g.outerR[0]-W*0.03,cy+H*0.17]]];
+    if(st==="wrap") return [[[cx-W*0.03,cy+H*0.02],[g.outerL[0]+W*0.01,cy+H*0.06]],[[cx+W*0.03,cy+H*0.02],[g.outerR[0]-W*0.01,cy+H*0.06]]];
     if(st==="back") return [[[cx,cy+2],[cx-W*0.2,cy+H*0.42]],[[cx,cy+2],[cx+W*0.2,cy+H*0.42]]];
-    var K=[cx,yb+H*0.07]; return [[L,K],[Rt,K]];
+    if(st==="band") return [[[cx,cy],[cx-W*0.19,cy+H*0.25]],[[cx,cy],[cx+W*0.19,cy+H*0.25]]];
+    // regular: from each end of the band, down and across, crossing at the waist
+    var y2=yb+H*0.3; return [[L,[Rt[0]-W*0.06,y2]],[Rt,[L[0]+W*0.06,y2]]];
   }
+  /* matches the product photos:
+     triangle regular: ties run from the band, cross in an X at the waist and wrap round
+     triangle wrap: from the middle connector straight out under the bust and round the back
+     triangle back: from the middle connector down to the waist, with the regular back tie
+     bralette: from the middle knot down in a V, then out round the ribs */
   function drawTies(svg,g,W,H){
-    var st=tieStyle();
-    if(st==="wrap"||st==="back"){
-      tieRuns(g,W,H).forEach(function(run,i){
-        var a=run[0], b=run[1], sd=i?1:-1;
-        var c1=st==="wrap" ? [(a[0]+b[0])/2, Math.max(a[1],b[1])+H*0.05] : [a[0]+sd*W*0.04,(a[1]+b[1])/2];
-        tieStroke(svg,"M"+a[0]+","+a[1]+" Q"+c1[0]+","+c1[1]+" "+b[0]+","+b[1],W);
-        tieKnot(svg,b[0],b[1],W);
-      });
+    var st=tieStyle(), runs=tieRuns(g,W,H), cx=g.center[0], cy=g.center[1];
+    if(st==="wrap"){
+      runs.forEach(function(run){ var a=run[0], b=run[1];
+        tieStroke(svg,"M"+a[0]+","+a[1]+" Q"+((a[0]+b[0])/2)+","+(Math.max(a[1],b[1])+H*0.015)+" "+b[0]+","+b[1],W); });
       return;
     }
-    var e=tieEnds(g), L=e[0], Rt=e[1], cx=g.center[0], yb=Math.max(L[1],Rt[1]);
-    // both ties sweep in under the bust and finish in a bow at the center front
-    var K=[cx,yb+H*0.07];
-    tieStroke(svg,"M"+L[0]+","+L[1]+" Q"+((L[0]+cx)/2)+","+(K[1]+H*0.03)+" "+K[0]+","+K[1],W);
-    tieStroke(svg,"M"+Rt[0]+","+Rt[1]+" Q"+((Rt[0]+cx)/2)+","+(K[1]+H*0.03)+" "+K[0]+","+K[1],W);
-    var lw=W*0.09, lh=H*0.06;
-    tieStroke(svg,"M"+cx+","+K[1]+" C"+(cx-lw*0.6)+","+(K[1]-lh)+" "+(cx-lw*1.2)+","+(K[1]-lh*0.6)+" "+(cx-lw)+","+(K[1]+lh*0.1)+" C"+(cx-lw*0.8)+","+(K[1]+lh*0.6)+" "+(cx-lw*0.3)+","+(K[1]+lh*0.3)+" "+cx+","+K[1],W);
-    tieStroke(svg,"M"+cx+","+K[1]+" C"+(cx+lw*0.6)+","+(K[1]-lh)+" "+(cx+lw*1.2)+","+(K[1]-lh*0.6)+" "+(cx+lw)+","+(K[1]+lh*0.1)+" C"+(cx+lw*0.8)+","+(K[1]+lh*0.6)+" "+(cx+lw*0.3)+","+(K[1]+lh*0.3)+" "+cx+","+K[1],W);
-    var t1=[cx-W*0.05,K[1]+H*0.2], t2=[cx+W*0.045,K[1]+H*0.22];
-    tieStroke(svg,"M"+cx+","+K[1]+" Q"+(cx-W*0.01)+","+(K[1]+H*0.1)+" "+t1[0]+","+t1[1],W);
-    tieStroke(svg,"M"+cx+","+K[1]+" Q"+(cx+W*0.015)+","+(K[1]+H*0.11)+" "+t2[0]+","+t2[1],W);
-    tieKnot(svg,cx,K[1],W*1.25); tieKnot(svg,t1[0],t1[1],W); tieKnot(svg,t2[0],t2[1],W);
+    if(st==="back"){
+      runs.forEach(function(run,i){ var a=run[0], b=run[1], sd=i?1:-1;
+        tieStroke(svg,"M"+a[0]+","+a[1]+" Q"+(a[0]+sd*W*0.04)+","+((a[1]+b[1])/2)+" "+b[0]+","+b[1],W); tieKnot(svg,b[0],b[1],W); });
+      return;
+    }
+    if(st==="band"){
+      var outer=[g.hem?g.hem[0][0]+W*0.02:g.outerL[0], g.hem?g.hem[1][2]-W*0.02:g.outerR[0]];
+      runs.forEach(function(run,i){ var a=run[0], b=run[1], ox=outer[i], oy=b[1]-H*0.035;
+        tieStroke(svg,"M"+a[0]+","+a[1]+" L"+b[0]+","+b[1]+" Q"+((b[0]+ox)/2)+","+(b[1]+H*0.005)+" "+ox+","+oy,W); });
+      return;
+    }
+    var e=tieEnds(g), L=e[0], Rt=e[1], yb=Math.max(L[1],Rt[1]), y1=yb+H*0.15, y2=yb+H*0.3;
+    tieStroke(svg,"M"+L[0]+","+L[1]+" C"+(L[0]+W*0.25)+","+(yb+H*0.05)+" "+(cx-W*0.12)+","+(y1-H*0.05)+" "+cx+","+y1+" S"+(Rt[0]-W*0.12)+","+(y2-H*0.02)+" "+(Rt[0]-W*0.06)+","+y2,W);
+    tieStroke(svg,"M"+Rt[0]+","+Rt[1]+" C"+(Rt[0]-W*0.25)+","+(yb+H*0.05)+" "+(cx+W*0.12)+","+(y1-H*0.05)+" "+cx+","+y1+" S"+(L[0]+W*0.12)+","+(y2-H*0.02)+" "+(L[0]+W*0.06)+","+y2,W);
+    [[L[0]+W*0.06,y2],[Rt[0]-W*0.06,y2]].forEach(function(q){ tieKnot(svg,q[0],q[1],W); });
   }
   function tieKnot(svg,x,y,W){
     var cheetah=colorOf("top").fill==="leopard", r=W*0.017;
@@ -2042,7 +2048,7 @@
           if(!hole){ var x0=g.center[0]-gap*(bd.mid-1)/2; for(var m=0;m<bd.mid;m++) bead(x0+m*gap,g.center[1]+bs*0.05); }
           else { for(var l=0;l<left;l++) bead(g.center[0]-hole-gap*(l+0.5),g.center[1]+2); for(var r=0;r<right;r++) bead(g.center[0]+hole+gap*(r+0.5),g.center[1]+2); }
         }
-        if(bd.ext && on("extTies")) tieRuns(g,W,H).forEach(function(run){ onRun(run,bd.ext,0.22,Math.min(0.09,0.7/bd.ext)); });
+        if(bd.ext && on("extTies")) tieRuns(g,W,H).forEach(function(run){ var bend=tieStyle()==="band"; onRun(run,bd.ext,bend?0.8:0.22,bend?Math.min(0.05,0.2/bd.ext):Math.min(0.09,0.7/bd.ext)); });
         if(bd.ends) (TIPS[artName]||[]).forEach(function(p){ for(var e2=0;e2<bd.ends;e2++) bead(p[0],p[1]+e2*bs*0.85,bs*0.8); });
       } else if(bd.bot && on("connectors")){
         [[g.hipL,1],[g.hipR,-1]].forEach(function(q){ for(var k=0;k<bd.bot;k++) bead(q[0][0]+q[1]*(connW*0.7+bs*0.9*(k+0.5)),q[0][1]+2,bs*0.85); });
