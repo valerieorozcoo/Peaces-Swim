@@ -131,7 +131,7 @@ try {
   assert.equal(card.customer, "Mia bWait/b"); assert.equal(card.image, "https://cdn.shopify.com/s/files/peaces-design.jpg");
   assert.equal(card.top, "Triangle top · Cheetah · S"); assert.equal(card.bottom, "Seamless bottom · Coral · M");
   assert.deepEqual(card.addons, ["Mini bows (White · 1 center)", "Ruffles (Pink)", "Letter charms (VAL · plain 7mm ring)"]);
-  assert.deepEqual(card.extras, ["Peaces terry tote — Pink"]); assert.equal(card.mode, "wait");
+  assert.deepEqual(card.extras, ["Peaces terry tote (Pink)"]); assert.equal(card.mode, "wait");
   const anaCard = r.body.pickup.find((c) => c.number === ana.name);
   assert.equal(anaCard.customer, "Ana Pickup"); assert.equal(anaCard.pickupAt, "4:00 PM");
   ok("each card has order number, name (kept after the wait/pickup choice), bikini picture and full customization");
