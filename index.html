@@ -738,6 +738,8 @@
   .gate-consent{display:flex; align-items:center; gap:8px; margin:12px 0 4px; font-size:15px; text-transform:none; letter-spacing:0;}
   .gate-consent input{width:18px; height:18px; margin:0; accent-color:var(--pink);}
   .gate-cta{font-weight:700; text-transform:uppercase; letter-spacing:.14em;}
+  .gate-fine{margin:12px 0 0; font-size:12.5px; line-height:1.45; color:var(--ink-soft); text-align:center;}
+  .gate-fine a{color:inherit; text-decoration:underline;}
   .gate-err{margin:10px 0 0; font-size:15px; color:var(--pink-deep);}
   .gate-skip{margin-top:14px; background:none; border:none; color:var(--ink-soft); font-family:var(--lp-sans);
     font-size:15.5px; text-decoration:underline; cursor:pointer;}
@@ -925,6 +927,7 @@
   @media (max-width:640px){ .acc-grid{grid-template-columns:1fr;} }
 
   /* waitlist SMS opt-in */
+  .lp-wait-fine a{color:inherit; text-decoration:underline;}
   .lp-wait .lp-check{display:flex; align-items:flex-start; gap:10px; text-align:left; font-size:15px; line-height:1.35; cursor:pointer;}
   .lp-wait .lp-check input{flex:none; width:20px; height:20px; margin:0; padding:0; border:0; background:var(--w-lavender); cursor:pointer;}
   .lp-wait .lp-check input:checked{background:var(--w-orchid) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M5 10.5l3.2 3.2L15 7' fill='none' stroke='%23fff' stroke-width='2.2'/%3E%3C/svg%3E") center/100% no-repeat;}
@@ -1085,11 +1088,11 @@
           <input id="wEmail" name="email" type="email" placeholder="email" autocomplete="email" inputmode="email" required>
           <label class="lp-sr" for="wPhone">Phone number</label>
           <input id="wPhone" name="phone" type="tel" placeholder="phone number" autocomplete="tel" inputmode="tel" required>
-          <label class="lp-check" for="wSms"><input id="wSms" name="sms" type="checkbox"><span>Yes, I agree to receive SMS messages from Peaces</span></label>
+          <label class="lp-check" for="wSms"><input id="wSms" name="sms" type="checkbox"><span>Yes, I agree to receive recurring automated marketing text messages from Peaces Swim at this number. Consent is not a condition of purchase. Msg frequency varies. Msg &amp; data rates may apply. Reply STOP to unsubscribe or HELP for help.</span></label>
           <div class="lp-hp" aria-hidden="true"><label for="wCompany">Company<input id="wCompany" name="company" type="text" tabindex="-1" autocomplete="off"></label></div>
           <p class="lp-wait-err" id="waitErr" role="alert" hidden></p>
           <button class="lp-wait-btn" type="submit" id="waitBtn">sign me up</button>
-          <p class="lp-wait-fine">By signing up you agree to get emails from Peaces Swim about our launch. Unsubscribe anytime.</p>
+          <p class="lp-wait-fine">By signing up you agree to get emails from Peaces Swim about our launch. Unsubscribe anytime. See our <a href="terms.html">Terms</a> &amp; <a href="privacy.html">Privacy Policy</a>.</p>
         </form>
 
         <div class="lp-wait-done" id="waitDone" hidden tabindex="-1">
@@ -1170,6 +1173,7 @@
         <input id="gPhone" type="tel" autocomplete="tel" inputmode="tel" placeholder="(555) 555 5555">
         <p class="gate-err" id="phoneErr" hidden></p>
         <button class="cta gate-cta" type="submit" id="phoneBtn">CONTINUE</button>
+        <p class="gate-fine">By entering your phone number, you agree to receive recurring automated marketing text messages from Peaces Swim at that number. Consent is not a condition of purchase. Msg frequency varies. Msg &amp; data rates may apply. Reply STOP to unsubscribe or HELP for help. See our <a href="terms.html">Terms</a> &amp; <a href="privacy.html">Privacy Policy</a>.</p>
       </form>
       <button class="gate-skip" type="button" id="gateSkip">No thanks</button>
     </div>
@@ -1447,26 +1451,26 @@
           <div class="lp-foot-logo"><img src="art/logo-ps-leopard.png" alt=""><span>Peaces Swim</span></div>
           <p>Peaces Swim is design your own swimwear. Pick your peaces, add lace, ties and charms, and we'll make a bikini that's entirely yours.</p>
         </div>
-        <!-- TODO: placeholder links (#) until those pages exist -->
         <div class="lp-foot-links">
           <div><h4>Shop</h4><ul>
             <li><a href="#design">Design Your Own</a></li><li><a href="#accessories">Peaces Accessories</a></li>
           </ul></div>
           <div><h4>Peaces</h4><ul>
-            <li><a href="#">Our Story</a></li><li><a href="#lookbook">Lookbook</a></li>
+            <li><a href="#making">Our Story</a></li><li><a href="#lookbook">Lookbook</a></li>
           </ul></div>
           <div><h4>Support</h4><ul>
-            <li><a href="#">Size Guide</a></li><li><a href="#">Get in Touch</a></li>
+            <li><a href="#">Size Guide</a></li><li><a href="mailto:vorozco@peacesswim.com">Get in Touch</a></li><li><a href="privacy.html">Privacy Policy</a></li><li><a href="terms.html">Terms of Service</a></li>
           </ul></div>
         </div>
       </div>
       <div class="lp-foot-bottom">
-        <p>© 2026 Peaces Swim · Made in Miami</p>
+        <p>© 2026 Peaces Swim · Made in Miami · <a href="mailto:vorozco@peacesswim.com">vorozco@peacesswim.com</a> · 4653 Rio Poco Court, Naples, FL 34109-3366</p>
         <div class="lp-foot-follow">
           <span>Socials</span>
           <div class="lp-socials">
             <a href="https://www.instagram.com/peacesswim/" target="_blank" rel="noopener" aria-label="Instagram"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg></a>
             <a href="https://www.tiktok.com/@peacesswim" target="_blank" rel="noopener" aria-label="TikTok"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="18" r="4"/><path d="M12 18V2l7 4"/></svg></a>
+            <a href="mailto:vorozco@peacesswim.com" aria-label="Email"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7"/><rect x="2" y="4" width="20" height="16" rx="2"/></svg></a>
           </div>
         </div>
       </div>
