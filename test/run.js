@@ -38,13 +38,13 @@ try {
   assert.equal(r.status, 400); ok("bad phone rejected");
 
   const design = { topStyle: "triangle", bottomStyle: "seamless", topColor: "cheetah", bottomColor: "coral", sizeTop: "S", sizeBottom: "M",
-    addons: [{ id: "bows", option: "White" }, { id: "ruffles", option: "Pink" }, { id: "initials" }], initials: "val", tote: true, headband: false };
+    addons: [{ id: "bows", variant: "white", cfg: { tp: ["mid"] } }, { id: "ruffles", variant: "pink" }, { id: "charms", variant: "letters" }], initials: "val", tote: true, headband: false };
   r = await post("/orders/create", { design, customer: { phone: "3055551234", welcomeToken: welcome } });
   assert.equal(r.status, 201); assert.equal(r.body.subtotal, 95 + 5 + 15 + 3 * 10 + 15);
   assert.equal(r.body.total, 144); assert.equal(r.body.discounted, true);
   const d0 = db.drafts[0].input;
   assert.equal(d0.purchasingEntity, undefined);
-  assert.ok(d0.lineItems.some((l) => l.title === "Add on: Letter charms (VAL · plain 7mm ring)")); ok("signed welcome discount on guest checkout, no customer-account link");
+  assert.ok(d0.lineItems.some((l) => l.title === "Add on: Charms (Letters · VAL in the middle, Basic jump ring clasp)")); ok("signed welcome discount on guest checkout, no customer-account link");
 
   r = await post("/orders/create", { design, customer: { phone: "3055551234" } });
   assert.equal(r.body.discounted, false);
@@ -86,11 +86,12 @@ try {
   assert.equal(r.body.total, 160); assert.equal(r.body.discounted, false); ok("no discount for unknown phone");
 
   const opts = { topStyle: "triangle", bottomStyle: "triangle", topColor: "green", bottomColor: "cheetah", sizeTop: "S", sizeBottom: "S", initials: "A", rsText: "K",
-    addons: [{ id: "beadsWavy", option: "Pink", cfg: { sets: "3" } }, { id: "laceTrim", option: "White", cfg: { bottom: "around" } },
-             { id: "connectors", option: "Heart", cfg: { bottom: "two" } }, { id: "rhinestones", cfg: { metal: "silver", place: "both" } }, { id: "extTies", cfg: { style: "2" } },
-             { id: "bows", option: "Pink", cfg: { top: "straps", bottom: "center" } }] };
+    addons: [{ id: "beads", variant: "bw-pink", cfg: { ties: 3, mid: 3 } }, { id: "laceTrim", variant: "white", cfg: { bottom: "around" } },
+             { id: "connectors", variant: "c-heartring", cfg: { bottom: "two" } }, { id: "rhinestones", cfg: { metal: "silver", place: "left" } }, { id: "extTies", cfg: { style: "wrap" } },
+             { id: "bows", variant: "pink", cfg: { tp: ["sides"], bp: ["mid"] } }] };
   r = await post("/orders/create", { design: opts, customer: { phone: "9999999999" } });
-  assert.equal(r.body.subtotal, 95 + 15 + 25 + 25 + 20 + 10 + 5); ok("add-on choices priced on server (beads x3, lace all around, 2 connectors, rhinestones both cups, ties)");
+  assert.equal(r.status, 201, JSON.stringify(r.body));
+  assert.equal(r.body.subtotal, 95 + 15 + 25 + 25 + 10 + 10 + 10); ok("add-on choices priced on server (9 beads, lace all around, 2 bottom connectors, 1 rhinestone, wrap ties, bows in 2 spots)");
   const tinyJpeg = "data:image/jpeg;base64," + Buffer.from("fake-jpeg-bytes").toString("base64");
   r = await post("/orders/create", { design: opts, image: tinyJpeg });
   const dImg = db.drafts.at(-1).input;
@@ -99,19 +100,35 @@ try {
   assert.ok(db.uploads >= 1); ok("built-bikini picture saved to Shopify Files and put on the order");
   r = await post("/orders/create", { design: opts, image: "data:text/html;base64,PHNjcmlwdD4=" });
   assert.equal(r.status, 201); assert.equal(r.body.image, null); ok("anything that isn't a picture is ignored and the order still goes through");
-  r = await post("/orders/create", { design: { ...opts, addons: [{ id: "laceTrim", cfg: { bottom: "sideways" } }] } });
-  assert.equal(r.status, 400); ok("unknown add-on choice rejected");
-  r = await post("/orders/create", { design: { ...opts, topStyle: "underwire", bottomStyle: "seamless", topColor: "teal", bottomColor: "teal", addons: [{ id: "laceTrim", cfg: { bottom: "around" } }] } });
-  assert.equal(r.status, 400); ok("no all-the-way-around lace on seamless bottoms");
-  r = await post("/orders/create", { design: { ...opts, addons: [
-    { id: "charmsP", option: "Shell", cfg: { clasp: "cn-big-gold" } }, { id: "charmsB", option: "Clear heart", cfg: { clasp: "plain" } },
-    { id: "laceRuffles", option: "Black", cfg: { edge: "straps", lower: "around" } }, { id: "fringe", option: "Gold", cfg: { edge: "straps", lower: "sides" } },
-    { id: "rhinestones", cfg: { metal: "gold", place: "back" } }] } });
-  assert.equal(r.body.subtotal, 95 + 25 + 10 + 15 + 15 + 10); ok("premium clasp +$10, plain ring included, lace ruffle / fringe spots, rhinestones on the back");
+  const bra = { ...opts, topStyle: "underwire", bottomStyle: "seamless", topColor: "teal", bottomColor: "teal" };
+  const rejects = [
+    [{ ...opts, addons: [{ id: "laceTrim", cfg: { bottom: "sideways" } }] }, "unknown add-on choice"],
+    [{ ...bra, addons: [{ id: "laceTrim", cfg: { bottom: "around" } }] }, "lace all around on a seamless bottom"],
+    [{ ...bra, addons: [{ id: "fringe", cfg: { lower: "around" } }] }, "fringe all around"],
+    [{ ...bra, addons: [{ id: "ruffles" }] }, "ruffles on the bralette set"],
+    [{ ...opts, addons: [{ id: "extTies", cfg: { style: "wrap" } }] }, "wrapped ties without a connector"],
+    [{ ...opts, addons: [{ id: "connectors" }, { id: "beads", variant: "ba-pink", cfg: { mid: 5 } }] }, "5 middle beads with a connector"],
+    [{ ...opts, addons: [{ id: "beads", variant: "ba-pink", cfg: { ties: 11 } }] }, "11 beads on a tie"],
+    [{ ...opts, addons: [{ id: "beads", variant: "ba-pink", cfg: { bot: 2 } }] }, "bottom beads without bottom connectors"],
+    [{ ...opts, rsText: "Kat", addons: [{ id: "rhinestones", cfg: { place: "butt" } }] }, "uppercase rhinestones on the bottoms"],
+    [{ ...opts, sizeTop: "XS", rsText: "K", addons: [{ id: "rhinestones", cfg: { place: "left" } }] }, "uppercase rhinestones on an XS top"],
+    [{ ...opts, addons: [{ id: "charms", variant: "cg-heart", cfg: { mid: 4 } }] }, "4 middle charms"],
+    [{ ...bra, addons: [{ id: "buttons", cfg: { tl: 4 } }] }, "4 buttons in a corner"],
+    [{ ...opts, addons: [{ id: "bows", cfg: {} }] }, "bows with no spot"],
+  ];
+  for (const [bad, why] of rejects) { r = await post("/orders/create", { design: bad }); assert.equal(r.status, 400, why); }
+  ok("rules enforced on the server: " + rejects.length + " bad designs rejected");
+  r = await post("/orders/create", { design: { ...opts, rsText: "kate", addons: [
+    { id: "charms", variant: "cp-shell", cfg: { mid: 2, left: 1, clasp: "cn-big-gold" } },
+    { id: "laceRuffles", variant: "black", cfg: { lower: "front" } }, { id: "fringe", variant: "gold", cfg: { lower: "front" } },
+    { id: "rhinestones", cfg: { metal: "gold", place: "butt" } }] } });
+  assert.equal(r.body.subtotal, 95 + 3 * 20 + 15 + 15 + 40); ok("3 long charms with clasp upgrades, lace ruffles + fringe front, 4 lowercase rhinestones on the back");
   r = await post("/orders/create", { design: { ...opts, addons: [{ id: "rhinestones", cfg: { metal: "gold", place: "one" } }] } });
   assert.equal(r.body.subtotal, 95 + 10); ok("older saved designs (one cup) still price");
-  r = await post("/orders/create", { design: { ...opts, topStyle: "underwire", bottomStyle: "seamless", topColor: "teal", bottomColor: "teal", addons: [{ id: "fringe", cfg: { edge: "hem", lower: "around" } }] } });
-  assert.equal(r.status, 400); ok("fringe all around not offered on seamless bottoms");
+  r = await post("/orders/create", { design: { ...bra, addons: [{ id: "connectors" }, { id: "extTies" }, { id: "buttons", cfg: { tl: 3, tr: 1, br: 2, size: "large" } },
+    { id: "beads", variant: "bp-16mm", cfg: { ties: 5, ext: 8, ends: 2 } }, { id: "charms", variant: "cg-halo", cfg: { mid: 1, ext: 3, left: 3, right: 3 } }] } });
+  assert.equal(r.status, 201, JSON.stringify(r.body));
+  assert.equal(r.body.subtotal, 95 + 10 + 10 + 30 + 5 * Math.ceil(34 / 3) + 13 * 10); ok("bralette set at its limits: connectors $10 for both straps, corner buttons, 34 beads, 13 charms");
 
   r = await post("/orders/accessories", { items: { headband: { color: "cheetah", qty: 2 }, tote: { color: "blue", qty: 1 } } });
   assert.equal(r.status, 201); assert.equal(r.body.subtotal, 2 * 10 + 15); assert.equal(r.body.total, 35);
@@ -124,9 +141,7 @@ try {
   ok("accessories: empty, wrong colour or silly quantities rejected");
   r = await post("/orders/create", { design: { ...design, topColor: "teal" } });
   assert.equal(r.status, 400); ok("teal on triangle rejected");
-  r = await post("/orders/create", { design: { ...design, bottomStyle: "seamless", addons: [{ id: "connectors" }], topStyle: "underwire", topColor: "teal" } });
-  assert.equal(r.status, 400); ok("connectors on bralette + seamless rejected");
-  r = await post("/orders/create", { design: { ...design, addons: [{ id: "bows", price: 0 }] } });
+  r = await post("/orders/create", { design: { ...design, addons: [{ id: "bows", cfg: { tp: ["mid"] }, price: 0 }] } });
   assert.equal(r.body.subtotal, 95 + 5 + 15); ok("browser can't set prices");
 
   const first = (await post("/orders/create", { design })).body;
@@ -154,7 +169,7 @@ try {
   const card = r.body.wait[0];
   assert.equal(card.customer, "Mia bWait/b"); assert.equal(card.image, "https://cdn.shopify.com/s/files/peaces-design.jpg");
   assert.equal(card.top, "Triangle top · Cheetah · S"); assert.equal(card.bottom, "Seamless bottom · Coral · M");
-  assert.deepEqual(card.addons, ["Mini bows (White · 1 center)", "Ruffles (Pink)", "Letter charms (VAL · plain 7mm ring)"]);
+  assert.deepEqual(card.addons, ["Mini bows (White · Top: One in the middle of the string)", "Ruffles (Pink · On the top tie straps)", "Charms (Letters · VAL in the middle, Basic jump ring clasp)"]);
   assert.deepEqual(card.extras, ["Peaces terry tote (Pink)"]); assert.equal(card.mode, "wait");
   const anaCard = r.body.pickup.find((c) => c.number === ana.name);
   assert.equal(anaCard.customer, "Ana Pickup"); assert.equal(anaCard.pickupAt, "4:00 PM");

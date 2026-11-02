@@ -710,7 +710,7 @@
 
   /* Welcome / 10% pop-up: opens over the site as soon as it loads */
   .gate{
-    position:fixed; inset:0; z-index:30; overflow-y:auto;
+    position:fixed; inset:0; z-index:120; overflow-y:auto;
     display:flex; align-items:center; justify-content:center;
     padding:max(24px, env(safe-area-inset-top, 0px)) 20px max(24px, env(safe-area-inset-bottom, 0px));
     background:rgba(58,44,52,.42);
@@ -1017,6 +1017,15 @@
     .lp-menu-logo{height:64px; width:auto; opacity:.9;}
   }
 
+  .cf-step{display:flex; align-items:center; justify-content:space-between; gap:12px; padding:7px 0; border-bottom:1px solid var(--line); font-size:14px; color:var(--ink);}
+  .cf-step small{display:block; font-size:12px; color:var(--ink-soft);}
+  .stepper{display:inline-flex; align-items:center; gap:10px; flex:none;}
+  .stepper button{width:34px; height:34px; border-radius:999px; border:1.5px solid var(--sig-edge,#D9C3EE); background:#EFDDFD; color:#4B2470; font-family:var(--font); font-size:18px; line-height:1; cursor:pointer;}
+  .stepper button:disabled{opacity:.35; cursor:default;}
+  .stepper b{min-width:20px; text-align:center; font-weight:600;}
+  .cf-sub{text-transform:none; letter-spacing:0; font-size:12px;}
+  .cf-only{margin:0 0 6px;}
+  .cf-error{color:#B3261E; font-size:14px; margin:8px 0 2px;}
   /* ===== Brand kit (Nov 2): Open Sauce Sans everywhere, every button in signature light purple #EFDDFD ===== */
   :root{--font:"Open Sauce Sans",system-ui,-apple-system,"Segoe UI",Helvetica,Arial,sans-serif; --sig:#EFDDFD; --sig-ink:#4B2470; --sig-edge:rgba(75,36,112,.22);
     --btn-grad:#EFDDFD; --btn-grad-hover:#EFDDFD; --lp-sans:var(--font); --lp-display:var(--font); --lp-script:var(--font); --w-serif:var(--font);}
@@ -1135,6 +1144,10 @@
   .shape-desc{margin:6px 0 0; font-size:14px; color:rgba(46,36,51,.75);}
   .shape-desc strong{font-weight:600; color:#4B2470;}
   .base-part{border-top:1px solid #EFDDFD;}
+
+  /* "Your Peace" label above the preview, smaller */
+  .stage-label > span:first-child{display:none !important;}
+  .stage-label .style-name{font-size:15px !important; font-style:normal !important; letter-spacing:.22em !important; text-transform:uppercase !important; color:#4B2470 !important;}
 </style>
 
 <!-- ================= Landing page =================
@@ -1460,7 +1473,7 @@
       <div class="stage">
         <div class="stage-label">
           <span>Your peace</span>
-          <span class="style-name" id="styleName">Triangle, Turquoise</span>
+          <span class="style-name" id="styleName">Your Peace</span>
           <span class="mini-total" id="miniTotal" aria-hidden="true">$95.00</span>
         </div>
         <div class="rig" id="rig"></div>
@@ -1662,6 +1675,7 @@
   </div>
 </div>
 
+<script src="lib/rules.js"></script>
 <script>
 (function(){
   "use strict";
@@ -1671,16 +1685,12 @@
   /* each piece style: art file, which fabric family it belongs to, whether it has ties */
   var STYLES={
     top:{
-      triangle:{art:"b-triangle-top", name:"Triangle top", desc:"Double ties at the neck and across the back.", family:"triangle", ties:true,  ruffle:'1″',
-        addons:["extTies","ruffles","laceRuffles","fringe","laceTrim","bows","roses","beadsAcrylic","beadsIri","beadsWavy","beadsPearl","initials","rhinestones","charmsB","charmsP","connectors"]},
-      underwire:{art:"b-underwire-top", name:"Bralette top", desc:"Twist front bandeau, double ties at the neck and back.", family:"underwire", ties:true, ruffle:'½″',
-        addons:["extTies","fringe","laceTrim","bows","roses","beadsAcrylic","beadsIri","beadsWavy","beadsPearl","initials","rhinestones","charmsB","charmsP"]}
+      triangle:{art:"b-triangle-top", name:"Triangle top", desc:"Double ties at the neck and across the back.", family:"triangle", ties:true,  ruffle:'1″'},
+      underwire:{art:"b-underwire-top", name:"Bralette top", desc:"Twist front bandeau, double ties at the neck and back.", family:"underwire", ties:true, ruffle:'½″'}
     },
     bottom:{
-      triangle:{art:"b-triangle-bottom", name:"Triangle bottom", desc:"No ties, medium coverage.", family:"triangle", ties:false,  ruffle:'1″',
-        addons:["ruffles","laceRuffles","fringe","laceTrim","bows","roses","rhinestones","connectors"]},
-      seamless:{art:"b-seamless-bottom", name:"Seamless bottom", desc:"Ruched, medium coverage.", family:"underwire", ties:false, ruffle:'½″',
-        addons:["fringe","laceTrim","bows","roses","rhinestones"]}
+      triangle:{art:"b-triangle-bottom", name:"Triangle bottom", desc:"No ties, medium coverage.", family:"triangle", ties:false,  ruffle:'1″'},
+      seamless:{art:"b-seamless-bottom", name:"Seamless bottom", desc:"Ruched, medium coverage.", family:"underwire", ties:false, ruffle:'½″'}
     }
   };
   var SIZES=["XS","S","M","L"];
@@ -1696,102 +1706,67 @@
     return COLORS.filter(function(c){ return c.family==="both" || c.family===family; });
   }
 
-  var BEADS=[
-    ["turquoise","Turquoise"],["lightpink","Light pink"],["darkpink","Dark pink"],
-    ["lightgreen","Light green"],["coral","Coral"],["pink","Pink"],
-    ["lightblue","Light blue"],["purpleblue","Light purple"],["lightturq","Light turquoise"]
-  ];
-  var BEADS_A=[["blue","Blue"],["green","Green"],["hot-pink","Hot pink"],["mint","Mint"],["orange","Orange"],["pink","Pink"],["purple","Purple"],["red","Red"],["white","White"],["yellow","Yellow"]];
-  var BEADS_I=[["aqua","Aqua"],["black","Black"],["lavender","Lavender"],["lime","Lime"],["mint","Mint"],["orange","Orange"],["pale-pink","Pale pink"],["pink","Pink"],["purple","Purple"],["red","Red"],["white","White"],["yellow","Yellow"]];
-  var BEADS_W=[["brown","Brown"],["burgundy","Burgundy"],["dark-blue","Dark blue"],["green","Green"],["hot-pink","Hot pink"],["lavender","Lavender"],["light-blue","Light blue"],["orange","Orange"],["pink","Pink"],["red","Red"],["white","White"],["yellow","Yellow"]];
-  var CHARMS_B=[["cg-heart","Clear heart"],["cg-clearrect","Clear rectangle"],["cg-halo","Clear rhinestone frame"],["cg-pinkbaguette","Pink rectangle"],["cg-pinksquare","Pink square"]];
-  var CHARMS_P=[["cp-shell","Shell"],["cp-hamsa","Evil eye"],["cp-boot","Boots"],["cp-tag","Diamond star"],["cp-pearls","Plain pearl"],["cp-rainbow","Rainbow"]];
-
-  var LACE_COLORS=[["white","White"],["pink","Pink"],["turq","Aqua"],["coral","Peach"],["black","Black"]]; /* the lace we stock */
-  /* premium clasps attach a charm to the suit; without one it hangs from a plain 7mm ring */
-  var CLASPS=[["plain","Plain 7mm ring, included"],["cn-big-gold","Big gold +$10","cn-big-gold"],["cn-skinny-gold","Skinny gold +$10","cn-skinny-gold"],["cn-skinny-rhinestone","Skinny rhinestone +$10","cn-skinny-rhinestone"],["cn-small-rhinestone","Small rhinestone +$10","cn-small-rhinestone"]];
-  /* every add-on opens to choose a colour/finish, then Add to cart */
-  var ADDONS=[
-    {id:"beadsAcrylic",tier:1,price:5, name:"Acrylic beads", hint:"On the straps or center front",
-      opts:BEADS_A, art:function(v){return "ba-"+v;}, def:"pink"},
-    {id:"beadsIri", tier:1,price:5, name:"Iridescent beads", hint:"On the straps or center front",
-      opts:BEADS_I, art:function(v){return "bi-"+v;}, def:"pale-pink"},
-    {id:"beadsWavy",tier:1,price:5, name:"Wavy beads",     hint:"On the straps or center front",
-      opts:BEADS_W, art:function(v){return "bw-"+v;}, def:"pink"},
-    {id:"beadsPearl",tier:1,price:5, name:"Pearl beads",   hint:"On the straps or center front",
-      opts:[["16mm","16 mm"],["20mm","20 mm"]], art:function(v){return "bp-"+v;}, def:"16mm"},
-    {id:"bows",    tier:1,price:5, name:"Mini bows",      hint:"1 center or 2 on the straps",
-      opts:[["pink","Light pink"],["white","White"]], art:function(v){return "p-bow-"+v;}, def:"pink"},
-    {id:"roses",   tier:1,price:5, name:"Mini roses",     hint:"1 center or 2 on the straps",
-      opts:[["pink","Pink"]], art:function(){return "p-rose";}, def:"pink"},
-    {id:"laceRuffles",tier:3,price:15, name:"Lace ruffles", hint:"Cups or straps · bottom front, sides or all around",
-      opts:LACE_COLORS, art:function(v){return "p-laceruffle-"+v;}, def:"white"},
-    {id:"fringe",  tier:3,price:15, name:"Fringe",         hint:"Same spots as the lace",
-      opts:[["match","Matching"],["white","White"],["gold","Gold"]], art:function(v){return "fringe-"+v;}, def:"match"},
-    {id:"charmsB", tier:2,price:10, name:"Gem charms",     hint:"One gem down the middle of the top",
-      opts:CHARMS_B, art:function(v){return v;}, def:"cg-heart"},
-    {id:"charmsP", tier:3,price:15, name:"Premium charms", hint:"One dangle down the middle of the top",
-      opts:CHARMS_P, art:function(v){return v;}, def:"cp-shell"},
-    {id:"rhinestones",tier:2,price:10,name:"Rhinestones", hint:"Top left, top right or back of the bottoms · $10 per letter",
-      opts:[["script","Script"]], art:function(){return "";}, def:"script"},
-    {id:"extTies", tier:2,price:10, name:"Extended ties",  hint:"Matching wrap ties · 2 ways to wear",
-      opts:[["match","Matching fabric"]], art:function(){return "";}, def:"match"},
-    {id:"laceTrim",tier:3,price:15,name:"Lace trim",      hint:"Top edges · add the bottom",
-      opts:LACE_COLORS,
-      art:function(v){return "p-lacetrim-"+v;}, def:"white"},
-    {id:"ruffles", tier:3,price:15,name:"Ruffles",        hint:"Along the edges",
-      opts:[["pink","Pink"],["green","Green"],["turq","Turquoise"],["coral","Coral"]],
-      art:function(v){return "p-ruffle-"+v;}, def:"pink"},
-    {id:"initials",tier:2,price:10,name:"Letter charms",  hint:"Hang down the middle of the top · $10 per letter",
-      opts:[["clear","Clear"]], art:function(){return "";}, def:"clear"},
-    {id:"connectors",tier:2,price:10,name:"Connectors",   hint:"Center front · 2 on the bottom · add extended ties",
-      opts:[["c-heartring","Heart"],["cn-goldring","Gold ring"],["cn-pinkring","Pink ring"],["cn-bluering","Blue ring"]],
-      art:function(v){return v;}, def:"c-heartring"}
-  ];
-  /* per-add-on choices (placement, quantity, metal) and the price rules — mirrored in lib/catalog.js */
-  var SETTINGS={
-    beadsAcrylic:[["sets","How many",[["1","3 beads"],["2","6 beads"],["3","9 beads"],["4","12 beads"]]],["where","Where",[["center","Center front"],["straps","Halter straps"],["both","Center + straps"],["ties","On the extended ties"]]]],
-    beadsIri:[["sets","How many",[["1","3 beads"],["2","6 beads"],["3","9 beads"],["4","12 beads"]]],["where","Where",[["center","Center front"],["straps","Halter straps"],["both","Center + straps"],["ties","On the extended ties"]]]],
-    beadsWavy:[["sets","How many",[["1","3 beads"],["2","6 beads"],["3","9 beads"],["4","12 beads"]]],["where","Where",[["center","Center front"],["straps","Halter straps"],["both","Center + straps"],["ties","On the extended ties"]]]],
-    beadsPearl:[["sets","How many",[["1","3 beads"],["2","6 beads"],["3","9 beads"],["4","12 beads"]]],["where","Where",[["center","Center front"],["straps","Halter straps"],["both","Center + straps"],["ties","On the extended ties"]]]],
-    bows:[["top","On the top",[["center","1 in the center"],["straps","2 on the straps"]]],["bottom","Bottom",[["no","None"],["center","1 center front"]]]],
-    roses:[["top","On the top",[["center","1 in the center"],["straps","2 on the straps"]]],["bottom","Bottom",[["no","None"],["center","1 center front"]]]],
-    rhinestones:[["metal","Finish",[["silver","Silver"],["gold","Gold"]]],["place","Placement",[["left","Top · left side"],["right","Top · right side"],["both","Top · both sides (×2)"],["back","Back of the bottoms"]]]],
-    laceRuffles:[["edge","On the top",[["cups","Along the cups"],["straps","On the straps"]]],["lower","On the bottom",[["front","Front"],["sides","Sides"],["around","All the way around"],["none","Top only"]]]],
-    fringe:[["edge","On the top",[["hem","Along the bottom edge"],["straps","On the straps"]]],["lower","On the bottom",[["front","Front"],["sides","Sides"],["around","All the way around"],["none","Top only"]]]],
-    charmsB:[["clasp","Clasp",CLASPS]],
-    charmsP:[["clasp","Clasp",CLASPS]],
-    initials:[["clasp","Clasp",CLASPS]],
-    laceTrim:[["bottom","Bottom",[["none","Top only"],["front","Front only +$5"],["around","All the way around +$10"]]]],
-    extTies:[["style","How they wrap",[["1","Under the bust"],["2","Crisscross at the waist"]]]],
-    connectors:[["bottom","Bottom",[["no","Top only"],["two","2 on the bottom +$15"]]],["ties","Extended ties",[["no","No ties"],["yes","Add extended ties +$10"]]]]
-  };
-  /* settings that live on the design but aren't charged inside their own add-on */
-  var LINKED={connectors:{ties:function(v){ if(v==="yes") state.addons.extTies=true; else delete state.addons.extTies; }}};
-  var CLASP_NOTE='No premium clasp? Your charm comes on a plain 7mm clasp ring that attaches it to your suit.';
-  function cfg(id,key){ if(id==="connectors"&&key==="ties") return state.addons.extTies?"yes":"no"; var c=state.cfg[id]||{}; if(id==="rhinestones"&&key==="place"&&c.place==="one") return "left"; if(c[key]!==undefined) return c[key]; var g=(SETTINGS[id]||[]).filter(function(x){return x[0]===key;})[0]; return g?g[2][0][0]:null; }
-  function letterCount(){ return Math.max(1,(state.initials||"").replace(/[^A-Za-z]/g,"").slice(0,3).length); }
-  function rsCount(){ return Math.max(1,(state.rsText||"").replace(/[^A-Za-z]/g,"").slice(0,3).length); }
-  function priceOf(id){
-    var a=addonDef(id), p=a.price;
-    if(/^beads/.test(id)) p=5*(+cfg(id,"sets"));
-    if(id==="initials") p=10*letterCount();
-    if(id==="rhinestones") p=10*rsCount()*(cfg(id,"place")==="both"?2:1);
-    if(id==="laceTrim") p+= {none:0,front:5,around:10}[cfg(id,"bottom")];
-    if(id==="connectors" && cfg(id,"bottom")==="two") p+=15;
-    if(/^charms|^initials$/.test(id) && cfg(id,"clasp")!=="plain") p+=10;
-    return p;
+  /* Every customization, where it can go on each shape, its limits and its price live in lib/rules.js,
+     the same file checkout uses, so the page and the order can never disagree. */
+  var R=window.PeacesRules;
+  var ART_PREFIX={laceTrim:"p-lacetrim-",ruffles:"p-ruffle-",laceRuffles:"p-laceruffle-",fringe:"fringe-",bows:"p-bow-"};
+  function artFor(id,v){
+    if(id==="beads"||id==="connectors") return v;
+    if(id==="charms") return v==="letters"?"lt-A":v;
+    if(id==="roses") return "p-rose";
+    if(id==="buttons") return "button";
+    return ART_PREFIX[id]?ART_PREFIX[id]+v:"";
   }
-  function cfgText(id){
-    return (SETTINGS[id]||[]).filter(function(g){ return !(LINKED[id]&&LINKED[id][g[0]]); }).map(function(g){ var v=cfg(id,g[0]); return g[2].filter(function(o){return o[0]===v;})[0][1].replace(/ \+\$\d+/,""); }).join(", ");
+  var FIRST={beads:"ba-pink",charms:"cg-heart"};
+  var FIXED={ruffles:1,laceRuffles:1,fringe:1,extTies:1};
+  var ADDONS=R.ORDER.map(function(id){
+    var sp=R.SPEC[id];
+    return {id:id,tier:sp.tier,price:sp.price,name:sp.name,hint:sp.hint,opts:sp.variants,art:function(v){return artFor(id,v);},def:FIRST[id]||sp.variants[0][0]};
+  });
+  /* what each drawer starts on before the customer changes anything */
+  var DEFAULTS={bows:{tp:["mid"]},roses:{tp:["mid"]},buttons:{tn:3,tl:2,tr:2},charms:{mid:1},
+    beads:{byTop:{triangle:{mid:3},underwire:{ties:3}}}};
+  function defaultsFor(id){ var d=DEFAULTS[id]||{}; return d.byTop?(d.byTop[state.topStyle]||{}):d; }
+  function rawCfg(id){ return Object.assign({},defaultsFor(id),state.cfg[id]||{}); }
+  function addonOn(id){ return !!state.addons[id] || state.preview===id; }
+  function shapes(){ return {topStyle:state.topStyle,bottomStyle:state.bottomStyle}; }
+  /* the design as the rules see it: shapes, size, letters and every add-on that's on (or being previewed) */
+  function ctx(){
+    return {topStyle:state.topStyle,bottomStyle:state.bottomStyle,sizeTop:state.sizeTop,rsText:state.rsText,initials:state.initials,
+      addons:R.ORDER.filter(function(id){ return addonOn(id) && R.available(id,shapes()); }).map(function(id){ return {id:id,cfg:rawCfg(id)}; })};
   }
+  function findOpt(list,v){ return list.filter(function(o){return o[0]===v;})[0]; }
+  /* one add-on's settings, cleaned up to what the current shapes allow */
+  function cfgFor(id,d){
+    d=d||ctx(); var raw=rawCfg(id), out={};
+    R.controls(id,d).forEach(function(c){
+      var v=raw[c.key];
+      if(c.type==="choice"){ if(v==null||!findOpt(c.options,v)) v=c.options[0][0]; }
+      else if(c.type==="multi"){ v=(Array.isArray(v)?v:[]).filter(function(k){ return !!findOpt(c.options,k); }); }
+      else if(c.type==="count"){ v=Math.max(0,Math.min(c.max,Math.round(+v||0))); }
+      out[c.key]=v;
+    });
+    if(id==="charms" && variantOf("charms")==="letters") ["mid","left","right","ext"].forEach(function(k){ if(k in out) out[k]=0; });
+    return out;
+  }
+  function cfg(id,key){ return cfgFor(id)[key]; }
   function addonDef(id){ return ADDONS.filter(function(a){return a.id===id;})[0]; }
-  function variantOf(id){ var a=addonDef(id); return state.variant[id]||a.def; }
-  function variantName(id){
-    var a=addonDef(id), v=variantOf(id);
-    var hit=a.opts.filter(function(o){return o[0]===v;})[0];
-    return hit?hit[1]:v;
+  function variantOf(id){ var a=addonDef(id), v=state.variant[id]; return v&&findOpt(a.opts,v)?v:a.def; }
+  function variantName(id){ return R.variantName(id,variantOf(id)); }
+  function priceOf(id){ return R.price(id,cfgFor(id),ctx(),variantOf(id)); }
+  function cfgText(id){ return R.describe(id,cfgFor(id),ctx(),variantOf(id)); }
+  /* tile hints that depend on the shapes picked */
+  var HINTS={connectors:{underwire:"On both halter straps"},extTies:{triangle:"3 ways to wear",underwire:"From the middle knot, around the ribs"},
+    buttons:{triangle:"Along the lace line · $5 each",underwire:"1 to 3 in each corner · $5 each"},laceTrim:{underwire:"Along the top · bottom front"},
+    rhinestones:{triangle:"Top left or right, or the back of the bottoms · $10 per letter",underwire:"Top left or right · $10 per letter"}};
+  function hintOf(a){ var h=HINTS[a.id]; if(a.id==="laceTrim") return state.bottomStyle==="seamless"?h.underwire:a.hint; if(h&&a.id==="rhinestones"&&state.bottomStyle!=="triangle") return h.underwire; return (h&&h[a.id==="rhinestones"?"triangle":state.topStyle])||a.hint; }
+  function addonText(a){ return [a.id==="rhinestones"||a.opts.length<2?"":variantName(a.id), cfgText(a.id)].filter(Boolean).join(", "); }
+  /* the message a customer would get at checkout for this add-on, or "" when it's fine */
+  function problemOf(id){
+    var d=ctx(); if(!d.addons.some(function(a){return a.id===id;})) d.addons.push({id:id,cfg:rawCfg(id)});
+    try{ R.normalize(id,cfgFor(id,d),d,variantOf(id)); return ""; }catch(e){ return e.message; }
   }
+  function tieNeedsConnector(){ return state.topStyle==="triangle" && /wrap|back/.test(cfg("extTies","style")); }
 
   var state={
     topStyle:"triangle", bottomStyle:"triangle",
@@ -1826,43 +1801,50 @@
     if(cheetah) el("path",{d:d,fill:"none",stroke:"#3B2416","stroke-width":tw*0.7,"stroke-dasharray":(tw*0.9)+" "+(tw*1.4),"stroke-linecap":"round"},svg);
     else el("path",{d:d,fill:"none",stroke:"rgba(255,255,255,.35)","stroke-width":tw*0.35,"stroke-linecap":"round",transform:"translate(0,-"+(tw*0.18)+")"},svg);
   }
-  /* extended ties start at both ends of the underband and wrap round the body:
-     style 1 ties in a bow at the center front under the bust, style 2 crisscrosses over the waist */
+  /* both ends of the underband, where extended ties start */
   function tieEnds(g){
     var L=g.hem?[g.hem[0][0]+4,g.hem[0][1]-6]:[g.outerL[0]+4,g.outerL[1]-2];
     var R=g.hem?[g.hem[1][2]-4,g.hem[1][3]-6]:[g.outerR[0]-4,g.outerR[1]-2];
     return [L,R];
   }
-  function tiePoints(g,W,H){ // straight runs along each tie, used to place beads
-    var e=tieEnds(g), L=e[0], R=e[1], cx=g.center[0], yb=Math.max(L[1],R[1]);
-    if(cfg("extTies","style")==="2"){
-      var y2=yb+H*0.3;
-      return [[L,[R[0]-W*0.06,y2]],[R,[L[0]+W*0.06,y2]]];
-    }
-    var K=[cx,yb+H*0.07];
-    return [[L,K],[R,K]];
+  /* extended ties. Triangle: regular (tied in a bow under the bust), wrapped round the bust from the middle
+     connector, or hanging from the middle connector with a regular back tie. Bralette: just under the middle band. */
+  function tieStyle(){ return state.topStyle==="triangle" ? cfg("extTies","style") : "band"; }
+  function tieRuns(g,W,H){ // straight runs along each tie, used to place beads and charms
+    var e=tieEnds(g), L=e[0], Rt=e[1], cx=g.center[0], cy=g.center[1], yb=Math.max(L[1],Rt[1]), st=tieStyle();
+    if(st==="wrap") return [[[cx-W*0.03,cy+H*0.02],[g.outerL[0]+W*0.01,cy+H*0.06]],[[cx+W*0.03,cy+H*0.02],[g.outerR[0]-W*0.01,cy+H*0.06]]];
+    if(st==="back") return [[[cx,cy+2],[cx-W*0.2,cy+H*0.42]],[[cx,cy+2],[cx+W*0.2,cy+H*0.42]]];
+    if(st==="band") return [[[cx,cy],[cx-W*0.19,cy+H*0.25]],[[cx,cy],[cx+W*0.19,cy+H*0.25]]];
+    // regular: from each end of the band, down and across, crossing at the waist
+    var y2=yb+H*0.3; return [[L,[Rt[0]-W*0.06,y2]],[Rt,[L[0]+W*0.06,y2]]];
   }
+  /* matches the product photos:
+     triangle regular: ties run from the band, cross in an X at the waist and wrap round
+     triangle wrap: from the middle connector straight out under the bust and round the back
+     triangle back: from the middle connector down to the waist, with the regular back tie
+     bralette: from the middle knot down in a V, then out round the ribs */
   function drawTies(svg,g,W,H){
-    var e=tieEnds(g), L=e[0], R=e[1], cx=g.center[0], yb=Math.max(L[1],R[1]);
-    if(cfg("extTies","style")==="2"){
-      var y1=yb+H*0.15, y2=yb+H*0.3;
-      // two long ties cross at the center front and wrap round to the opposite hip
-      tieStroke(svg,"M"+L[0]+","+L[1]+" C"+(L[0]+W*0.25)+","+(yb+H*0.05)+" "+(cx-W*0.12)+","+(y1-H*0.05)+" "+cx+","+y1+" S"+(R[0]-W*0.12)+","+(y2-H*0.02)+" "+(R[0]-W*0.06)+","+y2,W);
-      tieStroke(svg,"M"+R[0]+","+R[1]+" C"+(R[0]-W*0.25)+","+(yb+H*0.05)+" "+(cx+W*0.12)+","+(y1-H*0.05)+" "+cx+","+y1+" S"+(L[0]+W*0.12)+","+(y2-H*0.02)+" "+(L[0]+W*0.06)+","+y2,W);
-      [[L[0]+W*0.06,y2],[R[0]-W*0.06,y2]].forEach(function(p){ tieKnot(svg,p[0],p[1],W); });
+    var st=tieStyle(), runs=tieRuns(g,W,H), cx=g.center[0], cy=g.center[1];
+    if(st==="wrap"){
+      runs.forEach(function(run){ var a=run[0], b=run[1];
+        tieStroke(svg,"M"+a[0]+","+a[1]+" Q"+((a[0]+b[0])/2)+","+(Math.max(a[1],b[1])+H*0.015)+" "+b[0]+","+b[1],W); });
       return;
     }
-    // style 1: both ties sweep in under the bust and finish in a bow at the center front
-    var K=[cx,yb+H*0.07];
-    tieStroke(svg,"M"+L[0]+","+L[1]+" Q"+((L[0]+cx)/2)+","+(K[1]+H*0.03)+" "+K[0]+","+K[1],W);
-    tieStroke(svg,"M"+R[0]+","+R[1]+" Q"+((R[0]+cx)/2)+","+(K[1]+H*0.03)+" "+K[0]+","+K[1],W);
-    var lw=W*0.09, lh=H*0.06;
-    tieStroke(svg,"M"+cx+","+K[1]+" C"+(cx-lw*0.6)+","+(K[1]-lh)+" "+(cx-lw*1.2)+","+(K[1]-lh*0.6)+" "+(cx-lw)+","+(K[1]+lh*0.1)+" C"+(cx-lw*0.8)+","+(K[1]+lh*0.6)+" "+(cx-lw*0.3)+","+(K[1]+lh*0.3)+" "+cx+","+K[1],W);
-    tieStroke(svg,"M"+cx+","+K[1]+" C"+(cx+lw*0.6)+","+(K[1]-lh)+" "+(cx+lw*1.2)+","+(K[1]-lh*0.6)+" "+(cx+lw)+","+(K[1]+lh*0.1)+" C"+(cx+lw*0.8)+","+(K[1]+lh*0.6)+" "+(cx+lw*0.3)+","+(K[1]+lh*0.3)+" "+cx+","+K[1],W);
-    var t1=[cx-W*0.05,K[1]+H*0.2], t2=[cx+W*0.045,K[1]+H*0.22];
-    tieStroke(svg,"M"+cx+","+K[1]+" Q"+(cx-W*0.01)+","+(K[1]+H*0.1)+" "+t1[0]+","+t1[1],W);
-    tieStroke(svg,"M"+cx+","+K[1]+" Q"+(cx+W*0.015)+","+(K[1]+H*0.11)+" "+t2[0]+","+t2[1],W);
-    tieKnot(svg,cx,K[1],W*1.25); tieKnot(svg,t1[0],t1[1],W); tieKnot(svg,t2[0],t2[1],W);
+    if(st==="back"){
+      runs.forEach(function(run,i){ var a=run[0], b=run[1], sd=i?1:-1;
+        tieStroke(svg,"M"+a[0]+","+a[1]+" Q"+(a[0]+sd*W*0.04)+","+((a[1]+b[1])/2)+" "+b[0]+","+b[1],W); tieKnot(svg,b[0],b[1],W); });
+      return;
+    }
+    if(st==="band"){
+      var outer=[g.hem?g.hem[0][0]+W*0.02:g.outerL[0], g.hem?g.hem[1][2]-W*0.02:g.outerR[0]];
+      runs.forEach(function(run,i){ var a=run[0], b=run[1], ox=outer[i], oy=b[1]-H*0.035;
+        tieStroke(svg,"M"+a[0]+","+a[1]+" L"+b[0]+","+b[1]+" Q"+((b[0]+ox)/2)+","+(b[1]+H*0.005)+" "+ox+","+oy,W); });
+      return;
+    }
+    var e=tieEnds(g), L=e[0], Rt=e[1], yb=Math.max(L[1],Rt[1]), y1=yb+H*0.15, y2=yb+H*0.3;
+    tieStroke(svg,"M"+L[0]+","+L[1]+" C"+(L[0]+W*0.25)+","+(yb+H*0.05)+" "+(cx-W*0.12)+","+(y1-H*0.05)+" "+cx+","+y1+" S"+(Rt[0]-W*0.12)+","+(y2-H*0.02)+" "+(Rt[0]-W*0.06)+","+y2,W);
+    tieStroke(svg,"M"+Rt[0]+","+Rt[1]+" C"+(Rt[0]-W*0.25)+","+(yb+H*0.05)+" "+(cx+W*0.12)+","+(y1-H*0.05)+" "+cx+","+y1+" S"+(L[0]+W*0.12)+","+(y2-H*0.02)+" "+(L[0]+W*0.06)+","+y2,W);
+    [[L[0]+W*0.06,y2],[Rt[0]-W*0.06,y2]].forEach(function(q){ tieKnot(svg,q[0],q[1],W); });
   }
   function tieKnot(svg,x,y,W){
     var cheetah=colorOf("top").fill==="leopard", r=W*0.017;
@@ -1873,26 +1855,29 @@
   function dropSeg(sg,d){ return [sg[0],sg[1]+d,sg[2],sg[3]+d]; }
   function runSeg(run){ var sg=[run[0][0],run[0][1],run[1][0],run[1][1]]; sg.side=1; return sg; }
   function sideSegs(g){ return g.strapRunL ? [runSeg(g.strapRunL),runSeg(g.strapRunR)] : []; }
-  /* where lace ruffles / fringe sit: the cups (or hem) or the straps on the top; front, sides or all around on the bottom */
-  function spotSegs(g,isTop,id){
-    if(isTop){
-      if(cfg(id,"edge")==="straps") return sideSegs(g);
-      if(id==="laceRuffles") return g.trimSegs;
-      return g.hem ? g.hem : [[g.outerL[0],g.outerL[1],g.center[0],Math.max(g.center[1],g.outerL[1])],[g.center[0],Math.max(g.center[1],g.outerR[1]),g.outerR[0],g.outerR[1]]];
-    }
-    var lw=cfg(id,"lower");
-    if(lw==="none") return [];
-    if(lw==="sides") return sideSegs(g);
-    if(lw==="around") return g.trimSegs.concat(sideSegs(g),id==="laceRuffles"?(g.legs||[]):[]);
-    return g.trimSegs;
+  /* fringe hangs from the bottom edge of the top, and from the front waistband of the bottom */
+  function fringeSegs(g,isTop){
+    if(!isTop) return g.trimSegs;
+    return g.hem ? g.hem : [[g.outerL[0],g.outerL[1],g.center[0],Math.max(g.center[1],g.outerL[1])],[g.center[0],Math.max(g.center[1],g.outerR[1]),g.outerR[0],g.outerR[1]]];
   }
+  /* evenly spaced points along a run of edges (buttons along the lace line) */
+  function alongSegs(segs,n){
+    var pts=[], lens=segs.map(function(q){ return Math.sqrt(Math.pow(q[2]-q[0],2)+Math.pow(q[3]-q[1],2)); }), tot=lens.reduce(function(a,b){return a+b;},0);
+    for(var i=0;i<n;i++){
+      var t=(i+0.5)/n*tot, k=0; while(k<segs.length-1 && t>lens[k]){ t-=lens[k]; k++; }
+      var q=segs[k], f=Math.min(1,t/lens[k]); pts.push([q[0]+(q[2]-q[0])*f, q[1]+(q[3]-q[1])*f]);
+    }
+    return pts;
+  }
+  /* the tips of the neck ties and the back ties (beads on the ends) */
+  var TIPS={"b-triangle-top":[[122,103],[313,70],[20,412],[426,412]],"b-underwire-top":[[272,185],[392,180],[26,400],[577,400]]};
   function strapMid(run){ return [(run[0][0]+run[1][0])/2,(run[0][1]+run[1][1])/2]; }
   function fringeMatch(part){ var c=colorOf(part); return c.fill==="leopard"?"#7A5232":c.fill; }
   function fabricHex(part){ var c=colorOf(part); return c.fill==="leopard"?"#E2BA84":c.fill; }
   function partOfArt(artName){ return artName.indexOf("top")>-1 ? "top" : "bottom"; }
   function anyTies(){ return styleOf("top").ties || styleOf("bottom").ties; }
-  function allows(part,addonId){ return styleOf(part).addons.indexOf(addonId)>-1; }
-  function addonAvailable(id){ return allows("top",id)||allows("bottom",id); }
+  function allows(part,id){ var sp=R.SPEC[id], st=part==="top"?state.topStyle:state.bottomStyle; return !!(sp&&sp[part]&&sp[part][st]); }
+  function addonAvailable(id){ return R.available(id,shapes()); }
   function el(tag,attrs,parent){
     var e=document.createElementNS(NS,tag);
     for(var k in attrs) e.setAttribute(k,attrs[k]);
@@ -1942,10 +1927,6 @@
       var ph=document.createElement("img"); ph.className="layer photo"; ph.alt="";
       ph.src="art2/"+artName+"-"+photoKey+".png"; wrap.appendChild(ph);
     } else layer("fill",silUrl);
-    if(!opts.thumb && (state.addons.laceOver||state.preview==="laceOver") && allows(part,"laceOver")){
-      var lo=layer("laceover",silUrl);
-      lo.style.backgroundImage='url("art2/lace-tile-'+variantOf("laceOver")+'.png")';
-    }
     if(!realCheetah){
       var sh=layer("shade",silUrl); sh.style.backgroundImage='url("art2/'+artName+'-shade.png")';
       layer("lines",'url("art2/'+artName+'-line.png")');
@@ -1973,8 +1954,8 @@
     }
   }
   function rhinestoneText(svg,spots,W){
-    var rt=(state.rsText||"").replace(/[^A-Za-z]/g,"").slice(0,3)||"K";
-    var gold=cfg("rhinestones","metal")==="gold", col=gold?"#E6C46A":"#EEF1F6", fs=W*(rt.length>1?0.13:0.17);
+    var place=cfg("rhinestones","place"), rt=R.letters(state.rsText,place==="butt"?4:3)||(place==="butt"?"k":"K");
+    var gold=cfg("rhinestones","metal")==="gold", col=gold?"#E6C46A":"#EEF1F6", fs=W*(rt.length>2?0.11:rt.length>1?0.13:0.17);
     spots.forEach(function(pt){
       var common={x:pt[0],y:pt[1],"font-family":"'Pinyon Script','Snell Roundhand',cursive","font-size":fs,"text-anchor":"middle",fill:"none","stroke-linecap":"round"};
       var sh=el("text",Object.assign({},common,{stroke:"rgba(46,36,51,.35)","stroke-width":fs*0.07,"stroke-dasharray":"0 "+(fs*0.085)}),svg); sh.textContent=rt;
@@ -1982,128 +1963,122 @@
       var hi=el("text",Object.assign({},common,{stroke:"#FFFFFF","stroke-width":fs*0.022,"stroke-dasharray":"0 "+(fs*0.085)}),svg); hi.textContent=rt;
       });
   }
-  /* back view: rhinestones across the top of the bottoms, lace / fringe that goes all the way around */
+  /* back view: rhinestones on the back of the bottoms, lace that goes all the way around */
   var BACKGEO={"b-triangle-bottom":{rs:[229,100],trimSegs:[[93,50,229,56],[229,56,368,46]],legs:[[95,58,150,190],[150,190,202,292],[368,52,310,190],[310,190,256,292]]},
                "b-seamless-bottom":{rs:[290,62],trimSegs:[[14,20,290,88],[290,88,566,18]]}};
   function decorateBack(svg,artName,g){
-    var part=partOfArt(artName), bg=BACKGEO[artName], W=g.w, H=g.h;
-    function on(id){ return (state.addons[id]||state.preview===id) && allows(part,id); }
+    var part=partOfArt(artName), bg=BACKGEO[artName], W=g.w;
+    function on(id){ return addonOn(id) && allows(part,id); }
     if(part!=="bottom"||!bg) return;
     if(on("laceTrim") && cfg("laceTrim","bottom")==="around") bg.trimSegs.concat(bg.legs||[]).forEach(function(sg){ strip(svg,"p-lacetrim-"+variantOf("laceTrim"),dropSeg(sg,W*0.04),W*0.08); });
-    if(on("laceRuffles") && cfg("laceRuffles","lower")==="around") bg.trimSegs.concat(bg.legs||[]).forEach(function(sg){ strip(svg,"p-laceruffle-"+variantOf("laceRuffles"),sg,H*0.12); });
-    if(on("fringe") && cfg("fringe","lower")==="around") bg.trimSegs.forEach(function(sg){ fringeOn(svg,sg,H*0.13,W,variantOf("fringe"),fringeMatch("bottom")); });
-    if(on("rhinestones") && cfg("rhinestones","place")==="back") rhinestoneText(svg,[bg.rs],W*0.85);
+    if(on("rhinestones") && cfg("rhinestones","place")==="butt") rhinestoneText(svg,[bg.rs],W*0.85);
   }
   function decorate(svg,artName,g){
-    var A=state.addons, part=partOfArt(artName), isTop=(part==="top");
-    var tie=styleOf(part).ties;
-    var W=g.w, H=g.h;
-    function on(id){ return (A[id]||state.preview===id) && allows(part,id); }
+    var part=partOfArt(artName), isTop=(part==="top"), W=g.w, H=g.h;
+    var tri=(isTop?state.topStyle:state.bottomStyle)==="triangle";
+    function on(id){ return addonOn(id) && allows(part,id); }
 
-    /* extended ties — matching fabric ties, worn under the bust (1) or crisscrossed at the waist (2) */
+    /* Tier 2: extended ties are drawn first so everything else sits on top of them */
     if(on("extTies") && isTop) drawTies(svg,g,W,H);
 
-    /* ruffle + trim lace run along the cup edges / waistband */
-    if(on("ruffles")) g.trimSegs.forEach(function(sg){ strip(svg,"p-ruffle-"+variantOf("ruffles"),sg,H*0.135); });
+    /* Tier 1 */
+    if(on("ruffles")){
+      var rv="p-ruffle-"+variantOf("ruffles");
+      if(isTop && cfg("ruffles","rtop")==="straps") sideSegs(g).forEach(function(sg){ strip(svg,rv,sg,H*0.1); });
+      if(!isTop && cfg("ruffles","rbottom")==="sides") sideSegs(g).forEach(function(sg){ strip(svg,rv,sg,H*0.17); });
+    }
     if(on("laceTrim") && (isTop || cfg("laceTrim","bottom")!=="none")){
       var lth=isTop?W*0.12:W*0.1;
       g.trimSegs.forEach(function(sg){ strip(svg,"p-lacetrim-"+variantOf("laceTrim"),dropSeg(sg,(isTop&&!g.cupDrop?0:lth)*0.5),lth); });
       if(!isTop && cfg("laceTrim","bottom")==="around") sideSegs(g).concat(g.legs||[]).forEach(function(sg){ strip(svg,"p-lacetrim-"+variantOf("laceTrim"),sg,lth*0.8); });
     }
-    if(on("laceRuffles")) spotSegs(g,isTop,"laceRuffles").forEach(function(sg){ strip(svg,"p-laceruffle-"+variantOf("laceRuffles"),sg,(sg.side?H*0.1:H*0.14)); });
-
-    /* fringe — strands hanging from the bottom edge of the top / the waistband of the bottom */
-    if(on("fringe")){
+    if(on("laceRuffles") && (isTop || cfg("laceRuffles","lower")==="front")) g.trimSegs.forEach(function(sg){ strip(svg,"p-laceruffle-"+variantOf("laceRuffles"),sg,H*0.14); });
+    if(on("fringe") && (isTop || cfg("fringe","lower")==="front")){
       var fl=H*(isTop?0.09:0.13);
-      spotSegs(g,isTop,"fringe").forEach(function(sg){ fringeOn(svg,sg,sg.side?fl*0.7:fl,W,variantOf("fringe"),fringeMatch(part)); });
+      fringeSegs(g,isTop).forEach(function(sg){ fringeOn(svg,sg,fl,W,variantOf("fringe"),fringeMatch(part)); });
     }
 
-    /* beads — along the straps and across the center front */
-    var BEAD_FAM=[["beadsAcrylic","ba-"],["beadsIri","bi-"],["beadsWavy","bw-"],["beadsPearl","bp-"]].filter(function(b){return on(b[0]);});
-    if(BEAD_FAM.length && isTop){ // 3 beads per set; each family goes where the customer chose
-      var bs=W*0.062, groups={center:[],straps:[],ties:[]};
-      BEAD_FAM.forEach(function(b){
-        var n=3*cfg(b[0],"sets"), wh=cfg(b[0],"where"), nm=b[1]+variantOf(b[0]);
-        if(wh==="ties" && !on("extTies")) wh="center";
-        for(var k=0;k<n;k++){
-          var spot = wh==="both" ? (k%2?"straps":"center") : wh;
-          groups[spot].push(nm);
-        }
-      });
-      if(groups.center.length){ // a neat row across the centre front, like strung rondelles
-        var nC=groups.center.length, gap=bs*0.92, x0=g.center[0]-gap*(nC-1)/2;
-        groups.center.forEach(function(nm,ix){ img(svg,nm,x0+ix*gap,g.center[1]+bs*0.05,bs,bs,0); });
-      }
-      [["straps",[g.strapRunL,g.strapRunR]]].forEach(function(pr){
-        var arr=groups.straps, L=[],R=[]; arr.forEach(function(nm,ix){ (ix%2?R:L).push(nm); });
-        [[pr[1][0],L],[pr[1][1],R]].forEach(function(q){ var run=q[0];
-          q[1].forEach(function(nm,ix){ var t=0.62+ix*0.09; img(svg,nm,run[0][0]+(run[1][0]-run[0][0])*t,run[0][1]+(run[1][1]-run[0][1])*t,bs*0.9,bs*0.9,0); }); });
-      });
-      if(groups.ties.length){
-        var TP=tiePoints(g,W,H), TL=[],TR=[]; groups.ties.forEach(function(nm,ix){ (ix%2?TR:TL).push(nm); });
-        [[TP[0],TL],[TP[1],TR]].forEach(function(q){ var a=q[0][0], b=q[0][1];
-          q[1].forEach(function(nm,ix){ var t=0.3+ix*0.11; img(svg,nm,a[0]+(b[0]-a[0])*t,a[1]+(b[1]-a[1])*t,bs*0.8,bs*0.8,0); }); });
-      }
-    }
-    /* every charm hangs from a clasp: a plain 7mm ring, or the premium clasp the customer picked */
-    function clasp(id,x,y){
-      var c=cfg(id,"clasp");
-      if(c==="plain"||!c){ var r=W*0.016;
-        el("circle",{cx:x,cy:y+r,r:r,fill:"none",stroke:"rgba(46,36,51,.35)","stroke-width":r*0.55},svg);
-        el("circle",{cx:x,cy:y+r,r:r,fill:"none",stroke:"#D8B565","stroke-width":r*0.38},svg);
-        return y+r*1.6; }
-      var h=W*0.13, w=h*0.42; img(svg,c,x,y+h/2,w,h,0); return y+h*0.9;
-    }
-    /* charms — gem, premium and letter charms each hang once, down the middle of the top */
-    if(isTop){
-      var CH=["charmsB","charmsP","initials"].filter(on), nC=CH.length, sp=W*0.11;
-      CH.forEach(function(id,ix){
-        var x=g.center[0]+(ix-(nC-1)/2)*sp, y=clasp(id,x,g.center[1]-4);
-        if(id==="charmsB") hang(svg,variantOf("charmsB"),x,y,W*0.15);
-        else if(id==="charmsP") hang(svg,variantOf("charmsP"),x,y,W*0.32);
-        else {
-          var letters=(state.initials||"").toUpperCase().replace(/[^A-Z]/g,"").slice(0,3).split("");
-          var lh=W*0.13, lw=lh*0.62;
-          letters.forEach(function(ch,li){ img(svg,"lt-"+ch,x,y+lh*0.5+li*lh*0.92,lw,lh,0); }); // stacked on one ring
-        }
-      });
-    }
-
-    /* key ring — center front on the top, hips on the bottom */
+    /* Tier 2: connectors (triangle: middle of the top + both sides of the bottom; bralette: both halter straps) */
+    var connW=W*(tri?0.1:0.075);
     if(on("connectors")){
-      var kw=W*0.1;
-      var cv=variantOf("connectors"), tall=/big|skinny|small/.test(cv), ch=tall?kw*1.9:kw;
-      if(isTop) img(svg,cv,g.center[0],g.center[1]+2,kw,ch,0);
-      else if(cfg("connectors","bottom")==="two"){ img(svg,cv,g.hipL[0],g.hipL[1]+2,kw,ch,0); img(svg,cv,g.hipR[0],g.hipR[1]+2,kw,ch,0); }
+      var cv=variantOf("connectors");
+      if(isTop && tri) img(svg,cv,g.center[0],g.center[1]+2,connW,connW,0);
+      else if(isTop) [strapMid(g.strapRunL),strapMid(g.strapRunR)].forEach(function(p){ img(svg,cv,p[0],p[1],connW,connW,0); });
+      else if(cfg("connectors","bottom")==="two"){ img(svg,cv,g.hipL[0],g.hipL[1]+2,connW,connW,0); img(svg,cv,g.hipR[0],g.hipR[1]+2,connW,connW,0); }
     }
-
-    /* pearl buttons — centre front */
-    if(on("buttons")){
-      var bw=W*0.062;
-      if(isTop){
-        for(var bi=0;bi<3;bi++) img(svg,"button",g.center[0],g.center[1]-6+bi*bw*1.15,bw,bw,0);
-      } else {
-        for(var bj=-1;bj<2;bj++) img(svg,"button",g.center[0]+bj*bw*1.2,g.center[1]+4,bw,bw,0);
-      }
-    }
-
-    /* mini rose + mini bow — center front, top and bottom */
-    if(on("roses")){
-      var rw=W*0.115, rh=rw*92/95;
-      if(isTop){ if(cfg("roses","top")==="straps"){ var rl=strapMid(g.strapRunL), rr=strapMid(g.strapRunR); img(svg,"p-rose",rl[0],rl[1],rw*0.8,rh*0.8,0); img(svg,"p-rose",rr[0],rr[1],rw*0.8,rh*0.8,0); } else img(svg,"p-rose",g.centerHigh[0],g.centerHigh[1],rw,rh,0); }
-      else if(cfg("roses","bottom")==="center") img(svg,"p-rose",g.center[0],g.center[1]+4,rw,rh,0);
-    }
-    if(on("bows")){
-      var bw=W*0.17, bh=bw*97/138;
-      if(isTop){ if(cfg("bows","top")==="straps"){ var bl=strapMid(g.strapRunL), br=strapMid(g.strapRunR); img(svg,"p-bow-"+variantOf("bows"),bl[0],bl[1],bw*0.75,bh*0.75,0); img(svg,"p-bow-"+variantOf("bows"),br[0],br[1],bw*0.75,bh*0.75,0); } else img(svg,"p-bow-"+variantOf("bows"),g.center[0],g.center[1]-2,bw,bh,0); }
-      else if(cfg("bows","bottom")==="center") img(svg,"p-bow-"+variantOf("bows"),g.center[0],g.center[1]+4,bw,bh,0);
-    }
-
     if(on("rhinestones") && isTop && g.cupL){
       var rp=cfg("rhinestones","place");
-      rhinestoneText(svg,rp==="both"?[g.cupL,g.cupR]:rp==="right"?[g.cupR]:rp==="left"?[g.cupL]:[],W);
+      if(rp!=="butt") rhinestoneText(svg,[rp==="right"?g.cupR:g.cupL],W);
     }
 
+    /* Tier 3: bows + roses (middle and / or both sides, top and bottom) */
+    function spots(id,name,w,h){
+      var c=cfgFor(id), pts=[], tp=c.tp||[], bp=c.bp||[];
+      if(isTop){
+        if(tp.indexOf("mid")>-1) pts.push([g.centerHigh||g.center,1]);
+        if(tp.indexOf("sides")>-1) pts.push([g.junctionL,0.72],[g.junctionR,0.72]);
+      } else {
+        if(bp.indexOf("mid")>-1) pts.push([[g.center[0],g.center[1]+4],1]);
+        if(bp.indexOf("sides")>-1) pts.push([g.hipL,0.72],[g.hipR,0.72]);
+      }
+      pts.forEach(function(p){ img(svg,name,p[0][0],p[0][1],w*p[1],h*p[1],0); });
+    }
+    if(on("roses")){ var rw=W*(tri?0.115:0.09); spots("roses","p-rose",rw,rw*92/95); }
+    if(on("bows")){ var bw=W*(tri?0.17:0.13); spots("bows","p-bow-"+variantOf("bows"),bw,bw*97/138); }
+
+    /* Tier 3: pearl buttons (triangle: along the lace line; bralette: 1 to 3 in each corner) */
+    if(on("buttons")){
+      var bc=cfgFor("buttons"), btn=W*(tri?0.062:(bc.size==="large"?0.07:0.05));
+      if(tri) alongSegs(g.trimSegs,isTop?bc.tn:bc.bn).forEach(function(p){ img(svg,"button",p[0],p[1]+(isTop?0:btn*0.45),btn,btn,0); });
+      else (isTop?[[g.junctionL,bc.tl,1],[g.junctionR,bc.tr,-1]]:[[g.hipL,bc.bl,1],[g.hipR,bc.br,-1]]).forEach(function(q){
+        for(var i=0;i<(q[1]||0);i++) img(svg,"button",q[0][0]+q[2]*btn*(1+i*1.15),q[0][1]+btn*(isTop?0.9:1.1),btn,btn,0);
+      });
+    }
+
+    /* Tier 4: beads, by spot */
+    if(on("beads")){
+      var bd=cfgFor("beads"), bn=variantOf("beads"), bs=W*(tri?0.055:0.042);
+      var bead=function(x,y,sz){ sz=sz||bs; img(svg,bn,x,y,sz,sz,0); };
+      var onRun=function(run,n,t0,step){ for(var i=0;i<n;i++){ var t=Math.min(0.97,t0+i*step); bead(run[0][0]+(run[1][0]-run[0][0])*t,run[0][1]+(run[1][1]-run[0][1])*t,bs*0.9); } };
+      if(isTop){
+        if(bd.ties) [g.strapRunL,g.strapRunR].forEach(function(run){ onRun(run,bd.ties,0.06,Math.min(0.12,0.88/bd.ties)); });
+        if(bd.mid){
+          var gap=bs*0.92, hole=(on("connectors")&&tri)?connW*0.75:0;
+          var left=Math.ceil(bd.mid/2), right=bd.mid-left;
+          if(!hole){ var x0=g.center[0]-gap*(bd.mid-1)/2; for(var m=0;m<bd.mid;m++) bead(x0+m*gap,g.center[1]+bs*0.05); }
+          else { for(var l=0;l<left;l++) bead(g.center[0]-hole-gap*(l+0.5),g.center[1]+2); for(var r=0;r<right;r++) bead(g.center[0]+hole+gap*(r+0.5),g.center[1]+2); }
+        }
+        if(bd.ext && on("extTies")) tieRuns(g,W,H).forEach(function(run){ var bend=tieStyle()==="band"; onRun(run,bd.ext,bend?0.8:0.22,bend?Math.min(0.05,0.2/bd.ext):Math.min(0.09,0.7/bd.ext)); });
+        if(bd.ends) (TIPS[artName]||[]).forEach(function(p){ for(var e2=0;e2<bd.ends;e2++) bead(p[0],p[1]+e2*bs*0.85,bs*0.8); });
+      } else if(bd.bot && on("connectors")){
+        [[g.hipL,1],[g.hipR,-1]].forEach(function(q){ for(var k=0;k<bd.bot;k++) bead(q[0][0]+q[1]*(connW*0.7+bs*0.9*(k+0.5)),q[0][1]+2,bs*0.85); });
+      }
+    }
+
+    /* Tier 4: charms. Every charm hangs from a clasp: the basic jump ring, or the upgrade the customer picked */
+    if(on("charms")){
+      var chc=cfgFor("charms"), chv=variantOf("charms"), gem=/^cg-/.test(chv);
+      var clasp=function(x,y,sc){
+        var c=chc.clasp;
+        if(c==="plain"||!c){ var r=W*0.016*sc;
+          el("circle",{cx:x,cy:y+r,r:r,fill:"none",stroke:"rgba(46,36,51,.35)","stroke-width":r*0.55},svg);
+          el("circle",{cx:x,cy:y+r,r:r,fill:"none",stroke:"#D8B565","stroke-width":r*0.38},svg);
+          return y+r*1.6; }
+        var ch=W*0.13*sc, cw=ch*0.42; img(svg,c,x,y+ch/2,cw,ch,0); return y+ch*0.9;
+      };
+      var charm=function(x,y,sc){ var yy=clasp(x,y,sc); hang(svg,chv,x,yy,W*(gem?0.15:0.3)*sc); };
+      if(isTop){
+        if(chv==="letters"){
+          var lt=R.letters(state.initials,tri?3:1).toUpperCase().split(""), lh=W*(tri?0.13:0.1), y0=clasp(g.center[0],g.center[1]-4,1);
+          lt.forEach(function(ch,li){ img(svg,"lt-"+ch,g.center[0],y0+lh*0.5+li*lh*0.92,lh*0.62,lh,0); });
+        } else for(var ci=0;ci<chc.mid;ci++) charm(g.center[0]+(ci-(chc.mid-1)/2)*W*0.1,g.center[1]-4,tri?1:0.8);
+        if(chc.ext && on("extTies")) tieRuns(g,W,H).forEach(function(run){
+          for(var k=0;k<chc.ext;k++){ var t=0.5+k*0.16; charm(run[0][0]+(run[1][0]-run[0][0])*t,run[0][1]+(run[1][1]-run[0][1])*t,0.6); } });
+      } else {
+        [[g.hipL,chc.left||0],[g.hipR,chc.right||0]].forEach(function(q){
+          for(var k=0;k<q[1];k++) charm(q[0][0]+(k-(q[1]-1)/2)*W*0.055,q[0][1]+6,0.7); });
+      }
+    }
   }
 
   /* ---------- render ---------- */
@@ -2123,8 +2098,7 @@
     vt.hidden=!hasBack;
     rig.classList.toggle("wrap-waist", !!(state.addons.extTies||state.preview==="extTies") && allows("top","extTies") && !back);
     vt.querySelectorAll("button").forEach(function(b){ var on=b.dataset.view===state.view; b.classList.toggle("on",on); b.setAttribute("aria-pressed",on); });
-    document.getElementById("styleName").textContent=
-      styleOf("top").name+" · "+styleOf("bottom").name;
+    document.getElementById("styleName").textContent="Your Peace";
     document.getElementById("baseNote").textContent=
       colorOf("top").name+" top + "+colorOf("bottom").name+" bottom";
   }
@@ -2145,17 +2119,8 @@
     row(styleOf("top").name+" · "+colorOf("top").name+" · "+state.sizeTop,fmt(BASE_PRICE));
     row(styleOf("bottom").name+" · "+colorOf("bottom").name+" · "+state.sizeBottom,"included");
     list.forEach(function(a){
-      var extra="";
-      if(a.id==="initials"&&state.initials) extra=" ("+state.initials.slice(0,3).toUpperCase()+")";
-      if(a.id==="rhinestones") extra=" ("+(state.rsText||"").slice(0,3)+")";
-      if(a.opts.length>1) extra=" ("+variantName(a.id).toLowerCase()+")";
-      if(a.id==="ruffles"){
-        var rs=styleOf("top").ruffle===styleOf("bottom").ruffle
-          ? styleOf("top").ruffle : styleOf("top").ruffle+" / "+styleOf("bottom").ruffle;
-        extra=" ("+rs+")";
-      }
-      if(SETTINGS[a.id]) extra=extra.replace(/\)$/,"")+(extra?", ":" (")+cfgText(a.id).toLowerCase()+")";
-      row(a.name+extra,"+"+fmt(priceOf(a.id)));
+      var t=addonText(a);
+      row(a.name+(t?" ("+t+")":""),"+"+fmt(priceOf(a.id)));
     });
     if(state.perk) row("Socials + messages","−"+fmt(sub*DISCOUNT),"discount");
     var mt=document.getElementById("miniTotal"); if(mt) mt.innerHTML=document.getElementById("totalPrice").innerHTML;
@@ -2281,7 +2246,7 @@
   });
   document.getElementById("backToPeaces").addEventListener("click",function(){ showPage("pagePeaces"); });
 
-  var TIER_LABEL={1:"Tier 1",2:"Tier 2",3:"Tier 3"};
+  var TIER_LABEL={1:"Tier 1",2:"Tier 2",3:"Tier 3",4:"Tier 4"};
   var tierContainer=document.getElementById("tierContainer");
 
   function closeDrawers(except){
@@ -2305,10 +2270,60 @@
     renderAll();
   }
 
-  [1,2,3].forEach(function(t){
+  var VARIANT_LABEL={charms:"Choose a charm",connectors:"Choose a connector",fringe:"Choose a colour"};
+  function chip(attrs,on,label,art){ return '<button type="button" class="chip" '+attrs+' aria-pressed="'+(on?"true":"false")+'">'+(art?'<img src="art2/'+art+'.png" alt="">':'')+label+'</button>'; }
+  /* the inside of one drawer, rebuilt every time something changes so limits and prices stay right */
+  function drawerHtml(a){
+    var id=a.id, v=variantOf(id), h="", d=ctx(), c=cfgFor(id,d);
+    if(id==="beads"){
+      var type=v.split("-")[0];
+      h+='<div class="cf-label">Bead type</div><div class="chips">';
+      Object.keys(R.BEAD_TYPES).forEach(function(k){ var bt=R.BEAD_TYPES[k]; h+=chip('data-btype="'+k+'"',k===type,bt[0],k+"-"+bt[1][Math.min(5,bt[1].length-1)][0]); });
+      h+='</div><div class="cf-label">'+(type==="bp"?"Size":"Colour")+'</div><div class="chips">';
+      R.BEAD_TYPES[type][1].forEach(function(o){ var val=type+"-"+o[0]; h+=chip('data-variant="'+val+'"',val===v,o[1],val); });
+      h+='</div>';
+    } else if(a.opts.length>1){
+      h+='<div class="cf-label">'+(VARIANT_LABEL[id]||"Choose a colour")+'</div><div class="chips">';
+      a.opts.forEach(function(o){ h+=chip('data-variant="'+o[0]+'"',o[0]===v,o[1].replace(/^(Gem|Long) · /,""),a.art(o[0])); });
+      h+='</div>';
+    }
+    R.controls(id,d).forEach(function(ct){
+      if(id==="charms" && v==="letters" && ct.type==="count") return;
+      if(ct.type==="choice"){
+        if(ct.options.length<2){ h+='<div class="cf-label">'+ct.label+'</div><p class="cf-note cf-only">'+ct.options[0][1]+'</p>'; return; }
+        h+='<div class="cf-label">'+ct.label+'</div><div class="chips">';
+        ct.options.forEach(function(o){ h+=chip('data-key="'+ct.key+'" data-val="'+o[0]+'"',c[ct.key]===o[0],o[1]+(o[2]?" +$"+o[2]:""),id==="charms"&&o[0]!=="plain"?o[0]:""); });
+        h+='</div>';
+      } else if(ct.type==="multi"){
+        h+='<div class="cf-label">'+ct.label+' <span class="cf-sub">pick any · $'+R.SPEC[id].price+' each</span></div><div class="chips">';
+        ct.options.forEach(function(o){ h+=chip('data-mkey="'+ct.key+'" data-val="'+o[0]+'"',(c[ct.key]||[]).indexOf(o[0])>-1,o[1],""); });
+        h+='</div>';
+      } else if(ct.type==="count"){
+        var n=c[ct.key]||0;
+        h+='<div class="cf-step"><span>'+ct.label+'<small>up to '+ct.max+'</small></span><span class="stepper">'+
+           '<button type="button" data-ckey="'+ct.key+'" data-step="-1" aria-label="Fewer"'+(n<=0?" disabled":"")+'>−</button><b>'+n+'</b>'+
+           '<button type="button" data-ckey="'+ct.key+'" data-step="1" aria-label="More"'+(n>=ct.max?" disabled":"")+'>+</button></span></div>';
+      }
+    });
+    if(id==="extTies" && tieNeedsConnector()){
+      h+='<div class="cf-label">Connector for the middle <span class="cf-sub">+$10</span></div><div class="chips">';
+      R.CONNECTORS.forEach(function(o){ h+=chip('data-conn="'+o[0]+'"',variantOf("connectors")===o[0],o[1],o[0]); });
+      h+='</div><p class="cf-note">The connector goes in your cart as its own line.</p>';
+    }
+    if(id==="beads"){
+      var nb=R.units("beads",c,d);
+      h+='<p class="cf-note">'+nb+' bead'+(nb===1?"":"s")+' in total · $5 for every 3'+(state.topStyle==="triangle"&&state.bottomStyle==="triangle"&&!R.has(d,"connectors.bottom=two")?". Add connectors to both sides of the bottom to bead them too.":"")+'</p>';
+    }
+    if(id==="charms") h+='<p class="cf-note">Every charm needs a clasp. The basic jump ring is included; upgrades are +$10 per charm.</p>';
+    if(id==="buttons" && state.topStyle==="triangle") h+='<p class="cf-note">$5 per button.</p>';
+    return h;
+  }
+  function showErr(drawer,msg){ var p=drawer.querySelector(".cf-error"); p.textContent=msg; p.hidden=!msg; }
+
+  [1,2,3,4].forEach(function(t){
     var items=ADDONS.filter(function(a){return a.tier===t;});
     var div=document.createElement("div"); div.className="tier";
-    div.innerHTML='<div class="tier-title"><span class="dot"></span><span>'+TIER_LABEL[t]+'</span><span class="price-each">'+'from '+fmt(items[0].price)+'</span></div>';
+    div.innerHTML='<div class="tier-title"><span class="dot"></span><span>'+TIER_LABEL[t]+'</span><span class="price-each">'+'from '+fmt(Math.min.apply(null,items.map(function(a){return a.price;})))+'</span></div>';
     var grid=document.createElement("div"); grid.className="addon-grid";
 
     items.forEach(function(a){
@@ -2316,75 +2331,59 @@
       tile.type="button"; tile.className="addon"; tile.dataset.id=a.id;
       tile.setAttribute("aria-expanded","false");
       var iconName=a.art(a.def);
-      tile.innerHTML=(iconName?'<img class="thumbicon" src="art2/'+iconName+'.png" alt="">':'<span class="thumbicon rhine">&#10022;</span>')+
+      tile.innerHTML=(iconName?'<img class="thumbicon" src="art2/'+iconName+'.png" alt="">':'<span class="thumbicon rhine">'+(a.id==="extTies"?"&#8734;":"&#10022;")+'</span>')+
         '<span class="label">'+a.name+'<small>'+a.hint+'</small></span>'+
-        '<span class="addon-state">'+(SETTINGS[a.id]||a.id==="initials"?"from ":"")+fmt(a.price)+'</span>';
+        '<span class="addon-state">'+(FIXED[a.id]?"":"from ")+fmt(a.price)+'</span>';
       tile.addEventListener("click",function(){ openDrawer(a.id); });
       grid.appendChild(tile);
 
       var drawer=document.createElement("div");
       drawer.className="addon-drawer"; drawer.dataset.for=a.id; drawer.hidden=true;
-      var html='';
-      if(a.opts.length>1){
-        html+='<div class="cf-label">'+(/^charms/.test(a.id)?"Choose a charm":a.id==="connectors"?"Choose a connector":a.id==="beadsPearl"?"Choose a size":"Choose a colour")+'</div><div class="chips">';
-        a.opts.forEach(function(o){
-          var art=a.art(o[0]);
-          html+='<button type="button" class="chip" data-val="'+o[0]+'">'+
-                (art?'<img src="art2/'+art+'.png" alt="">':'')+o[1]+'</button>';
-        });
-        html+='</div>';
-      } else {
-        html+='<div class="cf-label">'+a.opts[0][1]+'</div>';
-      }
-      (SETTINGS[a.id]||[]).forEach(function(g){
-        html+='<div class="cf-label">'+g[1]+'</div><div class="chips">';
-        g[2].forEach(function(o){ html+='<button type="button" class="chip setting-chip" data-key="'+g[0]+'" data-val="'+o[0]+'">'+(o[2]?'<img src="art2/'+o[2]+'.png" alt="">':'')+o[1]+'</button>'; });
-        html+='</div>';
-        if(g[0]==="clasp") html+='<p class="cf-note">'+CLASP_NOTE+'</p>';
-        if(a.id==="connectors"&&g[0]==="ties") html+='<p class="cf-note">Extended ties are added to your cart as their own line ($10).</p>';
-      });
+      var html='<div class="dv"></div>';
       if(a.id==="rhinestones"){
         html+='<div class="initials-field"><label for="rsInput">Letters</label>'+
-              '<input id="rsInput" type="text" maxlength="3" style="text-transform:none" value="'+state.rsText+'"><small class="rs-note">Upper or lowercase. Type it exactly how you want it.</small></div>';
+              '<input id="rsInput" type="text" maxlength="3" style="text-transform:none" value="'+state.rsText+'"><small class="rs-note">Type it exactly how you want it. XS tops fit lowercase only; the back of the bottoms fits up to 4 lowercase letters.</small></div>';
       }
-      if(a.id==="initials"){
-        html+='<div class="initials-field"><label for="initialsInput">Initials</label>'+
-              '<input id="initialsInput" type="text" maxlength="3" value="'+state.initials+'"></div>';
+      if(a.id==="charms"){
+        html+='<div class="initials-field letters-field" hidden><label for="initialsInput">Letters</label>'+
+              '<input id="initialsInput" type="text" maxlength="3" value="'+state.initials+'"><small class="rs-note">One charm per letter, $10 each, hanging in the middle.</small></div>';
       }
-      html+='<div class="drawer-actions">'+
+      html+='<p class="cf-error" role="alert" hidden></p><div class="drawer-actions">'+
             '<button type="button" class="cta add-cart" data-add="'+a.id+'">ADD TO CART · '+fmt(a.price)+'</button>'+
             '<button type="button" class="gate-skip drawer-remove" data-remove="'+a.id+'" hidden>Remove from cart</button>'+
             '</div>';
       drawer.innerHTML=html;
 
-      drawer.querySelectorAll(".setting-chip").forEach(function(ch){
-        ch.addEventListener("click",function(){
-          var link=LINKED[a.id]&&LINKED[a.id][ch.dataset.key];
-          if(link) link(ch.dataset.val); else (state.cfg[a.id]=state.cfg[a.id]||{})[ch.dataset.key]=ch.dataset.val;
-          if(a.id==="rhinestones"&&ch.dataset.key==="place") state.view=ch.dataset.val==="back"?"back":"front";
-          if(!state.addons[a.id]) state.preview=a.id;
-          renderAll();
-        });
-      });
-      drawer.querySelectorAll(".chip:not(.setting-chip)").forEach(function(ch){
-        ch.addEventListener("click",function(){
-          state.variant[a.id]=ch.dataset.val;
-          if(!state.addons[a.id]) state.preview=a.id;
-          renderAll();
-        });
+      drawer.addEventListener("click",function(e){
+        var b=e.target.closest("button"); if(!b||!drawer.contains(b)||b.disabled||b.dataset.add||b.dataset.remove) return;
+        var ds=b.dataset, c=state.cfg[a.id]=state.cfg[a.id]||{}, now=cfgFor(a.id);
+        if(ds.variant) state.variant[a.id]=ds.variant;
+        else if(ds.btype){ var col=variantOf("beads").split("-").slice(1).join("-"), cols=R.BEAD_TYPES[ds.btype][1]; state.variant.beads=ds.btype+"-"+(findOpt(cols,col)?col:cols[0][0]); }
+        else if(ds.key){ c[ds.key]=ds.val; if(a.id==="rhinestones"&&ds.key==="place") state.view=ds.val==="butt"?"back":"front"; }
+        else if(ds.mkey){ var cur=now[ds.mkey]||[]; c[ds.mkey]=cur.indexOf(ds.val)>-1?cur.filter(function(x){return x!==ds.val;}):cur.concat([ds.val]); }
+        else if(ds.ckey){ c[ds.ckey]=(now[ds.ckey]||0)+(+ds.step); }
+        else if(ds.conn) state.variant.connectors=ds.conn;
+        else return;
+        if(!state.addons[a.id]) state.preview=a.id;
+        showErr(drawer,"");
+        renderAll();
       });
       var rsi=drawer.querySelector("#rsInput");
-      if(rsi) rsi.addEventListener("input",function(e){ state.rsText=e.target.value; renderAll(); });
+      if(rsi) rsi.addEventListener("input",function(e){ state.rsText=e.target.value; showErr(drawer,""); renderAll(); });
       var ini=drawer.querySelector("#initialsInput");
-      if(ini) ini.addEventListener("input",function(e){ state.initials=e.target.value.toUpperCase(); renderAll(); });
+      if(ini) ini.addEventListener("input",function(e){ state.initials=e.target.value.toUpperCase(); showErr(drawer,""); renderAll(); });
 
       drawer.querySelector("[data-add]").addEventListener("click",function(){
+        if(a.id==="extTies" && tieNeedsConnector()) state.addons.connectors=true; // the connector the ties hang from
+        var err=problemOf(a.id);
+        if(err){ showErr(drawer,err); return; }
         state.addons[a.id]=true; state.preview=null;
         drawer.hidden=true; tile.setAttribute("aria-expanded","false");
         renderAll();
       });
       drawer.querySelector("[data-remove]").addEventListener("click",function(){
         delete state.addons[a.id]; state.preview=null;
+        if(a.id==="connectors" && state.addons.extTies && tieNeedsConnector()) (state.cfg.extTies=state.cfg.extTies||{}).style="plain";
         drawer.hidden=true; tile.setAttribute("aria-expanded","false");
         renderAll();
       });
@@ -2862,12 +2861,8 @@
       "Top: "+styleOf("top").name+" · "+colorOf("top").name+" · size "+state.sizeTop,
       "Bottom: "+styleOf("bottom").name+" · "+colorOf("bottom").name+" · size "+state.sizeBottom];
     list.forEach(function(a){
-      var extra="";
-      if(a.id==="initials"&&state.initials) extra=", "+state.initials.slice(0,3).toUpperCase();
-      else if(a.id==="rhinestones") extra=", "+(state.rsText||"").slice(0,3);
-      else if(a.opts.length>1) extra=", "+variantName(a.id);
-      if(SETTINGS[a.id]) extra+=", "+cfgText(a.id);
-      lines.push("Add-on: "+a.name+extra+" (+"+fmt(priceOf(a.id))+")");
+      var t=addonText(a);
+      lines.push("Add on: "+a.name+(t?", "+t:"")+" (+"+fmt(priceOf(a.id))+")");
     });
     if(state.tote) lines.push("Add-on: Peaces tote, "+state.toteColor+" (+"+fmt(15)+")");
     if(state.headband) lines.push("Add-on: Peaces headband, "+state.headbandColor+" (+"+fmt(10)+")");
@@ -2885,8 +2880,7 @@
       topColor:state.topColor, bottomColor:state.bottomColor,
       sizeTop:state.sizeTop, sizeBottom:state.sizeBottom,
       addons:activeAddons().map(function(a){
-        var c={}; (SETTINGS[a.id]||[]).forEach(function(g){ if(!(LINKED[a.id]&&LINKED[a.id][g[0]])) c[g[0]]=cfg(a.id,g[0]); });
-        return {id:a.id, option:a.opts.length>1?variantName(a.id):"", cfg:c};
+        return {id:a.id, variant:variantOf(a.id), option:a.id==="rhinestones"?"":variantName(a.id), cfg:cfgFor(a.id)};
       }),
       initials:state.initials, rsText:state.rsText, tote:!!state.tote, headband:!!state.headband,
       toteColor:state.toteColor, headbandColor:state.headbandColor
@@ -3114,12 +3108,8 @@
       tile.classList.toggle("checked",added);
       tile.classList.toggle("disabled",off);
       tile.disabled=off;
-      var rs=styleOf("top").ruffle===styleOf("bottom").ruffle
-        ? styleOf("top").ruffle+" ruffle trim"
-        : styleOf("top").ruffle+" top / "+styleOf("bottom").ruffle+" bottom";
-      tile.querySelector("small").textContent = off ? "Not available on these styles"
-        : (def.id==="ruffles" ? rs : def.hint);
-      tile.querySelector(".addon-state").textContent = off ? "" : (added ? "Added ✓ "+fmt(priceOf(def.id)) : (SETTINGS[def.id]?"from ":"")+fmt(def.price));
+      tile.querySelector("small").textContent = off ? "Not available on these styles" : hintOf(def);
+      tile.querySelector(".addon-state").textContent = off ? "" : (added ? "Added ✓ "+fmt(priceOf(def.id)) : (FIXED[def.id]?"":"from ")+fmt(def.price));
       var icon=tile.querySelector("img.thumbicon");
       if(icon){ var art=def.art(variantOf(def.id)); if(art) icon.src="art2/"+art+".png"; }
       if(off){
@@ -3130,27 +3120,16 @@
     });
     tierContainer.querySelectorAll(".addon-drawer").forEach(function(dr){
       var id=dr.dataset.for;
-      dr.querySelectorAll(".chip:not(.setting-chip)").forEach(function(ch){
-        ch.setAttribute("aria-pressed",ch.dataset.val===variantOf(id)?"true":"false");
-      });
+      if(!addonAvailable(id)) return;
+      dr.querySelector(".dv").innerHTML=drawerHtml(addonDef(id));
       var add=dr.querySelector("[data-add]"), rem=dr.querySelector("[data-remove]");
       add.hidden=!!state.addons[id]; rem.hidden=!state.addons[id];
-      var seamless=state.bottomStyle==="seamless";
-      if(id==="laceTrim"){
-        if(seamless && cfg("laceTrim","bottom")==="around") (state.cfg.laceTrim=state.cfg.laceTrim||{}).bottom="front";
-        dr.querySelectorAll('.setting-chip[data-key="bottom"][data-val="around"]').forEach(function(ch){ ch.hidden=seamless; });
-      }
-      if(id==="fringe"||id==="laceRuffles"){ // same spots as the lace: no sides / all-around on the seamless bottom, no straps on the bralette
-        var c=(state.cfg[id]=state.cfg[id]||{}), bralette=state.topStyle==="underwire";
-        if(seamless && /sides|around/.test(cfg(id,"lower"))) c.lower="front";
-        if(id==="fringe" && bralette && cfg(id,"edge")==="straps") c.edge="hem";
-        dr.querySelectorAll('.setting-chip[data-key="lower"]').forEach(function(ch){ ch.hidden=seamless&&/sides|around/.test(ch.dataset.val); });
-        dr.querySelectorAll('.setting-chip[data-key="edge"][data-val="straps"]').forEach(function(ch){ ch.hidden=bralette&&id==="fringe"; });
-      }
       add.textContent="ADD TO CART · "+fmt(priceOf(id));
-      dr.querySelectorAll(".setting-chip").forEach(function(ch){
-        ch.setAttribute("aria-pressed",cfg(id,ch.dataset.key)===ch.dataset.val?"true":"false");
-      });
+      if(id==="rhinestones") dr.querySelector("#rsInput").maxLength=cfg("rhinestones","place")==="butt"?4:3;
+      if(id==="charms"){
+        dr.querySelector(".letters-field").hidden=variantOf("charms")!=="letters";
+        dr.querySelector("#initialsInput").maxLength=state.topStyle==="underwire"?1:3;
+      }
     });
   }
 
