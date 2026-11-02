@@ -39,6 +39,27 @@ export function startMockShopify(port) {
       c.smsMarketingConsent = smsMarketingConsent;
       return send({ data: { customerSmsMarketingConsentUpdate: { userErrors: [] } } });
     }
+    if ((query.includes("tagsAdd") || query.includes("tagsRemove")) && /DraftOrder/.test(variables.id)) {
+      const op = query.includes("tagsAdd") ? "tagsAdd" : "tagsRemove";
+      const d = db.drafts.find((x) => x.id === variables.id);
+      if (!d) return send({ data: { [op]: { userErrors: [{ field: ["id"], message: "not found" }] } } });
+      const extra = new Set(d.extraTags || []);
+      variables.tags.forEach((t) => (op === "tagsAdd" ? extra.add(t) : extra.delete(t)));
+      d.extraTags = [...extra];
+      return send({ data: { [op]: { userErrors: [] } } });
+    }
+    if (query.includes("draftOrders(first:")) {
+      const view = (d) => ({ id: d.id, name: d.name, createdAt: d.createdAt, status: d.status || "OPEN", email: null, customer: null,
+        tags: [...((d.update && d.update.tags) || d.input.tags || []), ...(d.extraTags || [])],
+        customAttributes: (d.update && d.update.customAttributes) || d.input.customAttributes || [],
+        lineItems: { nodes: d.input.lineItems.map((l) => ({ title: l.title, quantity: l.quantity || 1, customAttributes: l.customAttributes || [] })) } });
+      db.lastDraftQuery = variables && variables.q;
+      return send({ data: { draftOrders: { nodes: db.drafts.filter((d) => !variables || (d.input.tags || []).includes("peaces-builder")).map(view) } } });
+    }
+    if (query.includes("draftOrder(id:")) {
+      const d = db.drafts.find((x) => x.id === variables.id);
+      return send({ data: { draftOrder: d ? { customAttributes: (d.update && d.update.customAttributes) || d.input.customAttributes || [] } : null } });
+    }
     if (query.includes("tagsAdd")) {
       const c = db.customers.find((x) => x.id === variables.id);
       if (!c) return send({ data: { tagsAdd: { userErrors: [{ field: ["id"], message: "not found" }] } } });
@@ -66,7 +87,7 @@ export function startMockShopify(port) {
       const i = variables.input;
       const sub = i.lineItems.reduce((s, l) => s + +l.originalUnitPriceWithCurrency.amount * (l.quantity || 1), 0);
       const tot = i.appliedDiscount ? sub * (1 - i.appliedDiscount.value / 100) : sub;
-      const d = { id: "gid://shopify/DraftOrder/" + (1000 + db.drafts.length), name: "#D" + (db.drafts.length + 1), input: i };
+      const d = { id: "gid://shopify/DraftOrder/" + (1000 + db.drafts.length), name: "#D" + (db.drafts.length + 1), input: i, createdAt: new Date().toISOString() };
       db.drafts.push(d);
       return send({ data: { draftOrderCreate: { draftOrder: { id: d.id, name: d.name, invoiceUrl: "https://example.com/invoice/" + d.name.slice(1),
         subtotalPriceSet: { shopMoney: { amount: sub.toFixed(2) } }, totalPriceSet: { shopMoney: { amount: tot.toFixed(2) } } }, userErrors: [] } } });

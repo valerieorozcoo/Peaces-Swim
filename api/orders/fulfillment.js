@@ -13,12 +13,19 @@ export default route(["POST"], async (body) => {
   if (mode === "pickup" && !pickupAt) throw new Error("Choose a pickup time");
   const minutes = Math.max(0, Math.min(600, parseInt(body.minutes, 10) || 0));
 
+  // Keep what checkout already put on the order (e.g. the customer's name for the seamstresses)
+  // and replace only the fulfilment details, so changing your mind doesn't leave stale ones.
+  const current = await gql(`query($id:ID!){ draftOrder(id:$id){ customAttributes{ key value } } }`, { id });
+  const OURS = ["Source", "Fulfilment", "Pickup time", "Estimated minutes", "Chosen at"];
+  const kept = ((current.draftOrder && current.draftOrder.customAttributes) || []).filter((a) => !OURS.includes(a.key));
   const attrs = [
+    ...kept,
     { key: "Source", value: "Peaces Swim Builder" },
     { key: "Fulfilment", value: mode === "wait" ? "Wait & watch" : "Pick up later" },
   ];
   if (mode === "pickup") attrs.push({ key: "Pickup time", value: pickupAt });
   if (minutes) attrs.push({ key: "Estimated minutes", value: String(minutes) });
+  attrs.push({ key: "Chosen at", value: new Date().toISOString() }); // first come, first served on the seamstress page
 
   const tags = ["peaces-builder", mode === "wait" ? "wait-and-watch" : "pickup"];
   const data = await gql(

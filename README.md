@@ -14,6 +14,8 @@ Design-your-own bikini app for Peaces Swim — pick your peaces, design your dre
 | Name + email → SAVE 10% | `POST /api/customers/create` | Creates a customer tagged `peaces-builder`, or accepts matching existing contact details. Conflicting email/phone pairs return an error without changing records. A successful save returns a one-hour signed welcome-discount receipt. Email marketing is only turned on for new customers if they tick the box. |
 | CHECKOUT | `POST /api/orders/create` | Re-prices the design on the server and creates a **guest draft order** (tagged `peaces-builder`) with every add-on as its own line. A valid welcome receipt applies 10%; expired or invalid receipts stop checkout with an error. No existing Shopify account is attached from a phone number. |
 | Wait & watch / Pick it up later | `POST /api/orders/fulfillment` | Adds `wait-and-watch` or `pickup` tags + the pickup time to that draft order. |
+| Seamstress page (`/seamstress`) | `POST /api/seamstress/queue` | Passcode-protected. Lists builder orders from the last 3 days in two queues: **Wait & Watch** (first come, first served) and **Pickup Later** (soonest pickup first). Each card shows the order number, customer name, the bikini picture, top/bottom style + fabric + size, and every add-on with its color and placement. |
+| Seamstress page → Mark done | `POST /api/seamstress/done` | Tags the draft order `seamstress-done` so it leaves the queue (Undo removes the tag). |
 | — | `GET /api/health` | Shows whether the Shopify settings are filled in. |
 
 Prices live in `lib/catalog.js`. If you change a price or an add-on in `index.html`, change it there too — the server's number is the one the customer pays.
@@ -60,6 +62,7 @@ The store and the app must be in the same Shopify organization (they will be if 
 | `SHOPIFY_CLIENT_ID` | from step 2 |
 | `SHOPIFY_CLIENT_SECRET` | from step 2 |
 | `ORDER_SIGNING_SECRET` | any long random string |
+| `SEAMSTRESS_PASSCODE` | the passcode the seamstresses type on `/seamstress` (pick something long) |
 
 3. **Deployments → ⋯ → Redeploy** so the settings take effect
 4. Visit `https://<your-project>.vercel.app/api/health` — you want `"shopDomainSet": true, "credentialsSet": true`
