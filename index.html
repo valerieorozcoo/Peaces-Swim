@@ -1058,6 +1058,60 @@
   .cta.cta-soft{margin-top:10px;}
   .bag-toast{position:fixed; left:50%; top:70px; transform:translateX(-50%); z-index:70; padding:12px 20px; border-radius:999px; background:#4B2470; color:#fff; font-size:15px; box-shadow:0 10px 30px rgba(75,36,112,.3); max-width:calc(100% - 32px); text-align:center;}
   @media (max-width:880px){ .stage{top:62px !important;} }
+
+  /* ===== Builder v3: slim logo header with bag icon, Step 1 colour → shape → size ===== */
+  header.top.builder-top{position:sticky; top:0; z-index:40; display:flex; align-items:center; justify-content:space-between; gap:12px;
+    margin:0 -20px 14px; padding:10px 20px; background:#fff; border-bottom:1px solid #EFDDFD;}
+  header.top.builder-top img.logo{height:52px !important; width:auto !important;}
+  header.top.builder-top .tagline{display:none;}
+  .cart-btn{position:relative; display:grid; place-items:center; width:50px; height:50px; border-radius:999px; background:#EFDDFD; color:#4B2470; border:1.5px solid var(--sig-edge); cursor:pointer;}
+  .cart-btn:hover{border-color:#4B2470;}
+  .cart-btn b{position:absolute; top:-4px; right:-4px; min-width:22px; height:22px; padding:0 5px; border-radius:999px; background:#4B2470; color:#fff; font-size:12.5px; display:grid; place-items:center;}
+  .cart-shade{position:fixed; inset:0; z-index:85; background:rgba(46,24,66,.35);}
+  .cart-drawer{position:fixed; top:0; right:0; bottom:0; z-index:90; width:min(420px,100%); background:#fff; display:flex; flex-direction:column; box-shadow:-12px 0 40px rgba(75,36,112,.2);}
+  .cart-drawer[hidden],.cart-shade[hidden]{display:none;}
+  .cart-head{display:flex; align-items:center; justify-content:space-between; padding:18px 20px; border-bottom:1px solid #EFDDFD;}
+  .cart-head h2{margin:0; font-size:22px; font-weight:500; color:#4B2470;}
+  .cart-x{width:44px; height:44px; border-radius:999px; border:1.5px solid var(--sig-edge); background:#EFDDFD; color:#4B2470; font-size:26px; line-height:1; cursor:pointer;}
+  .cart-drawer .bag-list{flex:1; overflow:auto; padding:16px 20px; margin:0; max-height:none;}
+  .cart-foot{padding:16px 20px calc(16px + env(safe-area-inset-bottom,0px)); border-top:1px solid #EFDDFD; display:flex; flex-direction:column; gap:8px; align-items:stretch;}
+  .cart-total{display:flex; justify-content:space-between; align-items:baseline; color:#4B2470; font-size:16px;}
+  .cart-total strong{font-size:22px;} .cart-total s{opacity:.55; font-weight:400; margin-right:6px; font-size:15px;}
+  .cart-foot .cta{margin:0;} .cart-foot .gate-skip{align-self:center;}
+
+  .step-n{margin:0 0 2px; font-size:14px; letter-spacing:.22em; text-transform:uppercase; color:var(--fs-orchid,#8A5BB8);}
+  .base-part{padding:14px 0 6px; border-top:1px solid #EFDDFD; margin-top:14px;}
+  .bp-head{display:flex; align-items:baseline; justify-content:space-between; gap:10px; flex-wrap:wrap;}
+  .bp-head h3{margin:0; font-size:20px; font-weight:500; color:#4B2470;}
+  .bp-sel{font-size:14px; color:rgba(46,36,51,.7);}
+  .bp-label{margin:14px 0 8px; font-size:14px; letter-spacing:.14em; text-transform:uppercase; color:rgba(46,36,51,.7);}
+  .bp-label .swatch-name{display:inline; margin:0 0 0 8px; letter-spacing:0; text-transform:none; color:#4B2470;}
+  #pageStyle .swatch-row{gap:14px;}
+  #pageStyle .swatch{width:44px; height:44px; border-radius:999px !important; border:2px solid #fff; box-shadow:0 0 0 1px rgba(46,36,51,.18); overflow:hidden;}
+  #pageStyle .swatch[aria-pressed="true"]{box-shadow:0 0 0 2px #4B2470;}
+  #pageStyle .swatch[aria-pressed="true"]::after{display:none;}
+  #pageStyle .swatch.crossed{opacity:.55;}
+  #pageStyle .swatch.crossed::before{content:""; position:absolute; left:50%; top:-10%; width:2px; height:120%; background:#fff; box-shadow:0 0 0 1px rgba(46,36,51,.55); transform:translateX(-50%) rotate(45deg);}
+  #pageStyle .shape-row{display:flex !important; gap:12px; flex-wrap:wrap;}
+  #pageStyle .shape-btn{position:relative; width:112px; padding:8px 8px 6px; display:flex; flex-direction:column; align-items:center; gap:4px; border:1.5px solid #EFDDFD; border-radius:16px !important; background:#fff; cursor:pointer; overflow:hidden;}
+  #pageStyle .shape-btn img{width:76px; height:56px; object-fit:contain;}
+  #pageStyle .shape-btn .name{font-size:14px; font-weight:400; color:#4B2470; text-align:center;}
+  #pageStyle .shape-btn[aria-pressed="true"]{background:#EFDDFD !important; border-color:#4B2470 !important;}
+  #pageStyle .shape-btn.crossed{opacity:.5;}
+  #pageStyle .shape-btn.crossed::after{content:""; position:absolute; left:50%; top:-20%; width:1.5px; height:140%; background:rgba(46,36,51,.55); transform:translateX(-50%) rotate(40deg);}
+  #pageStyle .size-row{gap:4px;}
+  #pageStyle .size-btn{min-width:48px; min-height:44px; padding:8px 10px; border:0 !important; background:none !important; border-radius:0 !important; font-size:16px; color:rgba(46,36,51,.75) !important; position:relative;}
+  #pageStyle .size-btn[aria-pressed="true"]{color:#4B2470 !important; font-weight:600;}
+  #pageStyle .size-btn[aria-pressed="true"]::after{content:""; position:absolute; left:12px; right:12px; bottom:6px; height:2px; background:#4B2470;}
+  @media (max-width:880px){
+    header.top.builder-top{margin:0 -20px 10px; padding:8px 16px;}
+    header.top.builder-top img.logo{height:42px !important;}
+    .stage{top:62px !important;}
+    .rig{--u:min(0.27%, 0.038svh) !important;}
+    .custom-count .cc-n{font-size:18px !important;}
+    .custom-count{font-size:13px !important;}
+  }
+  @media (min-width:881px){ .stage-col{top:88px !important;} }
 </style>
 
 <!-- ================= Landing page =================
@@ -1359,20 +1413,24 @@
 </div>
 
 <div class="wrap" id="builder" hidden>
-  <div class="bagbar" id="bagbar">
-    <button class="bag-toggle" id="bagToggle" type="button" aria-expanded="false" aria-controls="bagList">
-      <span class="bag-ico" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 7h12l-1 13H7L6 7z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg></span>
-      <span class="bag-label">Your bag <b id="bagCount">0</b></span>
-      <span class="bag-total" id="bagTotal">$95.00</span>
-      <span class="bag-caret" aria-hidden="true">&#9662;</span>
-    </button>
-    <div class="bag-list" id="bagList" hidden></div>
-  </div>
   <div class="bag-toast" id="bagToast" role="status" aria-live="polite" hidden></div>
-  <header class="top">
+  <header class="top builder-top" id="bagbar">
     <a href="#" aria-label="Back to the Peaces Swim home page"><img class="logo" src="art/logo-ps.png" alt="Peaces Swim"></a>
-    <p class="tagline">pick your peaces, design your dream</p>
+    <button class="cart-btn" id="bagToggle" type="button" aria-haspopup="dialog" aria-controls="cartDrawer" aria-label="Your bag">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 7h12l-1 13H7L6 7z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg>
+      <b id="bagCount">1</b>
+    </button>
   </header>
+  <div class="cart-shade" id="cartShade" hidden></div>
+  <aside class="cart-drawer" id="cartDrawer" hidden role="dialog" aria-modal="true" aria-label="Your bag">
+    <div class="cart-head"><h2>Your bag</h2><button class="cart-x" id="cartClose" type="button" aria-label="Close bag">&times;</button></div>
+    <div class="bag-list" id="bagList"></div>
+    <div class="cart-foot">
+      <div class="cart-total"><span>Total</span><strong id="bagTotal">$95.00</strong></div>
+      <button class="cta" id="cartCheckout" type="button">CHECKOUT</button>
+      <button class="gate-skip" id="cartKeep" type="button">Keep designing</button>
+    </div>
+  </aside>
 
   <div class="layout">
     <div class="stage-col">
@@ -1418,31 +1476,32 @@
 
       <div id="pageStyle">
         <section class="step">
-          <div class="step-head"><h2>Pick your top</h2><p class="hint">Shape, size and fabric, $95 for the set.</p></div>
-          <div class="base-grid" id="topStyleGrid"></div>
-          <div class="sub-head">Size</div>
-          <div class="size-row" id="sizeTop"></div>
-          <div class="sub-head">Fabric</div>
-          <div class="swatch-row" id="topSwatches"></div>
-          <span class="swatch-name" id="topSwatchName"></span>
+          <div class="step-head"><p class="step-n">Step 1</p><h2>Pick your base</h2><p class="hint">Choose a colour, then the shape and size of your top and bottom. $95 for the set, and you can mix and match.</p></div>
+          <div class="base-part">
+            <div class="bp-head"><h3>Top</h3><span class="bp-sel" id="topSel"></span></div>
+            <div class="bp-label">Colour <span class="swatch-name" id="topSwatchName"></span></div>
+            <div class="swatch-row" id="topSwatches"></div>
+            <div class="bp-label">Style</div>
+            <div class="shape-row base-grid" id="topStyleGrid"></div>
+            <div class="bp-label">Size</div>
+            <div class="size-row" id="sizeTop"></div>
+          </div>
+          <div class="base-part">
+            <div class="bp-head"><h3>Bottom</h3><span class="bp-sel" id="bottomSel"></span></div>
+            <div class="bp-label">Colour <span class="swatch-name" id="bottomSwatchName"></span></div>
+            <div class="swatch-row" id="bottomSwatches"></div>
+            <div class="bp-label">Style</div>
+            <div class="shape-row base-grid" id="bottomStyleGrid"></div>
+            <div class="bp-label">Size</div>
+            <div class="size-row" id="sizeBottom"></div>
+          </div>
         </section>
-
-        <section class="step">
-          <div class="step-head"><h2>Pick your bottom</h2><p class="hint">Mix and match. It doesn't have to match the top.</p></div>
-          <div class="base-grid" id="bottomStyleGrid"></div>
-          <div class="sub-head">Size</div>
-          <div class="size-row" id="sizeBottom"></div>
-          <div class="sub-head">Fabric</div>
-          <div class="swatch-row" id="bottomSwatches"></div>
-          <span class="swatch-name" id="bottomSwatchName"></span>
-        </section>
-
-        <button class="cta" id="toPeaces" type="button">NEXT: PICK YOUR PEACES</button>
+        <button class="cta" id="toPeaces" type="button">NEXT: STEP 2, PICK YOUR PEACES</button>
       </div>
 
       <div id="pagePeaces" hidden>
         <section class="step">
-          <div class="step-head"><h2>Pick your Peaces</h2><p class="hint">Mix and match, priced per add on.</p></div>
+          <div class="step-head"><p class="step-n">Step 2</p><h2>Pick your Peaces</h2><p class="hint">Mix and match, priced per add on.</p></div>
           <div id="tierContainer"></div>
         </section>
         <button class="cta" id="allDone" type="button">ALL DONE</button>
@@ -1451,7 +1510,7 @@
 
       <div id="pageExtras" hidden>
         <section class="step">
-          <div class="step-head"><h2>Anything else?</h2><p class="hint">Two little things that go with everything.</p></div>
+          <div class="step-head"><p class="step-n">Step 3</p><h2>Anything else?</h2><p class="hint">Two little things that go with everything.</p></div>
           <div class="extras-grid">
             <div class="extra">
               <div class="extra-shot band"><img id="hbImg" src="art2/headband-green.jpg" alt="Peaces headband"></div>
@@ -1714,7 +1773,7 @@
     topColor:"green", bottomColor:"green",
     sizeTop:"S", sizeBottom:"S", addons:{}, variant:{}, preview:null,
     tote:false, headband:false, toteColor:"pink", headbandColor:"green", fulfil:null, pickupAt:null,
-    initials:"VAL", rsText:"K", perk:false, view:"front", cfg:{}
+    initials:"VAL", rsText:"K", perk:false, view:"front", cfg:{}, picked:{top:{color:false,style:false},bottom:{color:false,style:false}}
   };
 
   /* geometry measured from the photo cut-outs (3x the source photo), in artwork pixels */
@@ -2078,25 +2137,26 @@
     if(typeof renderBag==="function" && document.getElementById("bagbar")) renderBag(sub);
     if(typeof syncCheckoutPop==="function" && document.getElementById("checkoutPop")) syncCheckoutPop();
   }
-  function renderAll(){ renderRig(); renderSummary(); syncControls(); }
+  function renderAll(){ renderRig(); renderSummary(); syncControls(); syncBaseSel(); }
 
   /* ---------- controls ---------- */
+  /* Step 1: every colour shows first. Once a colour is picked, shapes that don't come in it get a line
+     through (and the other way round); tapping a crossed-out option switches to a combination that works. */
+  function famOfColor(id){ return colorDef(id).family; }
   function buildStyleGrid(part){
     var grid=document.getElementById(part==="top"?"topStyleGrid":"bottomStyleGrid");
     grid.innerHTML="";
+    var curStyle=part==="top"?state.topStyle:state.bottomStyle, curColor=part==="top"?state.topColor:state.bottomColor;
     Object.keys(STYLES[part]).forEach(function(id){
       var st=STYLES[part][id];
       var card=document.createElement("button");
-      card.type="button"; card.className="base-card"; card.dataset.style=id; card.dataset.part=part;
-      card.setAttribute("aria-pressed",(part==="top"?state.topStyle:state.bottomStyle)===id?"true":"false");
-      var thumb=document.createElement("div"); thumb.className="thumb";
-      var firstCol=colorsFor(st.family)[0];
-      thumb.appendChild(makePiece(st.art,{thumb:true,colorId:(part==="top"?state.topStyle:state.bottomStyle)===id?(part==="top"?state.topColor:state.bottomColor):firstCol.id}));
-      card.appendChild(thumb);
-      var meta=document.createElement("div");
-      meta.innerHTML='<div class="name">'+st.name+'</div><div class="desc">'+st.desc+'</div>';
-      card.appendChild(meta);
-      card.addEventListener("click",function(){ pickStyle(part,id); });
+      card.type="button"; card.className="base-card shape-btn"; card.dataset.style=id; card.dataset.part=part;
+      var crossed=state.picked[part].color && famOfColor(curColor)!==st.family;
+      card.classList.toggle("crossed",crossed);
+      card.setAttribute("aria-pressed",curStyle===id?"true":"false");
+      card.title=st.name+(crossed?" (not available in "+colorDef(curColor).name+")":"");
+      card.innerHTML='<img src="art/line-'+st.art.replace("b-","")+'.png" alt=""><span class="name">'+st.name+'</span>';
+      card.addEventListener("click",function(){ state.picked[part].style=true; pickStyle(part,id); });
       grid.appendChild(card);
     });
   }
@@ -2121,21 +2181,36 @@
     var row=document.getElementById(part==="top"?"topSwatches":"bottomSwatches");
     var nameEl=document.getElementById(part==="top"?"topSwatchName":"bottomSwatchName");
     row.innerHTML="";
-    var fam=styleOf(part).family;
-    colorsFor(fam).forEach(function(c){
+    var fam=styleOf(part).family, cur=part==="top"?state.topColor:state.bottomColor;
+    COLORS.forEach(function(c){
       var b=document.createElement("button");
-      b.type="button"; b.className="swatch"; b.title=c.name; b.dataset.color=c.id;
-      b.setAttribute("aria-pressed",(part==="top"?state.topColor:state.bottomColor)===c.id?"true":"false");
+      b.type="button"; b.className="swatch"; b.dataset.color=c.id;
+      var crossed=state.picked[part].style && c.family!==fam && c.family!=="both";
+      b.classList.toggle("crossed",crossed);
+      b.title=c.name+(crossed?" (comes in the other shape)":"");
+      b.setAttribute("aria-label",b.title);
+      b.setAttribute("aria-pressed",cur===c.id?"true":"false");
       if(c.fill==="leopard"){ b.style.backgroundImage='url("art2/cheetah-swatch.jpg")'; b.style.backgroundSize="cover"; b.style.backgroundPosition="center"; }
       else b.style.background=c.fill;
       b.addEventListener("click",function(){
+        state.picked[part].color=true;
         if(part==="top") state.topColor=c.id; else state.bottomColor=c.id;
-        nameEl.textContent=c.name;
-        renderAll(); buildStyleGrid(part);
+        /* keep the shape legal for the new colour */
+        if(styleOf(part).family!==c.family && c.family!=="both"){
+          var ok=Object.keys(STYLES[part]).filter(function(k){ return STYLES[part][k].family===c.family; })[0];
+          if(ok){ if(part==="top") state.topStyle=ok; else state.bottomStyle=ok; ADDONS.forEach(function(a){ if(!addonAvailable(a.id)) delete state.addons[a.id]; }); }
+        }
+        buildSwatches(part); buildStyleGrid(part); renderAll();
       });
       row.appendChild(b);
     });
     nameEl.textContent=colorOf(part).name;
+  }
+  function syncBaseSel(){
+    ["top","bottom"].forEach(function(part){
+      var el=document.getElementById(part+"Sel"); if(!el) return;
+      el.textContent=styleOf(part).name+" · "+colorOf(part).name+" · "+(part==="top"?state.sizeTop:state.sizeBottom);
+    });
   }
 
   ["top","bottom"].forEach(function(part){ buildStyleGrid(part); buildSwatches(part); });
@@ -2797,7 +2872,8 @@
   function saveDesign(){}
   var FRESH=JSON.stringify({topStyle:state.topStyle,bottomStyle:state.bottomStyle,topColor:state.topColor,bottomColor:state.bottomColor,
     sizeTop:state.sizeTop,sizeBottom:state.sizeBottom,addons:{},variant:{},cfg:{},preview:null,tote:false,headband:false,
-    toteColor:state.toteColor,headbandColor:state.headbandColor,initials:state.initials,rsText:state.rsText,view:"front",fulfil:null,pickupAt:null});
+    toteColor:state.toteColor,headbandColor:state.headbandColor,initials:state.initials,rsText:state.rsText,view:"front",fulfil:null,pickupAt:null,
+    picked:{top:{color:false,style:false},bottom:{color:false,style:false}}});
   function resetDesign(){
     var f=JSON.parse(FRESH); Object.keys(f).forEach(function(k){ state[k]=f[k]; });
     closeDrawers(null);
@@ -2967,9 +3043,16 @@
     var full=bag.length+1>=MAX_BAG;
     ["addAnother","addAnother2"].forEach(function(id){ var b=document.getElementById(id); if(b) b.hidden=full; });
   }
-  document.getElementById("bagToggle").addEventListener("click",function(){
-    var l=document.getElementById("bagList"); l.hidden=!l.hidden; this.setAttribute("aria-expanded",l.hidden?"false":"true");
-  });
+  /* the bag lives behind the little bag icon at the top right */
+  function setCart(open){
+    document.getElementById("cartDrawer").hidden=!open; document.getElementById("cartShade").hidden=!open;
+    document.documentElement.style.overflow=open?"hidden":"";
+    if(open) document.getElementById("cartClose").focus(); else document.getElementById("bagToggle").focus({preventScroll:true});
+  }
+  document.getElementById("bagToggle").addEventListener("click",function(){ setCart(true); });
+  ["cartClose","cartKeep","cartShade"].forEach(function(id){ document.getElementById(id).addEventListener("click",function(){ setCart(false); }); });
+  document.addEventListener("keydown",function(e){ if(e.key==="Escape" && !document.getElementById("cartDrawer").hidden) setCart(false); });
+  document.getElementById("cartCheckout").addEventListener("click",function(){ setCart(false); document.getElementById("checkoutBtn").click(); });
   async function addToBagAndStartOver(btn){
     if(btn.dataset.busy||bag.length+1>=MAX_BAG) return;
     btn.dataset.busy="1"; var label=btn.textContent; btn.textContent="ADDING…";
