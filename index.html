@@ -655,6 +655,15 @@
   .swatch-name{display:block; margin-top:9px; font-size:14.5px; color:var(--ink-soft);}
 
   .tier{margin-bottom:16px;} .tier:last-child{margin-bottom:0;}
+  .tier-nav{margin:0 0 14px;}
+  .tier-nav-top{display:flex; align-items:center; justify-content:space-between; gap:10px;}
+  .tier-count{font-size:13px; letter-spacing:.16em; text-transform:uppercase; color:var(--deep-purple,#4B2470); font-weight:600;}
+  .tier-dots{display:flex;}
+  .tier-dots button{width:26px; height:26px; padding:0; border:0; background:none; position:relative; cursor:pointer;}
+  .tier-dots button::after{content:""; position:absolute; inset:9px; border-radius:999px; background:#E7DAF3;}
+  .tier-dots button.on::after{background:#4B2470; inset:8px;}
+  .tier-names{margin:4px 0 0; font-size:13.5px; color:var(--ink-soft);}
+  @media (max-width:640px){ .tier-title{display:none;} } /* the Tier x of 4 bar replaces it on a phone */
   .tier-title{display:flex; align-items:center; gap:8px; font-size:12.5px; text-transform:uppercase; letter-spacing:.12em; color:var(--ink-soft); margin-bottom:9px;}
   .tier-title .dot{width:7px; height:7px; border-radius:0; background:var(--aqua);}
   .tier-title .price-each{margin-left:auto; text-transform:none; letter-spacing:0; font-size:14.5px; color:var(--pink); font-weight:500;}
@@ -2277,9 +2286,9 @@
     document.getElementById("cpBtn").tabIndex=show?0:-1;
   }
   document.getElementById("cpBtn").addEventListener("click",function(){ document.getElementById("checkoutBtn").click(); });
-  document.getElementById("toPeaces").addEventListener("click",function(){ showPage("pagePeaces"); });
-  document.getElementById("backToStyle").addEventListener("click",function(){ showPage("pageStyle"); });
-  document.getElementById("allDone").addEventListener("click",function(){ showPage("pageExtras"); });
+  document.getElementById("toPeaces").addEventListener("click",function(){ tierPage=0; showPage("pagePeaces"); syncTierPages(); });
+  document.getElementById("backToStyle").addEventListener("click",function(){ if(tierStep(-1)) return; showPage("pageStyle"); });
+  document.getElementById("allDone").addEventListener("click",function(){ if(tierStep(1)) return; showPage("pageExtras"); });
   document.getElementById("extrasNext").addEventListener("click",function(){ showPage("pageDone"); document.getElementById("checkoutBtn").click(); });
   document.getElementById("extrasNo").addEventListener("click",function(){
     state.tote=false; state.headband=false; syncExtras(); renderSummary(); showPage("pageDone");
@@ -2452,6 +2461,39 @@
 
     div.appendChild(grid); tierContainer.appendChild(div);
   });
+
+  /* ---------- on a phone each tier is its own page (Next / Back); on a laptop they all stay on one page ---------- */
+  var phoneQ=window.matchMedia("(max-width:640px)"), tierPage=0;
+  var tierNav=document.createElement("div"); tierNav.className="tier-nav"; tierNav.hidden=true;
+  tierNav.innerHTML='<div class="tier-nav-top"><span class="tier-count"></span><span class="tier-dots"></span></div><p class="tier-names"></p>';
+  tierContainer.parentNode.insertBefore(tierNav,tierContainer);
+  function tierEls(){ return tierContainer.querySelectorAll(".tier"); }
+  function syncTierPages(){
+    var tiers=tierEls(), n=tiers.length, m=phoneQ.matches;
+    if(tierPage>=n) tierPage=n-1;
+    tiers.forEach(function(t,i){ t.hidden=m && i!==tierPage; });
+    tierNav.hidden=!m;
+    tierNav.querySelector(".tier-count").textContent="Tier "+(tierPage+1)+" of "+n;
+    tierNav.querySelector(".tier-names").textContent=ADDONS.filter(function(a){ return a.tier===tierPage+1; }).map(function(a){ return a.name; }).join(" · ");
+    var dots=tierNav.querySelector(".tier-dots"), html="";
+    for(var i=0;i<n;i++) html+='<button type="button" data-tier="'+i+'" aria-label="Go to tier '+(i+1)+'"'+(i===tierPage?' class="on" aria-current="step"':'')+'></button>';
+    dots.innerHTML=html;
+    var last=tierPage===n-1;
+    document.getElementById("allDone").textContent=(!m||last)?"ALL DONE":"NEXT: TIER "+(tierPage+2);
+    document.getElementById("backToStyle").textContent=(m&&tierPage>0)?"Back to tier "+tierPage:"Back to shape, size & fabric";
+  }
+  function goTier(i){
+    tierPage=i; closeDrawers(null); state.preview=null;
+    renderAll(); syncTierPages(); window.scrollTo(0,0);
+  }
+  function tierStep(dir){ // true when the phone moved to another tier instead of leaving Step 2
+    if(!phoneQ.matches) return false;
+    var next=tierPage+dir; if(next<0||next>=tierEls().length) return false;
+    goTier(next); return true;
+  }
+  tierNav.addEventListener("click",function(e){ var b=e.target.closest("[data-tier]"); if(b) goTier(+b.dataset.tier); });
+  if(phoneQ.addEventListener) phoneQ.addEventListener("change",syncTierPages); else phoneQ.addListener(syncTierPages);
+  syncTierPages();
 
   /* ---------- anything else: headband + tote ---------- */
   var HB_COLORS=[["green","Mint","#93D1BF"],["teal","Teal","#2FACBE"],["coral","Coral","#FD645D"],["cheetah","Cheetah",""]];
