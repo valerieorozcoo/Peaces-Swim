@@ -2061,7 +2061,8 @@
        small and large mixed, like the coral sample (first one tucked in the corner, the next beside it, the third below) */
     if(on("buttons")){
       var bc=cfgFor("buttons");
-      if(tri){ var btn=W*0.062; alongSegs(g.trimSegs,isTop?bc.tn:bc.bn).forEach(function(p){ img(svg,"button-white",p[0],p[1]+(isTop?0:btn*0.45),btn,btn,0); }); }
+      if(tri){ var TS={large:W*0.07,small:W*0.05}, lst=(bc.str||{})[isTop?"tn":"bn"]||[];
+        alongSegs(g.trimSegs,lst.length).forEach(function(p,i){ var d=TS[lst[i]]||TS.large; img(svg,"button-white",p[0],p[1]+(isTop?0:W*0.03),d,d,0); }); }
       else {
         var BIG=W*0.078, SIZE={large:BIG,small:W*0.056}, SPOT=[[0.72,0.78],[1.72,0.98],[1.0,1.72]], ST2=bc.str||{};
         (isTop?[[[g.junctionL[0]-W*0.055,g.junctionL[1]+W*0.01],"tl",1],[[g.junctionR[0]+W*0.055,g.junctionR[1]+W*0.01],"tr",-1]]:[[g.hipL,"bl",1],[g.hipR,"br",-1]]).forEach(function(q){
@@ -2329,7 +2330,7 @@
     if(id==="buttons" && R.controls(id,d).some(function(ct){ return picks(id,ct); })){
       h+='<div class="cf-label">Button size</div><div class="chips">';
       R.BUTTON_SIZES.forEach(function(o){ h+=chip('data-bsize="'+o[0]+'"',brush("buttons")===o[0],o[1],""); });
-      h+='</div><p class="cf-note">Tap + on a corner to add a button in this size. Mix sizes in the same corner; tap any button below to swap its size.</p>';
+      h+='</div><p class="cf-note">Tap + on a spot to add a button in this size. Mix sizes as you like; tap any button below to swap its size.</p>';
     }
     R.controls(id,d).forEach(function(ct){
       if(id==="charms" && v==="letters" && ct.type==="count") return;
@@ -2412,7 +2413,7 @@
         else if(ds.btype){ var col=variantOf("beads").split("-").slice(1).join("-"), cols=R.BEAD_TYPES[ds.btype][1]; state.variant.beads=ds.btype+"-"+(findOpt(cols,col)?col:cols[0][0]); }
         else if(ds.key){ c[ds.key]=ds.val; if(a.id==="rhinestones"&&ds.key==="place") state.view=ds.val==="butt"?"back":"front"; }
         else if(ds.mkey){ var cur=now[ds.mkey]||[]; c[ds.mkey]=cur.indexOf(ds.val)>-1?cur.filter(function(x){return x!==ds.val;}):cur.concat([ds.val]); }
-        else if(ds.bsize) state.btnSize=ds.bsize;
+        else if(ds.bsize){ c.str=JSON.parse(JSON.stringify(now.str||{})); state.btnSize=ds.bsize; } // buttons already placed keep their size
         else if(ds.ckey && now.str && now.str[ds.ckey]){ // add the picked bead / button size to this spot, or take the last one off
           c.str=JSON.parse(JSON.stringify(now.str)); var lst=c.str[ds.ckey];
           if(+ds.step>0) lst.push(brush(a.id)); else lst.pop();

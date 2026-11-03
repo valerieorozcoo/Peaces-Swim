@@ -142,6 +142,10 @@ try {
   assert.equal(db.drafts.at(-1).input.lineItems.find((l) => /Buttons/.test(l.title)).title,
     "Add on: Buttons (White · Top, right corner ×3: Large ×2, Small, Bottom, left corner ×2: Large, Small)");
   ok("bralette buttons: small and large mixed in each corner, $5 a button");
+  r = await post("/orders/create", { design: { ...opts, addons: [{ id: "buttons", cfg: { str: { tn: ["small", "large", "large", "small"], bn: ["large"] } } }] } });
+  assert.equal(r.body.subtotal, 95 + 25);
+  assert.match(db.drafts.at(-1).input.lineItems.find((l) => /Buttons/.test(l.title)).title, /Top, along the lace line ×4: Small, Large ×2, Small/);
+  ok("triangle buttons mix sizes too");
   r = await post("/orders/create", { design: { ...coral, addons: [{ id: "buttons", cfg: { str: { tr: ["huge"] } } }] } });
   assert.equal(r.status, 400); ok("buttons only come small or large");
   r = await post("/orders/create", { design: { ...opts, addons: [{ id: "rhinestones", cfg: { metal: "gold", place: "one" } }] } });
