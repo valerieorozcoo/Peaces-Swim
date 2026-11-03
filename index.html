@@ -302,6 +302,9 @@
     .lp-wait-mark{display:block; margin:0 0 4px; font-family:var(--font); font-size:52px; line-height:1; color:var(--w-orchid);}
   }
   .lp-wait .lp-wait-btn,.lp-wait .lp-wait-mark{font-weight:400;}
+  /* the purple PS logo at the top of the sign-up panel (replaces the cursive Peaces Swim) */
+  .lp-wait-ps{margin:0; line-height:0;} .lp-wait-ps img{height:92px; width:auto; display:block;}
+  @media (min-width:820px){ .lp-wait-ps img{height:118px;} .lp-wait-ps{margin-bottom:4px;} }
   .lp-wait form .lp-wait-fine{margin-inline:auto;}
   @media (prefers-reduced-motion:reduce){ .lp-wait-btn{transition:none;} }
 </style>
@@ -943,6 +946,8 @@
   .lp-wait .lp-check input{flex:none; width:20px; height:20px; margin:0; padding:0; border:0; background:var(--w-lavender); cursor:pointer;}
   .lp-wait .lp-check input:checked{background:var(--w-orchid) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M5 10.5l3.2 3.2L15 7' fill='none' stroke='%23fff' stroke-width='2.2'/%3E%3C/svg%3E") center/100% no-repeat;}
   .lp-wait label.lp-check{font-weight:500;}
+  .lp-wait .lp-check{font-size:11.5px !important; line-height:1.35; font-weight:400 !important; opacity:.8;} /* the text-message consent, smaller */
+  .lp-wait .lp-check input{width:16px; height:16px;}
 
   /* ===== Phone pass: sticky preview, bigger taps, readable small print, menu button ===== */
   .mini-total{display:none;}
@@ -1217,13 +1222,12 @@
       <figure class="lp-wait-photo">
         <img src="photos/waitlist-couch.jpg" width="1100" height="1709" alt="The two Peaces Swim founders upside down on a pink couch in feather slippers, holding XOXO Peaces Swim posters that read a new era of swimwear has arrived">
         <figcaption class="lp-wait-overlay">
-          <h2 class="lp-wait-h" id="waitTitle"><img src="art/logo-script-white.png" width="941" height="199" alt="Peaces Swim"></h2>
           <p class="lp-wait-pitch">Sign up and be the first to know when Peaces launches</p>
         </figcaption>
       </figure>
 
       <div class="lp-wait-panel">
-        <p class="lp-wait-mark" aria-hidden="true">Peaces</p>
+        <h2 class="lp-wait-ps" id="waitTitle"><img src="art/logo-ps.png" alt="Peaces Swim"></h2>
         <form id="waitForm" novalidate>
           <label class="lp-sr" for="wFirst">First name</label>
           <input id="wFirst" name="firstName" type="text" placeholder="first name" autocomplete="given-name" required>
@@ -1231,7 +1235,7 @@
           <input id="wEmail" name="email" type="email" placeholder="email" autocomplete="email" inputmode="email" required>
           <label class="lp-sr" for="wPhone">Phone number</label>
           <input id="wPhone" name="phone" type="tel" placeholder="phone number" autocomplete="tel" inputmode="tel" required>
-          <label class="lp-check" for="wSms"><input id="wSms" name="sms" type="checkbox"><span>Yes, I agree to receive recurring automated marketing text messages from Peaces Swim at this number. Consent is not a condition of purchase. Msg frequency varies. Msg &amp; data rates may apply. Reply STOP to unsubscribe or HELP for help.</span></label>
+          <label class="lp-check" for="wSms"><input id="wSms" name="sms" type="checkbox" checked><span>Yes, I agree to receive recurring automated marketing text messages from Peaces Swim at this number. Consent is not a condition of purchase. Msg frequency varies. Msg &amp; data rates may apply. Reply STOP to unsubscribe or HELP for help.</span></label>
           <div class="lp-hp" aria-hidden="true"><label for="wCompany">Company<input id="wCompany" name="company" type="text" tabindex="-1" autocomplete="off"></label></div>
           <p class="lp-wait-err" id="waitErr" role="alert" hidden></p>
           <button class="lp-wait-btn" type="submit" id="waitBtn">sign me up</button>
