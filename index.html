@@ -1927,11 +1927,19 @@
     a.transform="translate("+cx+","+cy+")"+(rot?" rotate("+rot+")":"");
     return el("image",a,svg);
   }
+  /* width / height of each lace photo, so lace is laid along an edge at its real proportions (cut to length, never squashed) */
+  var LACE_RATIO={white:8.22,black:7.23,pink:8,coral:8.22,mint:6.06,blue:8};
   function strip(svg,name,seg,h){
     var dx=seg[2]-seg[0], dy=seg[3]-seg[1];
-    var L=Math.sqrt(dx*dx+dy*dy), ang=Math.atan2(dy,dx)*180/Math.PI;
+    var L=Math.sqrt(dx*dx+dy*dy), ang=Math.atan2(dy,dx)*180/Math.PI, tf="translate("+seg[0]+","+seg[1]+") rotate("+ang+")";
+    var lace=/^p-lacetrim-(.+)$/.exec(name);
+    if(lace && LACE_RATIO[lace[1]]){
+      var box=el("svg",{x:0,y:(-h/2),width:L,height:h,overflow:"hidden"},el("g",{transform:tf},svg)), tw=LACE_RATIO[lace[1]]*h;
+      for(var x=0;x<L;x+=tw) el("image",{href:"art2/"+name+".png",x:x,y:0,width:tw,height:h,preserveAspectRatio:"none"},box);
+      return;
+    }
     el("image",{href:"art2/"+name+".png",x:0,y:(-h/2),width:L,height:h,
-      preserveAspectRatio:"none",transform:"translate("+seg[0]+","+seg[1]+") rotate("+ang+")"},svg);
+      preserveAspectRatio:"none",transform:tf},svg);
   }
   function hang(svg,name,x,y,h){ // charm hanging from a point
     var wr=/^cg-/.test(name)?0.5:0.19;
@@ -2015,7 +2023,7 @@
     var part=partOfArt(artName), bg=BACKGEO[artName], W=g.w;
     function on(id){ return addonOn(id) && allows(part,id); }
     if(part!=="bottom"||!bg) return;
-    if(on("laceTrim") && cfg("laceTrim","bottom")==="around") bg.trimSegs.concat(bg.legs||[]).forEach(function(sg){ strip(svg,"p-lacetrim-"+variantOf("laceTrim"),dropSeg(sg,W*0.04),W*0.08); });
+    if(on("laceTrim") && cfg("laceTrim","bottom")==="around") bg.trimSegs.forEach(function(sg){ strip(svg,"p-lacetrim-"+variantOf("laceTrim"),dropSeg(sg,W*0.04),W*0.08); });
     if(on("rhinestones") && cfg("rhinestones","place")==="butt") rhinestoneText(svg,[bg.rs],W*0.85);
   }
   function decorate(svg,artName,g){
@@ -2035,7 +2043,7 @@
     if(on("laceTrim") && (isTop || cfg("laceTrim","bottom")!=="none")){
       var lth=isTop?W*0.12:W*0.1;
       (isTop?laceSegs(g):g.trimSegs).forEach(function(sg){ strip(svg,"p-lacetrim-"+variantOf("laceTrim"),dropSeg(sg,(isTop&&!g.cupDrop?0:lth)*0.5),lth); });
-      if(!isTop && cfg("laceTrim","bottom")==="around") sideSegs(g).concat(g.legs||[]).forEach(function(sg){ strip(svg,"p-lacetrim-"+variantOf("laceTrim"),sg,lth*0.8); });
+      // "front and back": the back half shows on the back view
     }
     if(on("laceRuffles") && (isTop || cfg("laceRuffles","lower")==="front")) g.trimSegs.forEach(function(sg){ strip(svg,"p-laceruffle-"+variantOf("laceRuffles"),sg,H*0.14); });
     if(on("fringe") && (isTop || cfg("fringe","lower")==="front")){
