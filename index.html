@@ -1219,6 +1219,7 @@
   #pageStyle .shape-btn[aria-pressed="true"] .name{font-weight:600;}
   #pageStyle .shape-btn[aria-pressed="true"]::before{content:""; position:absolute; left:14px; right:14px; bottom:2px; height:2px; background:#4B2470;}
   #pageStyle .shape-btn.crossed::after{top:-10% !important; height:120% !important;}
+  .sold-note{margin:6px 0 0; font-size:13.5px; color:#8A5BB8;}
   .shape-desc{margin:6px 0 0; font-size:14px; color:rgba(46,36,51,.75);}
   .shape-desc strong{font-weight:600; color:#4B2470;}
   .base-part{border-top:1px solid #EFDDFD;}
@@ -1883,7 +1884,7 @@
             "b-triangle-top":{w:431,h:554,k:0.83},"b-triangle-bottom":{w:459,h:307,k:0.83}};
   /* the triangle set is shown from the real product photos (exact mint + cheetah), not recoloured */
   var PHOTO={"b-triangle-top":{green:"mint",cheetah:"cheetah"},"b-triangle-bottom":{green:"mint",cheetah:"cheetah"},
-             "b-underwire-top":{teal:"teal",coral:"coral"},"b-seamless-bottom":{teal:"teal",coral:"coral"}};
+             "b-underwire-top":{teal:"teal",coral:"coral",green:"mint",cheetah:"cheetah"},"b-seamless-bottom":{teal:"teal",coral:"coral",green:"mint",cheetah:"cheetah"}};
   function fmt(n){ return "$"+n.toFixed(2); }
   function colorDef(id){ return COLORS.filter(function(c){return c.id===id;})[0]||COLORS[0]; }
   function styleOf(part){ return STYLES[part][part==="top"?state.topStyle:state.bottomStyle]; }
@@ -2278,10 +2279,10 @@
       var st=STYLES[part][id];
       var card=document.createElement("button");
       card.type="button"; card.className="base-card shape-btn"; card.dataset.style=id; card.dataset.part=part;
-      var crossed=state.picked[part].color && famOfColor(curColor)!==st.family;
+      var crossed=state.picked[part].color && !R.fabricOk(part,id,curColor), gone=R.soldOut(part,id,curColor);
       card.classList.toggle("crossed",crossed);
       card.setAttribute("aria-pressed",curStyle===id?"true":"false");
-      card.title=st.name+(crossed?" (not available in "+colorDef(curColor).name+")":"");
+      card.title=st.name+(gone?" (sold out in "+colorDef(curColor).name+")":crossed?" (not available in "+colorDef(curColor).name+")":"");
       card.innerHTML='<img src="art/line-'+st.art.replace("b-","")+'.png" alt=""><span class="name">'+st.name+'</span>';
       card.addEventListener("click",function(){ state.picked[part].style=true; pickStyle(part,id); });
       grid.appendChild(card);
@@ -2293,7 +2294,7 @@
     /* keep the fabric legal for the new silhouette */
     var fam=STYLES[part][id].family;
     var cur=part==="top"?state.topColor:state.bottomColor;
-    var allowed=colorsFor(fam).map(function(c){return c.id;});
+    var allowed=COLORS.filter(function(c){ return R.fabricOk(part,id,c.id); }).map(function(c){return c.id;});
     if(allowed.indexOf(cur)<0){
       if(part==="top") state.topColor=allowed[0]; else state.bottomColor=allowed[0];
     }
@@ -2312,9 +2313,10 @@
     COLORS.forEach(function(c){
       var b=document.createElement("button");
       b.type="button"; b.className="swatch"; b.dataset.color=c.id;
-      var crossed=state.picked[part].style && c.family!==fam && c.family!=="both";
-      b.classList.toggle("crossed",crossed);
-      b.title=c.name+(crossed?" (comes in the other shape)":"");
+      var style=part==="top"?state.topStyle:state.bottomStyle, crossed=state.picked[part].style && !R.fabricOk(part,style,c.id);
+      var anyShape=Object.keys(STYLES[part]).some(function(k){ return R.fabricOk(part,k,c.id); }); // sold out in every shape
+      b.classList.toggle("crossed",crossed||!anyShape); b.disabled=!anyShape;
+      b.title=c.name+(!anyShape?" (sold out)":R.soldOut(part,style,c.id)?" (sold out in this shape)":crossed?" (comes in the other shape)":"");
       b.setAttribute("aria-label",b.title);
       b.setAttribute("aria-pressed",cur===c.id?"true":"false");
       if(c.fill==="leopard"){ b.style.backgroundImage='url("art2/cheetah-swatch.jpg")'; b.style.backgroundSize="cover"; b.style.backgroundPosition="center"; }
@@ -2323,8 +2325,8 @@
         state.picked[part].color=true;
         if(part==="top") state.topColor=c.id; else state.bottomColor=c.id;
         /* keep the shape legal for the new colour */
-        if(styleOf(part).family!==c.family && c.family!=="both"){
-          var ok=Object.keys(STYLES[part]).filter(function(k){ return STYLES[part][k].family===c.family; })[0];
+        if(!R.fabricOk(part,part==="top"?state.topStyle:state.bottomStyle,c.id)){
+          var ok=Object.keys(STYLES[part]).filter(function(k){ return R.fabricOk(part,k,c.id); })[0];
           if(ok){ if(part==="top") state.topStyle=ok; else state.bottomStyle=ok; ADDONS.forEach(function(a){ if(!addonAvailable(a.id)) delete state.addons[a.id]; }); }
         }
         buildSwatches(part); buildStyleGrid(part); renderAll();
@@ -2332,6 +2334,12 @@
       row.appendChild(b);
     });
     nameEl.textContent=colorOf(part).name;
+    // say which colors are sold out in this shape (limited runs)
+    var st=part==="top"?state.topStyle:state.bottomStyle, gone=COLORS.filter(function(c){ return R.soldOut(part,st,c.id); }).map(function(c){ return c.name; });
+    var note=document.getElementById(part+"SoldNote");
+    if(!note){ note=document.createElement("p"); note.id=part+"SoldNote"; note.className="sold-note"; row.parentNode.insertBefore(note,row.nextSibling); }
+    note.textContent=gone.length ? gone.join(" and ")+" "+(gone.length>1?"are":"is")+" sold out in the "+styleOf(part).name.toLowerCase()+"." : "";
+    note.hidden=!gone.length;
   }
   function syncBaseSel(){
     ["top","bottom"].forEach(function(part){

@@ -173,6 +173,13 @@ try {
   ok("accessories: empty, wrong colour or silly quantities rejected");
   r = await post("/orders/create", { design: { ...design, topColor: "teal" } });
   assert.equal(r.status, 400); ok("teal on triangle rejected");
+  const limited = { topStyle: "underwire", bottomStyle: "seamless", topColor: "cheetah", bottomColor: "green", sizeTop: "S", sizeBottom: "S", addons: [] };
+  r = await post("/orders/create", { design: limited });
+  assert.equal(r.status, 201, JSON.stringify(r.body)); ok("limited run: cheetah bralette + mint seamless bottom can be ordered");
+  globalThis.PeacesRules.SOLD_OUT.push("bottom:seamless:green");
+  r = await post("/orders/create", { design: limited });
+  assert.equal(r.status, 400); assert.match(r.body.error, /sold out/);
+  globalThis.PeacesRules.SOLD_OUT.length = 0; ok("a sold out piece can't be checked out");
   r = await post("/orders/create", { design: { ...design, addons: [{ id: "bows", cfg: { tp: ["mid"] }, price: 0 }] } });
   assert.equal(r.body.subtotal, 95 + 5 + 15); ok("browser can't set prices");
 
