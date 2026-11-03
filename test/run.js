@@ -38,13 +38,13 @@ try {
   assert.equal(r.status, 400); ok("bad phone rejected");
 
   const design = { topStyle: "triangle", bottomStyle: "seamless", topColor: "cheetah", bottomColor: "coral", sizeTop: "S", sizeBottom: "M",
-    addons: [{ id: "bows", variant: "white", cfg: { tp: ["mid"] } }, { id: "ruffles", variant: "pink" }, { id: "charms", variant: "letters" }], initials: "val", tote: true, headband: false };
+    addons: [{ id: "bows", variant: "white", cfg: { tp: ["mid"] } }, { id: "ruffles", variant: "cheetah" }, { id: "charms", variant: "letters", cfg: { mid: 3 } }], initials: "val", tote: true, headband: false };
   r = await post("/orders/create", { design, customer: { phone: "3055551234", welcomeToken: welcome } });
   assert.equal(r.status, 201); assert.equal(r.body.subtotal, 95 + 5 + 15 + 3 * 10 + 15);
   assert.equal(r.body.total, 144); assert.equal(r.body.discounted, true);
   const d0 = db.drafts[0].input;
   assert.equal(d0.purchasingEntity, undefined);
-  assert.ok(d0.lineItems.some((l) => l.title === "Add on: Charms (Letters · VAL in the middle, Basic jump ring clasp)")); ok("signed welcome discount on guest checkout, no customer-account link");
+  assert.ok(d0.lineItems.some((l) => l.title === "Add on: Charms (Letter · V, Basic jump ring clasp, Top, middle ×3)")); ok("signed welcome discount on guest checkout, no customer-account link");
 
   r = await post("/orders/create", { design, customer: { phone: "3055551234" } });
   assert.equal(r.body.discounted, false);
@@ -151,9 +151,16 @@ try {
   r = await post("/orders/create", { design: { ...opts, addons: [{ id: "rhinestones", cfg: { metal: "gold", place: "one" } }] } });
   assert.equal(r.body.subtotal, 95 + 10); ok("older saved designs (one cup) still price");
   r = await post("/orders/create", { design: { ...bra, addons: [{ id: "connectors" }, { id: "extTies" }, { id: "buttons", cfg: { tl: 3, tr: 1, br: 2, size: "large" } },
-    { id: "beads", variant: "bp-16mm", cfg: { ties: 5, ext: 8, ends: 2 } }, { id: "charms", variant: "cg-halo", cfg: { mid: 1, ext: 3, left: 3, right: 3 } }] } });
+    { id: "beads", variant: "bp-16mm", cfg: { ties: 5, ext: 8, ends: 2 } }, { id: "charms", variant: "cg-halo", cfg: { mid: 1, left: 3, right: 3, clasp: "cn-big-gold" } }] } });
   assert.equal(r.status, 201, JSON.stringify(r.body));
-  assert.equal(r.body.subtotal, 95 + 10 + 10 + 30 + 5 * Math.ceil(34 / 3) + 13 * 10); ok("bralette set at its limits: connectors $10 for both straps, corner buttons, 34 beads, 13 charms");
+  assert.equal(r.body.subtotal, 95 + 10 + 10 + 30 + 5 * Math.ceil(34 / 3) + 7 * 20); ok("bralette set at its limits: connectors $10 for both straps, corner buttons, 34 beads, 7 charms with clasp upgrades");
+  r = await post("/orders/create", { design: { ...bra, addons: [{ id: "charms", variant: "cg-halo", cfg: { left: 1, clasp: "plain" } }] } });
+  assert.equal(r.status, 400); ok("charms on the seamless bottom need a clasp upgrade");
+  r = await post("/orders/create", { design: { ...opts, addons: [{ id: "connectors", cfg: { top: "none", bottom: "two" } }] } });
+  assert.equal(r.body.subtotal, 95 + 15); ok("bottom connectors only: $15");
+  for (const bad of [{ top: "none", bottom: "no" }]) { r = await post("/orders/create", { design: { ...opts, addons: [{ id: "connectors", cfg: bad }] } }); assert.equal(r.status, 400); }
+  r = await post("/orders/create", { design: { ...opts, addons: [{ id: "connectors", cfg: { top: "none", bottom: "two" } }, { id: "extTies", cfg: { style: "wrap" } }] } });
+  assert.equal(r.status, 400); ok("no middle connector: no connector tie styles, no empty connector order");
 
   r = await post("/orders/accessories", { items: { headband: { color: "cheetah", qty: 2 }, tote: { color: "blue", qty: 1 } } });
   assert.equal(r.status, 201); assert.equal(r.body.subtotal, 2 * 10 + 15); assert.equal(r.body.total, 35);
@@ -194,7 +201,7 @@ try {
   const card = r.body.wait[0];
   assert.equal(card.customer, "Mia bWait/b"); assert.equal(card.image, "https://cdn.shopify.com/s/files/peaces-design.jpg");
   assert.equal(card.top, "Triangle top · Cheetah · S"); assert.equal(card.bottom, "Seamless bottom · Coral · M");
-  assert.deepEqual(card.addons, ["Mini bows (White · Top: One in the middle of the string)", "Ruffles (Pink · On the top tie straps)", "Charms (Letters · VAL in the middle, Basic jump ring clasp)"]);
+  assert.deepEqual(card.addons, ["Mini bows (White · Top: One in the middle of the string)", "Ruffles (Cheetah · On the top tie straps)", "Charms (Letter · V, Basic jump ring clasp, Top, middle ×3)"]);
   assert.deepEqual(card.extras, ["Peaces terry tote (Pink)"]); assert.equal(card.mode, "wait");
   const anaCard = r.body.pickup.find((c) => c.number === ana.name);
   assert.equal(anaCard.customer, "Ana Pickup"); assert.equal(anaCard.pickupAt, "4:00 PM");
