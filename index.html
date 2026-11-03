@@ -402,6 +402,7 @@
   .pp-title{font-family:var(--font); font-weight:400; font-size:38px; line-height:1.05; letter-spacing:-.02em; color:var(--fs-ink,#2E2433);}
   .pp-title i{color:var(--fs-orchid,#8A5BB8);}
   html .pp-title{color:#4B2470 !important;} html .pp-title i{color:#B794E6 !important;} /* The Peaces Process: dark purple · Design Your Dream: light purple */
+  html .lp-h1,html .lp-h1 i,html .lp-h1 .lp-arrived,html .lp-vid .lp-h1{font-family:"Cormorant Garamond",Garamond,"Times New Roman",serif !important;}
   html .lp-bar span{font-family:"Cormorant Garamond",Garamond,"Times New Roman",serif !important; font-size:15px; letter-spacing:.2em;} /* "A new era of swimwear" bar keeps the original font */
   .pp-card{position:relative; scroll-snap-align:start; aspect-ratio:4/5; background:var(--fs-mist,#FAF6FE); overflow:hidden;}
   .pp-link{position:absolute; inset:0; display:block; color:#fff;}
@@ -776,6 +777,18 @@
     .gate .cta.gate-cta{padding-top:clamp(10px,1.6svh,16px) !important; padding-bottom:clamp(10px,1.6svh,16px) !important; margin-top:clamp(6px,1.2svh,12px);}
     .gate-fine{font-size:clamp(9.5px,1.42svh,12.5px); line-height:1.32; margin-top:clamp(6px,1.1svh,12px);}
     .gate-skip{padding-top:clamp(4px,1svh,12px) !important; padding-bottom:clamp(4px,1svh,12px) !important;}
+    /* phone: the photo sits behind the logo + WELCOME instead of above them, then fades into the form */
+    .gate-card{--lw:clamp(62px,10.5svh,100px); --pt:clamp(16px,2.6svh,28px); --tt:clamp(22px,3.8svh,32px);
+      --hero:calc(var(--pt) + var(--lw) * 1.18 + var(--tt) * 1.3 + 30px); grid-template-rows:minmax(0,1fr);}
+    .gate-photo{display:none !important;}
+    .gate-body{position:relative; isolation:isolate; padding-top:var(--pt);}
+    .gate-body::before{content:""; position:absolute; left:0; right:0; top:0; height:var(--hero); z-index:-2;
+      background:url("photos/waitlist.jpg") 50% 58%/cover no-repeat;}
+    .gate-body::after{content:""; position:absolute; left:0; right:0; top:0; height:calc(var(--hero) + 2px); z-index:-1;
+      background:linear-gradient(to bottom, rgba(255,255,255,.1) 0%, rgba(255,255,255,.14) 62%, rgba(255,255,255,.85) 88%, #fff 100%);}
+    .gate-logo{width:var(--lw); margin-bottom:6px; filter:drop-shadow(0 1px 6px rgba(15,82,87,.35)) !important;}
+    .gate-title{font-size:var(--tt) !important; color:#fff !important; text-shadow:0 1px 3px rgba(15,40,50,.55),0 0 18px rgba(15,40,50,.35); margin:0 0 22px;}
+    .gate-close{background:rgba(255,255,255,.85); border-radius:999px; top:8px; right:8px;}
   }
   .gate-err{margin:10px 0 0; font-size:15px; color:var(--pink-deep);}
   .gate-skip{margin-top:14px; background:none; border:none; color:var(--ink-soft); font-family:var(--font);
