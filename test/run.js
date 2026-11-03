@@ -120,7 +120,7 @@ try {
   ok("rules enforced on the server: " + rejects.length + " bad designs rejected");
   r = await post("/orders/create", { design: { ...opts, rsText: "kate", addons: [
     { id: "charms", variant: "cp-shell", cfg: { mid: 2, left: 1, clasp: "cn-big-gold" } },
-    { id: "laceRuffles", variant: "black", cfg: { lower: "front" } }, { id: "fringe", variant: "gold", cfg: { lower: "front" } },
+    { id: "laceRuffles", variant: "black", cfg: { lower: "front" } }, { id: "fringe", variant: "black", cfg: { lower: "front" } },
     { id: "rhinestones", cfg: { metal: "gold", place: "butt" } }] } });
   assert.equal(r.body.subtotal, 95 + 3 * 20 + 15 + 15 + 40); ok("3 long charms with clasp upgrades, lace ruffles + fringe front, 4 lowercase rhinestones on the back");
   r = await post("/orders/create", { design: { ...opts, addons: [{ id: "rhinestones", cfg: { metal: "gold", place: "one" } }] } });

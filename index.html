@@ -1813,8 +1813,8 @@
   function tieRuns(g,W,H){ // straight runs along each tie, used to place beads and charms
     var e=tieEnds(g), L=e[0], Rt=e[1], cx=g.center[0], cy=g.center[1], yb=Math.max(L[1],Rt[1]), st=tieStyle();
     if(st==="wrap") return [[[cx-W*0.03,cy+H*0.02],[g.outerL[0]+W*0.01,cy+H*0.06]],[[cx+W*0.03,cy+H*0.02],[g.outerR[0]-W*0.01,cy+H*0.06]]];
-    if(st==="back") return [[[cx,cy+2],[cx-W*0.2,cy+H*0.42]],[[cx,cy+2],[cx+W*0.2,cy+H*0.42]]];
-    if(st==="band") return [[[cx,cy],[cx-W*0.19,cy+H*0.25]],[[cx,cy],[cx+W*0.19,cy+H*0.25]]];
+    if(st==="back") return [[[cx-W*0.03,cy+H*0.02],[L[0]+W*0.02,L[1]]],[[cx+W*0.03,cy+H*0.02],[Rt[0]-W*0.02,Rt[1]]]];
+    if(st==="band") return [[[cx-W*0.01,cy+H*0.02],[cx-W*0.38,cy+H*0.29]],[[cx+W*0.01,cy+H*0.02],[cx+W*0.38,cy+H*0.29]]];
     // regular: from each end of the band, down and across, crossing at the waist
     var y2=yb+H*0.3; return [[L,[Rt[0]-W*0.06,y2]],[Rt,[L[0]+W*0.06,y2]]];
   }
@@ -1830,15 +1830,14 @@
         tieStroke(svg,"M"+a[0]+","+a[1]+" Q"+((a[0]+b[0])/2)+","+(Math.max(a[1],b[1])+H*0.015)+" "+b[0]+","+b[1],W); });
       return;
     }
-    if(st==="back"){
-      runs.forEach(function(run,i){ var a=run[0], b=run[1], sd=i?1:-1;
-        tieStroke(svg,"M"+a[0]+","+a[1]+" Q"+(a[0]+sd*W*0.04)+","+((a[1]+b[1])/2)+" "+b[0]+","+b[1],W); tieKnot(svg,b[0],b[1],W); });
+    if(st==="back"){ // a loop under each cup, from the connector back up to the band where the back tie carries on
+      runs.forEach(function(run){ var a=run[0], b=run[1];
+        tieStroke(svg,"M"+a[0]+","+a[1]+" C"+(a[0]+(b[0]-a[0])*0.3)+","+(a[1]+H*0.13)+" "+(b[0]-(b[0]-a[0])*0.15)+","+(b[1]+H*0.12)+" "+b[0]+","+b[1],W); });
       return;
     }
-    if(st==="band"){
-      var outer=[g.hem?g.hem[0][0]+W*0.02:g.outerL[0], g.hem?g.hem[1][2]-W*0.02:g.outerR[0]];
-      runs.forEach(function(run,i){ var a=run[0], b=run[1], ox=outer[i], oy=b[1]-H*0.035;
-        tieStroke(svg,"M"+a[0]+","+a[1]+" L"+b[0]+","+b[1]+" Q"+((b[0]+ox)/2)+","+(b[1]+H*0.005)+" "+ox+","+oy,W); });
+    if(st==="band"){ // two ties straight down and out from the middle knot, loose ends
+      runs.forEach(function(run){ var a=run[0], b=run[1];
+        tieStroke(svg,"M"+a[0]+","+a[1]+" L"+b[0]+","+b[1],W); });
       return;
     }
     var e=tieEnds(g), L=e[0], Rt=e[1], yb=Math.max(L[1],Rt[1]), y1=yb+H*0.15, y2=yb+H*0.3;
@@ -1855,10 +1854,14 @@
   function dropSeg(sg,d){ return [sg[0],sg[1]+d,sg[2],sg[3]+d]; }
   function runSeg(run){ var sg=[run[0][0],run[0][1],run[1][0],run[1][1]]; sg.side=1; return sg; }
   function sideSegs(g){ return g.strapRunL ? [runSeg(g.strapRunL),runSeg(g.strapRunR)] : []; }
-  /* fringe hangs from the bottom edge of the top, and from the front waistband of the bottom */
-  function fringeSegs(g,isTop){
-    if(!isTop) return g.trimSegs;
-    return g.hem ? g.hem : [[g.outerL[0],g.outerL[1],g.center[0],Math.max(g.center[1],g.outerL[1])],[g.center[0],Math.max(g.center[1],g.outerR[1]),g.outerR[0],g.outerR[1]]];
+  /* fringe sits where the lace goes: the inner edges of the triangles / the top edge of the bralette, and the front of the bottoms */
+  function fringeSegs(g,isTop){ return isTop ? laceSegs(g) : g.trimSegs; }
+  /* bralette lace stops either side of the middle knot, like the real suit */
+  function laceSegs(g){
+    if(!g.cupDrop) return g.trimSegs;
+    var gap=g.w*0.045;
+    return g.trimSegs.map(function(q,i){ var dx=q[2]-q[0], dy=q[3]-q[1], L=Math.sqrt(dx*dx+dy*dy), f=gap/L;
+      return i ? [q[0]+dx*f,q[1]+dy*f,q[2],q[3]] : [q[0],q[1],q[2]-dx*f,q[3]-dy*f]; });
   }
   /* evenly spaced points along a run of edges (buttons along the lace line) */
   function alongSegs(segs,n){
@@ -1943,19 +1946,26 @@
     return wrap;
   }
 
-  function fringeOn(svg,sg,fl,W,fv,match){ // strands hanging from one edge
-    var fc=fv==="white"?"#FFFFFF":fv==="gold"?"#C9A24A":match, fw=Math.max(W*0.006,1.4), gap=W*0.016;
+  var FRINGE_HEX={black:"#262022",teal:"#2FACBE",lightpink:"#F5BCD0",darkpink:"#DB417A"};
+  function fringeOn(svg,sg,fl,W,fv,dir){ // a woven tape along one edge with dense strands falling off it
+    var fc=FRINGE_HEX[fv]||"#262022", fw=Math.max(W*0.0032,1), gap=W*0.0042;
     var dx=sg[2]-sg[0], dy=sg[3]-sg[1], len=Math.sqrt(dx*dx+dy*dy), n=Math.max(2,Math.round(len/gap));
+    dir=dir||[0,1];
     for(var fi=0;fi<=n;fi++){
-      var t=fi/n, x=sg[0]+dx*t, y=sg[1]+dy*t, sw=Math.sin(fi*1.7+x)*fl*0.06, ln=fl*(0.9+0.1*Math.sin(fi*2.3));
-      var d="M"+x+","+y+" q"+(sw)+","+(ln*0.5)+" "+(sw*0.4)+","+ln;
-      if(fv==="white") el("path",{d:d,stroke:"rgba(46,36,51,.25)","stroke-width":fw+1.2,fill:"none","stroke-linecap":"round"},svg);
-      el("path",{d:d,stroke:fc,"stroke-width":fw,fill:"none","stroke-linecap":"round"},svg);
+      var t=fi/n, x=sg[0]+dx*t, y=sg[1]+dy*t, sw=Math.sin(fi*1.7+x)*fl*0.12, ln=fl*(0.72+0.28*Math.abs(Math.sin(fi*2.3+x*0.1)));
+      var ex=dir[0]*ln-dir[1]*sw, ey=dir[1]*ln+dir[0]*sw;
+      var d="M"+x+","+y+" q"+(ex*0.5+sw*0.3)+","+(ey*0.5)+" "+ex+","+ey;
+      el("path",{d:d,stroke:"rgba(46,36,51,.12)","stroke-width":fw+0.6,fill:"none","stroke-linecap":"round"},svg);
+      el("path",{d:d,stroke:fc,"stroke-width":fw,fill:"none","stroke-linecap":"round",opacity:0.95},svg);
     }
+    var tape="M"+sg[0]+","+sg[1]+" L"+sg[2]+","+sg[3];
+    el("path",{d:tape,stroke:"rgba(46,36,51,.3)","stroke-width":W*0.016+1,fill:"none","stroke-linecap":"round"},svg);
+    el("path",{d:tape,stroke:fc,"stroke-width":W*0.016,fill:"none","stroke-linecap":"round"},svg);
+    el("path",{d:tape,stroke:"rgba(255,255,255,.25)","stroke-width":W*0.004,"stroke-dasharray":(W*0.006)+" "+(W*0.005),fill:"none"},svg);
   }
   function rhinestoneText(svg,spots,W){
     var place=cfg("rhinestones","place"), rt=R.letters(state.rsText,place==="butt"?4:3)||(place==="butt"?"k":"K");
-    var gold=cfg("rhinestones","metal")==="gold", col=gold?"#E6C46A":"#EEF1F6", fs=W*(rt.length>2?0.11:rt.length>1?0.13:0.17);
+    var gold=cfg("rhinestones","metal")==="gold", col=gold?"#E6C46A":"#EEF1F6", fs=W*(rt.length>2?0.09:rt.length>1?0.1:0.12);
     spots.forEach(function(pt){
       var common={x:pt[0],y:pt[1],"font-family":"'Pinyon Script','Snell Roundhand',cursive","font-size":fs,"text-anchor":"middle",fill:"none","stroke-linecap":"round"};
       var sh=el("text",Object.assign({},common,{stroke:"rgba(46,36,51,.35)","stroke-width":fs*0.07,"stroke-dasharray":"0 "+(fs*0.085)}),svg); sh.textContent=rt;
@@ -1989,13 +1999,16 @@
     }
     if(on("laceTrim") && (isTop || cfg("laceTrim","bottom")!=="none")){
       var lth=isTop?W*0.12:W*0.1;
-      g.trimSegs.forEach(function(sg){ strip(svg,"p-lacetrim-"+variantOf("laceTrim"),dropSeg(sg,(isTop&&!g.cupDrop?0:lth)*0.5),lth); });
+      (isTop?laceSegs(g):g.trimSegs).forEach(function(sg){ strip(svg,"p-lacetrim-"+variantOf("laceTrim"),dropSeg(sg,(isTop&&!g.cupDrop?0:lth)*0.5),lth); });
       if(!isTop && cfg("laceTrim","bottom")==="around") sideSegs(g).concat(g.legs||[]).forEach(function(sg){ strip(svg,"p-lacetrim-"+variantOf("laceTrim"),sg,lth*0.8); });
     }
     if(on("laceRuffles") && (isTop || cfg("laceRuffles","lower")==="front")) g.trimSegs.forEach(function(sg){ strip(svg,"p-laceruffle-"+variantOf("laceRuffles"),sg,H*0.14); });
     if(on("fringe") && (isTop || cfg("fringe","lower")==="front")){
-      var fl=H*(isTop?0.09:0.13);
-      fringeSegs(g,isTop).forEach(function(sg){ fringeOn(svg,sg,fl,W,variantOf("fringe"),fringeMatch(part)); });
+      var fl=H*(isTop?(tri?0.11:0.08):0.09);
+      fringeSegs(g,isTop).forEach(function(sg,i){
+        var dir=[0,1];
+        if(isTop && tri){ var dx=sg[2]-sg[0], dy=sg[3]-sg[1], L=Math.sqrt(dx*dx+dy*dy), nx=-dy/L, ny=dx/L; if((i===0&&nx>0)||(i===1&&nx<0)){ nx=-nx; ny=-ny; } dir=[nx*0.8,Math.abs(ny)*0.8+0.35]; }
+        fringeOn(svg,sg,fl,W,variantOf("fringe"),dir); });
     }
 
     /* Tier 2: connectors (triangle: middle of the top + both sides of the bottom; bralette: both halter straps) */
@@ -2041,14 +2054,16 @@
       var bead=function(x,y,sz){ sz=sz||bs; img(svg,bn,x,y,sz,sz,0); };
       var onRun=function(run,n,t0,step){ for(var i=0;i<n;i++){ var t=Math.min(0.97,t0+i*step); bead(run[0][0]+(run[1][0]-run[0][0])*t,run[0][1]+(run[1][1]-run[0][1])*t,bs*0.9); } };
       if(isTop){
-        if(bd.ties) [g.strapRunL,g.strapRunR].forEach(function(run){ onRun(run,bd.ties,0.06,Math.min(0.12,0.88/bd.ties)); });
+        if(bd.ties) [g.strapRunL,g.strapRunR].forEach(function(run){
+          var L=Math.sqrt(Math.pow(run[1][0]-run[0][0],2)+Math.pow(run[1][1]-run[0][1],2)), step=bs*0.95/L;
+          for(var i=0;i<bd.ties;i++){ var t=Math.max(0.03,0.93-i*step); bead(run[0][0]+(run[1][0]-run[0][0])*t,run[0][1]+(run[1][1]-run[0][1])*t,bs); } });
         if(bd.mid){
-          var gap=bs*0.92, hole=(on("connectors")&&tri)?connW*0.75:0;
+          var gap=bs*0.95, chm=on("charms")&&(cfg("charms","mid")>0||variantOf("charms")==="letters"), hole=(on("connectors")&&tri)?connW*0.75:(chm?bs*0.55:0);
           var left=Math.ceil(bd.mid/2), right=bd.mid-left;
           if(!hole){ var x0=g.center[0]-gap*(bd.mid-1)/2; for(var m=0;m<bd.mid;m++) bead(x0+m*gap,g.center[1]+bs*0.05); }
           else { for(var l=0;l<left;l++) bead(g.center[0]-hole-gap*(l+0.5),g.center[1]+2); for(var r=0;r<right;r++) bead(g.center[0]+hole+gap*(r+0.5),g.center[1]+2); }
         }
-        if(bd.ext && on("extTies")) tieRuns(g,W,H).forEach(function(run){ var bend=tieStyle()==="band"; onRun(run,bd.ext,bend?0.8:0.22,bend?Math.min(0.05,0.2/bd.ext):Math.min(0.09,0.7/bd.ext)); });
+        if(bd.ext && on("extTies")) tieRuns(g,W,H).forEach(function(run){ var bend=tieStyle()==="band"; onRun(run,bd.ext,bend?0.55:0.22,bend?Math.min(0.06,0.4/bd.ext):Math.min(0.09,0.7/bd.ext)); });
         if(bd.ends) (TIPS[artName]||[]).forEach(function(p){ for(var e2=0;e2<bd.ends;e2++) bead(p[0],p[1]+e2*bs*0.85,bs*0.8); });
       } else if(bd.bot && on("connectors")){
         [[g.hipL,1],[g.hipR,-1]].forEach(function(q){ for(var k=0;k<bd.bot;k++) bead(q[0][0]+q[1]*(connW*0.7+bs*0.9*(k+0.5)),q[0][1]+2,bs*0.85); });
