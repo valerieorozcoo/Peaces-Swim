@@ -1025,6 +1025,10 @@
   .stepper b{min-width:20px; text-align:center; font-weight:600;}
   .cf-sub{text-transform:none; letter-spacing:0; font-size:12px;}
   .cf-only{margin:0 0 6px;}
+  .bead-row{display:flex; flex-wrap:wrap; gap:4px; padding:2px 0 8px;}
+  .bead-pick{width:30px; height:30px; padding:2px; border:1.5px solid var(--line); border-radius:999px; background:#fff; cursor:pointer;}
+  .bead-pick img{width:100%; height:100%; object-fit:contain; display:block;}
+  .link-btn{background:none; border:0; padding:6px 0; color:var(--deep-purple,#4B2470); text-decoration:underline; font-family:var(--font); font-size:13.5px; cursor:pointer;}
   .cf-error{color:#B3261E; font-size:14px; margin:8px 0 2px;}
   /* ===== Brand kit (Nov 2): Open Sauce Sans everywhere, every button in signature light purple #EFDDFD ===== */
   :root{--font:"Open Sauce Sans",system-ui,-apple-system,"Segoe UI",Helvetica,Arial,sans-serif; --sig:#EFDDFD; --sig-ink:#4B2470; --sig-edge:rgba(75,36,112,.22);
@@ -1747,6 +1751,15 @@
       out[c.key]=v;
     });
     if(id==="charms" && variantOf("charms")==="letters") ["mid","left","right","ext"].forEach(function(k){ if(k in out) out[k]=0; });
+    if(id==="beads"){ // beads can be mixed: each spot keeps its beads in order; until the customer edits a spot it's all the bead picked
+      var rs=raw.str||{}; out.str={};
+      R.controls(id,d).forEach(function(c){
+        if(c.type!=="count") return;
+        var list=Array.isArray(rs[c.key]) ? rs[c.key].filter(function(b){ return !!findOpt(R.BEADS,b); }).slice(0,c.max) : null;
+        if(!list){ list=[]; for(var i=0;i<out[c.key];i++) list.push(variantOf("beads")); }
+        out[c.key]=list.length; out.str[c.key]=list;
+      });
+    }
     return out;
   }
   function cfg(id,key){ return cfgFor(id)[key]; }
@@ -1760,7 +1773,7 @@
     buttons:{triangle:"Along the lace line · $5 each",underwire:"1 to 3 in each corner · $5 each"},laceTrim:{underwire:"Along the top · bottom front"},
     rhinestones:{triangle:"Top left or right, or the back of the bottoms · $10 per letter",underwire:"Top left or right · $10 per letter"}};
   function hintOf(a){ var h=HINTS[a.id]; if(a.id==="laceTrim") return state.bottomStyle==="seamless"?h.underwire:a.hint; if(h&&a.id==="rhinestones"&&state.bottomStyle!=="triangle") return h.underwire; return (h&&h[a.id==="rhinestones"?"triangle":state.topStyle])||a.hint; }
-  function addonText(a){ return [a.id==="rhinestones"||a.opts.length<2?"":variantName(a.id), cfgText(a.id)].filter(Boolean).join(", "); }
+  function addonText(a){ return [a.id==="rhinestones"||a.id==="beads"||a.opts.length<2?"":variantName(a.id), cfgText(a.id)].filter(Boolean).join(", "); }
   /* the message a customer would get at checkout for this add-on, or "" when it's fine */
   function problemOf(id){
     var d=ctx(); if(!d.addons.some(function(a){return a.id===id;})) d.addons.push({id:id,cfg:rawCfg(id)});
@@ -2048,25 +2061,26 @@
       });
     }
 
-    /* Tier 4: beads, by spot */
+    /* Tier 4: beads, by spot. Beads can be mixed, so each one is drawn as the bead picked for that place */
     if(on("beads")){
-      var bd=cfgFor("beads"), bn=variantOf("beads"), bs=W*(tri?0.055:0.042);
-      var bead=function(x,y,sz){ sz=sz||bs; img(svg,bn,x,y,sz,sz,0); };
-      var onRun=function(run,n,t0,step){ for(var i=0;i<n;i++){ var t=Math.min(0.97,t0+i*step); bead(run[0][0]+(run[1][0]-run[0][0])*t,run[0][1]+(run[1][1]-run[0][1])*t,bs*0.9); } };
+      var bd=cfgFor("beads"), ST=bd.str||{}, bs=W*(tri?0.055:0.042);
+      var bead=function(b,x,y,sz){ sz=sz||bs; img(svg,b,x,y,sz,sz,0); };
+      var onRun=function(run,list,t0,step){ list.forEach(function(b,i){ var t=Math.min(0.97,t0+i*step); bead(b,run[0][0]+(run[1][0]-run[0][0])*t,run[0][1]+(run[1][1]-run[0][1])*t,bs*0.9); }); };
       if(isTop){
-        if(bd.ties) [g.strapRunL,g.strapRunR].forEach(function(run){
+        if(bd.ties) [g.strapRunL,g.strapRunR].forEach(function(run){ // first bead sits right above the triangle, the rest go up the tie
           var L=Math.sqrt(Math.pow(run[1][0]-run[0][0],2)+Math.pow(run[1][1]-run[0][1],2)), step=bs*0.95/L;
-          for(var i=0;i<bd.ties;i++){ var t=Math.max(0.03,0.93-i*step); bead(run[0][0]+(run[1][0]-run[0][0])*t,run[0][1]+(run[1][1]-run[0][1])*t,bs); } });
-        if(bd.mid){
+          ST.ties.forEach(function(b,i){ var t=Math.max(0.03,0.93-i*step); bead(b,run[0][0]+(run[1][0]-run[0][0])*t,run[0][1]+(run[1][1]-run[0][1])*t,bs); }); });
+        if(bd.mid){ // left to right across the middle, leaving room for a connector or a charm's clasp
           var gap=bs*0.95, chm=on("charms")&&(cfg("charms","mid")>0||variantOf("charms")==="letters"), hole=(on("connectors")&&tri)?connW*0.75:(chm?bs*0.55:0);
-          var left=Math.ceil(bd.mid/2), right=bd.mid-left;
-          if(!hole){ var x0=g.center[0]-gap*(bd.mid-1)/2; for(var m=0;m<bd.mid;m++) bead(x0+m*gap,g.center[1]+bs*0.05); }
-          else { for(var l=0;l<left;l++) bead(g.center[0]-hole-gap*(l+0.5),g.center[1]+2); for(var r=0;r<right;r++) bead(g.center[0]+hole+gap*(r+0.5),g.center[1]+2); }
+          var nm=bd.mid, left=Math.ceil(nm/2), xs=[];
+          if(!hole){ var x0=g.center[0]-gap*(nm-1)/2; for(var m=0;m<nm;m++) xs.push(x0+m*gap); }
+          else { for(var l=left-1;l>=0;l--) xs.push(g.center[0]-hole-gap*(l+0.5)); for(var r=0;r<nm-left;r++) xs.push(g.center[0]+hole+gap*(r+0.5)); }
+          ST.mid.forEach(function(b,k){ bead(b,xs[k],g.center[1]+(hole?2:bs*0.05)); });
         }
-        if(bd.ext && on("extTies")) tieRuns(g,W,H).forEach(function(run){ var bend=tieStyle()==="band"; onRun(run,bd.ext,bend?0.55:0.22,bend?Math.min(0.06,0.4/bd.ext):Math.min(0.09,0.7/bd.ext)); });
-        if(bd.ends) (TIPS[artName]||[]).forEach(function(p){ for(var e2=0;e2<bd.ends;e2++) bead(p[0],p[1]+e2*bs*0.85,bs*0.8); });
+        if(bd.ext && on("extTies")) tieRuns(g,W,H).forEach(function(run){ var bend=tieStyle()==="band"; onRun(run,ST.ext,bend?0.55:0.22,bend?Math.min(0.06,0.4/bd.ext):Math.min(0.09,0.7/bd.ext)); });
+        if(bd.ends) (TIPS[artName]||[]).forEach(function(p){ ST.ends.forEach(function(b,e2){ bead(b,p[0],p[1]+e2*bs*0.85,bs*0.8); }); });
       } else if(bd.bot && on("connectors")){
-        [[g.hipL,1],[g.hipR,-1]].forEach(function(q){ for(var k=0;k<bd.bot;k++) bead(q[0][0]+q[1]*(connW*0.7+bs*0.9*(k+0.5)),q[0][1]+2,bs*0.85); });
+        [[g.hipL,1],[g.hipR,-1]].forEach(function(q){ ST.bot.forEach(function(b,k){ bead(b,q[0][0]+q[1]*(connW*0.7+bs*0.9*(k+0.5)),q[0][1]+2,bs*0.85); }); });
       }
     }
 
@@ -2296,7 +2310,7 @@
       Object.keys(R.BEAD_TYPES).forEach(function(k){ var bt=R.BEAD_TYPES[k]; h+=chip('data-btype="'+k+'"',k===type,bt[0],k+"-"+bt[1][Math.min(5,bt[1].length-1)][0]); });
       h+='</div><div class="cf-label">'+(type==="bp"?"Size":"Colour")+'</div><div class="chips">';
       R.BEAD_TYPES[type][1].forEach(function(o){ var val=type+"-"+o[0]; h+=chip('data-variant="'+val+'"',val===v,o[1],val); });
-      h+='</div>';
+      h+='</div><p class="cf-note">Tap + on a spot to add this bead there. Pick another bead and keep adding to mix them; tap any bead below to swap it for the one picked.</p>';
     } else if(a.opts.length>1){
       h+='<div class="cf-label">'+(VARIANT_LABEL[id]||"Choose a colour")+'</div><div class="chips">';
       a.opts.forEach(function(o){ h+=chip('data-variant="'+o[0]+'"',o[0]===v,o[1].replace(/^(Gem|Long) · /,""),a.art(o[0])); });
@@ -2318,6 +2332,11 @@
         h+='<div class="cf-step"><span>'+ct.label+'<small>up to '+ct.max+'</small></span><span class="stepper">'+
            '<button type="button" data-ckey="'+ct.key+'" data-step="-1" aria-label="Fewer"'+(n<=0?" disabled":"")+'>−</button><b>'+n+'</b>'+
            '<button type="button" data-ckey="'+ct.key+'" data-step="1" aria-label="More"'+(n>=ct.max?" disabled":"")+'>+</button></span></div>';
+        if(id==="beads" && n){
+          h+='<div class="bead-row" aria-label="'+ct.label+'">';
+          c.str[ct.key].forEach(function(b,i){ h+='<button type="button" class="bead-pick" data-bkey="'+ct.key+'" data-bi="'+i+'" title="'+R.variantName("beads",b)+'"><img src="art2/'+b+'.png" alt="'+R.variantName("beads",b)+'"></button>'; });
+          h+='</div>';
+        }
       }
     });
     if(id==="extTies" && tieNeedsConnector()){
@@ -2327,6 +2346,7 @@
     }
     if(id==="beads"){
       var nb=R.units("beads",c,d);
+      h+='<button type="button" class="link-btn" data-allbeads="1">Make every bead '+R.variantName("beads",v).replace(" · "," ").toLowerCase()+'</button>';
       h+='<p class="cf-note">'+nb+' bead'+(nb===1?"":"s")+' in total · $5 for every 3'+(state.topStyle==="triangle"&&state.bottomStyle==="triangle"&&!R.has(d,"connectors.bottom=two")?". Add connectors to both sides of the bottom to bead them too.":"")+'</p>';
     }
     if(id==="charms") h+='<p class="cf-note">Every charm needs a clasp. The basic jump ring is included; upgrades are +$10 per charm.</p>';
@@ -2376,6 +2396,12 @@
         else if(ds.btype){ var col=variantOf("beads").split("-").slice(1).join("-"), cols=R.BEAD_TYPES[ds.btype][1]; state.variant.beads=ds.btype+"-"+(findOpt(cols,col)?col:cols[0][0]); }
         else if(ds.key){ c[ds.key]=ds.val; if(a.id==="rhinestones"&&ds.key==="place") state.view=ds.val==="butt"?"back":"front"; }
         else if(ds.mkey){ var cur=now[ds.mkey]||[]; c[ds.mkey]=cur.indexOf(ds.val)>-1?cur.filter(function(x){return x!==ds.val;}):cur.concat([ds.val]); }
+        else if(ds.ckey && a.id==="beads"){ // add the picked bead to this spot, or take the last one off
+          c.str=JSON.parse(JSON.stringify(now.str)); var lst=c.str[ds.ckey]||(c.str[ds.ckey]=[]);
+          if(+ds.step>0) lst.push(variantOf("beads")); else lst.pop();
+        }
+        else if(ds.bkey){ c.str=JSON.parse(JSON.stringify(now.str)); c.str[ds.bkey][+ds.bi]=variantOf("beads"); }
+        else if(ds.allbeads){ c.str=JSON.parse(JSON.stringify(now.str)); Object.keys(c.str).forEach(function(k){ c.str[k]=c.str[k].map(function(){ return variantOf("beads"); }); }); }
         else if(ds.ckey){ c[ds.ckey]=(now[ds.ckey]||0)+(+ds.step); }
         else if(ds.conn) state.variant.connectors=ds.conn;
         else return;

@@ -123,6 +123,18 @@ try {
     { id: "laceRuffles", variant: "black", cfg: { lower: "front" } }, { id: "fringe", variant: "black", cfg: { lower: "front" } },
     { id: "rhinestones", cfg: { metal: "gold", place: "butt" } }] } });
   assert.equal(r.body.subtotal, 95 + 3 * 20 + 15 + 15 + 40); ok("3 long charms with clasp upgrades, lace ruffles + fringe front, 4 lowercase rhinestones on the back");
+  const mint = { ...opts, bottomColor: "green", addons: [{ id: "charms", variant: "cp-pearls", cfg: { mid: 1, clasp: "cn-small-rhinestone" } },
+    { id: "beads", variant: "ba-pink", cfg: { str: { ties: ["ba-pink", "bp-16mm", "ba-pink"], mid: ["ba-pink", "ba-pink", "ba-pink", "ba-pink"] } } }] };
+  r = await post("/orders/create", { design: mint });
+  assert.equal(r.status, 201, JSON.stringify(r.body)); assert.equal(r.body.subtotal, 95 + 20 + 5 * Math.ceil(10 / 3));
+  const beadLine = db.drafts.at(-1).input.lineItems.find((l) => /Beads/.test(l.title)).title;
+  assert.equal(beadLine, "Add on: Beads (Top ties, each side ×3: Acrylic · Pink, Pearl · 16 mm, Acrylic · Pink, Middle ×4: Acrylic · Pink ×4)");
+  ok("mixed beads: each spot keeps its exact beads in order, priced $5 per 3");
+  for (const str of [{ ties: ["ba-pink", "nope"] }, { mid: Array(5).fill("ba-pink") }, { ties: Array(11).fill("bp-16mm") }]) {
+    r = await post("/orders/create", { design: { ...mint, addons: [{ id: "connectors" }, { id: "beads", variant: "ba-pink", cfg: { str } }] } });
+    assert.equal(r.status, 400);
+  }
+  ok("mixed beads: unknown beads and over-the-limit spots rejected");
   r = await post("/orders/create", { design: { ...opts, addons: [{ id: "rhinestones", cfg: { metal: "gold", place: "one" } }] } });
   assert.equal(r.body.subtotal, 95 + 10); ok("older saved designs (one cup) still price");
   r = await post("/orders/create", { design: { ...bra, addons: [{ id: "connectors" }, { id: "extTies" }, { id: "buttons", cfg: { tl: 3, tr: 1, br: 2, size: "large" } },
