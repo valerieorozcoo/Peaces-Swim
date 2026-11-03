@@ -674,6 +674,7 @@
   .addon img.thumbicon{width:26px; height:26px; object-fit:contain; flex:none;}
   .addon .label{flex:1; line-height:1.25;}
   .addon .label small{display:block; color:var(--ink-soft); font-size:12.5px;}
+  .addon .label small[hidden]{display:none !important;}
   .addon.checked{border-color:var(--pink); background:var(--pink-pale);}
   .addon.disabled{opacity:.42; cursor:not-allowed;}
 
@@ -2393,7 +2394,7 @@
       tile.setAttribute("aria-expanded","false");
       var iconName=a.art(a.def);
       tile.innerHTML=(iconName?'<img class="thumbicon" src="art2/'+iconName+'.png" alt="">':'<span class="thumbicon rhine">'+(a.id==="extTies"?"&#8734;":"&#10022;")+'</span>')+
-        '<span class="label">'+a.name+'<small>'+a.hint+'</small></span>'+
+        '<span class="label">'+a.name+'<small hidden></small></span>'+
         '<span class="addon-state">'+(FIXED[a.id]?"":"from ")+fmt(a.price)+'</span>';
       tile.addEventListener("click",function(){ openDrawer(a.id); });
       grid.appendChild(tile);
@@ -2465,7 +2466,7 @@
   /* ---------- on a phone each tier is its own page (Next / Back); on a laptop they all stay on one page ---------- */
   var phoneQ=window.matchMedia("(max-width:640px)"), tierPage=0;
   var tierNav=document.createElement("div"); tierNav.className="tier-nav"; tierNav.hidden=true;
-  tierNav.innerHTML='<div class="tier-nav-top"><span class="tier-count"></span><span class="tier-dots"></span></div><p class="tier-names"></p>';
+  tierNav.innerHTML='<div class="tier-nav-top"><span class="tier-count"></span><span class="tier-dots"></span></div>';
   tierContainer.parentNode.insertBefore(tierNav,tierContainer);
   function tierEls(){ return tierContainer.querySelectorAll(".tier"); }
   function syncTierPages(){
@@ -2474,7 +2475,6 @@
     tiers.forEach(function(t,i){ t.hidden=m && i!==tierPage; });
     tierNav.hidden=!m;
     tierNav.querySelector(".tier-count").textContent="Tier "+(tierPage+1)+" of "+n;
-    tierNav.querySelector(".tier-names").textContent=ADDONS.filter(function(a){ return a.tier===tierPage+1; }).map(function(a){ return a.name; }).join(" · ");
     var dots=tierNav.querySelector(".tier-dots"), html="";
     for(var i=0;i<n;i++) html+='<button type="button" data-tier="'+i+'" aria-label="Go to tier '+(i+1)+'"'+(i===tierPage?' class="on" aria-current="step"':'')+'></button>';
     dots.innerHTML=html;
@@ -3209,7 +3209,7 @@
       tile.classList.toggle("checked",added);
       tile.classList.toggle("disabled",off);
       tile.disabled=off;
-      tile.querySelector("small").textContent = off ? "Not available on these styles" : hintOf(def);
+      var sm=tile.querySelector("small"); sm.textContent = off ? "Not available on these styles" : ""; sm.hidden=!off; // names only; the spots are picked inside the drawer
       tile.querySelector(".addon-state").textContent = off ? "" : (added ? "Added ✓ "+fmt(priceOf(def.id)) : (FIXED[def.id]?"":"from ")+fmt(def.price));
       var icon=tile.querySelector("img.thumbicon");
       if(icon){ var art=def.art(variantOf(def.id)); if(art) icon.src="art2/"+art+".png"; }
