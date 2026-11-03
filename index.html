@@ -1035,6 +1035,13 @@
   .stepper b{min-width:20px; text-align:center; font-weight:600;}
   .cf-sub{text-transform:none; letter-spacing:0; font-size:12px;}
   .cf-only{margin:0 0 6px;}
+  .piece-tabs{display:flex; gap:16px; margin:2px 0 8px;}
+  .piece-tab{position:relative; width:76px; height:66px; padding:4px 4px 8px; border:0; background:transparent; cursor:pointer;}
+  .piece-tab img{width:100%; height:100%; object-fit:contain; display:block; opacity:.7;}
+  .piece-tab[aria-pressed="true"] img{opacity:1;}
+  .piece-tab[aria-pressed="true"]::before{content:""; position:absolute; left:12px; right:12px; bottom:1px; height:2px; background:#4B2470;}
+  .piece-tab.has::after{content:""; position:absolute; top:2px; right:2px; width:9px; height:9px; border-radius:999px; background:#4B2470;}
+  .piece-tab.crossed{opacity:.35; cursor:default;}
   .bead-row{display:flex; flex-wrap:wrap; gap:4px; padding:2px 0 8px;}
   .bead-pick{width:30px; height:30px; padding:2px; border:1.5px solid var(--line); border-radius:999px; background:#fff; cursor:pointer;}
   .bead-pick img{width:100%; height:100%; object-fit:contain; display:block;}
@@ -2342,15 +2349,31 @@
       R.BUTTON_SIZES.forEach(function(o){ h+=chip('data-bsize="'+o[0]+'"',brush("buttons")===o[0],o[1],""); });
       h+='</div><p class="cf-note">Tap + on a spot to add a button in this size. Mix sizes as you like; tap any button below to swap its size.</p>';
     }
-    R.controls(id,d).forEach(function(ct){
-      if(id==="charms" && v==="letters" && ct.type==="count") return;
+    var ctrls=R.controls(id,d).filter(function(ct){ return !(id==="charms" && v==="letters" && ct.type==="count"); });
+    var onPiece=function(ct,pc){ return ct.piece===pc || (ct.piece==="both" && ct.options.some(function(o){ return ct.optPiece[o[0]]===pc; })); };
+    var hasCtl={top:ctrls.some(function(ct){ return onPiece(ct,"top"); }), bottom:ctrls.some(function(ct){ return onPiece(ct,"bottom"); })};
+    var tabbed=hasCtl.top||hasCtl.bottom, tab=null;
+    if(tabbed){ // pick the piece by tapping its cut-out instead of reading "Top" / "Bottom"
+      tab=pieceTab[id]; if(!tab || !(hasCtl[tab] || allows(tab,id))) tab=hasCtl.top?"top":"bottom";
+      pieceTab[id]=tab;
+      h+='<div class="piece-tabs" role="tablist">';
+      ["top","bottom"].forEach(function(pc){
+        var ok=hasCtl[pc]||allows(pc,id), st=pc==="top"?state.topStyle:state.bottomStyle, art=STYLES[pc][st].art.replace("b-","");
+        h+='<button type="button" role="tab" class="piece-tab'+(pieceHas(id,pc,ctrls,c)?" has":"")+(ok?"":" crossed")+'" data-piece="'+pc+'" aria-label="'+(pc==="top"?"Top":"Bottom")+'" aria-selected="'+(tab===pc)+'" aria-pressed="'+(tab===pc)+'"'+(ok?"":" disabled")+'><img src="art/line-'+art+'.png" alt=""></button>';
+      });
+      h+='</div>';
+      if(!hasCtl[tab]) h+='<p class="cf-note cf-only">Included</p>';
+    }
+    ctrls.forEach(function(ct){
+      if(tabbed && ct.piece && !onPiece(ct,tab) && !(id==="rhinestones" && ct.key==="metal")) return; // the finish goes with the letters wherever they are
+      ct=pieceLabel(ct,tab);
       if(ct.type==="choice"){
-        if(ct.options.length<2){ h+='<div class="cf-label">'+ct.label+'</div><p class="cf-note cf-only">'+ct.options[0][1]+'</p>'; return; }
-        h+='<div class="cf-label">'+ct.label+'</div><div class="chips">';
+        if(ct.options.length<2 && ct.piece!=="both"){ h+=(ct.label?'<div class="cf-label">'+ct.label+'</div>':'')+'<p class="cf-note cf-only">'+ct.options[0][1]+'</p>'; return; }
+        h+=(ct.label?'<div class="cf-label">'+ct.label+'</div>':'')+'<div class="chips">';
         ct.options.forEach(function(o){ h+=chip('data-key="'+ct.key+'" data-val="'+o[0]+'"',c[ct.key]===o[0],o[1]+(o[2]?" +$"+o[2]:""),id==="charms"&&o[0]!=="plain"?o[0]:""); });
         h+='</div>';
       } else if(ct.type==="multi"){
-        h+='<div class="cf-label">'+ct.label+' <span class="cf-sub">pick any · $'+R.SPEC[id].price+' each</span></div><div class="chips">';
+        h+='<div class="cf-label">'+(ct.label?ct.label+' ':'')+'<span class="cf-sub">pick any · $'+R.SPEC[id].price+' each</span></div><div class="chips">';
         ct.options.forEach(function(o){ h+=chip('data-mkey="'+ct.key+'" data-val="'+o[0]+'"',(c[ct.key]||[]).indexOf(o[0])>-1,o[1],""); });
         h+='</div>';
       } else if(ct.type==="count"){
@@ -2379,6 +2402,27 @@
     if(id==="charms") h+='<p class="cf-note">Every charm needs a clasp. The basic jump ring is included; upgrades are +$10 per charm.</p>';
     if(id==="buttons" && state.topStyle==="triangle") h+='<p class="cf-note">$5 per button.</p>';
     return h;
+  }
+  var pieceTab={};
+  /* inside a cut-out tab "Top" / "Bottom" go without saying: "Top, left corner" reads "Left corner", "Top only" reads "None" */
+  function pieceLabel(ct,tab){
+    if(!tab || !ct.piece) return ct;
+    var c2=Object.assign({},ct), lb=ct.label;
+    if(/^(Top|Bottom)$/.test(lb)) lb=""; else lb=lb.replace(/^(Top|Bottom), (.)/,function(m,a,b){ return b.toUpperCase(); });
+    c2.label=lb;
+    if(ct.options) c2.options=ct.options.filter(function(o){ return ct.piece!=="both" || ct.optPiece[o[0]]===tab; })
+      .map(function(o){ var t=o.slice(); t[1]=t[1]==="Top only"?"None":t[1].replace(/^Top, (.)/,function(m,x){ return x.toUpperCase(); }); return t; });
+    return c2;
+  }
+  /* a small mark on a cut-out when something is chosen for that piece */
+  function pieceHas(id,pc,ctrls,c){
+    var mine=ctrls.filter(function(ct){ return ct.piece===pc || ct.piece==="both"; });
+    if(!mine.length) return allows(pc,id) && (!!state.addons[id] || state.preview===id);
+    return mine.some(function(ct){ var v=c[ct.key];
+      if(ct.piece==="both") return ct.optPiece[v]===pc;
+      if(ct.type==="choice") return !/^(none|no)$/.test(v);
+      if(ct.type==="multi") return (v||[]).length>0;
+      return v>0; });
   }
   function showErr(drawer,msg){ var p=drawer.querySelector(".cf-error"); p.textContent=msg; p.hidden=!msg; }
 
@@ -2423,6 +2467,14 @@
         else if(ds.btype){ var col=variantOf("beads").split("-").slice(1).join("-"), cols=R.BEAD_TYPES[ds.btype][1]; state.variant.beads=ds.btype+"-"+(findOpt(cols,col)?col:cols[0][0]); }
         else if(ds.key){ c[ds.key]=ds.val; if(a.id==="rhinestones"&&ds.key==="place") state.view=ds.val==="butt"?"back":"front"; }
         else if(ds.mkey){ var cur=now[ds.mkey]||[]; c[ds.mkey]=cur.indexOf(ds.val)>-1?cur.filter(function(x){return x!==ds.val;}):cur.concat([ds.val]); }
+        else if(ds.piece){
+          pieceTab[a.id]=ds.piece;
+          if(a.id==="rhinestones"){ // tapping a cut-out moves the letters onto that piece
+            var plc=R.controls("rhinestones",ctx()).filter(function(x){ return x.key==="place"; })[0];
+            if(plc && plc.optPiece[now.place]!==ds.piece){ var first=plc.options.filter(function(o){ return plc.optPiece[o[0]]===ds.piece; })[0]; if(first) c.place=first[0]; }
+            state.view=ds.piece==="bottom"?"back":"front";
+          }
+        }
         else if(ds.bsize){ c.str=JSON.parse(JSON.stringify(now.str||{})); state.btnSize=ds.bsize; } // buttons already placed keep their size
         else if(ds.ckey && now.str && now.str[ds.ckey]){ // add the picked bead / button size to this spot, or take the last one off
           c.str=JSON.parse(JSON.stringify(now.str)); var lst=c.str[ds.ckey];
