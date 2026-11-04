@@ -2268,7 +2268,6 @@
     if(part!=="bottom"||!bg) return;
     if(on("laceTrim") && cfg("laceTrim","bottom")==="around"){
       bg.trimSegs.forEach(function(sg){ strip(svg,"p-lacetrim-"+variantOf("laceTrim"),dropSeg(sg,W*0.04),W*0.08); });
-      (bg.legs||[]).forEach(function(sg){ strip(svg,"p-lacetrim-"+variantOf("laceTrim"),sg,W*0.07); });
     }
     if(on("rhinestones") && cfg("rhinestones","place")==="butt") rhinestoneText(svg,[bg.rs],W*0.85);
   }
@@ -2290,8 +2289,7 @@
     if(on("laceTrim") && (isTop || cfg("laceTrim","bottom")!=="none")){
       var lth=isTop?W*0.12:W*0.1;
       (isTop?laceSegs(g):g.trimSegs).forEach(function(sg){ strip(svg,"p-lacetrim-"+variantOf("laceTrim"),dropSeg(sg,(isTop&&!g.cupDrop?0:lth)*0.5),lth); });
-      // "all around": the waistband and both leg openings, front and back (the back half shows on the back view)
-      if(!isTop && cfg("laceTrim","bottom")==="around" && g.legs) g.legs.forEach(function(sg){ strip(svg,"p-lacetrim-"+variantOf("laceTrim"),sg,W*0.07); });
+      // "all around": across the top of the bottoms, front AND back (the back half shows on the back view). Never down the sides.
     }
     if(on("laceRuffles") && (isTop || cfg("laceRuffles","lower")==="front")) g.trimSegs.forEach(function(sg){ strip(svg,"p-laceruffle-p-"+variantOf("laceRuffles"),sg,H*0.13); });
     if(on("fringe") && (isTop || cfg("fringe","lower")==="front")){
