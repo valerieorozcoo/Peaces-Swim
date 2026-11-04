@@ -9,10 +9,10 @@ function fixture(api){
   const controls=[nodes.fulfilRetry,{disabled:false}];let shown=null;
   const document={getElementById:id=>nodes[id],querySelectorAll:()=>controls};
   const state={fulfil:'pickup',pickupAt:'3:15 PM'};
-  const run=new Function('document','state','api','showWait','beforeOpen','popupDay','waitNoteText',
+  const run=new Function('document','state','api','showWait','beforeOpen','popupDay','waitNoteText','showReady',
     'var currentOrder={id:"draft",sig:"signed"};'+source+
     'return {send:sendFulfilment,saving:()=>fulfilmentSaving,replaceOrder(){currentOrder={id:"new",sig:"new"};}};')(
-    document,state,api,(minutes,note)=>{shown={minutes,note};nodes.waitBlock.hidden=false;},()=>false,()=>'Thursday',()=>"Stay close, we'll customize your peace right in front of you.");
+    document,state,api,(minutes,note)=>{shown={minutes,note};nodes.waitBlock.hidden=false;},()=>false,()=>'Thursday',()=>"Stay close, we'll customize your peace right in front of you.",()=>{shown={minutes:16,note:"Stay close, we'll customize your peace right in front of you."};nodes.waitBlock.hidden=false;});
   return {run,state,nodes,controls,shown:()=>shown};
 }
 test('pickup shows a pending state and confirms only after a successful save',async()=>{

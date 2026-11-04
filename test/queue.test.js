@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { pickupDate, buildQueue, lineAhead } from "../lib/queue.js";
+import { pickupDate, buildQueue, lineAhead, schedule } from "../lib/queue.js";
 import "../lib/rules.js";
 
 test("pickup time is read in the shop's local time, rolling to tomorrow after midnight", () => {
@@ -51,4 +51,27 @@ test("sewing minutes per customization and the wait & watch line ahead", () => {
     w(5, [{ key: "Chosen at", value: iso(30) }]),                                                 // old order: 5 + 3 per add-on
   ], "gid://shopify/DraftOrder/4");
   assert.equal(ahead, 20 + 12 + 8);
+});
+
+test("sewing schedule: 2 seamstresses, wait & watch before pickups unless a pickup would be late", () => {
+  const now = Date.parse("2026-11-05T12:00:00-05:00"), at = (m) => new Date(now + m * 60_000).toISOString();
+  const c = (id, mode, work, chosen, pick) => ({ id, mode, paid: true, work, chosenAt: at(chosen), pickupDate: pick == null ? null : at(pick) });
+  const plan = schedule([
+    c("pickup-3h", "pickup", 20, -30, 180),          // picks up in 3 hours: waits behind everyone watching
+    c("w1", "wait", 15, -10), c("w2", "wait", 25, -5),
+    c("pickup-40", "pickup", 20, -40, 40),           // picks up in 40 min: must start by +10 min, so it jumps ahead
+    c("w3", "wait", 10, -1),
+    { ...c("sewing", "wait", 30, -60), startedAt: at(-20), sewingBy: "Ana" },
+  ], now);
+  const by = Object.fromEntries(plan.map((p) => [p.id, p]));
+  const m = (iso) => (Date.parse(iso) - now) / 60_000;
+  assert.deepEqual(plan.map((p) => p.id), ["sewing", "w1", "pickup-40", "w2", "w3", "pickup-3h"]);
+  assert.equal(m(by.sewing.readyAt), 10);              // Ana started 20 min ago on a 30 min bikini
+  assert.equal(m(by.w1.startAt), 0);                   // the other seamstress is free right away
+  assert.equal(m(by["pickup-40"].readyAt), 30);        // ready 10 min before its pickup
+  assert.equal(m(by.w3.readyAt), 40);
+  assert.ok(m(by["pickup-3h"].readyAt) <= 180 && !by["pickup-3h"].late);
+  // before the pop-up opens nothing starts until 10 AM
+  const early = schedule([c("w", "wait", 15, 0)], Date.parse("2026-11-05T08:00:00-05:00"));
+  assert.ok(Date.parse(early[0].startAt) >= Date.parse(process.env.POPUP_OPEN || "2026-11-05T10:00:00-05:00"));
 });

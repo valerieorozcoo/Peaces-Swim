@@ -103,6 +103,20 @@
   ol.adds li{margin-bottom:3px;}
   .bkh{font-weight:700; color:#4B2470; margin:10px 0 4px; font-size:16px;}
   .actions .btn.big{padding:14px 26px; font-size:17px;}
+  .me{display:flex; align-items:center; gap:10px; margin:0 0 14px; font-size:16px;}
+  .me input{border:0; background:var(--lav); padding:10px 12px; font-size:18px; width:180px;}
+  .me.need input{box-shadow:inset 0 0 0 2px var(--pink);}
+  .blk{margin-bottom:22px;}
+  .blk h2{margin:0 0 4px; font-size:22px; letter-spacing:.14em; text-transform:uppercase; font-weight:600; color:var(--teal);}
+  .blk .sub{margin:0 0 12px; font-size:15px; color:var(--ink-60);}
+  #list-sewing,#list-next,#list-unpaid{max-width:900px;}
+  .actions{flex-wrap:wrap;}
+  .card.first .name::after{content:attr(data-next); margin-left:10px; font-size:14px; letter-spacing:.12em; text-transform:uppercase; background:var(--teal); color:#fff; padding:3px 8px; vertical-align:middle;}
+  .card.sewing{border-left-color:#7a3fb0; background:#fbf6ff;}
+  .card.first{box-shadow:0 0 0 3px var(--teal);}
+  .eta{display:block; font-size:16px; font-weight:600; margin:0 0 8px;}
+  .eta.late{color:var(--pink);}
+  .by{display:inline-block; background:#7a3fb0; color:#fff; padding:3px 10px; font-weight:700; font-size:15px; margin:0 0 8px;}
   .toast{position:fixed; left:50%; bottom:20px; transform:translateX(-50%); background:var(--ink); color:#fff; padding:12px 16px; display:flex; gap:14px; align-items:center; font-size:16px; max-width:calc(100% - 32px);}
   .toast button{background:none; border:0; color:#fff; text-decoration:underline; padding:0; font-weight:600;}
   dt.bk{grid-column:1/-1; font-weight:700; color:#4B2470; margin-top:6px;} dd.bk{display:none;}
@@ -158,23 +172,21 @@
   </section>
 
   <main id="queue" hidden>
-    <div class="tabs" role="tablist">
-      <button type="button" role="tab" data-tab="wait" aria-selected="true"><span data-t="waitH">Waiting here</span> (<span data-count="wait">0</span>)</button>
-      <button type="button" role="tab" data-tab="pickup" aria-selected="false"><span data-t="pickH">Picking up later</span> (<span data-count="pickup">0</span>)</button>
-    </div>
+    <div class="me"><label for="sewer" data-t="me">Your name</label><input id="sewer" type="text" maxlength="30" autocomplete="off" placeholder="Ana"></div>
     <p class="err" id="loadErr" role="alert"></p>
-    <div class="cols">
-      <section class="col on" data-col="wait">
-        <h2><span data-t="waitH">Waiting here</span> (<span data-count="wait">0</span>)</h2>
-        <p class="sub" data-t="waitSub">The customer is here. Oldest first.</p>
-        <div class="list" id="list-wait"></div>
-      </section>
-      <section class="col" data-col="pickup">
-        <h2><span data-t="pickH">Picking up later</span> (<span data-count="pickup">0</span>)</h2>
-        <p class="sub" data-t="pickSub">They come back later. Soonest pickup first.</p>
-        <div class="list" id="list-pickup"></div>
-      </section>
-    </div>
+    <section class="blk">
+      <h2><span data-t="nowH">Sewing now</span> (<span data-count="sewing">0</span>)</h2>
+      <div class="list" id="list-sewing"></div>
+    </section>
+    <section class="blk">
+      <h2><span data-t="nextH">Up next</span> (<span data-count="next">0</span>)</h2>
+      <p class="sub" data-t="nextSub">Whoever finishes first takes the top one. People waiting here go first; a pickup jumps ahead only when it would otherwise be late.</p>
+      <div class="list" id="list-next"></div>
+    </section>
+    <section class="blk" id="blk-unpaid" hidden>
+      <h2><span data-t="unpaidH">Not paid yet</span> (<span data-count="unpaid">0</span>)</h2>
+      <div class="list" id="list-unpaid"></div>
+    </section>
   </main>
 </div>
 <div id="printArea" aria-hidden="true"></div>
@@ -232,7 +244,14 @@
     updated:["Updated","Actualizado"], cantRefresh:["Couldn't refresh: {e}. Retrying…","No se pudo actualizar: {e}. Reintentando…"],
     markedDone:["{n} done.","{n} listo."], cantDone:["Couldn't finish {n}: {e}","No se pudo terminar {n}: {e}"], cantUndo:["Couldn't undo: {e}","No se pudo deshacer: {e}"],
     bikini:["Bikini {i} of {n}","Bikini {i} de {n}"], one:["1 bikini","1 bikini"], name:["Name","Nombre"],
-    customs:["Customizations","Personalizaciones"], work:["≈ {m} min of sewing","≈ {m} min de costura"]
+    customs:["Customizations","Personalizaciones"], work:["≈ {m} min of sewing","≈ {m} min de costura"],
+    me:["Your name","Tu nombre"], nowH:["Sewing now","Cosiendo ahora"], nextH:["Up next","Siguientes"], unpaidH:["Not paid yet","Sin pagar"],
+    nextSub:["Whoever finishes first takes the top one. People waiting here go first; a pickup jumps ahead only when it would otherwise be late.","La que termine primero toma la de arriba. Primero las que esperan aquí; un pedido para recoger se adelanta solo si no estaría a tiempo."],
+    emptyNow:["Nobody is sewing right now.","Nadie está cosiendo ahorita."], emptyNext:["Nothing in line.","No hay pedidos en fila."],
+    start:["Start sewing","Empezar"], stop:["Stop","Soltar"], sewingBy:["{n} is sewing","{n} está cosiendo"], readyBy:["Ready ~{t}","Lista ~{t}"],
+    late:["Late for pickup at {t}!","¡Tarde para recoger a las {t}!"], startBy:["Start by {t} for the {p} pickup","Empieza a las {t} para que esté a las {p}"],
+    nextUp:["Next","Siguiente"], needName:["Type your name first (top of the page).","Escribe tu nombre primero (arriba)."],
+    taken:["{e}","{e}"], cantStart:["Couldn't start {n}: {e}","No se pudo empezar {n}: {e}"]
   };
   function t(k, v){ var s = (T[k] || [k, k])[lang === "es" ? 1 : 0]; if (v) Object.keys(v).forEach(function(x){ s = s.replace("{" + x + "}", v[x]); }); return s; }
   function L(en, es){ return lang === "es" ? (es || en) : en; }
@@ -264,19 +283,25 @@
     b.addEventListener("click", function(){ lang = b.dataset.lang; try { localStorage.setItem(LKEY, lang); } catch (e) {} applyLang(); });
   });
 
-  function card(o, i){
-    var c = el("article", "card" + (o.paid ? "" : " unpaid"));
+  function card(o, i, kind){
+    var c = el("article", "card" + (o.paid ? "" : " unpaid") + (kind === "sewing" ? " sewing" : "") + (kind === "next" && i === 0 ? " first" : ""));
     var pic = el("div", "pic");
     if (o.image) { var img = el("img"); img.src = o.image; img.alt = ""; img.loading = "lazy"; pic.appendChild(img); }
     else pic.appendChild(el("span", null, t("noPic")));
     c.appendChild(pic);
 
     var body = el("div");
-    body.appendChild(el("p", "name", o.customer || t("noName")));
-    body.appendChild(el("p", "ord", t("order") + " " + o.number + "  ·  #" + (i + 1)));
+    var nm = el("p", "name", o.customer || t("noName")); if (kind === "next" && i === 0) nm.setAttribute("data-next", t("nextUp")); body.appendChild(nm);
+    body.appendChild(el("p", "ord", t("order") + " " + o.number + (kind === "next" ? "  ·  #" + (i + 1) : "")));
+    if (kind === "sewing") body.appendChild(el("span", "by", t("sewingBy", { n: o.sewingBy || "?" })));
     body.appendChild(el("span", "mode" + (o.mode === "pickup" ? " pickup" : ""), modeText(o)));
     if (o.work) body.appendChild(el("span", "work", t("work", { m: o.work })));
     if (!o.paid) body.appendChild(el("span", "badge", t("notPaid")));
+    if (o.readyAt) {
+      var eta = o.late ? t("late", { t: o.pickupAt }) : t("readyBy", { t: clock(o.readyAt) });
+      if (!o.late && kind === "next" && o.mode === "pickup" && o.pickupDate) { var sb = Date.parse(o.pickupDate) - (o.work + 10) * 60000; if (sb > Date.now()) eta += "  ·  " + t("startBy", { t: clock(new Date(sb).toISOString()), p: o.pickupAt }); }
+      body.appendChild(el("span", "eta" + (o.late ? " late" : ""), eta));
+    }
 
     var bks = bikinisOfOrder(o);
     bks.forEach(function(b, bi){
@@ -293,10 +318,16 @@
     if (!(o.bikinis && o.bikinis.length) && o.extras && o.extras.length) { var p4 = el("p", "pieces"); p4.appendChild(el("b", null, t("also"))); p4.appendChild(document.createTextNode(o.extras.join(", "))); body.appendChild(p4); }
 
     var actions = el("div", "actions");
-    var done = el("button", "btn big", t("done"));
+    if (kind === "next") { // take it: the other seamstress then sees it under "Sewing now"
+      var st = el("button", "btn big", t("start")); st.type = "button";
+      st.addEventListener("click", function(){ startSewing(o, st, true); });
+      actions.appendChild(st);
+    }
+    var done = el("button", "btn" + (kind === "next" ? " ghost" : " big"), t("done"));
     done.type = "button";
     done.addEventListener("click", function(){ markDone(o, done); });
     actions.appendChild(done);
+    if (kind === "sewing") { var sp = el("button", "btn ghost", t("stop")); sp.type = "button"; sp.addEventListener("click", function(){ startSewing(o, sp, false); }); actions.appendChild(sp); }
     var pt = el("button", "btn ghost", t("print"));
     pt.type = "button";
     pt.addEventListener("click", function(){ var l = orderTags(o); if (printed) { l.forEach(function(x){ if (printed.indexOf(x.key) < 0) printed.push(x.key); }); savePrinted(); } printTags(l); });
@@ -388,13 +419,15 @@
   }
   function render(q){
     lastQ = q;
-    ["wait", "pickup"].forEach(function(k){
+    var sets = { sewing: q.sewing || [], next: q.next || [], unpaid: q.unpaid || [] };
+    Object.keys(sets).forEach(function(k){
       var list = $("list-" + k);
       list.textContent = "";
-      if (!q[k].length) list.appendChild(el("div", "empty", t(k === "wait" ? "emptyWait" : "emptyPick")));
-      q[k].forEach(function(o, i){ list.appendChild(card(o, i)); });
-      document.querySelectorAll('[data-count="' + k + '"]').forEach(function(n){ n.textContent = q[k].length; });
+      if (!sets[k].length && k !== "unpaid") list.appendChild(el("div", "empty", t(k === "sewing" ? "emptyNow" : "emptyNext")));
+      sets[k].forEach(function(o, i){ list.appendChild(card(o, i, k)); });
+      document.querySelectorAll('[data-count="' + k + '"]').forEach(function(n){ n.textContent = sets[k].length; });
     });
+    $("blk-unpaid").hidden = !sets.unpaid.length;
     $("updated").textContent = t("updated") + " " + clock(new Date().toISOString());
   }
 
@@ -413,6 +446,17 @@
     } finally { loading = false; }
   }
 
+  /* who is sewing on this device (two seamstresses, two devices) */
+  var NKEY = "peaces-sewer";
+  try { $("sewer").value = localStorage.getItem(NKEY) || ""; } catch (e) {}
+  $("sewer").addEventListener("input", function(){ try { localStorage.setItem(NKEY, this.value.trim()); } catch (e) {} this.parentNode.classList.remove("need"); });
+  async function startSewing(o, btn, on){
+    var me = $("sewer").value.trim();
+    if (on && !me) { $("sewer").parentNode.classList.add("need"); $("sewer").focus(); $("loadErr").textContent = t("needName"); return; }
+    btn.disabled = true; btn.textContent = t("saving");
+    try { await call("start", { id: o.id, sewer: me, start: on }); $("loadErr").textContent = ""; load(); }
+    catch (e) { btn.disabled = false; btn.textContent = t(on ? "start" : "stop"); $("loadErr").textContent = t("cantStart", { n: o.number, e: e.message }); load(); }
+  }
   async function markDone(o, btn){
     btn.disabled = true; btn.textContent = t("saving");
     try {

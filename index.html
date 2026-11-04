@@ -3334,12 +3334,20 @@
   var estimate=null, estimateFor=0;
   var SHOP_TZ="America/New_York"; // times are always shown in Miami time, whatever the phone is set to
   function popupDay(){ return new Date(POPUP.open).toLocaleDateString("en-US",{weekday:"long",timeZone:SHOP_TZ}); }
-  /* sewing time: the server's number for the whole bag + the line ahead; the current design as a fallback */
-  function makeMinutes(){
-    if(currentOrder && currentOrder.minutes) return currentOrder.minutes + (currentOrder.ahead||0);
-    if(estimate) return estimate.minutes + estimate.ahead;
+  /* when their bikini would be ready: the server works it out from the sewing schedule (2 seamstresses,
+     wait & watch first, pickups when they're due); until it answers, the current design's own sewing time */
+  function readyTime(){
+    var r=(currentOrder&&currentOrder.readyAt)||(estimate&&estimate.readyAt);
+    if(r && Date.parse(r)) return Date.parse(r);
     var d=ctx(); d.addons=activeAddons().map(function(a){ return {id:a.id, cfg:cfgFor(a.id,d)}; });
-    return R.designMinutes(d);
+    return Math.max(Date.now(),POPUP.open)+R.designMinutes(d)*60000;
+  }
+  function makeMinutes(){ return Math.max(1,Math.ceil((readyTime()-Date.now())/60000)); }
+  /* before the pop-up opens, say the time it'll be ready; once it's open, the minutes */
+  function showReady(note){
+    if(beforeOpen()){ showWait(0,note||"We start sewing at 10 AM.","Ready around");
+      var wn=document.getElementById("waitNum"); wn.textContent=fmtTime(new Date(readyTime())); wn.classList.add("is-time"); document.getElementById("waitUnit").textContent=popupDay(); }
+    else showWait(makeMinutes(),note||"Stay close, we'll customize your peace right in front of you.","Estimated wait");
   }
   function fmtTime(d){ return d.toLocaleTimeString("en-US",{hour:"numeric",minute:"2-digit",timeZone:SHOP_TZ}); }
   function beforeOpen(){ return Date.now()<POPUP.open; }
@@ -3354,7 +3362,7 @@
   /* pickup times every 15 min on the pop-up day, 10 AM – 3 PM, starting once the line + this bag are sewn */
   function buildSlots(){
     var grid=document.getElementById("slotGrid"); grid.innerHTML="";
-    var start=new Date(Math.max(Date.now(),POPUP.open)+makeMinutes()*60000);
+    var start=new Date(readyTime()); // can't be ready before the line + this bag are sewn
     start.setMinutes(Math.ceil(start.getMinutes()/15)*15,0,0);
     var n=0;
     for(var t=start.getTime(); t<=POPUP.close; t+=15*60000){
@@ -3390,7 +3398,7 @@
     if(state.fulfil==="wait"){
       document.getElementById("slotBlock").hidden=true;
       if(currentOrder) sendFulfilment(makeMinutes());
-      else showWait(makeMinutes(),waitNoteText(),"Estimated wait");
+      else showReady();
     } else {
       document.getElementById("slotBlock").hidden=false;
       document.getElementById("waitBlock").hidden=true;
@@ -3543,7 +3551,7 @@
       status.textContent="Your preference is saved."; status.hidden=true;
       if(body.mode==="pickup"){ showWait(0,"Preference saved. See you at "+body.pickupAt+"!","Pick up at");
         var wn=document.getElementById("waitNum"); wn.textContent=body.pickupAt; wn.classList.add("is-time"); document.getElementById("waitUnit").textContent=beforeOpen()?popupDay():"today"; }
-      else showWait(result.minutes||body.minutes,waitNoteText(),"Estimated wait");
+      else { if(result.readyAt) order.readyAt=result.readyAt; showReady(); }
     }catch(e){
       if(currentOrder!==order) return;
       status.textContent="Your preference wasn't saved. "+(e.message||"Please try again.");
@@ -3580,8 +3588,8 @@
     var ask=++estimateFor;
     api("/orders/estimate",{designs:allDesigns()}).then(function(r){
       if(ask!==estimateFor || currentOrder || !r || !r.minutes) return;
-      estimate={minutes:r.minutes, ahead:r.ahead||0};
-      if(state.fulfil==="wait") showWait(makeMinutes(),waitNoteText(),"Estimated wait");
+      estimate={minutes:r.minutes, readyAt:r.readyAt};
+      if(state.fulfil==="wait") showReady();
       else if(state.fulfil==="pickup"){ buildSlots(); if(state.pickupIso && !document.querySelector('#slotGrid .slot[aria-pressed="true"]')){ state.pickupIso=null; state.pickupAt=null; syncGo(); } }
     }).catch(function(){});
   });

@@ -3,7 +3,7 @@ import { gql, check, toE164 } from "../../lib/shopify.js";
 import { priceDesign, DISCOUNT_PERCENT } from "../../lib/catalog.js";
 import { sign, verifyWelcomeToken } from "../../lib/sign.js";
 import { saveDesignImage } from "../../lib/design-image.js";
-import { lineAhead, QUEUE_QUERY, queueSince } from "../../lib/queue.js";
+import { waitFor, QUEUE_QUERY, queueSince } from "../../lib/queue.js";
 
 const CURRENCY = process.env.SHOP_CURRENCY || "USD";
 const money = (n) => ({ amount: n.toFixed(2), currencyCode: CURRENCY });
@@ -81,14 +81,15 @@ export default route(["POST"], async (body) => {
     d = { ...d, ...(check(upd.draftOrderUpdate, "draftOrderUpdate").draftOrder || {}) };
   }
   // sewing already waiting in line, so the earliest pickup time is realistic (never blocks checkout)
-  let ahead = 0;
-  try { ahead = lineAhead((await gql(QUEUE_QUERY, { q: queueSince() })).draftOrders.nodes || [], d.id); } catch (e) { ahead = 0; }
+  // when it would be ready from the sewing schedule (2 seamstresses, wait & watch first)
+  let plan = null;
+  try { plan = waitFor((await gql(QUEUE_QUERY, { q: queueSince() })).draftOrders.nodes || [], work, Date.now(), d.id); } catch (e) { plan = null; }
   const expected = discounted ? subtotal * (1 - DISCOUNT_PERCENT / 100) : subtotal;
   return {
     status: 201,
     body: {
       id: d.id, sig: sign(d.id), name: d.name, checkoutUrl: d.invoiceUrl,
-      subtotal, discounted, bikinis: orders.length, minutes: work, ahead,
+      subtotal, discounted, bikinis: orders.length, minutes: work, wait: plan ? plan.minutes : null, readyAt: plan ? plan.readyAt : null,
       image: pictures[0] || null, images: pictures,
       total: total(d) !== null ? total(d) : +expected.toFixed(2),
     },

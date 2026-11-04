@@ -230,6 +230,19 @@ try {
   const anaCard = r.body.pickup.find((c) => c.number === ana.name);
   assert.equal(anaCard.customer, "Ana Pickup"); assert.equal(anaCard.pickupAt, "1:15 PM"); assert.ok(Date.parse(anaCard.pickupDate) - Date.now() > 19 * 3600_000); // the exact pop-up day, not today
   ok("each card has order number, name (kept after the wait/pickup choice), bikini picture and full customization");
+  r = await post("/seamstress/start", { passcode: "sew-sew-123", id: waiter.id, sewer: "" });
+  assert.equal(r.status, 400); ok("a seamstress has to say who she is to start");
+  r = await post("/seamstress/start", { passcode: "sew-sew-123", id: waiter.id, sewer: "Ana" });
+  assert.equal(r.status, 200);
+  r = await post("/seamstress/start", { passcode: "sew-sew-123", id: waiter.id, sewer: "Lucia" });
+  assert.equal(r.status, 409); assert.match(r.body.error, /Ana is already sewing/);
+  r = await post("/seamstress/queue", { passcode: "sew-sew-123", tzOffset: 0 });
+  assert.deepEqual(r.body.sewing.map((c) => [c.number, c.sewingBy]), [[waiter.name, "Ana"]]);
+  assert.ok(!r.body.next.some((c) => c.id === waiter.id)); assert.ok(r.body.sewing[0].readyAt);
+  assert.ok(db.drafts.find((d) => d.id === waiter.id).update.customAttributes.some((x) => x.key === "Customer name")); ok("start sewing: shows under Sewing now, the other seamstress can't take it, nothing else on the order is lost");
+  r = await post("/seamstress/start", { passcode: "sew-sew-123", id: waiter.id, start: false });
+  r = await post("/seamstress/queue", { passcode: "sew-sew-123", tzOffset: 0 });
+  assert.equal(r.body.sewing.length, 0); assert.equal(r.body.next[0].id, waiter.id); ok("stop hands it back to the top of the line");
   r = await post("/seamstress/done", { passcode: "sew-sew-123", id: waiter.id });
   assert.equal(r.body.done, true);
   r = await post("/seamstress/queue", { passcode: "sew-sew-123" });

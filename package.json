@@ -9,6 +9,6 @@
   },
   "scripts": {
     "dev": "vercel dev",
-    "test": "node test/run.js && node test/checkout.js && node --test test/*.test.js"
+    "test": "POPUP_OPEN=2020-01-01T00:00:00Z node test/run.js && node test/checkout.js && POPUP_OPEN=2020-01-01T00:00:00Z node --test test/*.test.js"
   }
 }

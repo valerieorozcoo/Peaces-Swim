@@ -1,7 +1,7 @@
 import { route } from "../../lib/http.js";
 import { gql, check } from "../../lib/shopify.js";
 import { verify } from "../../lib/sign.js";
-import { lineAhead, QUEUE_QUERY, queueSince } from "../../lib/queue.js";
+import { waitFor, QUEUE_QUERY, queueSince } from "../../lib/queue.js";
 
 // POST /api/orders/fulfillment  { id, sig, mode: "wait" | "pickup", pickupAt }
 // Records the customer's choice on the draft order as tags + attributes the team can see in Shopify.
@@ -15,7 +15,7 @@ export default route(["POST"], async (body) => {
   // the exact pickup moment (the pop-up day can be tomorrow), kept so the seamstress page sorts it right
   const at = Date.parse(String(body.pickupIso || ""));
   const pickupIso = mode === "pickup" && Number.isFinite(at) && Math.abs(at - Date.now()) < 8 * 24 * 3600_000 ? new Date(at).toISOString() : "";
-  let minutes = Math.max(0, Math.min(600, parseInt(body.minutes, 10) || 0));
+  let minutes = Math.max(0, Math.min(600, parseInt(body.minutes, 10) || 0)), readyAt = null;
 
   // Keep what checkout already put on the order (e.g. the customer's name for the seamstresses)
   // and replace only the fulfilment details, so changing your mind doesn't leave stale ones.
@@ -25,9 +25,8 @@ export default route(["POST"], async (body) => {
   // Wait & watch: her own sewing time + everything already in line ahead of her (the server knows the line)
   if (mode === "wait") {
     const own = +((kept.find((a) => a.key === "Work minutes") || {}).value) || minutes || 5;
-    let ahead = 0;
-    try { ahead = lineAhead((await gql(QUEUE_QUERY, { q: queueSince() })).draftOrders.nodes || [], id); } catch (e) { ahead = 0; }
-    minutes = Math.min(600, own + ahead);
+    try { const plan = waitFor((await gql(QUEUE_QUERY, { q: queueSince() })).draftOrders.nodes || [], own, Date.now(), id); minutes = plan.minutes; readyAt = plan.readyAt; }
+    catch (e) { minutes = own; }
   }
   const attrs = [
     ...kept,
@@ -46,5 +45,5 @@ export default route(["POST"], async (body) => {
     { id, input: { customAttributes: attrs, tags } }
   );
   check(data.draftOrderUpdate, "draftOrderUpdate");
-  return { ok: true, minutes };
+  return { ok: true, minutes, readyAt };
 });
