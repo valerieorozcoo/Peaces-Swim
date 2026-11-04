@@ -117,6 +117,17 @@
   .eta{display:block; font-size:16px; font-weight:600; margin:0 0 8px;}
   .eta.late{color:var(--pink);}
   .by{display:inline-block; background:#7a3fb0; color:#fff; padding:3px 10px; font-weight:700; font-size:15px; margin:0 0 8px;}
+  .when2{margin:4px 0 0;}
+  .when2 .mode{margin:0 8px 0 0;}
+  .mode.late{background:var(--pink);}
+  .bk{font-size:19px; margin:10px 0 16px;}           /* the small gap after the bikini line */
+  .bk b{font-weight:700;}
+  .piece{margin:0 0 10px;}
+  .plabel{margin:0; font-weight:700; font-size:16px; letter-spacing:.08em; text-transform:uppercase; color:var(--teal-deep);}
+  .plist{margin:2px 0 0; padding-left:20px; font-size:18px; line-height:1.4;}
+  .plist .none{color:var(--ink-60); list-style:none; margin-left:-20px;}
+  .linkish{background:none; border:0; text-decoration:underline; color:var(--ink-60); font-size:14px; padding:0 4px;}
+  .texther{background:var(--teal); color:#fff; padding:8px 12px; font-weight:700; text-decoration:none; white-space:nowrap;}
   .toast{position:fixed; left:50%; bottom:20px; transform:translateX(-50%); background:var(--ink); color:#fff; padding:12px 16px; display:flex; gap:14px; align-items:center; font-size:16px; max-width:calc(100% - 32px);}
   .toast button{background:none; border:0; color:#fff; text-decoration:underline; padding:0; font-weight:600;}
   dt.bk{grid-column:1/-1; font-weight:700; color:#4B2470; margin-top:6px;} dd.bk{display:none;}
@@ -190,7 +201,7 @@
   </main>
 </div>
 <div id="printArea" aria-hidden="true"></div>
-<div class="toast" id="toast" hidden><span id="toastText"></span><button type="button" id="undo" data-t="undo">Undo</button></div>
+<div class="toast" id="toast" hidden><span id="toastText"></span><a id="textHer" class="texther" hidden></a><button type="button" id="undo" data-t="undo">Undo</button></div>
 
 <script>
 (function(){
@@ -245,7 +256,8 @@
     markedDone:["{n} done.","{n} listo."], cantDone:["Couldn't finish {n}: {e}","No se pudo terminar {n}: {e}"], cantUndo:["Couldn't undo: {e}","No se pudo deshacer: {e}"],
     bikini:["Bikini {i} of {n}","Bikini {i} de {n}"], one:["1 bikini","1 bikini"], name:["Name","Nombre"],
     customs:["Customizations","Personalizaciones"], work:["≈ {m} min of sewing","≈ {m} min de costura"],
-    me:["Your name","Tu nombre"], nowH:["Sewing now","Cosiendo ahora"], nextH:["Up next","Siguientes"], unpaidH:["Not paid yet","Sin pagar"],
+    nothing:["Nothing","Nada"], texted:["Texted {n} ✓","Le mandamos mensaje a {n} ✓"], textHer:["Text {n} it's ready","Avisarle a {n}"],
+    noPhone:["(no phone number to text)","(no hay teléfono para avisar)"], me:["Your name","Tu nombre"], nowH:["Sewing now","Cosiendo ahora"], nextH:["Up next","Siguientes"], unpaidH:["Not paid yet","Sin pagar"],
     nextSub:["Whoever finishes first takes the top one. People waiting here go first; a pickup jumps ahead only when it would otherwise be late.","La que termine primero toma la de arriba. Primero las que esperan aquí; un pedido para recoger se adelanta solo si no estaría a tiempo."],
     emptyNow:["Nobody is sewing right now.","Nadie está cosiendo ahorita."], emptyNext:["Nothing in line.","No hay pedidos en fila."],
     start:["Start sewing","Empezar"], stop:["Stop","Soltar"], sewingBy:["{n} is sewing","{n} está cosiendo"], readyBy:["Ready ~{t}","Lista ~{t}"],
@@ -283,6 +295,15 @@
     b.addEventListener("click", function(){ lang = b.dataset.lang; try { localStorage.setItem(LKEY, lang); } catch (e) {} applyLang(); });
   });
 
+  /* One order, as simple as possible:
+       Name
+       Order #D1042
+       Waiting here · ready ~2:40 PM   (or: Pick up at 3:15 PM)
+       Bikini: Mint triangle top (S), Blue seamless bottom (S)
+       Top:    each customization on its own line, in tier order
+       Bottom: the same
+       [Done] */
+  function lc1(x){ return x.charAt(0).toLowerCase() + x.slice(1); }
   function card(o, i, kind){
     var c = el("article", "card" + (o.paid ? "" : " unpaid") + (kind === "sewing" ? " sewing" : "") + (kind === "next" && i === 0 ? " first" : ""));
     var pic = el("div", "pic");
@@ -292,47 +313,51 @@
 
     var body = el("div");
     var nm = el("p", "name", o.customer || t("noName")); if (kind === "next" && i === 0) nm.setAttribute("data-next", t("nextUp")); body.appendChild(nm);
-    body.appendChild(el("p", "ord", t("order") + " " + o.number + (kind === "next" ? "  ·  #" + (i + 1) : "")));
-    if (kind === "sewing") body.appendChild(el("span", "by", t("sewingBy", { n: o.sewingBy || "?" })));
-    body.appendChild(el("span", "mode" + (o.mode === "pickup" ? " pickup" : ""), modeText(o)));
-    if (o.work) body.appendChild(el("span", "work", t("work", { m: o.work })));
-    if (!o.paid) body.appendChild(el("span", "badge", t("notPaid")));
-    if (o.readyAt) {
-      var eta = o.late ? t("late", { t: o.pickupAt }) : t("readyBy", { t: clock(o.readyAt) });
-      if (!o.late && kind === "next" && o.mode === "pickup" && o.pickupDate) { var sb = Date.parse(o.pickupDate) - (o.work + 10) * 60000; if (sb > Date.now()) eta += "  ·  " + t("startBy", { t: clock(new Date(sb).toISOString()), p: o.pickupAt }); }
-      body.appendChild(el("span", "eta" + (o.late ? " late" : ""), eta));
-    }
+    body.appendChild(el("p", "ord", t("order") + " " + o.number));
+    var when = el("p", "when2");
+    if (kind === "sewing") when.appendChild(el("span", "by", t("sewingBy", { n: o.sewingBy || "?" })));
+    var chip = o.mode === "pickup"
+      ? (lang === "es" ? "Recoge a las " : "Pick up at ") + o.pickupAt + (o.pickupDate ? dayWord(o.pickupDate) : "")
+      : (lang === "es" ? "Esperando aquí" : "Waiting here") + (o.readyAt ? " · " + lc1(t("readyBy", { t: clock(o.readyAt) })) : " · " + waited(o.chosenAt));
+    when.appendChild(el("span", "mode" + (o.mode === "pickup" ? " pickup" : "") + (o.late ? " late" : ""), chip));
+    if (!o.paid) when.appendChild(el("span", "badge", t("notPaid")));
+    body.appendChild(when);
+    if (o.late) body.appendChild(el("p", "eta late", t("late", { t: o.pickupAt })));
 
     var bks = bikinisOfOrder(o);
     bks.forEach(function(b, bi){
-      if (bks.length > 1) { body.appendChild(el("p", "bkh", t("bikini", { i: bi + 1, n: bks.length })));
-        if (bi > 0 && b.image) { var im2 = el("img"); im2.src = b.image; im2.alt = ""; im2.className = "extra-pic"; im2.loading = "lazy"; pic.appendChild(im2); } }
-      var p1 = el("p", "pieces"); p1.appendChild(el("b", null, t("top"))); p1.appendChild(document.createTextNode(L(b.top, b.topEs) || "—")); body.appendChild(p1);
-      var p2 = el("p", "pieces"); p2.appendChild(el("b", null, t("bottom"))); p2.appendChild(document.createTextNode(L(b.bottom, b.bottomEs) || "—")); body.appendChild(p2);
-      var ol = el("ol", "adds");
-      if (!b.addons.length) ol.appendChild(el("li", null, t("none")));
-      b.addons.forEach(function(a, k){ ol.appendChild(el("li", null, L(a, (b.addonsEs || [])[k]))); });
-      body.appendChild(ol);
-      if (b.extras && b.extras.length) { var p3 = el("p", "pieces"); p3.appendChild(el("b", null, t("also"))); p3.appendChild(document.createTextNode(b.extras.map(function(x){ return L(x.en, x.es); }).join(", "))); body.appendChild(p3); }
+      var sum = el("p", "bk");
+      sum.appendChild(el("b", null, (bks.length > 1 ? t("bikini", { i: bi + 1, n: bks.length }) : "Bikini") + ": "));
+      sum.appendChild(document.createTextNode(L(b.short, b.shortEs) || [L(b.top, b.topEs), L(b.bottom, b.bottomEs)].filter(Boolean).join(", ")));
+      body.appendChild(sum);
+      if (bi > 0 && b.image) { var im2 = el("img"); im2.src = b.image; im2.alt = ""; im2.className = "extra-pic"; im2.loading = "lazy"; pic.appendChild(im2); }
+      var piece = function(label, en, es){
+        var box = el("div", "piece"); box.appendChild(el("p", "plabel", label));
+        var ul = el("ul", "plist");
+        if (!en.length) ul.appendChild(el("li", "none", t("nothing")));
+        en.forEach(function(x, k){ ul.appendChild(el("li", null, L(x, es[k]))); });
+        box.appendChild(ul); body.appendChild(box);
+      };
+      if (b.hasPieces) { piece(t("top") + ":", b.topCustom, b.topCustomEs || []); piece(t("bottom") + ":", b.bottomCustom, b.bottomCustomEs || []); }
+      else piece(t("customs") + ":", b.addons || [], b.addonsEs || []); // older orders: one list
+      if (b.extras && b.extras.length) { var p3 = el("p", "pieces"); p3.appendChild(el("b", null, t("also") + ": ")); p3.appendChild(document.createTextNode(b.extras.map(function(x){ return L(x.en, x.es); }).join(", "))); body.appendChild(p3); }
     });
-    if (!(o.bikinis && o.bikinis.length) && o.extras && o.extras.length) { var p4 = el("p", "pieces"); p4.appendChild(el("b", null, t("also"))); p4.appendChild(document.createTextNode(o.extras.join(", "))); body.appendChild(p4); }
 
     var actions = el("div", "actions");
-    if (kind === "next") { // take it: the other seamstress then sees it under "Sewing now"
-      var st = el("button", "btn big", t("start")); st.type = "button";
+    if (kind === "next") {
+      var st = el("button", "btn ghost", t("start")); st.type = "button";
       st.addEventListener("click", function(){ startSewing(o, st, true); });
-      actions.appendChild(st);
     }
-    var done = el("button", "btn" + (kind === "next" ? " ghost" : " big"), t("done"));
+    var done = el("button", "btn big", t("done"));
     done.type = "button";
     done.addEventListener("click", function(){ markDone(o, done); });
     actions.appendChild(done);
+    if (st) actions.appendChild(st);
     if (kind === "sewing") { var sp = el("button", "btn ghost", t("stop")); sp.type = "button"; sp.addEventListener("click", function(){ startSewing(o, sp, false); }); actions.appendChild(sp); }
-    var pt = el("button", "btn ghost", t("print"));
+    var pt = el("button", "linkish", t("print"));
     pt.type = "button";
     pt.addEventListener("click", function(){ var l = orderTags(o); if (printed) { l.forEach(function(x){ if (printed.indexOf(x.key) < 0) printed.push(x.key); }); savePrinted(); } printTags(l); });
     actions.appendChild(pt);
-    if (o.minutes && o.mode === "wait") actions.appendChild(el("span", "note", t("told", { m: o.minutes })));
     body.appendChild(actions);
     c.appendChild(body);
     return c;
@@ -460,11 +485,20 @@
   async function markDone(o, btn){
     btn.disabled = true; btn.textContent = t("saving");
     try {
-      await call("done", { id: o.id, done: true });
+      var r = await call("done", { id: o.id, done: true });
       undoId = o.id;
-      $("toastText").textContent = t("markedDone", { n: o.customer || o.number });
+      var tx = r && r.text, who = (o.customer || "").split(" ")[0] || o.number, link = $("textHer");
+      link.hidden = true;
+      var msg = t("markedDone", { n: o.customer || o.number });
+      if (tx && tx.sent) msg += " " + t("texted", { n: who });                       // sent automatically
+      else if (tx && tx.phone && tx.message) {                                          // one tap: opens Messages with the text written
+        link.href = "sms:" + tx.phone + "?&body=" + encodeURIComponent(tx.message);
+        link.textContent = t("textHer", { n: who }); link.hidden = false;
+      }
+      else if (tx && tx.reason === "no-phone") msg += " " + t("noPhone");
+      $("toastText").textContent = msg;
       $("toast").hidden = false;
-      clearTimeout(toastTimer); toastTimer = setTimeout(function(){ $("toast").hidden = true; undoId = null; }, 8000);
+      clearTimeout(toastTimer); toastTimer = setTimeout(function(){ $("toast").hidden = true; undoId = null; }, link.hidden ? 8000 : 30000);
       load();
     } catch (e) {
       btn.disabled = false; btn.textContent = t("done");

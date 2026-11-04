@@ -3568,7 +3568,8 @@
   /* Checkout, step 1: wait & watch or pick up later, BEFORE paying (times come from the line right now) */
   function fulfilStage(ready){
     document.getElementById("fulfilTitle").textContent=ready?"CHECKOUT READY":"HOW DO YOU WANT YOUR PEACE?";
-    document.getElementById("fulfilSub").textContent=ready?"Finish paying in the Shopify tab to confirm your order.":"Choose before you pay. Times are based on the line right now.";
+    var willText=!!(lead&&lead.phone);
+    document.getElementById("fulfilSub").textContent=(ready?"Finish paying in the Shopify tab to confirm your order.":"Choose before you pay. Times are based on the line right now.")+(willText?" We'll text you when your Peace is ready.":"");
     syncGo();
   }
   function allDesigns(){ var inBag=bagPayload(); return inBag.designs.concat([designPayload()]); }

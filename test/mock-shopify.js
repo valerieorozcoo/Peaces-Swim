@@ -58,7 +58,8 @@ export function startMockShopify(port) {
     }
     if (query.includes("draftOrder(id:")) {
       const d = db.drafts.find((x) => x.id === variables.id);
-      return send({ data: { draftOrder: d ? { customAttributes: (d.update && d.update.customAttributes) || d.input.customAttributes || [] } : null } });
+      return send({ data: { draftOrder: d ? { name: d.name, phone: null, customer: null, tags: [...((d.update && d.update.tags) || d.input.tags || []), ...(d.extraTags || [])],
+        customAttributes: (d.update && d.update.customAttributes) || d.input.customAttributes || [] } : null } });
     }
     if (query.includes("tagsAdd")) {
       const c = db.customers.find((x) => x.id === variables.id);

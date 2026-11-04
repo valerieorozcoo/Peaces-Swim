@@ -58,6 +58,8 @@ export default route(["POST"], async (body) => {
   const customerName = String(cust.name || "").replace(/[\u0000-\u001f<>]/g, "").trim().slice(0, 60);
   if (customerName) input.customAttributes.push({ key: "Customer name", value: customerName });
   input.customAttributes.push({ key: "Work minutes", value: String(work) });
+  // to text them when it's ready (the seamstress page's Done button)
+  if (phone) input.customAttributes.push({ key: "Text when ready", value: phone });
   const email = String(cust.email || "").trim().toLowerCase().slice(0, 120);
   // Signed-up customers: their email goes on the order so it shows in their Shopify account.
   if (discounted && /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) input.email = email;

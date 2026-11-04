@@ -245,6 +245,8 @@ try {
   assert.equal(r.body.sewing.length, 0); assert.equal(r.body.next[0].id, waiter.id); ok("stop hands it back to the top of the line");
   r = await post("/seamstress/done", { passcode: "sew-sew-123", id: waiter.id });
   assert.equal(r.body.done, true);
+  assert.equal(r.body.text.phone, "+17865550101"); assert.equal(r.body.text.sent, false); assert.equal(r.body.text.reason, "not-set-up");
+  assert.match(r.body.text.message, /^Hi Mia! Your Peace \(order #D\d+\) is ready!/); ok("done: the customer's number + a ready text come back (Twilio not set up → one-tap text from the phone)");
   r = await post("/seamstress/queue", { passcode: "sew-sew-123" });
   assert.equal(r.body.wait.length, 0); ok("marking an order done takes it off the queue");
   await post("/seamstress/done", { passcode: "sew-sew-123", id: waiter.id, done: false });
