@@ -12,7 +12,7 @@
 <title>Peaces Swim: A new era of swimwear has arrived</title>
 <meta name="description" content="Design your own bikinis, made in Miami. Pick your peaces, add lace, ties and charms, and wear a swimsuit that's entirely yours.">
 <link rel="icon" type="image/png" href="art/logo-ps.png">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400..700;1,400..700&family=Pinyon+Script&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400..700;1,400..700&family=Pinyon+Script&family=Sacramento&display=swap">
 <style>
 @font-face{font-family:"Open Sauce Sans";font-style:normal;font-weight:300;font-display:swap;src:url("fonts/open-sauce-sans-latin-300-normal.woff2") format("woff2");}
 @font-face{font-family:"Open Sauce Sans";font-style:italic;font-weight:300;font-display:swap;src:url("fonts/open-sauce-sans-latin-300-italic.woff2") format("woff2");}
@@ -2023,7 +2023,7 @@
   var GEO={
     "b-triangle-top":{"w":441,"h":441,"k":0.83,"cupL":[118,352],"cupR":[324,352],"tie1":[[221,428],[150,515],[-14,470]],"strapL":[160,95],"strapR":[275,90],"junctionL":[107,236],"junctionR":[332,236],"strapRunL":[[160,100],[110,230]],"strapRunR":[[275,95],[330,230]],"outerL":[14,418],"outerR":[432,418],"center":[221,418],"centerHigh":[221,405],"trimSegs":[[107,236,196,410],[246,410,332,236]]},
     "b-triangle-bottom":{"w":461,"h":311,"k":0.83,"hipL":[93,54],"hipR":[371,40],"tieTopL":[11,12],"tieTopR":[450,12],"strapRunL":[[14,14],[90,52]],"strapRunR":[[447,14],[371,40]],"center":[222,56],"mono":[222,130],"trimSegs":[[93,54,222,56],[222,56,371,40]],"legs":[[95,62,146,185],[146,185,192,290],[368,50,316,185],[316,185,266,290]]},
-    "b-underwire-top":{"w":602,"h":610,"k":0.537,"cupDrop":1,"cupL":[150,462],"cupR":[452,462],"tie1":[[298,425],[205,560],[-14,505]],"hem":[[24,480,300,492],[300,492,578,480]],"strapL":[261,24],"strapR":[354,24],"junctionL":[75,322],"junctionR":[531,322],"strapRunL":[[242,61],[93,305]],"strapRunR":[[363,61],[518,305]],"outerL":[22,404],"outerR":[581,404],"center":[298,397],"centerHigh":[298,373],"trimSegs":[[15,340,298,380],[298,380,587,335]]},
+    "b-underwire-top":{"w":602,"h":610,"k":0.537,"cupDrop":1,"cupL":[145,466],"cupR":[457,466],"tie1":[[298,425],[205,560],[-14,505]],"hem":[[24,480,300,492],[300,492,578,480]],"strapL":[261,24],"strapR":[354,24],"junctionL":[75,322],"junctionR":[531,322],"strapRunL":[[242,61],[93,305]],"strapRunR":[[363,61],[518,305]],"outerL":[22,404],"outerR":[581,404],"center":[298,397],"centerHigh":[298,373],"trimSegs":[[15,340,298,380],[298,380,587,335]]},
     "b-seamless-bottom":{"w":600,"h":396,"k":0.537,"hipL":[22,26],"hipR":[578,22],"tieTopL":[18,15],"tieTopR":[582,11],"strapRunL":[[22,26],[37,73]],"strapRunR":[[578,22],[563,73]],"center":[302,66],"mono":[302,173],"trimSegs":[[22,18,302,62],[302,62,576,15]]}
   };
 
@@ -2158,16 +2158,18 @@
   /* a connector sewn INTO the suit (like the mint sample): the fabric on each side wraps through the ring
      instead of the ring sitting on top. ang = the direction the fabric runs through it (0 = left-right). */
   function runAngle(run){ return Math.atan2(run[1][1]-run[0][1],run[1][0]-run[0][0])*180/Math.PI; }
-  function sewnIn(svg,part,name,x,y,w,ang){
+  function sewnIn(svg,part,name,x,y,w,ang,o){
+    o=o||{};
+    if(o.hole) el("circle",{cx:x,cy:y,r:w*0.24,fill:"#fff"},svg); // the strap is cut: you see through the ring
     img(svg,name,x,y,w,w,0);
-    var fab=fabricHex(part), cheetah=colorOf(part).fill==="leopard", tw=w*0.3, th=w*0.36, gx=w*0.43;
+    var fab=fabricHex(part), cheetah=colorOf(part).fill==="leopard", tw=o.tw||w*0.3, th=o.th||w*0.36, gx=o.gx||w*0.43;
     var gr=el("g",{transform:"translate("+x+","+y+") rotate("+(ang||0)+")"},svg);
     [-1,1].forEach(function(sd){
       var cx=sd*gx, t=el("g",{},gr);
       el("rect",{x:cx-tw/2-0.6,y:-th/2-0.6,width:tw+1.2,height:th+1.2,rx:tw*0.42,fill:"rgba(46,36,51,.28)"},t);   // soft edge
       el("rect",{x:cx-tw/2,y:-th/2,width:tw,height:th,rx:tw*0.42,fill:fab},t);
       if(cheetah) [[-0.18,-0.2],[0.15,0.12],[-0.05,0.28]].forEach(function(o){ el("ellipse",{cx:cx+o[0]*tw,cy:o[1]*th,rx:tw*0.12,ry:th*0.08,fill:"#5A3A22",opacity:0.8},t); });
-      for(var k=-1;k<=1;k++) el("path",{d:"M"+(cx-tw*0.32)+","+(k*th*0.22)+" Q"+cx+","+(k*th*0.22+th*0.05)+" "+(cx+tw*0.32)+","+(k*th*0.22),stroke:"rgba(46,36,51,.18)","stroke-width":Math.max(0.6,w*0.012),fill:"none"},t); // gathers
+      for(var k=-1;k<=1;k++) el("path",{d:"M"+(cx+k*tw*0.24)+","+(-th*0.4)+" Q"+(cx+k*tw*0.24+tw*0.06)+",0 "+(cx+k*tw*0.24)+","+(th*0.4),stroke:"rgba(46,36,51,.2)","stroke-width":Math.max(0.6,w*0.014),fill:"none"},t); // gathers across the fabric
       el("rect",{x:cx-tw*0.3,y:-th*0.42,width:tw*0.6,height:th*0.16,rx:th*0.08,fill:"rgba(255,255,255,.3)"},t); // sheen
     });
   }
@@ -2236,19 +2238,56 @@
     el("path",{d:tape,stroke:fc,"stroke-width":W*0.016,fill:"none","stroke-linecap":"round"},svg);
     el("path",{d:tape,stroke:"rgba(255,255,255,.25)","stroke-width":W*0.004,"stroke-dasharray":(W*0.006)+" "+(W*0.005),fill:"none"},svg);
   }
+  /* rhinestone letters, sized like the samples: one big script capital across the cup ("K"), or a lowercase word
+     across the back of the bottoms ("kam"). Each crystal is a dot along the letter, amber-gold or silver. */
+  /* where the crystals go for a word: the script is drawn on a hidden canvas, each stroke is thinned to its
+     center line (distance-transform ridge), then crystals are placed along it at an even spacing.
+     Returns offsets from the text's anchor (center of the baseline). Cached per word + size. */
+  var dotCache={}, RS_FONT="Sacramento";
+  function crystalDots(text,fs,gap){
+    var key=text+"|"+Math.round(fs)+"|"+Math.round(gap*10);
+    if(dotCache[key]) return dotCache[key];
+    var S=3, F=Math.max(40,Math.round(fs*S)), w=Math.ceil(F*(0.6*text.length+1.2)), h=Math.ceil(F*1.7), bx=w/2, by=F*1.15;
+    var cv=document.createElement("canvas"); cv.width=w; cv.height=h;
+    var cx=cv.getContext("2d"); cx.fillStyle="#000"; cx.textAlign="center"; cx.font=F+"px '"+RS_FONT+"', 'Pinyon Script', cursive";
+    cx.fillText(text,bx,by);
+    var px=cx.getImageData(0,0,w,h).data, N=w*h, D=new Float32Array(N), INF=1e9, i, x, y;
+    for(i=0;i<N;i++) D[i]=px[i*4+3]>110?INF:0;
+    for(y=0;y<h;y++) for(x=0;x<w;x++){ i=y*w+x; if(!D[i]) continue; var m=D[i];
+      if(x>0) m=Math.min(m,D[i-1]+1); if(y>0) m=Math.min(m,D[i-w]+1); if(x>0&&y>0) m=Math.min(m,D[i-w-1]+1.4); if(x<w-1&&y>0) m=Math.min(m,D[i-w+1]+1.4); D[i]=m; }
+    for(y=h-1;y>=0;y--) for(x=w-1;x>=0;x--){ i=y*w+x; if(!D[i]) continue; var m2=D[i];
+      if(x<w-1) m2=Math.min(m2,D[i+1]+1); if(y<h-1) m2=Math.min(m2,D[i+w]+1); if(x<w-1&&y<h-1) m2=Math.min(m2,D[i+w+1]+1.4); if(x>0&&y<h-1) m2=Math.min(m2,D[i+w-1]+1.4); D[i]=m2; }
+    var ridge=[];
+    for(y=1;y<h-1;y++) for(x=1;x<w-1;x++){ i=y*w+x; var d=D[i]; if(!d) continue;
+      if(d>=D[i-1]&&d>=D[i+1]&&d>=D[i-w]&&d>=D[i+w]&&d>=D[i-w-1]&&d>=D[i+w+1]&&d>=D[i-w+1]&&d>=D[i+w-1]) ridge.push([x,y]); }
+    var G=gap*S, out=[], cell={}, ck=function(a,b){ return a+","+b; };
+    ridge.forEach(function(p){
+      var gx=Math.floor(p[0]/G), gy=Math.floor(p[1]/G), ok=true;
+      for(var a=-1;a<=1&&ok;a++) for(var b=-1;b<=1&&ok;b++) (cell[ck(gx+a,gy+b)]||[]).forEach(function(q){ if(Math.hypot(q[0]-p[0],q[1]-p[1])<G) ok=false; });
+      if(!ok) return; (cell[ck(gx,gy)]=cell[ck(gx,gy)]||[]).push(p); out.push([(p[0]-bx)/S,(p[1]-by)/S]);
+    });
+    if(out.length && document.fonts && document.fonts.check && document.fonts.check(F+"px '"+RS_FONT+"'")) dotCache[key]=out; // only keep it once the real font is in
+    else if(document.fonts && !crystalDots.waiting){ crystalDots.waiting=1; document.fonts.load(F+"px '"+RS_FONT+"'").then(function(){ crystalDots.waiting=0; dotCache={}; renderAll(); }); }
+    return out;
+  }
   function rhinestoneText(svg,spots,W){
-    var place=cfg("rhinestones","place"), rt=R.letters(state.rsText,place==="butt"?4:3)||(place==="butt"?"k":"K");
-    var gold=cfg("rhinestones","metal")==="gold", col=gold?"#E6C46A":"#EEF1F6", fs=W*(rt.length>2?0.09:rt.length>1?0.1:0.12);
-    if(place!=="butt"){ var room=W*(state.topStyle==="triangle"?0.19:0.2); fs=Math.min(fs, room/(0.62*rt.length)); } // fit inside the cup
+    var place=cfg("rhinestones","place"), rt=R.letters(state.rsText,place==="butt"?4:3)||(place==="butt"?"k":"K"), n=rt.length;
+    var gold=cfg("rhinestones","metal")==="gold", col=gold?"#D9A441":"#EEF1F6", edge=gold?"rgba(110,66,10,.75)":"rgba(46,36,51,.45)", fs;
+    if(place==="butt") fs=W*(n>3?0.23:n>2?0.27:n>1?0.29:0.3);
+    else { fs=W*(n>2?0.13:n>1?0.17:(state.topStyle==="triangle"?0.24:0.29)); fs=Math.min(fs, W*(state.topStyle==="triangle"?0.2:0.26)/(0.45*n)); } // fit inside the cup
+    // crystals set along the CENTER of each script stroke, one row, evenly spaced (like the samples)
+    var dot=fs*0.05, gap=dot*1.45;
     spots.forEach(function(pt){
-      var common={x:pt[0],y:pt[1],"font-family":"'Pinyon Script','Snell Roundhand',cursive","font-size":fs,"text-anchor":"middle",fill:"none","stroke-linecap":"round"};
-      var sh=el("text",Object.assign({},common,{stroke:"rgba(46,36,51,.35)","stroke-width":fs*0.07,"stroke-dasharray":"0 "+(fs*0.085)}),svg); sh.textContent=rt;
-      var t=el("text",Object.assign({},common,{stroke:col,"stroke-width":fs*0.055,"stroke-dasharray":"0 "+(fs*0.085)}),svg); t.textContent=rt;
-      var hi=el("text",Object.assign({},common,{stroke:"#FFFFFF","stroke-width":fs*0.022,"stroke-dasharray":"0 "+(fs*0.085)}),svg); hi.textContent=rt;
+      crystalDots(rt,fs,gap).forEach(function(d){
+        var x=pt[0]+d[0], y=pt[1]+d[1];
+        el("circle",{cx:x,cy:y,r:dot*0.62,fill:edge},svg);
+        el("circle",{cx:x,cy:y,r:dot*0.47,fill:col},svg);
+        el("circle",{cx:x-dot*0.15,cy:y-dot*0.15,r:dot*0.16,fill:"rgba(255,255,255,.9)"},svg);
       });
+    });
   }
   /* back view: rhinestones on the back of the bottoms, lace that goes all the way around */
-  var BACKGEO={"b-triangle-bottom":{rs:[229,100],trimSegs:[[93,50,229,56],[229,56,368,46]],legs:[[95,58,150,190],[150,190,202,292],[368,52,310,190],[310,190,256,292]]},
+  var BACKGEO={"b-triangle-bottom":{rs:[226,132],trimSegs:[[93,50,229,56],[229,56,368,46]],legs:[[95,58,150,190],[150,190,202,292],[368,52,310,190],[310,190,256,292]]},
                "b-seamless-bottom":{rs:[290,62],trimSegs:[[14,20,290,88],[290,88,566,18]]}};
   /* back view: the very ends of the neck ties and the back ties, [x, y, direction back up the tie] */
   var BACKTIPS={"b-triangle-top":[[245,167,-0.15,-1],[108,46,1,0.1],[191,529,0.15,-1],[237,548,-0.12,-1]],
@@ -2269,7 +2308,7 @@
     if(on("laceTrim") && cfg("laceTrim","bottom")==="around"){
       bg.trimSegs.forEach(function(sg){ strip(svg,"p-lacetrim-"+variantOf("laceTrim"),dropSeg(sg,W*0.04),W*0.08); });
     }
-    if(on("rhinestones") && cfg("rhinestones","place")==="butt") rhinestoneText(svg,[bg.rs],W*0.85);
+    if(on("rhinestones") && cfg("rhinestones","place")==="butt") rhinestoneText(svg,[bg.rs],W);
   }
   function decorate(svg,artName,g){
     var part=partOfArt(artName), isTop=(part==="top"), W=g.w, H=g.h;
@@ -2299,11 +2338,12 @@
     }
 
     /* Tier 2: connectors (triangle: middle of the top + both sides of the bottom; bralette: both halter straps) */
-    var tieConn=isTop && tri && on("extTies") && tieNeedsConnector() && midConnectorOn(), connW=W*(tri?(tieConn?0.15:0.1):0.075);
+    var tieConn=isTop && tri && on("extTies") && tieNeedsConnector() && midConnectorOn(), connW=W*(tri?(tieConn?0.15:0.1):0.09);
     if(on("connectors")){
       var cv=variantOf("connectors");
       if(isTop && tri){ if(!tieConn && cfg("connectors","top")!=="none") sewnIn(svg,part,cv,g.center[0],g.center[1]+2,connW,0); } // with the ties it's drawn last, on top
-      else if(isTop) [g.strapRunL,g.strapRunR].forEach(function(run){ var p=strapMid(run); sewnIn(svg,part,cv,p[0],p[1],connW,runAngle(run)); });
+      else if(isTop) [[[127,190],[[189,95],[74,300]]],[[477,190],[[435,95],[525,300]]]].forEach(function(q){ // bralette: on each halter strap, the strap gathered into the ring, like the sample
+        sewnIn(svg,part,cv,q[0][0],q[0][1],connW,runAngle(q[1]),{tw:connW*0.55,th:W*0.062,gx:connW*0.66,hole:1}); });
       else if(cfg("connectors","bottom")==="two") [[g.hipL,g.strapRunL],[g.hipR,g.strapRunR]].forEach(function(q){ sewnIn(svg,part,cv,q[0][0],q[0][1]+2,connW,runAngle(q[1])); });
     }
     if(on("rhinestones") && isTop && g.cupL){
