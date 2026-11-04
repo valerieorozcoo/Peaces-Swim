@@ -2008,7 +2008,8 @@
     try{ R.normalize(id,cfgFor(id,d),d,variantOf(id)); return ""; }catch(e){ return e.message; }
   }
   function tieNeedsConnector(){ return state.topStyle==="triangle" && /wrap|back/.test(cfg("extTies","style")); }
-  function midConnectorOn(){ return addonOn("connectors") && state.topStyle==="triangle" && cfg("connectors","top")!=="none"; }
+  // the middle connector: added on its own, or picked inside Extended ties (shown while they're still choosing, before Add)
+  function midConnectorOn(){ return state.topStyle==="triangle" && ((addonOn("connectors") && cfg("connectors","top")!=="none") || (state.preview==="extTies" && tieNeedsConnector())); }
 
   var state={
     topStyle:"triangle", bottomStyle:"triangle",
@@ -2819,7 +2820,10 @@
       if(ini) ini.addEventListener("input",function(e){ state.initials=e.target.value.replace(/[^A-Za-z]/g,"").slice(-1).toUpperCase(); e.target.value=state.initials; showErr(drawer,""); renderAll(); });
 
       drawer.querySelector("[data-add]").addEventListener("click",function(){
-        if(a.id==="extTies" && tieNeedsConnector()){ state.addons.connectors=true; (state.cfg.connectors=state.cfg.connectors||{}).top="mid"; } // the connector for the middle
+        if(a.id==="extTies" && tieNeedsConnector()){ // the connector for the middle (only the middle, unless they already added connectors themselves)
+          var cc=state.cfg.connectors=state.cfg.connectors||{};
+          if(!state.addons.connectors) cc.bottom="no";
+          state.addons.connectors=true; cc.top="mid"; }
         var err=problemOf(a.id);
         if(err){ showErr(drawer,err); return; }
         state.addons[a.id]=true; state.preview=null;
