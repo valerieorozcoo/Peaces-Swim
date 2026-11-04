@@ -962,6 +962,63 @@
     .lb-box{padding:56px 10px 80px;} .lb-arrow{top:auto; bottom:16px; transform:none;} .lb-prev{left:calc(50% - 64px);} .lb-next{right:calc(50% - 64px);}
   }
 
+
+  /* ===== About us page ===== */
+  .ab-team{max-width:980px; margin:0 auto; text-align:center;}
+  .ab-photo{position:relative; margin:0; border-radius:24px; overflow:hidden; box-shadow:0 24px 60px -30px rgba(75,36,112,.5);}
+  .ab-photo img{display:block; width:100%; height:auto; max-width:none;}
+  .ab-spot{position:absolute; left:var(--x); top:var(--y); transform:translate(-50%,-50%); padding:0; border:0; background:none; cursor:pointer; width:44px; height:44px;}
+  .ab-dot{position:absolute; inset:12px; border-radius:999px; background:#EFDDFD; border:2px solid #fff; box-shadow:0 0 0 0 rgba(239,221,253,.9); animation:ab-pulse 2.2s infinite;}
+  .ab-spot:nth-of-type(2) .ab-dot{animation-delay:.7s;} .ab-spot:nth-of-type(3) .ab-dot{animation-delay:1.4s;}
+  @keyframes ab-pulse{0%{box-shadow:0 0 0 0 rgba(239,221,253,.9);} 70%{box-shadow:0 0 0 14px rgba(239,221,253,0);} 100%{box-shadow:0 0 0 0 rgba(239,221,253,0);}}
+  .ab-tag{position:absolute; left:50%; bottom:calc(100% + 6px); transform:translate(-50%,6px) scale(.9); opacity:0; pointer-events:none; white-space:nowrap;
+    background:#fff; color:#4B2470; padding:8px 14px; border-radius:999px; font-size:13px; letter-spacing:.14em; text-transform:uppercase; box-shadow:0 10px 26px -10px rgba(75,36,112,.55); transition:opacity .25s, transform .3s cubic-bezier(.22,1,.36,1);}
+  .ab-tag b{display:block; font-weight:600; letter-spacing:.02em; text-transform:none; font-size:16px; margin-bottom:1px;}
+  .ab-spot:hover .ab-tag,.ab-spot.on .ab-tag,.ab-spot:focus-visible .ab-tag{opacity:1; transform:translate(-50%,0) scale(1);}
+  .ab-spot.on .ab-dot,.ab-spot.hover .ab-dot{background:#4B2470; animation:none;}
+  .ab-spot.hover .ab-tag{opacity:1; transform:translate(-50%,0) scale(1);}
+  .ab-hint{margin:14px 0 0; font-size:13.5px; letter-spacing:.26em; text-transform:uppercase; color:var(--fs-orchid,#8A5BB8);}
+  .ab-cards{list-style:none; margin:26px 0 0; padding:0; display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:16px;}
+  .ab-card{width:100%; display:flex; flex-direction:column; align-items:center; gap:4px; padding:20px 12px 18px; border:1.5px solid #EFDDFD; border-radius:22px; background:#fff; cursor:pointer;
+    font-family:var(--font); color:#4B2470; transition:transform .3s cubic-bezier(.22,1,.36,1), background .2s, border-color .2s;}
+  .ab-card:hover,.ab-card.on{transform:translateY(-4px) rotate(-1deg); background:#EFDDFD; border-color:#4B2470;}
+  .ab-ini{width:52px; height:52px; border-radius:999px; display:grid; place-items:center; background:#EFDDFD; color:#8A5BB8; font-size:24px; font-style:italic; margin-bottom:6px; transition:background .2s;}
+  .ab-card.on .ab-ini,.ab-card:hover .ab-ini{background:#fff;}
+  .ab-name{font-size:19px;}
+  .ab-role{font-size:13px; letter-spacing:.26em; color:#8A5BB8;}
+  .ab-badge{margin-top:6px; padding:4px 10px; border-radius:999px; background:#A4F4F9; color:#0F5257; font-size:11.5px; letter-spacing:.14em; text-transform:uppercase;}
+  .ab-story{max-width:980px; margin:72px auto 0; display:flex; flex-direction:column; gap:56px;}
+  .ab-ch{display:grid; grid-template-columns:1fr; gap:28px; align-items:center;}
+  .ab-ch-photo{grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);}
+  .ab-n{margin:0 0 10px; font-size:13px; letter-spacing:.28em; text-transform:uppercase; color:var(--fs-orchid,#8A5BB8);}
+  .ab-copy h2{margin:0; font-family:var(--font); font-weight:400; font-size:clamp(34px,4.6vw,54px); line-height:1; letter-spacing:-.02em; color:#4B2470;}
+  .ab-copy h2 i{color:#B794E6;}
+  .ab-copy p:not(.ab-n){margin:16px 0 0; font-size:19px; line-height:1.55; color:rgba(46,36,51,.8); max-width:52ch;}
+  .ab-ch:not(.ab-ch-photo) .ab-copy{padding:34px 30px; border-radius:24px; background:#FAF6FE; border:1.5px solid #EFDDFD;}
+  .ab-ch:nth-child(3) .ab-copy{background:#fff;}
+  .ab-polaroid{margin:0; padding:14px 14px 18px; background:#fff; border-radius:6px; box-shadow:0 22px 50px -24px rgba(75,36,112,.55); transform:rotate(-3deg); transition:transform .5s cubic-bezier(.22,1,.36,1); max-width:400px; justify-self:center;}
+  .ab-polaroid:hover{transform:rotate(0) scale(1.02);}
+  .ab-polaroid img{display:block; width:100%; height:auto; max-width:none; border-radius:2px;}
+  .ab-polaroid figcaption{margin-top:12px; text-align:center; font-family:"Pinyon Script","Snell Roundhand",cursive; font-size:26px; color:#8A5BB8;}
+  .ab-areas{list-style:none; margin:22px 0 0; padding:0; display:flex; flex-wrap:wrap; gap:10px;}
+  .ab-area{padding:12px 20px; border-radius:999px; border:1.5px solid #4B2470; background:#fff; color:#4B2470; font-family:var(--font); font-size:15px; letter-spacing:.06em; cursor:pointer; transition:transform .35s cubic-bezier(.22,1,.36,1), background .2s;}
+  .ab-area:hover,.ab-area.pop{background:#EFDDFD; transform:translateY(-3px) rotate(-2deg);}
+  .ab-area.pop{animation:ab-wiggle .5s;}
+  @keyframes ab-wiggle{30%{transform:translateY(-4px) rotate(3deg);} 60%{transform:translateY(-2px) rotate(-3deg);}}
+  .ab-end-copy{margin:16px auto 0; max-width:440px; font-size:18px; line-height:1.5; color:rgba(46,36,51,.8);}
+  @media (max-width:760px){
+    .ab-ch-photo{grid-template-columns:1fr;}
+    .ab-polaroid{max-width:300px;}
+    .ab-cards{grid-template-columns:1fr; gap:10px;}
+    .ab-card{flex-direction:row; flex-wrap:wrap; justify-content:flex-start; text-align:left; gap:4px 12px; padding:14px 16px;}
+    .ab-card .ab-ini{margin:0; width:44px; height:44px; font-size:20px;}
+    .ab-card .ab-badge{margin:0 0 0 auto;}
+    .ab-tag{font-size:11px; padding:6px 10px;} .ab-tag b{font-size:14px;}
+    .ab-photo{border-radius:18px;}
+    .ab-ch:not(.ab-ch-photo) .ab-copy{padding:26px 20px;}
+    .ab-story{margin-top:52px; gap:40px;}
+  }
+  @media (prefers-reduced-motion:reduce){ .ab-dot{animation:none;} .ab-area.pop{animation:none;} }
   /* ===== Peaces Accessories page ===== */
   .acc-grid{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:24px; max-width:900px; margin:0 auto;}
   .acc-card{display:flex; flex-direction:column; align-items:center; text-align:center; gap:10px; padding:18px 18px 26px; border:1px solid var(--line,#E7DAF3); border-radius:24px; background:#fff;}
@@ -1253,7 +1310,7 @@
       <nav class="lp-quick" aria-label="Shortcuts">
         <a href="#design">Design</a>
         <a href="#how">Process</a>
-        <a href="#making">About</a>
+        <a href="#about">About</a>
         <a href="https://shopify.com/85529657569/account" id="accountBtn">Account</a>
       </nav>
       <button class="lp-menu-btn" id="menuBtn" type="button" aria-expanded="false" aria-controls="lpMenu"><span></span><span></span><span></span><b>Menu</b></button>
@@ -1264,7 +1321,7 @@
       <nav>
         <a href="#design">Design your own</a>
         <a href="#how">The process</a>
-        <a href="#making">About</a>
+        <a href="#about">About us</a>
         <a href="#lookbook">Lookbook</a>
         <a href="#accessories">Accessories</a>
         <a href="https://shopify.com/85529657569/account" data-account>Account</a>
@@ -1484,6 +1541,82 @@
   <button class="cta" id="accCheckout" type="button" tabindex="-1">CHECKOUT</button>
 </div>
 
+<!-- ================= About us =================
+     #about: who we are. Tap a face on the group photo (or a name card) to say hi. -->
+<div class="lb ab" id="about" hidden>
+  <header class="lb-top">
+    <a href="#" aria-label="Back to the Peaces Swim home page"><img class="lb-logo" src="art/logo-ps.png" alt="Peaces Swim"></a>
+    <nav class="lb-nav" aria-label="About">
+      <a href="#">Home</a>
+      <a href="#lookbook">Lookbook</a>
+      <a class="cta lb-cta-sm" href="#design">Design your own</a>
+    </nav>
+  </header>
+
+  <section class="lb-head">
+    <p class="lb-kicker">Our story · Made in Miami</p>
+    <h1 class="lb-title">Meet the <i>Peaces</i></h1>
+    <p class="lb-sub">Three Canes, one dream bikini.</p>
+  </section>
+
+  <section class="ab-team lp-reveal">
+    <figure class="ab-photo">
+      <img src="photos/about-team.jpg" width="1600" height="1200" alt="Valerie, Danielle and Katelyn in matching aqua and mint Peaces bikinis, taking a mirror selfie">
+      <button type="button" class="ab-spot" data-who="valerie" style="--x:34%; --y:60%" aria-label="Valerie Orozco, COO"><span class="ab-dot"></span><span class="ab-tag"><b>Valerie Orozco</b>COO</span></button>
+      <button type="button" class="ab-spot" data-who="danielle" style="--x:47%; --y:66%" aria-label="Danielle Pascale, CBO"><span class="ab-dot"></span><span class="ab-tag"><b>Danielle Pascale</b>CBO · Co-founder</span></button>
+      <button type="button" class="ab-spot" data-who="katelyn" style="--x:66%; --y:60%" aria-label="Katelyn Mitterway, CFO"><span class="ab-dot"></span><span class="ab-tag"><b>Katelyn Mitterway</b>CFO · Co-founder</span></button>
+    </figure>
+    <p class="ab-hint">Tap each of us to say hi <span aria-hidden="true">✶</span></p>
+    <ul class="ab-cards">
+      <li><button type="button" class="ab-card" data-who="valerie"><span class="ab-ini">V</span><span class="ab-name">Valerie Orozco</span><span class="ab-role">COO</span></button></li>
+      <li><button type="button" class="ab-card" data-who="danielle"><span class="ab-ini">D</span><span class="ab-name">Danielle Pascale</span><span class="ab-role">CBO</span><span class="ab-badge">Co-founder</span></button></li>
+      <li><button type="button" class="ab-card" data-who="katelyn"><span class="ab-ini">K</span><span class="ab-name">Katelyn Mitterway</span><span class="ab-role">CFO</span><span class="ab-badge">Co-founder</span></button></li>
+    </ul>
+  </section>
+
+  <section class="ab-story">
+    <article class="ab-ch ab-ch-photo lp-reveal">
+      <figure class="ab-polaroid">
+        <img src="photos/about-founders.jpg" width="1100" height="1650" alt="Katelyn and Danielle on a pink fluffy couch in lavender robes and hair rollers, reading a Peaces Swim magazine">
+        <figcaption>Katelyn &amp; Danielle, co&#8209;founders</figcaption>
+      </figure>
+      <div class="ab-copy">
+        <p class="ab-n">01 · The wish</p>
+        <h2>It started with <i>a wish</i></h2>
+        <p>Katelyn and Danielle always wished there was a place where you could customize a bikini that was the perfect fit for your own taste.</p>
+      </div>
+    </article>
+
+    <article class="ab-ch lp-reveal">
+      <div class="ab-copy">
+        <p class="ab-n">02 · The team</p>
+        <h2>Then there were <i>three</i></h2>
+        <p>Valerie jumped in, and the three of us made the vision come to life.</p>
+      </div>
+    </article>
+
+    <article class="ab-ch lp-reveal">
+      <div class="ab-copy">
+        <p class="ab-n">03 · The Canes</p>
+        <h2>Business majors, <i>bikini makers</i></h2>
+        <p>We're all University of Miami students studying business, and each of us is drawn to a different side of it.</p>
+        <ul class="ab-areas" aria-label="What we study">
+          <li><button type="button" class="ab-area">Business analytics</button></li>
+          <li><button type="button" class="ab-area">Accounting</button></li>
+          <li><button type="button" class="ab-area">Marketing</button></li>
+        </ul>
+      </div>
+    </article>
+  </section>
+
+  <section class="lb-end lp-reveal">
+    <p class="lb-kicker">Your turn</p>
+    <h2 class="lb-title lb-title-sm">Design your <i>perfect peace</i></h2>
+    <p class="ab-end-copy">We're so excited to see everyone design their perfect peace!</p>
+    <a class="cta lb-cta" href="#design">Design your own</a>
+  </section>
+</div>
+
 <!-- ================= Lookbook =================
      #lookbook — every custom we've shot, opens from the footer. -->
 <div class="lb" id="lookbook" hidden>
@@ -1700,7 +1833,7 @@
             <li><a href="#design">Design Your Own</a></li><li><a href="#accessories">Peaces Accessories</a></li>
           </ul></div>
           <div><h4>Peaces</h4><ul>
-            <li><a href="#making">Our Story</a></li><li><a href="#lookbook">Lookbook</a></li>
+            <li><a href="#about">Our Story</a></li><li><a href="#lookbook">Lookbook</a></li>
           </ul></div>
           <div><h4>Support</h4><ul>
             <!-- Size Guide: add back when the page is ready --><!-- <li><a href="#">Size Guide</a></li> --><li><a href="mailto:info@peacesswim.com?subject=Hi%20Peaces%20Swim">Get in Touch</a></li><li><a href="privacy.html">Privacy Policy</a></li><li><a href="terms.html">Terms of Service</a></li>
@@ -2922,28 +3055,34 @@
      The landing page is home. #design means "in the builder", so the buttons,
      the bag, the phone's back button and a QR code to /#design all just work. */
   var landing=document.getElementById("landing");
-  var lookbook=document.getElementById("lookbook"), builderEl=document.getElementById("builder"), accPage=document.getElementById("accessories");
+  var lookbook=document.getElementById("lookbook"), builderEl=document.getElementById("builder"), accPage=document.getElementById("accessories"), aboutPage=document.getElementById("about");
   function enterDesign(){
     if(!builderEl.hidden) return;
-    landing.hidden=true; lookbook.hidden=true; accPage.hidden=true; closeLightbox(); syncAccPop();
+    landing.hidden=true; lookbook.hidden=true; accPage.hidden=true; aboutPage.hidden=true; closeLightbox(); syncAccPop();
     showBuilder();
   }
   function enterLookbook(){
     if(!builderEl.hidden) resetDesign();
     ["builder","fulfil"].forEach(function(id){ document.getElementById(id).hidden=true; });
-    landing.hidden=true; accPage.hidden=true; lookbook.hidden=false; syncAccPop();
+    landing.hidden=true; accPage.hidden=true; aboutPage.hidden=true; lookbook.hidden=false; syncAccPop();
     window.scrollTo(0,0);
   }
   function enterAccessories(){
     if(!builderEl.hidden) resetDesign();
     ["builder","fulfil"].forEach(function(id){ document.getElementById(id).hidden=true; });
-    landing.hidden=true; lookbook.hidden=true; closeLightbox(); accPage.hidden=false; syncAccPop();
+    landing.hidden=true; lookbook.hidden=true; aboutPage.hidden=true; closeLightbox(); accPage.hidden=false; syncAccPop();
+    window.scrollTo(0,0);
+  }
+  function enterAbout(){
+    if(!builderEl.hidden) resetDesign();
+    ["builder","fulfil"].forEach(function(id){ document.getElementById(id).hidden=true; });
+    landing.hidden=true; lookbook.hidden=true; accPage.hidden=true; closeLightbox(); aboutPage.hidden=false; syncAccPop();
     window.scrollTo(0,0);
   }
   function leaveDesign(){
     if(!landing.hidden) return;
     if(!builderEl.hidden) resetDesign();
-    lookbook.hidden=true; accPage.hidden=true; syncAccPop(); closeLightbox();
+    lookbook.hidden=true; accPage.hidden=true; aboutPage.hidden=true; syncAccPop(); closeLightbox();
     ["builder","fulfil"].forEach(function(id){ document.getElementById(id).hidden=true; });
     landing.hidden=false;
     var target=location.hash.length>1 && document.getElementById(location.hash.slice(1));
@@ -2951,9 +3090,26 @@
   }
   function route(){
     if(document.documentElement.classList.contains("prelaunch")){ leaveDesign(); return; } // waitlist only
-    if(location.hash==="#design") enterDesign(); else if(location.hash==="#lookbook") enterLookbook(); else if(location.hash==="#accessories") enterAccessories(); else leaveDesign(); syncCheckoutPop(); }
+    if(location.hash==="#design") enterDesign(); else if(location.hash==="#lookbook") enterLookbook(); else if(location.hash==="#accessories") enterAccessories(); else if(location.hash==="#about") enterAbout(); else leaveDesign(); syncCheckoutPop(); }
 
 
+
+  /* ---------- About us: tap a face or a name card to say hi ---------- */
+  (function(){
+    var page=document.getElementById("about"); if(!page) return;
+    function pick(who){
+      var on=page.querySelector('.ab-spot[data-who="'+who+'"]').classList.contains("on");
+      page.querySelectorAll(".ab-spot,.ab-card").forEach(function(el){ el.classList.toggle("on",!on && el.dataset.who===who); });
+    }
+    page.addEventListener("click",function(e){
+      var t=e.target.closest(".ab-spot,.ab-card"); if(t){ pick(t.dataset.who); return; }
+      var a=e.target.closest(".ab-area"); if(a){ a.classList.remove("pop"); void a.offsetWidth; a.classList.add("pop"); }
+    });
+    page.querySelectorAll(".ab-card").forEach(function(c){ // hovering a card lights up that face
+      c.addEventListener("mouseenter",function(){ page.querySelector('.ab-spot[data-who="'+c.dataset.who+'"]').classList.add("hover"); });
+      c.addEventListener("mouseleave",function(){ page.querySelector('.ab-spot[data-who="'+c.dataset.who+'"]').classList.remove("hover"); });
+    });
+  })();
   /* ---------- Peaces Accessories page ---------- */
   var acc={headband:{color:"green",qty:0}, tote:{color:"pink",qty:0}}, ACC_PRICE={headband:10,tote:15};
   function accChips(boxId,list,item){
