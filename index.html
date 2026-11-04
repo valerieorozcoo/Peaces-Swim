@@ -1938,7 +1938,7 @@
   function artFor(id,v){
     if(id==="beads"||id==="connectors") return v;
     if(id==="charms") return v==="letters"?"lt-A":v;
-    if(id==="roses") return "p-rose";
+    if(id==="roses") return "p-rose-leaf";
     if(id==="buttons") return "button-pearl";
     return ART_PREFIX[id]?ART_PREFIX[id]+v:"";
   }
@@ -2356,15 +2356,15 @@
     function spots(id,name,w,h){
       var c=cfgFor(id), pts=[], tp=c.tp||[], bp=c.bp||[];
       if(isTop){
-        if(tp.indexOf("mid")>-1) pts.push([tri?(g.centerHigh||g.center):g.center,1]); // bralette: right on the knot
+        if(tp.indexOf("mid")>-1) pts.push([id==="roses"?[g.center[0],g.center[1]-(tri?2:0)]:(tri?(g.centerHigh||g.center):g.center),1]); // bralette: right on the knot; roses sit on the band between the cups, like the sample
         if(tp.indexOf("sides")>-1) pts.push([g.junctionL,0.72],[g.junctionR,0.72]);
       } else {
-        if(bp.indexOf("mid")>-1) pts.push([[g.center[0],g.center[1]+4],1]);
+        if(bp.indexOf("mid")>-1) pts.push([[g.center[0],g.center[1]+(id==="roses"?H*0.045:4)],1]); // roses: just under the waistband
         if(bp.indexOf("sides")>-1) pts.push([g.hipL,0.72],[g.hipR,0.72]);
       }
-      pts.forEach(function(p){ img(svg,name,p[0][0],p[0][1],w*p[1],h*p[1],0); });
+      pts.forEach(function(p){ var sc=id==="roses"?Math.max(p[1],0.9):p[1]; img(svg,name,p[0][0],p[0][1],w*sc,h*sc,0); });
     }
-    if(on("roses")){ var rw=W*(tri?0.115:0.09); spots("roses","p-rose",rw,rw*92/95); }
+    if(on("roses")){ var rw=W*(tri?0.11:0.085); spots("roses","p-rose-leaf",rw,rw*41/72); } // a little satin rose with two leaves (the sample)
     if(on("bows")){ var bw=W*(tri?0.17:0.13); spots("bows","p-bow-"+variantOf("bows"),bw,bw*97/138); }
 
     /* Tier 3: buttons. Triangle: along the lace line. Bralette + seamless: a little cluster of 1 to 3 in each corner,
