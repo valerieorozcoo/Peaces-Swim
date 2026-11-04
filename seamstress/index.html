@@ -92,13 +92,44 @@
   .toast button{background:none; border:0; color:#fff; text-decoration:underline; padding:0; font-weight:600;}
   dt.bk{grid-column:1/-1; font-weight:700; color:#4B2470; margin-top:6px;} dd.bk{display:none;}
   .pic img.extra-pic{margin-top:8px;}
+
+  /* ===== 4 × 6 in tags for the seamstress, English + Spanish ===== */
+  .autoprint{display:inline-flex; align-items:center; gap:6px; margin-left:12px; font-size:15px; color:var(--ink);}
+  .autoprint input{width:18px; height:18px; accent-color:var(--teal);}
+  .btn.ghost{background:transparent; color:var(--teal); border:1.5px solid var(--teal);}
+  .btn.ghost:hover{background:var(--lav);}
+  .tip{font-size:13px; color:var(--ink-60); margin:-6px 0 12px;}
+  #printArea{position:fixed; left:-10000px; top:0;}
+  .tag{width:4in; height:6in; overflow:hidden; background:#fff; color:#2E2433; font-family:var(--font); padding:.16in .18in; display:flex; flex-direction:column; gap:.05in; font-size:var(--fs,10pt); line-height:1.22;}
+  .tag *{margin:0;}
+  .t-head{display:flex; align-items:center; justify-content:space-between; gap:8px; border-bottom:2px solid #2E2433; padding-bottom:.05in;}
+  .t-logo{height:.42in; width:auto;}
+  .t-num{text-align:right; font-size:2.1em; font-weight:700; line-height:1;}
+  .t-num small,.t-who small,.t-sec h4{display:block; font-size:.5em; font-weight:600; letter-spacing:.12em; text-transform:uppercase; color:#6b5a66;}
+  .t-sec h4{font-size:.78em; margin-bottom:.02in;}
+  .t-who{font-size:1.45em; font-weight:600; line-height:1.1;}
+  .t-meta{display:flex; justify-content:space-between; gap:6px; font-size:.82em; font-weight:600; background:#2E2433; color:#fff; padding:.03in .07in;}
+  .t-pic{flex:0 1 auto; height:var(--pic,1.9in); min-height:.9in; width:100%; object-fit:contain; background:#faf6fe;}
+  .t-sec .en{font-weight:600;}
+  .t-sec .es{font-style:italic; color:#4B2470;}
+  .t-sec ol{padding-left:1.2em;}
+  .t-sec li{margin-bottom:.03in;}
+  .t-sec li span{display:block;}
+  @media print{
+    @page{size:4in 6in; margin:0;}
+    html,body{background:#fff !important;}
+    body > *:not(#printArea){display:none !important;}
+    #printArea{position:static; left:auto;}
+    .tag{page-break-after:always; break-after:page;}
+  }
 </style>
 </head>
 <body>
 <div class="wrap">
   <header>
     <h1>Seamstress queue</h1>
-    <div class="status" id="status" hidden><span id="updated"></span><button type="button" id="refresh">Refresh</button><button type="button" id="logout">Lock</button></div>
+    <div class="status" id="status" hidden><span id="updated"></span><button type="button" id="refresh">Refresh</button><button type="button" id="logout">Lock</button>
+      <label class="autoprint"><input type="checkbox" id="autoPrint" checked> Auto-print new tags</label></div>
   </header>
 
   <section class="lock" id="lock">
@@ -116,6 +147,7 @@
       <button type="button" role="tab" data-tab="pickup" aria-selected="false">Pickup Later (<span data-count="pickup">0</span>)</button>
     </div>
     <p class="err" id="loadErr" role="alert"></p>
+    <p class="tip">Every new paid bikini prints a 4 × 6 tag (English + Español). Set the printer's paper to 4 × 6 in. To print without the print window popping up, open this page in Chrome started with <b>--kiosk-printing</b>.</p>
     <div class="cols">
       <section class="col on" data-col="wait">
         <h2>Wait &amp; Watch (<span data-count="wait">0</span>)</h2>
@@ -130,6 +162,7 @@
     </div>
   </main>
 </div>
+<div id="printArea" aria-hidden="true"></div>
 <div class="toast" id="toast" hidden><span id="toastText"></span><button type="button" id="undo">Undo</button></div>
 
 <script>
@@ -208,12 +241,87 @@
     done.type = "button";
     done.addEventListener("click", function(){ markDone(o, done); });
     actions.appendChild(done);
+    var pt = el("button", "btn ghost", "Print tag · Imprimir");
+    pt.type = "button";
+    pt.addEventListener("click", function(){ var l = orderTags(o); if (printed) { l.forEach(function(x){ if (printed.indexOf(x.key) < 0) printed.push(x.key); }); savePrinted(); } printTags(l); });
+    actions.appendChild(pt);
     if (o.minutes && o.mode === "wait") actions.appendChild(el("span", "note", "Customer was told ~" + o.minutes + " min"));
     body.appendChild(actions);
     c.appendChild(body);
     return c;
   }
 
+
+  /* ---------- tags: one 4 × 6 card per bikini, English + Spanish ---------- */
+  var PKEY = "peaces-printed-tags", AKEY = "peaces-autoprint";
+  var printed = null;
+  try { printed = JSON.parse(localStorage.getItem(PKEY) || "null"); } catch (e) {}
+  try { if (localStorage.getItem(AKEY) === "0") $("autoPrint").checked = false; } catch (e) {}
+  $("autoPrint").addEventListener("change", function(){ try { localStorage.setItem(AKEY, this.checked ? "1" : "0"); } catch (e) {} });
+  function savePrinted(){ try { localStorage.setItem(PKEY, JSON.stringify(printed.slice(-600))); } catch (e) {} }
+  function bikinisOfOrder(o){
+    return (o.bikinis && o.bikinis.length) ? o.bikinis : [{ top:o.top, bottom:o.bottom, addons:o.addons || [], addonsEs:[], image:o.image, extras:[] }];
+  }
+  function tagFor(o, b, bi, n){
+    var t = el("section", "tag");
+    var head = el("div", "t-head");
+    var logo = el("img", "t-logo"); logo.src = "/art/logo-ps.png"; logo.alt = ""; head.appendChild(logo);
+    var num = el("div", "t-num"); num.appendChild(el("small", null, "Order · Pedido")); num.appendChild(document.createTextNode(o.number)); head.appendChild(num);
+    t.appendChild(head);
+    var who = el("div", "t-who"); who.appendChild(el("small", null, "Name · Nombre")); who.appendChild(document.createTextNode(o.customer || "No name · Sin nombre")); t.appendChild(who);
+    var meta = el("div", "t-meta");
+    meta.appendChild(el("span", null, n > 1 ? "Bikini " + (bi + 1) + " of " + n + " · " + (bi + 1) + " de " + n : "1 bikini"));
+    meta.appendChild(el("span", null, o.mode === "pickup" ? "Pickup " + o.pickupAt + " · Recoge " + o.pickupAt : "Waiting · Esperando aquí"));
+    t.appendChild(meta);
+    if (b.image) { var im = el("img", "t-pic"); im.src = b.image; im.alt = ""; t.appendChild(im); }
+    function sec(h, en, es){ var d = el("div", "t-sec"); d.appendChild(el("h4", null, h)); d.appendChild(el("p", "en", en || "")); if (es && es !== en) d.appendChild(el("p", "es", es)); t.appendChild(d); }
+    sec("Top · Parte de arriba", b.top, b.topEs);
+    sec("Bottom · Parte de abajo", b.bottom, b.bottomEs);
+    var s = el("div", "t-sec"); s.appendChild(el("h4", null, "Customizations · Personalizaciones"));
+    if (!b.addons.length) s.appendChild(el("p", "en", "None · Ninguna"));
+    else { var ol = el("ol"); b.addons.forEach(function(a, k){ var li = el("li"); li.appendChild(el("span", "en", a)); var es = (b.addonsEs || [])[k]; if (es) li.appendChild(el("span", "es", es)); ol.appendChild(li); }); s.appendChild(ol); }
+    t.appendChild(s);
+    if (b.extras && b.extras.length) sec("Also in the bag · También en la bolsa", b.extras.map(function(x){ return x.en; }).join(", "), b.extras.map(function(x){ return x.es || x.en; }).join(", "));
+    return t;
+  }
+  // shrink the text (then the picture) until everything fits on the 4 × 6 card
+  function fit(t){
+    var fs = 10.5, pic = 1.9;
+    t.style.setProperty("--fs", fs + "pt"); t.style.setProperty("--pic", pic + "in");
+    var guard = 0;
+    while (t.scrollHeight > t.clientHeight + 1 && guard++ < 40) {
+      if (pic > 1.1) pic -= 0.15; else if (fs > 6.5) fs -= 0.4; else break;
+      t.style.setProperty("--fs", fs + "pt"); t.style.setProperty("--pic", pic + "in");
+    }
+  }
+  function printTags(list){ // list: [{o, b, bi, n}]
+    if (!list.length) return;
+    var area = $("printArea"); area.textContent = "";
+    list.forEach(function(x){ var t = tagFor(x.o, x.b, x.bi, x.n); area.appendChild(t); });
+    var imgs = [].slice.call(area.querySelectorAll("img"));
+    Promise.all(imgs.map(function(i){ return i.complete ? 0 : new Promise(function(r){ i.onload = i.onerror = r; setTimeout(r, 4000); }); })).then(function(){
+      [].forEach.call(area.children, fit);
+      setTimeout(function(){ window.print(); }, 60);
+    });
+  }
+  function orderTags(o){ var bs = bikinisOfOrder(o); return bs.map(function(b, bi){ return { o:o, b:b, bi:bi, n:bs.length, key:o.id + "#" + bi }; }); }
+  function chime(){
+    try { var C = window.AudioContext || window.webkitAudioContext, ctx = new C();
+      [880, 1175].forEach(function(f, i){ var g = ctx.createGain(), osc = ctx.createOscillator(); osc.frequency.value = f; osc.connect(g); g.connect(ctx.destination);
+        var t0 = ctx.currentTime + i * 0.18; g.gain.setValueAtTime(0.0001, t0); g.gain.exponentialRampToValueAtTime(0.25, t0 + 0.02); g.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.35); osc.start(t0); osc.stop(t0 + 0.4); });
+    } catch (e) {}
+  }
+  // after every refresh: print tags for paid bikinis we haven't printed on this device yet
+  function autoTags(q){
+    var all = q.wait.concat(q.pickup).filter(function(o){ return o.paid; }).reduce(function(acc, o){ return acc.concat(orderTags(o)); }, []);
+    if (printed === null) { printed = all.map(function(x){ return x.key; }); savePrinted(); return; } // first time on this device: start fresh
+    var fresh = all.filter(function(x){ return printed.indexOf(x.key) < 0; });
+    if (!fresh.length) return;
+    chime();
+    if (!$("autoPrint").checked) return;
+    fresh.forEach(function(x){ printed.push(x.key); }); savePrinted();
+    printTags(fresh);
+  }
   function render(q){
     ["wait", "pickup"].forEach(function(k){
       var list = $("list-" + k);
@@ -233,6 +341,7 @@
       $("loadErr").textContent = "";
       show(true);
       render(q);
+      autoTags(q);
     } catch (e) {
       if (e.status === 401 || e.status === 503) { lock(e.message); }
       else $("loadErr").textContent = "Couldn't refresh: " + e.message + ". Retrying…";

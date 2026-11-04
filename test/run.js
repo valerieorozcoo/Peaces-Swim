@@ -209,6 +209,10 @@ try {
   assert.equal(card.customer, "Mia bWait/b"); assert.equal(card.image, "https://cdn.shopify.com/s/files/peaces-design.jpg");
   assert.equal(card.top, "Triangle top · Cheetah · S"); assert.equal(card.bottom, "Seamless bottom · Coral · M");
   assert.deepEqual(card.addons, ["Mini bows (White · Top: One in the middle of the string)", "Ruffles (Cheetah · On the top tie straps)", "Charms (Letter · V, Basic jump ring clasp, Top, middle ×3)"]);
+  const tagBk = card.bikinis[0];
+  assert.equal(tagBk.topEs, "Top triángulo · Animal print (cheetah) · S"); assert.equal(tagBk.bottomEs, "Parte de abajo seamless (fruncida) · Coral · M");
+  assert.deepEqual(tagBk.addonsEs, ["Mini moños (Blanco · Parte de arriba: Uno en el centro de la tira)", "Volantes (Animal print (cheetah) · En las tiras del top)", "Dijes (Letra · V, Broche: Argolla básica, Arriba, centro ×3)"]);
+  ok("seamstress tags: every piece and customization also written in Spanish");
   assert.deepEqual(card.extras, ["Peaces terry tote (Pink)"]); assert.equal(card.mode, "wait");
   const anaCard = r.body.pickup.find((c) => c.number === ana.name);
   assert.equal(anaCard.customer, "Ana Pickup"); assert.equal(anaCard.pickupAt, "4:00 PM");
