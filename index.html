@@ -1019,6 +1019,18 @@
     .ab-story{margin-top:52px; gap:40px;}
   }
   @media (prefers-reduced-motion:reduce){ .ab-dot{animation:none;} .ab-area.pop{animation:none;} }
+  /* no boxes on the About page: everything sits straight on the page */
+  .ab-card{border:0 !important; background:transparent !important; border-radius:0; padding:10px 8px;}
+  .ab-card:hover,.ab-card.on{background:transparent !important; transform:translateY(-3px);}
+  .ab-card.on .ab-ini,.ab-card:hover .ab-ini{background:#4B2470; color:#fff;}
+  .ab-card.on .ab-name{text-decoration:underline; text-underline-offset:5px; text-decoration-thickness:1.5px;}
+  .ab-ch .ab-copy,.ab-ch:not(.ab-ch-photo) .ab-copy,.ab-ch:nth-child(3) .ab-copy{padding:0 !important; background:transparent !important; border:0 !important; border-radius:0 !important;}
+  .ab-ch:not(.ab-ch-photo){text-align:center;} .ab-ch:not(.ab-ch-photo) .ab-copy p:not(.ab-n){margin-left:auto; margin-right:auto;}
+  .ab-areas{justify-content:center; gap:6px 22px;}
+  .ab-area{border:0 !important; background:transparent !important; padding:6px 2px; border-radius:0; font-size:17px; border-bottom:2px solid #EFDDFD !important;}
+  .ab-area:hover,.ab-area.pop{border-bottom-color:#4B2470 !important;}
+  .ab .lb-end{background:transparent !important; border:0 !important; padding:40px 20px 20px;}
+  @media (max-width:760px){ .ab-card{padding:8px 4px;} }
   /* ===== Peaces Accessories page ===== */
   .acc-grid{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:24px; max-width:900px; margin:0 auto;}
   .acc-card{display:flex; flex-direction:column; align-items:center; text-align:center; gap:10px; padding:18px 18px 26px; border:1px solid var(--line,#E7DAF3); border-radius:24px; background:#fff;}
