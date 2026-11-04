@@ -42,6 +42,8 @@ try {
   r = await post("/orders/create", { design, customer: { phone: "3055551234", welcomeToken: welcome } });
   assert.equal(r.status, 201); assert.equal(r.body.subtotal, 95 + 5 + 15 + 3 * 10 + 15);
   assert.equal(r.body.total, 144); assert.equal(r.body.discounted, true);
+  assert.equal(r.body.minutes, 5 + 1 + 8 + 2); // plain 5 + one bow + ruffles + charms
+  assert.ok(db.drafts[0].input.customAttributes.some((x) => x.key === "Work minutes" && x.value === "16")); ok("sewing time worked out from the team's per-customization minutes");
   const d0 = db.drafts[0].input;
   assert.equal(d0.purchasingEntity, undefined);
   assert.ok(d0.lineItems.some((l) => l.title === "Add on: Charms (Letter · V, Basic jump ring clasp, Top, middle ×3)")); ok("signed welcome discount on guest checkout, no customer-account link");
@@ -194,7 +196,8 @@ try {
   // ---- Seamstress queue ----
   const tinyPic = "data:image/jpeg;base64," + Buffer.from("fake-jpeg-bytes").toString("base64");
   const waiter = (await post("/orders/create", { design, image: tinyPic, customer: { phone: "7865550101", name: "Mia <b>Wait</b>" } })).body;
-  await post("/orders/fulfillment", { id: waiter.id, sig: waiter.sig, mode: "wait", minutes: 30 });
+  r = await post("/orders/fulfillment", { id: waiter.id, sig: waiter.sig, mode: "wait", minutes: 30 });
+  assert.equal(r.body.minutes, 16); ok("wait & watch time = her own sewing + the paid line ahead (the client's guess is ignored)");
   const ana = (await post("/orders/create", { design: opts, customer: { phone: "7865550202", name: "Ana Pickup" } })).body;
   await post("/orders/fulfillment", { id: ana.id, sig: ana.sig, mode: "pickup", pickupAt: "4:00 PM" });
   r = await post("/seamstress/queue", { passcode: "nope" });

@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { pickupDate, buildQueue } from "../lib/queue.js";
+import { pickupDate, buildQueue, lineAhead } from "../lib/queue.js";
+import "../lib/rules.js";
 
 test("pickup time is read in the shop's local time, rolling to tomorrow after midnight", () => {
   // Miami in November is UTC-5 → getTimezoneOffset() = 300
@@ -32,4 +33,22 @@ test("wait & watch is first come first served, pickup is soonest first, done and
   assert.deepEqual(q.pickup.map((c) => c.number), ["#D4", "#D3"]);
   assert.equal(q.wait[2].paid, true); assert.equal(q.wait[2].mode, null);
   assert.deepEqual(q.wait[0].addons, ["Mini bows (Pink)"]);
+});
+
+test("sewing minutes per customization and the wait & watch line ahead", () => {
+  const R = globalThis.PeacesRules;
+  const d = { topStyle: "triangle", bottomStyle: "triangle", addons: [
+    { id: "laceRuffles", cfg: {} }, { id: "connectors", cfg: { top: "mid", bottom: "two" } }, { id: "roses", cfg: { tp: ["sides"], bp: ["mid"] } },
+    { id: "buttons", cfg: { tn: 2, bn: 1 } }, { id: "rhinestones", cfg: {} }, { id: "fringe", cfg: {} }, { id: "extTies", cfg: {} }] };
+  assert.equal(R.designMinutes(d), 5 + 8 + 6 + 3 + 6 + 3 + 4 + 2);
+  const now = Date.now(), iso = (m) => new Date(now - m * 60_000).toISOString();
+  const w = (n, attrs, status = "COMPLETED") => draft(n, { status, tags: ["peaces-builder", "wait-and-watch"], attrs });
+  const ahead = lineAhead([
+    w(1, [{ key: "Chosen at", value: iso(10) }, { key: "Work minutes", value: "20" }]),
+    w(2, [{ key: "Chosen at", value: iso(5) }, { key: "Work minutes", value: "12" }], "OPEN"),   // paying right now → counts
+    w(3, [{ key: "Chosen at", value: iso(90) }, { key: "Work minutes", value: "40" }], "OPEN"),  // abandoned → doesn't
+    w(4, [{ key: "Chosen at", value: iso(1) }, { key: "Work minutes", value: "9" }]),            // the new customer herself
+    w(5, [{ key: "Chosen at", value: iso(30) }]),                                                 // old order: 5 + 3 per add-on
+  ], "gid://shopify/DraftOrder/4");
+  assert.equal(ahead, 20 + 12 + 8);
 });

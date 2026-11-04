@@ -96,6 +96,7 @@
   .ord{font-size:15px; color:var(--ink-60); margin:2px 0 8px; letter-spacing:.04em;}
   .mode{display:inline-block; padding:6px 12px; font-weight:700; font-size:18px; margin:0 0 10px; color:#fff; background:var(--teal);}
   .mode.pickup{background:#7a3fb0;}
+  .work{display:inline-block; margin:0 0 10px 8px; font-size:16px; font-weight:600; color:var(--ink-60); vertical-align:top; padding-top:7px;}
   .pieces{font-size:18px; margin:0 0 4px;}
   .pieces b{font-weight:600; color:var(--ink-60); font-size:14px; letter-spacing:.08em; text-transform:uppercase; margin-right:6px;}
   ol.adds{margin:4px 0 0; padding-left:22px; font-size:18px;}
@@ -231,7 +232,7 @@
     updated:["Updated","Actualizado"], cantRefresh:["Couldn't refresh: {e}. Retrying…","No se pudo actualizar: {e}. Reintentando…"],
     markedDone:["{n} done.","{n} listo."], cantDone:["Couldn't finish {n}: {e}","No se pudo terminar {n}: {e}"], cantUndo:["Couldn't undo: {e}","No se pudo deshacer: {e}"],
     bikini:["Bikini {i} of {n}","Bikini {i} de {n}"], one:["1 bikini","1 bikini"], name:["Name","Nombre"],
-    customs:["Customizations","Personalizaciones"]
+    customs:["Customizations","Personalizaciones"], work:["≈ {m} min of sewing","≈ {m} min de costura"]
   };
   function t(k, v){ var s = (T[k] || [k, k])[lang === "es" ? 1 : 0]; if (v) Object.keys(v).forEach(function(x){ s = s.replace("{" + x + "}", v[x]); }); return s; }
   function L(en, es){ return lang === "es" ? (es || en) : en; }
@@ -274,6 +275,7 @@
     body.appendChild(el("p", "name", o.customer || t("noName")));
     body.appendChild(el("p", "ord", t("order") + " " + o.number + "  ·  #" + (i + 1)));
     body.appendChild(el("span", "mode" + (o.mode === "pickup" ? " pickup" : ""), modeText(o)));
+    if (o.work) body.appendChild(el("span", "work", t("work", { m: o.work })));
     if (!o.paid) body.appendChild(el("span", "badge", t("notPaid")));
 
     var bks = bikinisOfOrder(o);

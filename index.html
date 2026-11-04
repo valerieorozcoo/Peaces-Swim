@@ -3239,9 +3239,11 @@
   })();
 
   /* ---------- fulfilment screen ---------- */
+  /* sewing time: the server's number for the whole bag + the line ahead; the current design as a fallback */
   function makeMinutes(){
-    var n=activeAddons().length;
-    return 12 + n*4 + (state.tote?2:0) + (state.headband?1:0);
+    if(currentOrder && currentOrder.minutes) return currentOrder.minutes + (currentOrder.ahead||0);
+    var d=ctx(); d.addons=activeAddons().map(function(a){ return {id:a.id, cfg:cfgFor(a.id,d)}; });
+    return R.designMinutes(d);
   }
   function fmtTime(d){
     var h=d.getHours(), m=d.getMinutes(), ap=h>=12?"PM":"AM";
@@ -3438,7 +3440,7 @@
       pendingFulfilment=null;
       status.textContent="Your preference is saved."; status.hidden=true;
       if(body.mode==="pickup") showWait(body.minutes,"Pick up at "+body.pickupAt+". Preference saved.","Ready in");
-      else showWait(body.minutes,"Stay close, we'll customize your peace right in front of you.","Estimated wait");
+      else showWait(result.minutes||body.minutes,"Stay close, we'll customize your peace right in front of you.","Estimated wait");
     }catch(e){
       if(currentOrder!==order) return;
       status.textContent="Your preference wasn't saved. "+(e.message||"Please try again.");
