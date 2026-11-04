@@ -5,7 +5,7 @@ const html=await readFile(new URL('../index.html',import.meta.url),'utf8');
 const begin=html.indexOf('  var fulfilmentSaving=false');
 const source=html.slice(begin,html.indexOf('  /* Checkout, step 1',begin));
 function fixture(api){
-  const nodes=Object.fromEntries(['fulfilStatus','fulfilRetry','waitBlock'].map(id=>[id,{hidden:true,textContent:'',disabled:false,addEventListener(event,fn){this[event]=fn;}}]));
+  const nodes=Object.fromEntries(['fulfilStatus','fulfilRetry','waitBlock','waitNum','waitUnit'].map(id=>[id,{hidden:true,textContent:'',disabled:false,classList:{add(){},remove(){}},addEventListener(event,fn){this[event]=fn;}}]));
   const controls=[nodes.fulfilRetry,{disabled:false}];let shown=null;
   const document={getElementById:id=>nodes[id],querySelectorAll:()=>controls};
   const state={fulfil:'pickup',pickupAt:'3:15 PM'};

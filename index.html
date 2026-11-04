@@ -3488,7 +3488,7 @@
       if(currentOrder!==order) return;
       pendingFulfilment=null;
       status.textContent="Your preference is saved."; status.hidden=true;
-      if(body.mode==="pickup"){ showWait(0,"Preference saved. See you then!","Pick up at");
+      if(body.mode==="pickup"){ showWait(0,"Preference saved. See you at "+body.pickupAt+"!","Pick up at");
         var wn=document.getElementById("waitNum"); wn.textContent=body.pickupAt; wn.classList.add("is-time"); document.getElementById("waitUnit").textContent=beforeOpen()?popupDay():"today"; }
       else showWait(result.minutes||body.minutes,waitNoteText(),"Estimated wait");
     }catch(e){
