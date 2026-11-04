@@ -3,16 +3,16 @@ import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 const html=await readFile(new URL('../index.html',import.meta.url),'utf8');
 const begin=html.indexOf('  var fulfilmentSaving=false');
-const source=html.slice(begin,html.indexOf('  document.getElementById("checkoutBtn")',begin));
+const source=html.slice(begin,html.indexOf('  /* Checkout, step 1',begin));
 function fixture(api){
   const nodes=Object.fromEntries(['fulfilStatus','fulfilRetry','waitBlock'].map(id=>[id,{hidden:true,textContent:'',disabled:false,addEventListener(event,fn){this[event]=fn;}}]));
   const controls=[nodes.fulfilRetry,{disabled:false}];let shown=null;
   const document={getElementById:id=>nodes[id],querySelectorAll:()=>controls};
   const state={fulfil:'pickup',pickupAt:'3:15 PM'};
-  const run=new Function('document','state','api','showWait',
+  const run=new Function('document','state','api','showWait','beforeOpen','popupDay','waitNoteText',
     'var currentOrder={id:"draft",sig:"signed"};'+source+
     'return {send:sendFulfilment,saving:()=>fulfilmentSaving,replaceOrder(){currentOrder={id:"new",sig:"new"};}};')(
-    document,state,api,(minutes,note)=>{shown={minutes,note};nodes.waitBlock.hidden=false;});
+    document,state,api,(minutes,note)=>{shown={minutes,note};nodes.waitBlock.hidden=false;},()=>false,()=>'Thursday',()=>"Stay close, we'll customize your peace right in front of you.");
   return {run,state,nodes,controls,shown:()=>shown};
 }
 test('pickup shows a pending state and confirms only after a successful save',async()=>{

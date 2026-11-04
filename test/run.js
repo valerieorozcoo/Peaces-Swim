@@ -46,7 +46,7 @@ try {
   assert.ok(db.drafts[0].input.customAttributes.some((x) => x.key === "Work minutes" && x.value === "16")); ok("sewing time worked out from the team's per-customization minutes");
   const d0 = db.drafts[0].input;
   assert.equal(d0.purchasingEntity, undefined);
-  assert.ok(d0.lineItems.some((l) => l.title === "Add on: Charms (Letter · V, Basic jump ring clasp, Top, middle ×3)")); ok("signed welcome discount on guest checkout, no customer-account link");
+  assert.ok(d0.lineItems.some((l) => l.title === "Add on: Charms (Basic jump ring clasp, Top, middle ×3: Letter V ×3)")); ok("signed welcome discount on guest checkout, no customer-account link");
 
   r = await post("/orders/create", { design, customer: { phone: "3055551234" } });
   assert.equal(r.body.discounted, false);
@@ -196,10 +196,12 @@ try {
   // ---- Seamstress queue ----
   const tinyPic = "data:image/jpeg;base64," + Buffer.from("fake-jpeg-bytes").toString("base64");
   const waiter = (await post("/orders/create", { design, image: tinyPic, customer: { phone: "7865550101", name: "Mia <b>Wait</b>" } })).body;
+  r = await post("/orders/estimate", { designs: [design, design] });
+  assert.equal(r.status, 200); assert.equal(r.body.minutes, 32); assert.equal(typeof r.body.ahead, "number"); ok("estimate before checkout: sewing time for the bag + the line");
   r = await post("/orders/fulfillment", { id: waiter.id, sig: waiter.sig, mode: "wait", minutes: 30 });
   assert.equal(r.body.minutes, 16); ok("wait & watch time = her own sewing + the paid line ahead (the client's guess is ignored)");
   const ana = (await post("/orders/create", { design: opts, customer: { phone: "7865550202", name: "Ana Pickup" } })).body;
-  await post("/orders/fulfillment", { id: ana.id, sig: ana.sig, mode: "pickup", pickupAt: "4:00 PM" });
+  await post("/orders/fulfillment", { id: ana.id, sig: ana.sig, mode: "pickup", pickupAt: "1:15 PM", pickupIso: new Date(Date.now() + 20 * 3600_000).toISOString() });
   r = await post("/seamstress/queue", { passcode: "nope" });
   assert.equal(r.status, 401); assert.equal(r.body.wait, undefined); ok("seamstress queue needs the passcode");
   r = await post("/seamstress/queue", { passcode: "sew-sew-123", tzOffset: 0 });
@@ -211,14 +213,14 @@ try {
   const card = r.body.wait[0];
   assert.equal(card.customer, "Mia bWait/b"); assert.equal(card.image, "https://cdn.shopify.com/s/files/peaces-design.jpg");
   assert.equal(card.top, "Triangle top · Cheetah · S"); assert.equal(card.bottom, "Seamless bottom · Coral · M");
-  assert.deepEqual(card.addons, ["Mini bows (White · Top: One in the middle of the string)", "Ruffles (Cheetah · On the top tie straps)", "Charms (Letter · V, Basic jump ring clasp, Top, middle ×3)"]);
+  assert.deepEqual(card.addons, ["Mini bows (White · Top: One in the middle of the string)", "Ruffles (Cheetah · On the top tie straps)", "Charms (Basic jump ring clasp, Top, middle ×3: Letter V ×3)"]);
   const tagBk = card.bikinis[0];
   assert.equal(tagBk.topEs, "Top triángulo · Animal print (cheetah) · S"); assert.equal(tagBk.bottomEs, "Parte de abajo seamless (fruncida) · Coral · M");
-  assert.deepEqual(tagBk.addonsEs, ["Mini moños (Blanco · Parte de arriba: Uno en el centro de la tira)", "Volantes (Animal print (cheetah) · En las tiras del top)", "Dijes (Letra · V, Broche: Argolla básica, Arriba, centro ×3)"]);
+  assert.deepEqual(tagBk.addonsEs, ["Mini moños (Blanco · Parte de arriba: Uno en el centro de la tira)", "Volantes (Animal print (cheetah) · En las tiras del top)", "Dijes (Broche: Argolla básica, Arriba, centro ×3: Letra V ×3)"]);
   ok("seamstress tags: every piece and customization also written in Spanish");
   assert.deepEqual(card.extras, ["Peaces terry tote (Pink)"]); assert.equal(card.mode, "wait");
   const anaCard = r.body.pickup.find((c) => c.number === ana.name);
-  assert.equal(anaCard.customer, "Ana Pickup"); assert.equal(anaCard.pickupAt, "4:00 PM");
+  assert.equal(anaCard.customer, "Ana Pickup"); assert.equal(anaCard.pickupAt, "1:15 PM"); assert.ok(Date.parse(anaCard.pickupDate) - Date.now() > 19 * 3600_000); // the exact pop-up day, not today
   ok("each card has order number, name (kept after the wait/pickup choice), bikini picture and full customization");
   r = await post("/seamstress/done", { passcode: "sew-sew-123", id: waiter.id });
   assert.equal(r.body.done, true);

@@ -12,12 +12,15 @@ export default route(["POST"], async (body) => {
   if (!mode) throw new Error("Choose wait & watch or pick up later");
   const pickupAt = String(body.pickupAt || "").replace(/[^0-9:APM ]/gi, "").slice(0, 12);
   if (mode === "pickup" && !pickupAt) throw new Error("Choose a pickup time");
+  // the exact pickup moment (the pop-up day can be tomorrow), kept so the seamstress page sorts it right
+  const at = Date.parse(String(body.pickupIso || ""));
+  const pickupIso = mode === "pickup" && Number.isFinite(at) && Math.abs(at - Date.now()) < 8 * 24 * 3600_000 ? new Date(at).toISOString() : "";
   let minutes = Math.max(0, Math.min(600, parseInt(body.minutes, 10) || 0));
 
   // Keep what checkout already put on the order (e.g. the customer's name for the seamstresses)
   // and replace only the fulfilment details, so changing your mind doesn't leave stale ones.
   const current = await gql(`query($id:ID!){ draftOrder(id:$id){ customAttributes{ key value } } }`, { id });
-  const OURS = ["Source", "Fulfilment", "Pickup time", "Estimated minutes", "Chosen at"];
+  const OURS = ["Source", "Fulfilment", "Pickup time", "Pickup at", "Estimated minutes", "Chosen at"];
   const kept = ((current.draftOrder && current.draftOrder.customAttributes) || []).filter((a) => !OURS.includes(a.key));
   // Wait & watch: her own sewing time + everything already in line ahead of her (the server knows the line)
   if (mode === "wait") {
@@ -32,6 +35,7 @@ export default route(["POST"], async (body) => {
     { key: "Fulfilment", value: mode === "wait" ? "Wait & watch" : "Pick up later" },
   ];
   if (mode === "pickup") attrs.push({ key: "Pickup time", value: pickupAt });
+  if (pickupIso) attrs.push({ key: "Pickup at", value: pickupIso });
   if (minutes) attrs.push({ key: "Estimated minutes", value: String(minutes) });
   attrs.push({ key: "Chosen at", value: new Date().toISOString() }); // first come, first served on the seamstress page
 
