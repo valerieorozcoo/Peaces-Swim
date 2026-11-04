@@ -256,7 +256,7 @@
     markedDone:["{n} done.","{n} listo."], cantDone:["Couldn't finish {n}: {e}","No se pudo terminar {n}: {e}"], cantUndo:["Couldn't undo: {e}","No se pudo deshacer: {e}"],
     bikini:["Bikini {i} of {n}","Bikini {i} de {n}"], one:["1 bikini","1 bikini"], name:["Name","Nombre"],
     customs:["Customizations","Personalizaciones"], work:["≈ {m} min of sewing","≈ {m} min de costura"],
-    nothing:["Nothing","Nada"], texted:["Texted {n} ✓","Le mandamos mensaje a {n} ✓"], textHer:["Text {n} it's ready","Avisarle a {n}"],
+    nothing:["Nothing","Nada"], textedK:["Texting {n} through Klaviyo ✓","Klaviyo le avisa a {n} ✓"], texted:["Texted {n} ✓","Le mandamos mensaje a {n} ✓"], textHer:["Text {n} it's ready","Avisarle a {n}"],
     noPhone:["(no phone number to text)","(no hay teléfono para avisar)"], me:["Your name","Tu nombre"], nowH:["Sewing now","Cosiendo ahora"], nextH:["Up next","Siguientes"], unpaidH:["Not paid yet","Sin pagar"],
     nextSub:["Whoever finishes first takes the top one. People waiting here go first; a pickup jumps ahead only when it would otherwise be late.","La que termine primero toma la de arriba. Primero las que esperan aquí; un pedido para recoger se adelanta solo si no estaría a tiempo."],
     emptyNow:["Nobody is sewing right now.","Nadie está cosiendo ahorita."], emptyNext:["Nothing in line.","No hay pedidos en fila."],
@@ -490,7 +490,7 @@
       var tx = r && r.text, who = (o.customer || "").split(" ")[0] || o.number, link = $("textHer");
       link.hidden = true;
       var msg = t("markedDone", { n: o.customer || o.number });
-      if (tx && tx.sent) msg += " " + t("texted", { n: who });                       // sent automatically
+      if (tx && tx.sent) msg += " " + t(tx.via === "klaviyo" ? "textedK" : "texted", { n: who });   // sent automatically
       else if (tx && tx.phone && tx.message) {                                          // one tap: opens Messages with the text written
         link.href = "sms:" + tx.phone + "?&body=" + encodeURIComponent(tx.message);
         link.textContent = t("textHer", { n: who }); link.hidden = false;

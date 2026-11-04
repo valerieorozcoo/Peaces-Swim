@@ -1,15 +1,17 @@
 import { route } from "../../lib/http.js";
 import { gql, check, toE164 } from "../../lib/shopify.js";
 import { checkPasscode, DONE_TAG } from "../../lib/queue.js";
-import { readyMessage, sendSms } from "../../lib/sms.js";
+import { readyMessage, sendSms, smsReady } from "../../lib/sms.js";
+import { klaviyoReady, sendReadyEvent } from "../../lib/klaviyo.js";
 
 export const TEXTED_TAG = "texted-ready";
 const attr = (list, key) => ((list || []).find((a) => a.key === key) || {}).value || "";
 
 // POST /api/seamstress/done  { passcode, id, done: true | false }
 // Marks a builder order finished (tag `seamstress-done`) so it leaves the queue; done:false undoes it.
-// When it's marked done the customer gets a "your Peace is ready" text (once): sent automatically if
-// Twilio is set up, otherwise the page gets the number + message for a one-tap text from the seamstress's phone.
+// When it's marked done the customer gets a "your Peace is ready" text (once): through Klaviyo when
+// KLAVIYO_PRIVATE_KEY is set (a "Peace Ready" event → Klaviyo flow), or Twilio when that's set up instead;
+// otherwise the page gets the number + message for a one-tap text from the seamstress's phone.
 export default route(["POST"], async (body) => {
   checkPasscode(body.passcode);
   const id = String(body.id || "");
@@ -35,11 +37,16 @@ export default route(["POST"], async (body) => {
   const phone = toE164(attr(a, "Text when ready") || info.phone || "") || "";
   const name = attr(a, "Customer name") || (info.customer && info.customer.displayName) || "";
   const tags = info.tags || [];
-  const message = readyMessage({ name, number: info.name, mode: tags.includes("pickup") ? "pickup" : "wait", pickupAt: attr(a, "Pickup time") });
+  const mode = tags.includes("pickup") ? "pickup" : "wait", pickupAt = attr(a, "Pickup time");
+  const message = readyMessage({ name, number: info.name, mode, pickupAt });
   if (!phone) return { ok: true, done: true, text: { sent: false, reason: "no-phone", name } };
   if (tags.includes(TEXTED_TAG)) return { ok: true, done: true, text: { sent: true, already: true, name, phone, message } };
   let r = { sent: false, reason: "failed" };
-  try { r = await sendSms(phone, message); } catch (e) { r = { sent: false, reason: "failed" }; }
+  try {
+    if (klaviyoReady()) r = await sendReadyEvent({ id, phone, name, number: info.name, mode, pickupAt, message });
+    else if (smsReady()) r = await sendSms(phone, message);
+    else r = { sent: false, reason: "not-set-up" };
+  } catch (e) { r = { sent: false, reason: "failed" }; }
   if (r.sent) { try { await gql(`mutation($id:ID!,$tags:[String!]!){ tagsAdd(id:$id, tags:$tags){ userErrors{ field message } } }`, { id, tags: [TEXTED_TAG] }); } catch (e) {} }
   return { ok: true, done: true, text: { ...r, name, phone, message } };
 });
