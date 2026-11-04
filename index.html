@@ -2249,9 +2249,21 @@
   /* back view: rhinestones on the back of the bottoms, lace that goes all the way around */
   var BACKGEO={"b-triangle-bottom":{rs:[229,100],trimSegs:[[93,50,229,56],[229,56,368,46]],legs:[[95,58,150,190],[150,190,202,292],[368,52,310,190],[310,190,256,292]]},
                "b-seamless-bottom":{rs:[290,62],trimSegs:[[14,20,290,88],[290,88,566,18]]}};
+  /* back view: the very ends of the neck ties and the back ties, [x, y, direction back up the tie] */
+  var BACKTIPS={"b-triangle-top":[[245,167,-0.15,-1],[108,46,1,0.1],[191,529,0.15,-1],[237,548,-0.12,-1]],
+                "b-underwire-top":[[356,183,-0.2,-1],[207,634,0.2,-1],[350,634,-0.05,-1]]};
   function decorateBack(svg,artName,g){
     var part=partOfArt(artName), bg=BACKGEO[artName], W=g.w;
     function on(id){ return addonOn(id) && allows(part,id); }
+    // beads on the ends of the ties: only seen from the back, like the sample. Bead slid to the tip, a little knot under it.
+    if(part==="top" && on("beads") && BACKTIPS[artName]){
+      var bd=cfgFor("beads"), list=(bd.str||{}).ends||[], es=W*(artName==="b-triangle-top"?0.062:0.06);
+      if(list.length) BACKTIPS[artName].forEach(function(t){
+        var L=Math.sqrt(t[2]*t[2]+t[3]*t[3]), ux=t[2]/L, uy=t[3]/L;
+        tieKnot(svg,t[0],t[1],W*0.9);
+        list.forEach(function(b,k){ var d=es*(0.75+k*0.95); img(svg,b,t[0]+ux*d,t[1]+uy*d,es,es,0); });
+      });
+    }
     if(part!=="bottom"||!bg) return;
     if(on("laceTrim") && cfg("laceTrim","bottom")==="around"){
       bg.trimSegs.forEach(function(sg){ strip(svg,"p-lacetrim-"+variantOf("laceTrim"),dropSeg(sg,W*0.04),W*0.08); });
@@ -2347,10 +2359,7 @@
           ST.mid.forEach(function(b,k){ bead(b,xs[k],g.center[1]+(hole?2:bs*0.05)); });
         }
         if(bd.ext && on("extTies")) tieRuns(g,W,H).forEach(function(run){ var bend=tieStyle()==="band"; onRun(run,ST.ext,bend?0.55:0.22,bend?Math.min(0.06,0.4/bd.ext):Math.min(0.09,0.7/bd.ext)); });
-        // like the sample: the bead slides on near the tip and a little knot below holds it
-        if(bd.ends) (TIPS[artName]||[]).forEach(function(p){ var es=bs*(tri?1.05:1.25);
-          tieKnot(svg,p[0],p[1],W*(tri?1:0.85));
-          ST.ends.forEach(function(b,e2){ bead(b,p[0],p[1]-es*(0.62+e2*0.9),es); }); });
+        // beads on the tie ends are drawn on the back view (decorateBack), where the ends are
       } else if(bd.bot && on("connectors")){
         [[g.hipL,1],[g.hipR,-1]].forEach(function(q){ ST.bot.forEach(function(b,k){ bead(b,q[0][0]+q[1]*(connW*0.7+bs*0.9*(k+0.5)),q[0][1]+2,bs*0.85); }); });
       }
@@ -2798,6 +2807,7 @@
         else if(ds.ckey){ c[ds.ckey]=(now[ds.ckey]||0)+(+ds.step); }
         else if(ds.conn) state.variant.connectors=ds.conn;
         else return;
+        if(a.id==="beads" && ds.ckey==="ends" && +ds.step>0) state.view="back"; // the tie ends only show from the back
         if(a.id==="connectors" && state.addons.extTies && tieNeedsConnector() && cfgFor("connectors").top==="none") (state.cfg.extTies=state.cfg.extTies||{}).style="plain"; // no middle connector, so the ties go back to regular
         if(!state.addons[a.id]) state.preview=a.id;
         showErr(drawer,"");
