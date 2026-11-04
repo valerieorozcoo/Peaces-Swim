@@ -40,8 +40,8 @@ try {
   const design = { topStyle: "triangle", bottomStyle: "seamless", topColor: "cheetah", bottomColor: "coral", sizeTop: "S", sizeBottom: "M",
     addons: [{ id: "bows", variant: "white", cfg: { tp: ["mid"] } }, { id: "ruffles", variant: "cheetah" }, { id: "charms", variant: "letters", cfg: { mid: 3 } }], initials: "val", tote: true, headband: false };
   r = await post("/orders/create", { design, customer: { phone: "3055551234", welcomeToken: welcome } });
-  assert.equal(r.status, 201); assert.equal(r.body.subtotal, 95 + 5 + 15 + 3 * 10 + 15);
-  assert.equal(r.body.total, 144); assert.equal(r.body.discounted, true);
+  assert.equal(r.status, 201); assert.equal(r.body.subtotal, 95 + 5 + 15 + 3 * 7 + 15);
+  assert.equal(r.body.total, 135.9); assert.equal(r.body.discounted, true);
   assert.equal(r.body.minutes, 5 + 1 + 8 + 2); // plain 5 + one bow + ruffles + charms
   assert.ok(db.drafts[0].input.customAttributes.some((x) => x.key === "Work minutes" && x.value === "16")); ok("sewing time worked out from the team's per-customization minutes");
   const d0 = db.drafts[0].input;
@@ -63,11 +63,11 @@ try {
   r = await post("/orders/create", { design, customer: { phone: "3055551234", welcomeToken: welcome, email: "Val@PeacesSwim.com" } });
   const dw = db.drafts.at(-1);
   assert.deepEqual(dw.input.discountCodes, ["PEACESPARTY"]); assert.equal(dw.input.appliedDiscount, undefined);
-  assert.equal(dw.input.email, "val@peacesswim.com"); assert.equal(r.body.total, 144);
+  assert.equal(dw.input.email, "val@peacesswim.com"); assert.equal(r.body.total, 135.9);
   ok("welcome 10% is applied as PEACESPARTY (can't be stacked again at checkout) and the order carries their email");
   db.welcomeCode = "SOMETHINGELSE";
   r = await post("/orders/create", { design, customer: { phone: "3055551234", welcomeToken: welcome } });
-  assert.equal(r.body.total, 144); assert.equal(db.drafts.at(-1).update.appliedDiscount.value, 10);
+  assert.equal(r.body.total, 135.9); assert.equal(db.drafts.at(-1).update.appliedDiscount.value, 10);
   delete db.welcomeCode; ok("if Shopify skips the code, the promised 10% is still applied");
   r = await post("/orders/create", { design, customer: { phone: "3055551234", email: "x@y.com" } });
   assert.equal(db.drafts.at(-1).input.email, undefined); ok("no signup, no email or discount on the order");
@@ -75,7 +75,7 @@ try {
   const second = { topStyle: "underwire", bottomStyle: "seamless", topColor: "teal", bottomColor: "teal", sizeTop: "M", sizeBottom: "M", addons: [] };
   const pic = "data:image/jpeg;base64," + Buffer.from("fake-jpeg-bytes").toString("base64");
   r = await post("/orders/create", { designs: [design, second], images: [pic, pic] });
-  assert.equal(r.status, 201); assert.equal(r.body.bikinis, 2); assert.equal(r.body.subtotal, 160 + 95);
+  assert.equal(r.status, 201); assert.equal(r.body.bikinis, 2); assert.equal(r.body.subtotal, 151 + 95);
   const bag = db.drafts.at(-1).input.lineItems;
   assert.equal(bag.filter((l) => /^Custom bikini/.test(l.title)).length, 2);
   assert.ok(bag.every((l) => l.customAttributes.some((a) => a.key === "Bikini")));
@@ -85,7 +85,7 @@ try {
   assert.equal(r.status, 400); ok("no more than 5 bikinis per checkout");
 
   r = await post("/orders/create", { design, customer: { phone: "9999999999" } });
-  assert.equal(r.body.total, 160); assert.equal(r.body.discounted, false); ok("no discount for unknown phone");
+  assert.equal(r.body.total, 151); assert.equal(r.body.discounted, false); ok("no discount for unknown phone");
 
   const opts = { topStyle: "triangle", bottomStyle: "triangle", topColor: "green", bottomColor: "cheetah", sizeTop: "S", sizeBottom: "S", initials: "A", rsText: "K",
     addons: [{ id: "beads", variant: "bw-pink", cfg: { ties: 3, mid: 3 } }, { id: "laceTrim", variant: "white", cfg: { bottom: "around" } },
@@ -93,7 +93,7 @@ try {
              { id: "bows", variant: "pink", cfg: { tp: ["sides"], bp: ["mid"] } }] };
   r = await post("/orders/create", { design: opts, customer: { phone: "9999999999" } });
   assert.equal(r.status, 201, JSON.stringify(r.body));
-  assert.equal(r.body.subtotal, 95 + 15 + 25 + 25 + 10 + 10 + 10); ok("add-on choices priced on server (9 beads, lace all around, 2 bottom connectors, 1 rhinestone, wrap ties, bows in 2 spots)");
+  assert.equal(r.body.subtotal, 95 + 15 + 20 + 25 + 10 + 10 + 5); ok("add-on choices priced on server (9 beads, lace all around +$5, 2 bottom connectors, 1 rhinestone, wrap ties, 3 bows for a flat $5)");
   const tinyJpeg = "data:image/jpeg;base64," + Buffer.from("fake-jpeg-bytes").toString("base64");
   r = await post("/orders/create", { design: opts, image: tinyJpeg });
   const dImg = db.drafts.at(-1).input;
@@ -124,11 +124,11 @@ try {
     { id: "charms", variant: "cp-shell", cfg: { mid: 2, left: 1, clasp: "cn-big-gold" } },
     { id: "laceRuffles", variant: "black", cfg: { lower: "front" } }, { id: "fringe", variant: "black", cfg: { lower: "front" } },
     { id: "rhinestones", cfg: { metal: "gold", place: "butt" } }] } });
-  assert.equal(r.body.subtotal, 95 + 3 * 20 + 15 + 15 + 40); ok("3 long charms with clasp upgrades, lace ruffles + fringe front, 4 lowercase rhinestones on the back");
+  assert.equal(r.body.subtotal, 95 + 3 * 12 + 15 + 15 + 40); ok("3 long charms with clasp upgrades, lace ruffles + fringe front, 4 lowercase rhinestones on the back");
   const mint = { ...opts, bottomColor: "green", addons: [{ id: "charms", variant: "cp-pearls", cfg: { mid: 1, clasp: "cn-small-rhinestone" } },
     { id: "beads", variant: "ba-pink", cfg: { str: { ties: ["ba-pink", "bp-16mm", "ba-pink"], mid: ["ba-pink", "ba-pink", "ba-pink", "ba-pink"] } } }] };
   r = await post("/orders/create", { design: mint });
-  assert.equal(r.status, 201, JSON.stringify(r.body)); assert.equal(r.body.subtotal, 95 + 20 + 5 * Math.ceil(10 / 3));
+  assert.equal(r.status, 201, JSON.stringify(r.body)); assert.equal(r.body.subtotal, 95 + 12 + 5 * Math.ceil(10 / 3));
   const beadLine = db.drafts.at(-1).input.lineItems.find((l) => /Beads/.test(l.title)).title;
   assert.equal(beadLine, "Add on: Beads (Top ties, each side ×3: Acrylic · Pink, Pearl · 16 mm, Acrylic · Pink, Middle ×4: Acrylic · Pink ×4)");
   ok("mixed beads: each spot keeps its exact beads in order, priced $5 per 3");
@@ -140,12 +140,12 @@ try {
   const coral = { ...opts, topStyle: "underwire", bottomStyle: "seamless", topColor: "coral", bottomColor: "coral",
     addons: [{ id: "buttons", cfg: { str: { tr: ["large", "large", "small"], bl: ["large", "small"] } } }] };
   r = await post("/orders/create", { design: coral });
-  assert.equal(r.status, 201, JSON.stringify(r.body)); assert.equal(r.body.subtotal, 95 + 5 * 5);
+  assert.equal(r.status, 201, JSON.stringify(r.body)); assert.equal(r.body.subtotal, 95 + 10);
   assert.equal(db.drafts.at(-1).input.lineItems.find((l) => /Buttons/.test(l.title)).title,
     "Add on: Buttons (White · Top, right corner ×3: Large ×2, Small, Bottom, left corner ×2: Large, Small)");
-  ok("bralette buttons: small and large mixed in each corner, $5 a button");
+  ok("bralette buttons: small and large mixed in each corner, $5 for every 3");
   r = await post("/orders/create", { design: { ...opts, addons: [{ id: "buttons", cfg: { str: { tn: ["small", "large", "large", "small"], bn: ["large"] } } }] } });
-  assert.equal(r.body.subtotal, 95 + 25);
+  assert.equal(r.body.subtotal, 95 + 10);
   assert.match(db.drafts.at(-1).input.lineItems.find((l) => /Buttons/.test(l.title)).title, /Top, along the lace line ×4: Small, Large ×2, Small/);
   ok("triangle buttons mix sizes too");
   r = await post("/orders/create", { design: { ...coral, addons: [{ id: "buttons", cfg: { str: { tr: ["huge"] } } }] } });
@@ -155,9 +155,17 @@ try {
   r = await post("/orders/create", { design: { ...bra, addons: [{ id: "connectors" }, { id: "extTies" }, { id: "buttons", cfg: { tl: 3, tr: 1, br: 2, size: "large" } },
     { id: "beads", variant: "bp-16mm", cfg: { ties: 5, ext: 8, ends: 2 } }, { id: "charms", variant: "cg-halo", cfg: { mid: 1, left: 3, right: 3, clasp: "cn-big-gold" } }] } });
   assert.equal(r.status, 201, JSON.stringify(r.body));
-  assert.equal(r.body.subtotal, 95 + 10 + 10 + 30 + 5 * Math.ceil(34 / 3) + 7 * 20); ok("bralette set at its limits: connectors $10 for both straps, corner buttons, 34 beads, 7 charms with clasp upgrades");
+  assert.equal(r.body.subtotal, 95 + 10 + 10 + 10 + 5 * Math.ceil(34 / 3) + 7 * 12); ok("bralette set at its limits: connectors $10 for both straps, corner buttons, 34 beads, 7 charms with clasp upgrades");
   r = await post("/orders/create", { design: { ...bra, addons: [{ id: "charms", variant: "cg-halo", cfg: { left: 1, clasp: "plain" } }] } });
   assert.equal(r.status, 400); ok("charms on the seamless bottom need a clasp upgrade");
+  r = await post("/orders/create", { design: { ...opts, addons: [{ id: "roses", cfg: { tp: ["mid", "sides"], bp: ["sides"] } }] } });
+  assert.equal(r.body.subtotal, 95 + 5); ok("5 roses: a flat $5");
+  r = await post("/orders/create", { design: { ...opts, addons: [{ id: "bows", cfg: { tp: ["mid", "sides"], bp: ["mid", "sides"] } }] } });
+  assert.equal(r.status, 400); ok("6 bows rejected: up to 5");
+  r = await post("/orders/create", { design: { ...opts, addons: [{ id: "laceRuffles", variant: "pink", cfg: { lower: "around" } }, { id: "laceTrim", cfg: { bottom: "front" } }] } });
+  assert.equal(r.status, 201, JSON.stringify(r.body)); assert.equal(r.body.subtotal, 95 + 15 + 15); ok("lace ruffles all around; lace front only adds nothing");
+  r = await post("/orders/create", { design: { ...opts, addons: [{ id: "buttons", cfg: { str: { tn: Array(9).fill("large") } } }] } });
+  assert.equal(r.body.subtotal, 95 + 15); ok("9 buttons: $15");
   r = await post("/orders/create", { design: { ...opts, addons: [{ id: "connectors", cfg: { top: "none", bottom: "two" } }] } });
   assert.equal(r.body.subtotal, 95 + 15); ok("bottom connectors only: $15");
   for (const bad of [{ top: "none", bottom: "no" }]) { r = await post("/orders/create", { design: { ...opts, addons: [{ id: "connectors", cfg: bad }] } }); assert.equal(r.status, 400); }

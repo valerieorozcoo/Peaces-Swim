@@ -1998,7 +1998,7 @@
   function cfgText(id){ return R.describe(id,cfgFor(id),ctx(),variantOf(id)); }
   /* tile hints that depend on the shapes picked */
   var HINTS={connectors:{underwire:"On both halter straps"},extTies:{triangle:"3 ways to wear",underwire:"From the middle knot, around the ribs"},
-    buttons:{triangle:"Along the lace line · $5 each",underwire:"1 to 3 in each corner · $5 each"},laceTrim:{underwire:"Along the top · bottom front"},
+    buttons:{triangle:"Along the lace line · $5 for every 3",underwire:"1 to 3 in each corner · $5 for every 3"},laceTrim:{underwire:"Along the top · bottom front"},
     rhinestones:{triangle:"Top left or right, or the back of the bottoms · $10 per letter",underwire:"Top left or right · $10 per letter"}};
   function hintOf(a){ var h=HINTS[a.id]; if(a.id==="laceTrim") return state.bottomStyle==="seamless"?h.underwire:a.hint; if(h&&a.id==="rhinestones"&&state.bottomStyle!=="triangle") return h.underwire; return (h&&h[a.id==="rhinestones"?"triangle":state.topStyle])||a.hint; }
   function addonText(a){ return [a.id==="rhinestones"||a.id==="beads"||a.id==="charms"||a.opts.length<2?"":variantName(a.id), cfgText(a.id)].filter(Boolean).join(", "); }
@@ -2305,6 +2305,7 @@
       });
     }
     if(part!=="bottom"||!bg) return;
+    if(on("laceRuffles") && cfg("laceRuffles","lower")==="around") bg.trimSegs.forEach(function(sg){ strip(svg,"p-laceruffle-p-"+variantOf("laceRuffles"),dropSeg(sg,W*0.04),g.h*0.13); });
     if(on("laceTrim") && cfg("laceTrim","bottom")==="around"){
       bg.trimSegs.forEach(function(sg){ strip(svg,"p-lacetrim-"+variantOf("laceTrim"),dropSeg(sg,W*0.04),W*0.08); });
     }
@@ -2330,7 +2331,7 @@
       (isTop?laceSegs(g):g.trimSegs).forEach(function(sg){ strip(svg,"p-lacetrim-"+variantOf("laceTrim"),dropSeg(sg,(isTop&&!g.cupDrop?0:lth)*0.5),lth); });
       // "all around": across the top of the bottoms, front AND back (the back half shows on the back view). Never down the sides.
     }
-    if(on("laceRuffles") && (isTop || cfg("laceRuffles","lower")==="front")) g.trimSegs.forEach(function(sg){ strip(svg,"p-laceruffle-p-"+variantOf("laceRuffles"),sg,H*0.13); });
+    if(on("laceRuffles") && (isTop || /^(front|around)$/.test(cfg("laceRuffles","lower")))) g.trimSegs.forEach(function(sg){ strip(svg,"p-laceruffle-p-"+variantOf("laceRuffles"),sg,H*0.13); });
     if(on("fringe") && (isTop || cfg("fringe","lower")==="front")){
       // the real fringe (photo): woven tape along the edge, strands falling over the piece
       var fl=H*(isTop?(tri?0.13:0.09):0.1);
@@ -2724,7 +2725,7 @@
         ct.options.forEach(function(o){ h+=chip('data-key="'+ct.key+'" data-val="'+o[0]+'"',c[ct.key]===o[0],o[1]+(o[2]>0?" +$"+o[2]:""),id==="charms"&&o[0]!=="plain"?o[0]:""); });
         h+='</div>';
       } else if(ct.type==="multi"){
-        h+='<div class="cf-label">'+(ct.label?ct.label+' ':'')+'<span class="cf-sub">pick any · $'+R.SPEC[id].price+' each</span></div><div class="chips">';
+        h+='<div class="cf-label">'+(ct.label?ct.label+' ':'')+'<span class="cf-sub">'+((id==="bows"||id==="roses")?"pick any · $5 for up to 5":"pick any · $"+R.SPEC[id].price+" each")+'</span></div><div class="chips">';
         ct.options.forEach(function(o){ h+=chip('data-mkey="'+ct.key+'" data-val="'+o[0]+'"',(c[ct.key]||[]).indexOf(o[0])>-1,o[1],""); });
         h+='</div>';
       } else if(ct.type==="count"){
@@ -2750,7 +2751,7 @@
       h+='<button type="button" class="link-btn" data-allbeads="1">Make every bead '+R.variantName("beads",v).replace(" · "," ").toLowerCase()+'</button>';
       h+='<p class="cf-note">'+nb+' bead'+(nb===1?"":"s")+' in total · $5 for every 3'+(state.topStyle==="triangle"&&state.bottomStyle==="triangle"&&!R.has(d,"connectors.bottom=two")?". Add connectors to both sides of the bottom to bead them too.":"")+'</p>';
     }
-    if(id==="buttons" && state.topStyle==="triangle") h+='<p class="cf-note">$5 per button.</p>';
+    if(id==="buttons"){ var nbt=R.units("buttons",c,d); h+='<p class="cf-note">'+nbt+' button'+(nbt===1?"":"s")+' · $5 for every 3.</p>'; }
     return h;
   }
   var pieceTab={};
