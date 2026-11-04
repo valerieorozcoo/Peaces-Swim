@@ -88,6 +88,20 @@
     .num{font-size:22px;}
   }
 
+  /* simple name-first cards + language switch */
+  .langs{display:inline-flex; border:1.5px solid var(--teal); margin-left:12px; vertical-align:middle;}
+  .langs button{border:0; background:transparent; color:var(--teal); padding:6px 12px; font-weight:600; font-size:15px;}
+  .langs button[aria-pressed="true"]{background:var(--teal); color:#fff;}
+  .name{font-size:30px; font-weight:700; line-height:1.1; margin:0;}
+  .ord{font-size:15px; color:var(--ink-60); margin:2px 0 8px; letter-spacing:.04em;}
+  .mode{display:inline-block; padding:6px 12px; font-weight:700; font-size:18px; margin:0 0 10px; color:#fff; background:var(--teal);}
+  .mode.pickup{background:#7a3fb0;}
+  .pieces{font-size:18px; margin:0 0 4px;}
+  .pieces b{font-weight:600; color:var(--ink-60); font-size:14px; letter-spacing:.08em; text-transform:uppercase; margin-right:6px;}
+  ol.adds{margin:4px 0 0; padding-left:22px; font-size:18px;}
+  ol.adds li{margin-bottom:3px;}
+  .bkh{font-weight:700; color:#4B2470; margin:10px 0 4px; font-size:16px;}
+  .actions .btn.big{padding:14px 26px; font-size:17px;}
   .toast{position:fixed; left:50%; bottom:20px; transform:translateX(-50%); background:var(--ink); color:#fff; padding:12px 16px; display:flex; gap:14px; align-items:center; font-size:16px; max-width:calc(100% - 32px);}
   .toast button{background:none; border:0; color:#fff; text-decoration:underline; padding:0; font-weight:600;}
   dt.bk{grid-column:1/-1; font-weight:700; color:#4B2470; margin-top:6px;} dd.bk{display:none;}
@@ -127,43 +141,43 @@
 <body>
 <div class="wrap">
   <header>
-    <h1>Seamstress queue</h1>
-    <div class="status" id="status" hidden><span id="updated"></span><button type="button" id="refresh">Refresh</button><button type="button" id="logout">Lock</button>
-      <label class="autoprint"><input type="checkbox" id="autoPrint" checked> Auto-print new tags</label></div>
+    <h1 data-t="title">Orders</h1>
+    <div class="status"><span id="statusIn" hidden><span id="updated"></span><button type="button" id="refresh" data-t="refresh">Refresh</button><button type="button" id="logout" data-t="lock">Lock</button>
+      <label class="autoprint"><input type="checkbox" id="autoPrint" checked> <span data-t="auto">Auto-print new tags</span></label></span>
+      <span class="langs" role="group" aria-label="Language · Idioma"><button type="button" data-lang="en" aria-pressed="true">English</button><button type="button" data-lang="es" aria-pressed="false">Español</button></span></div>
   </header>
 
   <section class="lock" id="lock">
     <form id="lockForm">
-      <label for="pass">Enter the seamstress passcode</label>
+      <label for="pass" data-t="passLabel">Enter the seamstress passcode</label>
       <input id="pass" type="password" autocomplete="current-password" required>
-      <button class="btn" type="submit">Open queue</button>
+      <button class="btn" type="submit" data-t="open">Open</button>
       <p class="err" id="lockErr" role="alert"></p>
     </form>
   </section>
 
   <main id="queue" hidden>
     <div class="tabs" role="tablist">
-      <button type="button" role="tab" data-tab="wait" aria-selected="true">Wait &amp; Watch (<span data-count="wait">0</span>)</button>
-      <button type="button" role="tab" data-tab="pickup" aria-selected="false">Pickup Later (<span data-count="pickup">0</span>)</button>
+      <button type="button" role="tab" data-tab="wait" aria-selected="true"><span data-t="waitH">Waiting here</span> (<span data-count="wait">0</span>)</button>
+      <button type="button" role="tab" data-tab="pickup" aria-selected="false"><span data-t="pickH">Picking up later</span> (<span data-count="pickup">0</span>)</button>
     </div>
     <p class="err" id="loadErr" role="alert"></p>
-    <p class="tip">Every new paid bikini prints a 4 × 6 tag (English + Español). Set the printer's paper to 4 × 6 in. To print without the print window popping up, open this page in Chrome started with <b>--kiosk-printing</b>.</p>
     <div class="cols">
       <section class="col on" data-col="wait">
-        <h2>Wait &amp; Watch (<span data-count="wait">0</span>)</h2>
-        <p class="sub">Customer is here. First come, first served.</p>
+        <h2><span data-t="waitH">Waiting here</span> (<span data-count="wait">0</span>)</h2>
+        <p class="sub" data-t="waitSub">The customer is here. Oldest first.</p>
         <div class="list" id="list-wait"></div>
       </section>
       <section class="col" data-col="pickup">
-        <h2>Pickup Later (<span data-count="pickup">0</span>)</h2>
-        <p class="sub">Soonest pickup first.</p>
+        <h2><span data-t="pickH">Picking up later</span> (<span data-count="pickup">0</span>)</h2>
+        <p class="sub" data-t="pickSub">They come back later. Soonest pickup first.</p>
         <div class="list" id="list-pickup"></div>
       </section>
     </div>
   </main>
 </div>
 <div id="printArea" aria-hidden="true"></div>
-<div class="toast" id="toast" hidden><span id="toastText"></span><button type="button" id="undo">Undo</button></div>
+<div class="toast" id="toast" hidden><span id="toastText"></span><button type="button" id="undo" data-t="undo">Undo</button></div>
 
 <script>
 (function(){
@@ -201,51 +215,91 @@
     return d.toDateString() === tm.toDateString() ? " tomorrow" : " " + d.toLocaleDateString(undefined, { weekday:"short" });
   }
 
+  /* ---------- language ---------- */
+  var LKEY = "peaces-seamstress-lang", lang = "en", lastQ = null;
+  try { if (localStorage.getItem(LKEY) === "es") lang = "es"; } catch (e) {}
+  var T = {
+    title:["Orders","Pedidos"], refresh:["Refresh","Actualizar"], lock:["Lock","Bloquear"], auto:["Auto-print new tags","Imprimir etiquetas nuevas"],
+    passLabel:["Enter the seamstress passcode","Escribe la contraseña"], open:["Open","Abrir"], undo:["Undo","Deshacer"],
+    waitH:["Waiting here","Esperando aquí"], pickH:["Picking up later","Recogen después"],
+    waitSub:["The customer is here. Oldest first.","La clienta está aquí. Primero la que lleva más tiempo."],
+    pickSub:["They come back later. Soonest pickup first.","Regresan después. Primero la que recoge más pronto."],
+    order:["Order","Pedido"], noName:["No name","Sin nombre"], top:["Top","Arriba"], bottom:["Bottom","Abajo"], adds:["Add-ons","Extras"], none:["None","Ninguno"],
+    also:["Also in the bag","También en la bolsa"], done:["Done ✓","Listo ✓"], saving:["Saving…","Guardando…"], print:["Print tag","Imprimir etiqueta"],
+    notPaid:["Not paid yet","Sin pagar"], noPic:["No picture","Sin foto"], told:["Customer was told ~{m} min","Se le dijo ~{m} min"],
+    emptyWait:["No one waiting right now.","Nadie esperando ahorita."], emptyPick:["No pickups coming up.","No hay pedidos para recoger."],
+    updated:["Updated","Actualizado"], cantRefresh:["Couldn't refresh: {e}. Retrying…","No se pudo actualizar: {e}. Reintentando…"],
+    markedDone:["{n} done.","{n} listo."], cantDone:["Couldn't finish {n}: {e}","No se pudo terminar {n}: {e}"], cantUndo:["Couldn't undo: {e}","No se pudo deshacer: {e}"],
+    bikini:["Bikini {i} of {n}","Bikini {i} de {n}"], one:["1 bikini","1 bikini"], name:["Name","Nombre"],
+    customs:["Customizations","Personalizaciones"]
+  };
+  function t(k, v){ var s = (T[k] || [k, k])[lang === "es" ? 1 : 0]; if (v) Object.keys(v).forEach(function(x){ s = s.replace("{" + x + "}", v[x]); }); return s; }
+  function L(en, es){ return lang === "es" ? (es || en) : en; }
+  function clock(iso){ return new Date(iso).toLocaleTimeString(lang === "es" ? "es-MX" : "en-US", { hour:"numeric", minute:"2-digit" }); }
+  function waited(iso){
+    var m = Math.round((Date.now() - Date.parse(iso)) / 60000);
+    if (!isFinite(m) || m < 1) return lang === "es" ? "recién llegó" : "just now";
+    return m < 60 ? m + " min" : Math.floor(m / 60) + " h " + (m % 60) + " min";
+  }
+  function dayWord(iso){
+    var d = new Date(iso), n = new Date();
+    if (d.toDateString() === n.toDateString()) return "";
+    var tm = new Date(n); tm.setDate(n.getDate() + 1);
+    if (d.toDateString() === tm.toDateString()) return lang === "es" ? " mañana" : " tomorrow";
+    return " " + d.toLocaleDateString(lang === "es" ? "es-MX" : "en-US", { weekday:"short" });
+  }
+  function modeText(o){
+    if (o.mode === "pickup") return (lang === "es" ? "Recoge a las " : "Picks up at ") + o.pickupAt + (o.pickupDate ? dayWord(o.pickupDate) : "");
+    return (lang === "es" ? "Esperando aquí · " : "Waiting here · ") + waited(o.chosenAt);
+  }
+  function applyLang(){
+    document.documentElement.lang = lang;
+    document.querySelectorAll("[data-t]").forEach(function(n){ n.textContent = t(n.dataset.t); });
+    document.querySelectorAll(".langs button").forEach(function(b){ b.setAttribute("aria-pressed", String(b.dataset.lang === lang)); });
+    document.title = lang === "es" ? "Peaces · Pedidos" : "Peaces · Orders";
+    if (lastQ) render(lastQ);
+  }
+  document.querySelectorAll(".langs button").forEach(function(b){
+    b.addEventListener("click", function(){ lang = b.dataset.lang; try { localStorage.setItem(LKEY, lang); } catch (e) {} applyLang(); });
+  });
+
   function card(o, i){
     var c = el("article", "card" + (o.paid ? "" : " unpaid"));
     var pic = el("div", "pic");
-    if (o.image) { var img = el("img"); img.src = o.image; img.alt = "Bikini design for order " + o.number; img.loading = "lazy"; pic.appendChild(img); }
-    else pic.appendChild(el("span", null, "No picture saved"));
+    if (o.image) { var img = el("img"); img.src = o.image; img.alt = ""; img.loading = "lazy"; pic.appendChild(img); }
+    else pic.appendChild(el("span", null, t("noPic")));
     c.appendChild(pic);
 
     var body = el("div");
-    var top = el("div", "top");
-    top.appendChild(el("span", "num", o.number));
-    top.appendChild(el("span", "pos", "#" + (i + 1) + " in line"));
-    body.appendChild(top);
-    body.appendChild(el("div", "who", o.customer || "No name given"));
+    body.appendChild(el("p", "name", o.customer || t("noName")));
+    body.appendChild(el("p", "ord", t("order") + " " + o.number + "  ·  #" + (i + 1)));
+    body.appendChild(el("span", "mode" + (o.mode === "pickup" ? " pickup" : ""), modeText(o)));
+    if (!o.paid) body.appendChild(el("span", "badge", t("notPaid")));
 
-    if (o.mode === "pickup") body.appendChild(el("span", "when", "Pickup " + o.pickupAt + (o.pickupDate ? dayLabel(o.pickupDate) : "")));
-    else body.appendChild(el("span", "when", (o.mode ? "Waiting " : "Paid, didn't choose · waiting ") + ago(o.chosenAt)));
-    if (!o.paid) body.appendChild(el("span", "badge", "Not paid yet"));
-
-    var dl = el("dl");
-    function row(k, v){ if (!v || (Array.isArray(v) && !v.length)) return; dl.appendChild(el("dt", null, k));
-      var dd = el("dd");
-      if (Array.isArray(v)) { var ul = el("ul"); v.forEach(function(x){ ul.appendChild(el("li", null, x)); }); dd.appendChild(ul); }
-      else dd.textContent = v;
-      dl.appendChild(dd); }
-    var bks = (o.bikinis && o.bikinis.length) ? o.bikinis : [{ top:o.top, bottom:o.bottom, addons:o.addons, image:o.image }];
+    var bks = bikinisOfOrder(o);
     bks.forEach(function(b, bi){
-      if (bks.length > 1) { dl.appendChild(el("dt", "bk", "Bikini " + (bi + 1) + " of " + bks.length)); dl.appendChild(el("dd", "bk", ""));
-        if (bi > 0 && b.image) { var im2 = el("img"); im2.src = b.image; im2.alt = "Bikini " + (bi + 1); im2.className = "extra-pic"; im2.loading = "lazy"; pic.appendChild(im2); } }
-      row("Top", b.top);
-      row("Bottom", b.bottom);
-      row("Add ons", b.addons.length ? b.addons : ["None"]);
+      if (bks.length > 1) { body.appendChild(el("p", "bkh", t("bikini", { i: bi + 1, n: bks.length })));
+        if (bi > 0 && b.image) { var im2 = el("img"); im2.src = b.image; im2.alt = ""; im2.className = "extra-pic"; im2.loading = "lazy"; pic.appendChild(im2); } }
+      var p1 = el("p", "pieces"); p1.appendChild(el("b", null, t("top"))); p1.appendChild(document.createTextNode(L(b.top, b.topEs) || "—")); body.appendChild(p1);
+      var p2 = el("p", "pieces"); p2.appendChild(el("b", null, t("bottom"))); p2.appendChild(document.createTextNode(L(b.bottom, b.bottomEs) || "—")); body.appendChild(p2);
+      var ol = el("ol", "adds");
+      if (!b.addons.length) ol.appendChild(el("li", null, t("none")));
+      b.addons.forEach(function(a, k){ ol.appendChild(el("li", null, L(a, (b.addonsEs || [])[k]))); });
+      body.appendChild(ol);
+      if (b.extras && b.extras.length) { var p3 = el("p", "pieces"); p3.appendChild(el("b", null, t("also"))); p3.appendChild(document.createTextNode(b.extras.map(function(x){ return L(x.en, x.es); }).join(", "))); body.appendChild(p3); }
     });
-    row("Extras", o.extras);
-    body.appendChild(dl);
+    if (!(o.bikinis && o.bikinis.length) && o.extras && o.extras.length) { var p4 = el("p", "pieces"); p4.appendChild(el("b", null, t("also"))); p4.appendChild(document.createTextNode(o.extras.join(", "))); body.appendChild(p4); }
 
     var actions = el("div", "actions");
-    var done = el("button", "btn", "Mark done");
+    var done = el("button", "btn big", t("done"));
     done.type = "button";
     done.addEventListener("click", function(){ markDone(o, done); });
     actions.appendChild(done);
-    var pt = el("button", "btn ghost", "Print tag · Imprimir");
+    var pt = el("button", "btn ghost", t("print"));
     pt.type = "button";
     pt.addEventListener("click", function(){ var l = orderTags(o); if (printed) { l.forEach(function(x){ if (printed.indexOf(x.key) < 0) printed.push(x.key); }); savePrinted(); } printTags(l); });
     actions.appendChild(pt);
-    if (o.minutes && o.mode === "wait") actions.appendChild(el("span", "note", "Customer was told ~" + o.minutes + " min"));
+    if (o.minutes && o.mode === "wait") actions.appendChild(el("span", "note", t("told", { m: o.minutes })));
     body.appendChild(actions);
     c.appendChild(body);
     return c;
@@ -263,26 +317,34 @@
     return (o.bikinis && o.bikinis.length) ? o.bikinis : [{ top:o.top, bottom:o.bottom, addons:o.addons || [], addonsEs:[], image:o.image, extras:[] }];
   }
   function tagFor(o, b, bi, n){
-    var t = el("section", "tag");
+    var ES = lang === "es";
+    function H(en, es){ return ES ? es : en + " · " + es; }
+    var tg = el("section", "tag");
     var head = el("div", "t-head");
     var logo = el("img", "t-logo"); logo.src = "/art/logo-ps.png"; logo.alt = ""; head.appendChild(logo);
-    var num = el("div", "t-num"); num.appendChild(el("small", null, "Order · Pedido")); num.appendChild(document.createTextNode(o.number)); head.appendChild(num);
-    t.appendChild(head);
-    var who = el("div", "t-who"); who.appendChild(el("small", null, "Name · Nombre")); who.appendChild(document.createTextNode(o.customer || "No name · Sin nombre")); t.appendChild(who);
+    var num = el("div", "t-num"); num.appendChild(el("small", null, H("Order", "Pedido"))); num.appendChild(document.createTextNode(o.number)); head.appendChild(num);
+    tg.appendChild(head);
+    var who = el("div", "t-who"); who.appendChild(el("small", null, H("Name", "Nombre"))); who.appendChild(document.createTextNode(o.customer || H("No name", "Sin nombre"))); tg.appendChild(who);
     var meta = el("div", "t-meta");
-    meta.appendChild(el("span", null, n > 1 ? "Bikini " + (bi + 1) + " of " + n + " · " + (bi + 1) + " de " + n : "1 bikini"));
-    meta.appendChild(el("span", null, o.mode === "pickup" ? "Pickup " + o.pickupAt + " · Recoge " + o.pickupAt : "Waiting · Esperando aquí"));
-    t.appendChild(meta);
-    if (b.image) { var im = el("img", "t-pic"); im.src = b.image; im.alt = ""; t.appendChild(im); }
-    function sec(h, en, es){ var d = el("div", "t-sec"); d.appendChild(el("h4", null, h)); d.appendChild(el("p", "en", en || "")); if (es && es !== en) d.appendChild(el("p", "es", es)); t.appendChild(d); }
-    sec("Top · Parte de arriba", b.top, b.topEs);
-    sec("Bottom · Parte de abajo", b.bottom, b.bottomEs);
-    var s = el("div", "t-sec"); s.appendChild(el("h4", null, "Customizations · Personalizaciones"));
-    if (!b.addons.length) s.appendChild(el("p", "en", "None · Ninguna"));
-    else { var ol = el("ol"); b.addons.forEach(function(a, k){ var li = el("li"); li.appendChild(el("span", "en", a)); var es = (b.addonsEs || [])[k]; if (es) li.appendChild(el("span", "es", es)); ol.appendChild(li); }); s.appendChild(ol); }
-    t.appendChild(s);
-    if (b.extras && b.extras.length) sec("Also in the bag · También en la bolsa", b.extras.map(function(x){ return x.en; }).join(", "), b.extras.map(function(x){ return x.es || x.en; }).join(", "));
-    return t;
+    meta.appendChild(el("span", null, n > 1 ? (ES ? "Bikini " + (bi + 1) + " de " + n : "Bikini " + (bi + 1) + " of " + n + " · " + (bi + 1) + " de " + n) : "1 bikini"));
+    meta.appendChild(el("span", null, o.mode === "pickup" ? (ES ? "Recoge a las " + o.pickupAt : "Picks up " + o.pickupAt + " · Recoge " + o.pickupAt) : H("Waiting here", "Esperando aquí")));
+    tg.appendChild(meta);
+    if (b.image) { var im = el("img", "t-pic"); im.src = b.image; im.alt = ""; tg.appendChild(im); }
+    function sec(h, en, es){ var d = el("div", "t-sec"); d.appendChild(el("h4", null, h));
+      if (ES) d.appendChild(el("p", "en", es || en || ""));
+      else { d.appendChild(el("p", "en", en || "")); if (es && es !== en) d.appendChild(el("p", "es", es)); }
+      tg.appendChild(d); }
+    sec(H("Top", "Parte de arriba"), b.top, b.topEs);
+    sec(H("Bottom", "Parte de abajo"), b.bottom, b.bottomEs);
+    var s = el("div", "t-sec"); s.appendChild(el("h4", null, H("Customizations", "Personalizaciones")));
+    if (!b.addons.length) s.appendChild(el("p", "en", H("None", "Ninguna")));
+    else { var ol = el("ol"); b.addons.forEach(function(a, k){ var li = el("li"), es = (b.addonsEs || [])[k];
+      if (ES) li.appendChild(el("span", "en", es || a));
+      else { li.appendChild(el("span", "en", a)); if (es) li.appendChild(el("span", "es", es)); }
+      ol.appendChild(li); }); s.appendChild(ol); }
+    tg.appendChild(s);
+    if (b.extras && b.extras.length) sec(H("Also in the bag", "También en la bolsa"), b.extras.map(function(x){ return x.en; }).join(", "), b.extras.map(function(x){ return x.es || x.en; }).join(", "));
+    return tg;
   }
   // shrink the text (then the picture) until everything fits on the 4 × 6 card
   function fit(t){
@@ -323,14 +385,15 @@
     printTags(fresh);
   }
   function render(q){
+    lastQ = q;
     ["wait", "pickup"].forEach(function(k){
       var list = $("list-" + k);
       list.textContent = "";
-      if (!q[k].length) list.appendChild(el("div", "empty", k === "wait" ? "No one waiting right now." : "No pickups coming up."));
+      if (!q[k].length) list.appendChild(el("div", "empty", t(k === "wait" ? "emptyWait" : "emptyPick")));
       q[k].forEach(function(o, i){ list.appendChild(card(o, i)); });
       document.querySelectorAll('[data-count="' + k + '"]').forEach(function(n){ n.textContent = q[k].length; });
     });
-    $("updated").textContent = "Updated " + new Date().toLocaleTimeString([], { hour:"numeric", minute:"2-digit" });
+    $("updated").textContent = t("updated") + " " + clock(new Date().toISOString());
   }
 
   async function load(){
@@ -344,33 +407,33 @@
       autoTags(q);
     } catch (e) {
       if (e.status === 401 || e.status === 503) { lock(e.message); }
-      else $("loadErr").textContent = "Couldn't refresh: " + e.message + ". Retrying…";
+      else $("loadErr").textContent = t("cantRefresh", { e: e.message });
     } finally { loading = false; }
   }
 
   async function markDone(o, btn){
-    btn.disabled = true; btn.textContent = "Saving…";
+    btn.disabled = true; btn.textContent = t("saving");
     try {
       await call("done", { id: o.id, done: true });
       undoId = o.id;
-      $("toastText").textContent = o.number + " marked done.";
+      $("toastText").textContent = t("markedDone", { n: o.customer || o.number });
       $("toast").hidden = false;
       clearTimeout(toastTimer); toastTimer = setTimeout(function(){ $("toast").hidden = true; undoId = null; }, 8000);
       load();
     } catch (e) {
-      btn.disabled = false; btn.textContent = "Mark done";
-      $("loadErr").textContent = "Couldn't mark " + o.number + " done: " + e.message;
+      btn.disabled = false; btn.textContent = t("done");
+      $("loadErr").textContent = t("cantDone", { n: o.number, e: e.message });
     }
   }
   $("undo").addEventListener("click", async function(){
     if (!undoId) return;
     var id = undoId; undoId = null; $("toast").hidden = true;
-    try { await call("done", { id: id, done: false }); } catch (e) { $("loadErr").textContent = "Couldn't undo: " + e.message; }
+    try { await call("done", { id: id, done: false }); } catch (e) { $("loadErr").textContent = t("cantUndo", { e: e.message }); }
     load();
   });
 
   function show(open){
-    $("lock").hidden = open; $("queue").hidden = !open; $("status").hidden = !open;
+    $("lock").hidden = open; $("queue").hidden = !open; $("statusIn").hidden = !open;
     clearInterval(timer);
     if (open) timer = setInterval(load, 20000);
   }
@@ -398,6 +461,7 @@
   });
   document.addEventListener("visibilitychange", function(){ if (!document.hidden) load(); });
 
+  applyLang();
   if (passcode) load();
 })();
 </script>
