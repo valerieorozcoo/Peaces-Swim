@@ -12,6 +12,10 @@ process.env.SEAMSTRESS_PASSCODE = "sew-sew-123";
 const { startLocal } = await import("./local-server.js");
 const { server: s1, db } = await startMockShopify(MOCK);
 const s2 = await startLocal(APP);
+// what's sold out in the shop right now shouldn't break the pricing tests: check the list, then test with everything in stock
+await import("../lib/rules.js");
+const LIVE_SOLD_OUT = globalThis.PeacesRules.SOLD_OUT.slice();
+globalThis.PeacesRules.SOLD_OUT.length = 0;
 const post = async (p, b) => { const r = await fetch(`http://localhost:${APP}/api${p}`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(b) }); return { status: r.status, body: await r.json() }; };
 
 let n = 0; const ok = (m) => { n++; console.log("  ✓", m); };
@@ -350,6 +354,8 @@ try {
 
 
   assert.equal(db.tokenCalls, 1); ok("access token fetched once and cached");
+  assert.deepEqual(LIVE_SOLD_OUT.sort(), ["bottom:seamless:cheetah", "bottom:seamless:teal", "top:underwire:cheetah", "top:underwire:teal"]);
+  ok("sold out now: teal + cheetah bandeau (bralette) tops and seamless bottoms; cheetah triangle still in stock");
   console.log(`\nAll ${n} checks passed.`);
 } finally { s1.close(); s2.close(); }
 
