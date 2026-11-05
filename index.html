@@ -2768,6 +2768,8 @@
           body:JSON.stringify({firstName:first,email:email,phone:phone,sms:document.getElementById("wSms").checked,company:document.getElementById("wCompany").value})});
         var j={}; try{ j=await r.json(); }catch(x){}
         if(!r.ok) throw new Error(j.error||"Something went wrong. Please try again.");
+        // the website remembers them: when the full site opens they're already signed in with their 10% off
+        if(j.welcomeToken){ lead={name:first,email:email.toLowerCase(),phone:phone,welcomeToken:j.welcomeToken}; rememberLead(lead); state.perk=true; }
         form.hidden=true;
         var done=document.getElementById("waitDone"); done.hidden=false; done.focus({preventScroll:true});
       }catch(x){
