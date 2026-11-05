@@ -114,6 +114,9 @@
   .topbar .me{margin:0;}
   a.btn{display:inline-block; text-decoration:none;}
   .views{padding:10px 16px; white-space:nowrap;}
+  .navs{display:flex; flex-direction:column; align-items:stretch; gap:8px;}
+  .navs .views{text-align:center;}
+  .unpaidbtn{color:var(--pink) !important; border-color:var(--pink) !important;}
   .back{display:inline-block; font-size:16px; margin:0 0 14px; padding:0;}
   .card.done{border-left-color:#8c7f92; background:#f7f5f8;}
   .doneat{display:inline-block; background:var(--teal-deep, #1f6f6a); color:#fff; padding:3px 10px; font-weight:700; font-size:15px; margin:0 8px 8px 0;}
@@ -205,7 +208,10 @@
   <main id="queue" hidden>
     <div class="topbar">
       <div class="me"><label for="sewer" data-t="me">Your name</label><input id="sewer" type="text" maxlength="30" autocomplete="off" placeholder="Ana"></div>
-      <a class="btn ghost views" id="toDone" href="#completed"><span data-t="doneBtn">Completed</span> (<span data-count="completed">0</span>) →</a>
+      <div class="navs" id="navs">
+        <a class="btn ghost views" href="#completed"><span data-t="doneBtn">Completed</span> (<span data-count="completed">0</span>) →</a>
+        <a class="btn ghost views unpaidbtn" href="#unpaid"><span data-t="unpaidH">Not paid yet</span> (<span data-count="unpaid">0</span>) →</a>
+      </div>
     </div>
     <p class="err" id="loadErr" role="alert"></p>
     <div id="queueView">
@@ -218,13 +224,17 @@
       <p class="sub" data-t="nextSub">Whoever finishes first takes the top one. People waiting here go first; a pickup jumps ahead only when it would otherwise be late.</p>
       <div class="list" id="list-next"></div>
     </section>
-    <section class="blk" id="blk-unpaid" hidden>
-      <h2><span data-t="unpaidH">Not paid yet</span> (<span data-count="unpaid">0</span>)</h2>
-      <div class="list" id="list-unpaid"></div>
-    </section>
+    </div>
+    <div id="unpaidView" hidden>
+      <a class="linkish back" href="#" data-t="back">← Back to orders</a>
+      <section class="blk">
+        <h2><span data-t="unpaidH">Not paid yet</span> (<span data-count="unpaid">0</span>)</h2>
+        <p class="sub" data-t="unpaidSub">Orders that haven't been paid. They join Up next as soon as they're paid.</p>
+        <div class="list" id="list-unpaid"></div>
+      </section>
     </div>
     <div id="doneView" hidden>
-      <a class="linkish back" href="#" id="toQueue" data-t="back">← Back to orders</a>
+      <a class="linkish back" href="#" data-t="back">← Back to orders</a>
       <section class="blk">
         <h2><span data-t="doneH">Completed</span> (<span data-count="completed">0</span>)</h2>
         <p class="sub" data-t="doneSub">Finished in the last 3 days, newest first.</p>
@@ -301,7 +311,8 @@
     doneSub:["Finished in the last 3 days, newest first.","Terminados en los últimos 3 días, los más recientes primero."],
     doneAt:["Done {t}","Lista {t}"], textedOk:["Texted ✓","Avisada ✓"], notTexted:["Not texted","Sin aviso"],
     putBack:["Put back in line","Regresar a la fila"], emptyDone:["Nothing finished yet.","Nada terminado todavía."],
-    waitedHere:["Waited here","Esperó aquí"], putBackDone:["{n} is back in line.","{n} regresó a la fila."]
+    waitedHere:["Waited here","Esperó aquí"], emptyUnpaid:["Nothing waiting on payment.","Nada pendiente de pago."],
+    unpaidSub:["Orders that haven't been paid. They join Up next as soon as they're paid.","Pedidos sin pagar. Pasan a Siguientes en cuanto se pagan."], putBackDone:["{n} is back in line.","{n} regresó a la fila."]
   };
   function t(k, v){ var s = (T[k] || [k, k])[lang === "es" ? 1 : 0]; if (v) Object.keys(v).forEach(function(x){ s = s.replace("{" + x + "}", v[x]); }); return s; }
   function L(en, es){ return lang === "es" ? (es || en) : en; }
@@ -506,11 +517,10 @@
     Object.keys(sets).forEach(function(k){
       var list = $("list-" + k);
       list.textContent = "";
-      if (!sets[k].length && k !== "unpaid") list.appendChild(el("div", "empty", t(k === "sewing" ? "emptyNow" : k === "completed" ? "emptyDone" : "emptyNext")));
+      if (!sets[k].length) list.appendChild(el("div", "empty", t({ sewing: "emptyNow", completed: "emptyDone", unpaid: "emptyUnpaid" }[k] || "emptyNext")));
       sets[k].forEach(function(o, i){ list.appendChild(card(o, i, k)); });
       document.querySelectorAll('[data-count="' + k + '"]').forEach(function(n){ n.textContent = sets[k].length; });
     });
-    $("blk-unpaid").hidden = !sets.unpaid.length;
     $("updated").textContent = t("updated") + " " + clock(new Date().toISOString());
   }
 
@@ -572,14 +582,15 @@
     } catch (e) { btn.disabled = false; btn.textContent = t("putBack"); $("loadErr").textContent = t("cantUndo", { e: e.message }); }
     load();
   }
-  /* two pages in one: the orders (sewing now + up next) and #completed */
+  /* three pages in one: the orders (sewing now + up next), #completed and #unpaid */
   function view(){
-    var d = location.hash === "#completed";
-    $("queueView").hidden = d; $("doneView").hidden = !d; $("toDone").hidden = d;
+    var h = location.hash;
+    var d = h === "#completed", u = h === "#unpaid";
+    $("queueView").hidden = d || u; $("doneView").hidden = !d; $("unpaidView").hidden = !u; $("navs").hidden = d || u;
     window.scrollTo(0, 0);
   }
   window.addEventListener("hashchange", view);
-  $("toQueue").addEventListener("click", function(e){ e.preventDefault(); history.pushState("", document.title, location.pathname + location.search); view(); });
+  document.querySelectorAll(".back").forEach(function(a){ a.addEventListener("click", function(e){ e.preventDefault(); history.pushState("", document.title, location.pathname + location.search); view(); }); });
   view();
   $("undo").addEventListener("click", async function(){
     if (!undoId) return;
