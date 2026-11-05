@@ -24,6 +24,16 @@ export function startMockShopify(port) {
       const nodes = db.customers.filter((c) => (m[1] === "email" ? (c.email || "").toLowerCase() === m[2] : c.phone === m[2]));
       return send({ data: { customers: { nodes: nodes.map((c) => ({ ...c, tags: c.tags || [] })) } } });
     }
+    if (query.includes("customer(id:")) {
+      const c = db.customers.find((x) => x.id === variables.id);
+      return send({ data: { customer: c ? { note: c.note || null } : null } });
+    }
+    if (query.includes("customerEmailMarketingConsentUpdate")) {
+      const { customerId, emailMarketingConsent } = variables.input;
+      const c = db.customers.find((x) => x.id === customerId);
+      if (c) c.emailMarketingConsent = emailMarketingConsent;
+      return send({ data: { customerEmailMarketingConsentUpdate: { userErrors: c ? [] : [{ field: ["customerId"], message: "not found" }] } } });
+    }
     if (query.includes("customerUpdate")) {
       const { id, ...rest } = variables.input;
       const c = db.customers.find((x) => x.id === id);
@@ -70,6 +80,7 @@ export function startMockShopify(port) {
     if (query.includes("customerCreate")) {
       const i = variables.input;
       if (db.customers.some((c) => c.email === i.email)) return send({ data: { customerCreate: { customer: null, userErrors: [{ field: ["email"], message: "Email has already been taken" }] } } });
+      if (i.phone && db.customers.some((c) => c.phone === i.phone)) return send({ data: { customerCreate: { customer: null, userErrors: [{ field: ["phone"], message: "Phone has already been taken" }] } } });
       const c = { id: "gid://shopify/Customer/" + (db.customers.length + 1), ...i };
       db.customers.push(c);
       return send({ data: { customerCreate: { customer: { id: c.id, firstName: c.firstName }, userErrors: [] } } });

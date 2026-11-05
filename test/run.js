@@ -282,10 +282,12 @@ try {
   assert.ok(db.customers[0].tags.includes("waitlist")); ok("existing customer just gets the waitlist tag");
 
   db.customers.push({ id: "gid://shopify/Customer/900", firstName: "Valerie", email: "old@shop.com", phone: null, tags: [] });
-  r = await post("/waitlist", { firstName: "Valerie", email: "old@shop.com", phone: "239-641-0000" });
+  r = await post("/waitlist", { firstName: "Valerie", email: "old@shop.com", phone: "239-641-0000", sms: true });
   const old = db.customers.find((c) => c.id === "gid://shopify/Customer/900");
-  assert.equal(r.status, 409); assert.equal(old.phone, null); assert.deepEqual(old.tags, []);
-  ok("an unverified signup cannot add a phone to an existing email record");
+  assert.equal(r.status, 200); assert.equal(r.body.ok, true); assert.ok(r.body.welcomeToken);
+  assert.equal(old.phone, null); assert.equal(old.smsMarketingConsent, undefined);
+  assert.ok(old.tags.includes("waitlist") && old.tags.includes("check-contact")); assert.match(old.note, /\+12396410000/);
+  ok("an email already on file with another phone is still saved: tagged + noted, phone/consent untouched");
 
   r = await post("/waitlist", { firstName: "", email: "x@y.com", phone: "3055550000" });
   assert.equal(r.status, 400); ok("waitlist requires a first name");
@@ -307,23 +309,33 @@ try {
   assert.ok(mia.tags.includes("waitlist") && mia.tags.includes("raffle-entry"));
   ok("waitlist customer who enters the raffle keeps both tags, no duplicate");
 
+  const miaBefore = JSON.stringify({ phone: mia.phone, email: mia.email, sms: mia.smsMarketingConsent, em: mia.emailMarketingConsent });
   for (const endpoint of ["/waitlist", "/raffle", "/customers/create"]) {
-    const snapshot = JSON.stringify(db.customers);
     for (const contacts of [
       { email: "mia@example.com", phone: "3055559876" },
-      { email: "other@example.com", phone: "7865550101" },
       { email: "mia@example.com", phone: "7865550303" },
     ]) {
       r = await post(endpoint, { name: "Different", firstName: "Different", ...contacts, sms: true });
-      assert.equal(r.status, 409); assert.equal(r.body.welcomeToken, undefined);
-      assert.equal(JSON.stringify(db.customers), snapshot);
+      assert.ok(r.status === 200 && r.body.ok, endpoint + " " + r.status);
+      assert.equal(JSON.stringify({ phone: mia.phone, email: mia.email, sms: mia.smsMarketingConsent, em: mia.emailMarketingConsent }), miaBefore);
     }
   }
-  ok("conflicting email/phone pairs never change consent, tags, or customer details and never grant discounts");
+  assert.ok(mia.tags.includes("check-contact")); assert.ok(mia.tags.includes("peaces-builder"));
+  ok("partly-matching details never change someone's contact info or consent, but the signup is kept and flagged");
+
+  const count = db.customers.length;
+  r = await post("/customers/create", { name: "New Person", email: "new@example.com", phone: "7865550101", marketing: true });
+  assert.equal(r.status, 201); assert.equal(db.customers.length, count + 1);
+  const np = db.customers.find((c) => c.email === "new@example.com");
+  assert.equal(np.phone, undefined); assert.ok(np.tags.includes("peaces-builder") && np.tags.includes("check-contact"));
+  assert.match(np.note, /\+17865550101/); assert.equal(mia.phone, "+17865550101");
+  ok("a new email with a phone that's on someone else still gets its own customer (phone kept in the note)");
+
   r = await post("/customers/create", { name: "Mia", email: "MIA@EXAMPLE.COM", phone: "7865550101" });
   assert.equal(r.body.ok, true); assert.equal(r.body.existing, true);
   assert.ok(verifyWelcomeToken(r.body.welcomeToken, "+17865550101"));
-  ok("matching existing contacts receive a welcome receipt without account access");
+  assert.ok(mia.tags.includes("waitlist") && mia.tags.includes("peaces-builder"));
+  ok("matching existing contacts receive a welcome receipt without account access, and keep every tag");
 
 
   assert.equal(db.tokenCalls, 1); ok("access token fetched once and cached");
