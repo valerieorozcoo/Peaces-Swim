@@ -1311,12 +1311,12 @@
      hides this and opens the builder below. The welcome / 10% pop-up (#gate)
      opens over whichever one is showing as soon as the site loads. -->
 <!-- Shared announcement strip (landing page and builder) -->
-<div class="lp lp-bar" aria-label="A new era of swimwear has arrived. Designed by you, made in Miami. 10% off your first design. Wait and watch, or pick it up later.">
+<div class="lp lp-bar" aria-label="A new era of swimwear has arrived. Designed by you, made in Miami. 10% off your first design. Made to order, shipped to you.">
   <div class="lp-bar-track" aria-hidden="true">
-    <span>A new era of swimwear has arrived<b>✶</b></span><span>Designed by you, made in Miami<b>✶</b></span><span>10% off your first design<b>✶</b></span><span>Wait &amp; watch, or pick it up later<b>✶</b></span>
-    <span>A new era of swimwear has arrived<b>✶</b></span><span>Designed by you, made in Miami<b>✶</b></span><span>10% off your first design<b>✶</b></span><span>Wait &amp; watch, or pick it up later<b>✶</b></span>
-    <span>A new era of swimwear has arrived<b>✶</b></span><span>Designed by you, made in Miami<b>✶</b></span><span>10% off your first design<b>✶</b></span><span>Wait &amp; watch, or pick it up later<b>✶</b></span>
-    <span>A new era of swimwear has arrived<b>✶</b></span><span>Designed by you, made in Miami<b>✶</b></span><span>10% off your first design<b>✶</b></span><span>Wait &amp; watch, or pick it up later<b>✶</b></span>
+    <span>A new era of swimwear has arrived<b>✶</b></span><span>Designed by you, made in Miami<b>✶</b></span><span>10% off your first design<b>✶</b></span><span>Made to order, shipped to you<b>✶</b></span>
+    <span>A new era of swimwear has arrived<b>✶</b></span><span>Designed by you, made in Miami<b>✶</b></span><span>10% off your first design<b>✶</b></span><span>Made to order, shipped to you<b>✶</b></span>
+    <span>A new era of swimwear has arrived<b>✶</b></span><span>Designed by you, made in Miami<b>✶</b></span><span>10% off your first design<b>✶</b></span><span>Made to order, shipped to you<b>✶</b></span>
+    <span>A new era of swimwear has arrived<b>✶</b></span><span>Designed by you, made in Miami<b>✶</b></span><span>10% off your first design<b>✶</b></span><span>Made to order, shipped to you<b>✶</b></span>
   </div>
 </div>
 
@@ -3431,7 +3431,7 @@
   function syncGo(){
     var go=document.getElementById("fulfilGo");
     go.hidden=!!currentOrder;
-    go.disabled=!(state.fulfil==="wait" || (state.fulfil==="pickup" && state.pickupIso));
+    go.disabled=!(SHIPPING || state.fulfil==="wait" || (state.fulfil==="pickup" && state.pickupIso));
   }
   document.getElementById("fulfilChoices").addEventListener("click",function(e){
     var btn=e.target.closest(".fulfil-opt"); if(!btn || fulfilmentSaving) return;
@@ -3610,7 +3610,15 @@
   });
 
   /* Checkout, step 1: wait & watch or pick up later, BEFORE paying (times come from the line right now) */
+  /* After the pop-up we ship: no wait & watch / pickup step. Checkout goes straight to Shopify,
+     which asks for their shipping address. (Set SHIPPING=false to bring the pop-up choices back.) */
+  var SHIPPING=true;
   function fulfilStage(ready){
+    if(SHIPPING){
+      document.getElementById("fulfilTitle").textContent=ready?"CHECKOUT READY":"TAKING YOU TO CHECKOUT";
+      document.getElementById("fulfilSub").textContent=ready?"Finish paying in the Shopify tab and add your shipping address there. We'll make your Peace and ship it to you.":"Getting your order ready…";
+      syncGo(); return;
+    }
     document.getElementById("fulfilTitle").textContent=ready?"CHECKOUT READY":"HOW DO YOU WANT YOUR PEACE?";
     var willText=!!(lead&&lead.phone);
     document.getElementById("fulfilSub").textContent=(ready?"Finish paying in the Shopify tab to confirm your order.":"Choose before you pay. Times are based on the line right now.")+(willText?" We'll text you when your Peace is ready.":"");
@@ -3625,6 +3633,13 @@
     document.getElementById("waitBlock").hidden=true;
     document.getElementById("fulfilChoices").querySelectorAll(".fulfil-opt").forEach(function(x){ x.setAttribute("aria-pressed","false"); });
     document.getElementById("fulfilChoices").querySelector('[data-mode="pickup"]').hidden=Date.now()>POPUP.close-15*60000; // the pop-up is over: wait & watch only
+    if(SHIPPING){ // straight to Shopify (still inside this tap, so the checkout tab isn't blocked)
+      document.getElementById("fulfilChoices").hidden=true;
+      state.fulfil="ship"; fulfilStage(false);
+      document.getElementById("fulfil").hidden=false; syncCheckoutPop(); window.scrollTo(0,0);
+      document.getElementById("fulfilGo").click();
+      return;
+    }
     fulfilStage(false);
     document.getElementById("fulfil").hidden=false;
     pickWaitIfOnlyOption(); syncCheckoutPop();
@@ -3656,7 +3671,7 @@
       if(tab) tab.location.href=o.checkoutUrl; else window.location.href=o.checkoutUrl;
       note.textContent="Order "+o.name+" is ready. Finish paying in the checkout tab.";
       fulfilStage(true);
-      sendFulfilment(state.fulfil==="pickup" ? slotMinutes() : makeMinutes());
+      if(!SHIPPING) sendFulfilment(state.fulfil==="pickup" ? slotMinutes() : makeMinutes());
     }catch(err){
       currentOrder=null;
       if(tab) tab.close();

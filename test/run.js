@@ -368,6 +368,21 @@ try {
   ok("matching existing contacts receive a welcome receipt without account access, and keep every tag");
 
 
+  { // shipping (after the pop-up)
+    const sh = (await post("/orders/create", { design, customer: { phone: "7865550909", name: "Shay Ship" } })).body;
+    const dr = db.drafts.find((d) => d.id === sh.id);
+    assert.ok(dr.input.lineItems.every((l) => l.requiresShipping === true)); assert.ok(dr.input.tags.includes("ship"));
+    ok("orders ship: Shopify checkout asks for an address on every line");
+    let q = await post("/seamstress/queue", { passcode: "sew-sew-123" });
+    assert.ok(!q.body.all.some((c) => c.id === sh.id)); ok("an unpaid shipping order (open checkout) isn't in the sewing line");
+    dr.status = "COMPLETED";
+    q = await post("/seamstress/queue", { passcode: "sew-sew-123" });
+    const c = q.body.next.find((x) => x.id === sh.id); assert.ok(c); assert.equal(c.mode, "ship");
+    ok("once paid it's in Up next, marked Ship it");
+    const dn = await post("/seamstress/done", { passcode: "sew-sew-123", id: sh.id, sewer: "Ana" });
+    assert.equal(dn.body.text.reason, "ship"); assert.equal(dn.body.text.sent, false);
+    ok("Done on a shipped order sends no 'come get it' text");
+  }
   assert.equal(db.tokenCalls, 1); ok("access token fetched once and cached");
   assert.deepEqual(LIVE_SOLD_OUT, []); ok("nothing is sold out right now");
   console.log(`\nAll ${n} checks passed.`);

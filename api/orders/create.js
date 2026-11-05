@@ -46,7 +46,7 @@ export default route(["POST"], async (body) => {
     for (const l of orders[i].lines) {
       lineItems.push({
         title: l.title, quantity: 1, originalUnitPriceWithCurrency: money(l.price),
-        requiresShipping: false, taxable: true,
+        requiresShipping: true, taxable: true, // we ship now: Shopify checkout asks for their address
         customAttributes: tag.concat(Object.entries(l.attrs).map(([key, value]) => ({ key, value }))),
         ...(promoOff && lineItems.length === 0 && { appliedDiscount: { valueType: "FIXED_AMOUNT", value: promoOff, title: "PeacesPopUp: $10 off" } }),
       });
@@ -59,11 +59,11 @@ export default route(["POST"], async (body) => {
   }
 
   const input = {
-    tags: ["peaces-builder", ...(promo ? ["peacespopup"] : [])],
+    tags: ["peaces-builder", "ship", ...(promo ? ["peacespopup"] : [])],
     allowDiscountCodesInCheckout: true, // lets customers type Shopify discount codes (e.g. FREETOTE) at checkout
     note: "Made in the Peaces Swim Builder" + (many ? " · " + orders.length + " bikinis" : "")
       + pictures.map((u, i) => (u ? "\nDesign picture" + (many ? " " + (i + 1) : "") + ": " + u : "")).join(""),
-    customAttributes: [{ key: "Source", value: "Peaces Swim Builder" }, ...(promo ? [{ key: "Code", value: "PeacesPopUp ($10 off)" }] : [])],
+    customAttributes: [{ key: "Source", value: "Peaces Swim Builder" }, { key: "Delivery", value: "Ship" }, ...(promo ? [{ key: "Code", value: "PeacesPopUp ($10 off)" }] : [])],
     lineItems,
   };
   const customerName = String(cust.name || "").replace(/[\u0000-\u001f<>]/g, "").trim().slice(0, 60);

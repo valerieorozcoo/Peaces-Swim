@@ -311,7 +311,7 @@
     doneSub:["Finished in the last 3 days, newest first.","Terminados en los últimos 3 días, los más recientes primero."],
     doneAt:["Done {t}","Lista {t}"], textedOk:["Texted ✓","Avisada ✓"], notTexted:["Not texted","Sin aviso"],
     putBack:["Put back in line","Regresar a la fila"], emptyDone:["Nothing finished yet.","Nada terminado todavía."],
-    waitedHere:["Waited here","Esperó aquí"], emptyUnpaid:["Nothing waiting on payment.","Nada pendiente de pago."],
+    waitedHere:["Waited here","Esperó aquí"], ship:["Ship it","Para enviar"], shipDone:["Ship it: fulfill it in Shopify with the tracking number so they get the email.","Para enviar: márcalo como enviado en Shopify con el número de rastreo."], emptyUnpaid:["Nothing waiting on payment.","Nada pendiente de pago."],
     unpaidSub:["Orders that haven't been paid. They join Up next as soon as they're paid.","Pedidos sin pagar. Pasan a Siguientes en cuanto se pagan."], putBackDone:["{n} is back in line.","{n} regresó a la fila."]
   };
   function t(k, v){ var s = (T[k] || [k, k])[lang === "es" ? 1 : 0]; if (v) Object.keys(v).forEach(function(x){ s = s.replace("{" + x + "}", v[x]); }); return s; }
@@ -369,7 +369,7 @@
       if (o.doneAt) when.appendChild(el("span", "doneat", t("doneAt", { t: clock(o.doneAt) + dayWord(o.doneAt) }) + (o.doneBy ? " · " + o.doneBy : "")));
       when.appendChild(el("span", "txt" + (o.texted ? "" : " no"), t(o.texted ? "textedOk" : "notTexted")));
     }
-    var chip = kind === "completed" ? (o.mode === "pickup" ? (lang === "es" ? "Recoge a las " : "Pick up at ") + o.pickupAt : t("waitedHere")) : o.mode === "pickup"
+    var chip = o.mode === "ship" ? t("ship") + (kind === "completed" ? "" : " · " + waited(o.chosenAt)) : kind === "completed" ? (o.mode === "pickup" ? (lang === "es" ? "Recoge a las " : "Pick up at ") + o.pickupAt : t("waitedHere")) : o.mode === "pickup"
       ? (lang === "es" ? "Recoge a las " : "Pick up at ") + o.pickupAt + (o.pickupDate ? dayWord(o.pickupDate) : "")
       : (lang === "es" ? "Esperando aquí" : "Waiting here") + (o.readyAt ? " · " + lc1(t("readyBy", { t: clock(o.readyAt) })) : " · " + waited(o.chosenAt));
     when.appendChild(el("span", "mode" + (o.mode === "pickup" ? " pickup" : "") + (o.late && kind !== "completed" ? " late" : ""), chip));
@@ -444,7 +444,7 @@
     var who = el("div", "t-who"); who.appendChild(el("small", null, H("Name", "Nombre"))); who.appendChild(document.createTextNode(o.customer || H("No name", "Sin nombre"))); tg.appendChild(who);
     var meta = el("div", "t-meta");
     meta.appendChild(el("span", null, n > 1 ? (ES ? "Bikini " + (bi + 1) + " de " + n : "Bikini " + (bi + 1) + " of " + n + " · " + (bi + 1) + " de " + n) : "1 bikini"));
-    meta.appendChild(el("span", null, o.mode === "pickup" ? (ES ? "Recoge a las " + o.pickupAt : "Picks up " + o.pickupAt + " · Recoge " + o.pickupAt) : H("Waiting here", "Esperando aquí")));
+    meta.appendChild(el("span", null, o.mode === "ship" ? H("Ship it", "Para enviar") : o.mode === "pickup" ? (ES ? "Recoge a las " + o.pickupAt : "Picks up " + o.pickupAt + " · Recoge " + o.pickupAt) : H("Waiting here", "Esperando aquí")));
     tg.appendChild(meta);
     if (b.image) { var im = el("img", "t-pic"); im.src = b.image; im.alt = ""; tg.appendChild(im); }
     function sec(h, en, es){ var d = el("div", "t-sec"); d.appendChild(el("h4", null, h));
@@ -563,6 +563,7 @@
         link.href = "sms:" + tx.phone + "?&body=" + encodeURIComponent(tx.message);
         link.textContent = t("textHer", { n: who }); link.hidden = false;
       }
+      else if (tx && tx.reason === "ship") msg += " " + t("shipDone");
       else if (tx && tx.reason === "no-phone") msg += " " + t("noPhone");
       $("toastText").textContent = msg;
       $("toast").hidden = false;

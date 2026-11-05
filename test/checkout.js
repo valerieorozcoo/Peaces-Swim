@@ -11,7 +11,7 @@ assert.ok(!/<button[^>]*data-mode="pickup"[^>]*hidden/.test(html), "pickup later
 const source = html.split('document.getElementById("fulfilGo").addEventListener("click",async function(){')[1].split('\n  });')[0];
 const compile = new Function("document", "window", "api", "saveDesign", "designPayload", "state", "syncPerk", "renderAll", "openGate", "designImageOrNull", "rememberLead", "bagPayload",
   "fulfilStage", "sendFulfilment", "slotMinutes", "makeMinutes", "syncGo",
-  'var bag=[],currentOrder=null,lead={phone:"3055551234",welcomeToken:"receipt"},PROMO_CODE="PEACESPOPUP",promoOn=function(){return false;}; return {run:async function(){' + source + '\n},order:()=>currentOrder};');
+  'var bag=[],currentOrder=null,lead={phone:"3055551234",welcomeToken:"receipt"},PROMO_CODE="PEACESPOPUP",promoOn=function(){return false;},SHIPPING=false; return {run:async function(){' + source + '\n},order:()=>currentOrder};');
 
 for (const scenario of ["success", "blocked-popup", "400", "409", "503", "malformed"]) {
   const nodes = { checkoutNote: { textContent: "" }, fulfil: { hidden: false }, fulfilStatus: { hidden: true, textContent: "" } };

@@ -17,7 +17,7 @@ export default route(["POST"], async (body) => {
     customAttributes: [{ key: "Source", value: "Peaces Accessories page" }],
     lineItems: order.lines.map((l) => ({
       title: l.title, quantity: l.quantity, originalUnitPriceWithCurrency: money(l.price),
-      requiresShipping: false, taxable: true,
+      requiresShipping: true, taxable: true, // shipped: Shopify checkout asks for their address
     })),
   };
   const data = await gql(
