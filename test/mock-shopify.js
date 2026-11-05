@@ -68,7 +68,8 @@ export function startMockShopify(port) {
     }
     if (query.includes("draftOrder(id:")) {
       const d = db.drafts.find((x) => x.id === variables.id);
-      return send({ data: { draftOrder: d ? { customAttributes: (d.update && d.update.customAttributes) || d.input.customAttributes || [] } : null } });
+      return send({ data: { draftOrder: d ? { name: d.name, phone: null, customer: null, tags: [...((d.update && d.update.tags) || d.input.tags || []), ...(d.extraTags || [])],
+        customAttributes: (d.update && d.update.customAttributes) || d.input.customAttributes || [] } : null } });
     }
     if (query.includes("tagsAdd")) {
       const c = db.customers.find((x) => x.id === variables.id);
@@ -107,7 +108,7 @@ export function startMockShopify(port) {
     if (query.includes("draftOrderUpdate")) {
       const d = db.drafts.find((x) => x.id === variables.id);
       if (!d) return send({ data: { draftOrderUpdate: { draftOrder: null, userErrors: [{ field: ["id"], message: "not found" }] } } });
-      d.update = variables.input;
+      d.update = { ...(d.update || {}), ...variables.input }; // like Shopify: fields left out stay as they were
       if (variables.input.appliedDiscount) {
         const sub = d.input.lineItems.reduce((s, l) => s + +l.originalUnitPriceWithCurrency.amount * (l.quantity || 1), 0);
         return send({ data: { draftOrderUpdate: { draftOrder: { id: d.id, name: d.name, invoiceUrl: "https://example.com/invoice/" + d.name.slice(1),

@@ -3,6 +3,7 @@ import { gql, check, toE164 } from "../../lib/shopify.js";
 import { priceDesign, DISCOUNT_PERCENT } from "../../lib/catalog.js";
 import { sign, verifyWelcomeToken } from "../../lib/sign.js";
 import { saveDesignImage } from "../../lib/design-image.js";
+import { waitFor, QUEUE_QUERY, queueSince } from "../../lib/queue.js";
 
 const CURRENCY = process.env.SHOP_CURRENCY || "USD";
 const money = (n) => ({ amount: n.toFixed(2), currencyCode: CURRENCY });
@@ -20,6 +21,7 @@ export default route(["POST"], async (body) => {
   if (!designs.length || designs.length > MAX_BIKINIS) throw new Error("You can check out 1 to " + MAX_BIKINIS + " bikinis at a time");
   const orders = designs.map((d) => priceDesign(d));
   const subtotal = orders.reduce((s, o) => s + o.subtotal, 0);
+  const work = orders.reduce((s, o) => s + o.minutes, 0); // sewing minutes for every bikini in the bag
 
   const cust = body.customer || {};
   const phone = toE164(cust.phone);
@@ -55,6 +57,9 @@ export default route(["POST"], async (body) => {
   };
   const customerName = String(cust.name || "").replace(/[\u0000-\u001f<>]/g, "").trim().slice(0, 60);
   if (customerName) input.customAttributes.push({ key: "Customer name", value: customerName });
+  input.customAttributes.push({ key: "Work minutes", value: String(work) });
+  // to text them when it's ready (the seamstress page's Done button)
+  if (phone) input.customAttributes.push({ key: "Text when ready", value: phone });
   const email = String(cust.email || "").trim().toLowerCase().slice(0, 120);
   // Signed-up customers: their email goes on the order so it shows in their Shopify account.
   if (discounted && /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) input.email = email;
@@ -77,12 +82,16 @@ export default route(["POST"], async (body) => {
     );
     d = { ...d, ...(check(upd.draftOrderUpdate, "draftOrderUpdate").draftOrder || {}) };
   }
+  // sewing already waiting in line, so the earliest pickup time is realistic (never blocks checkout)
+  // when it would be ready from the sewing schedule (2 seamstresses, wait & watch first)
+  let plan = null;
+  try { plan = waitFor((await gql(QUEUE_QUERY, { q: queueSince() })).draftOrders.nodes || [], work, Date.now(), d.id); } catch (e) { plan = null; }
   const expected = discounted ? subtotal * (1 - DISCOUNT_PERCENT / 100) : subtotal;
   return {
     status: 201,
     body: {
       id: d.id, sig: sign(d.id), name: d.name, checkoutUrl: d.invoiceUrl,
-      subtotal, discounted, bikinis: orders.length,
+      subtotal, discounted, bikinis: orders.length, minutes: work, wait: plan ? plan.minutes : null, readyAt: plan ? plan.readyAt : null,
       image: pictures[0] || null, images: pictures,
       total: total(d) !== null ? total(d) : +expected.toFixed(2),
     },

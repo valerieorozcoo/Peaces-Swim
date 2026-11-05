@@ -13,7 +13,7 @@ Design-your-own bikini app for Peaces Swim — pick your peaces, design your dre
 | Phone number → name + email | `POST /api/customers/lookup` | Legacy endpoint returns no customer details. Phone numbers are not account authentication. |
 | Name + email → SAVE 10% | `POST /api/customers/create` | Creates a customer tagged `peaces-builder`, or accepts matching existing contact details. Conflicting email/phone pairs return an error without changing records. A successful save returns a one-hour signed welcome-discount receipt. Email marketing is only turned on for new customers if they tick the box. |
 | CHECKOUT | `POST /api/orders/create` | Re-prices the design on the server and creates a **guest draft order** (tagged `peaces-builder`) with every add-on as its own line. A valid welcome receipt applies 10%; expired or invalid receipts stop checkout with an error. No existing Shopify account is attached from a phone number. |
-| Wait & watch / Pick it up later | `POST /api/orders/fulfillment` | Adds `wait-and-watch` or `pickup` tags + the pickup time to that draft order. |
+| Wait & watch / Pick it up later | `POST /api/orders/estimate`, then `POST /api/orders/fulfillment` | Chosen before checkout. Adds `wait-and-watch` or `pickup` tags + the pickup time (and exact `Pickup at`) to that draft order. |
 | Seamstress page (`/seamstress`) | `POST /api/seamstress/queue` | Passcode-protected. Lists builder orders from the last 3 days in two queues: **Wait & Watch** (first come, first served) and **Pickup Later** (soonest pickup first). Each card shows the order number, customer name, the bikini picture, top/bottom style + fabric + size, and every add-on with its color and placement. |
 | Seamstress page → Mark done | `POST /api/seamstress/done` | Tags the draft order `seamstress-done` so it leaves the queue (Undo removes the tag). |
 | — | `GET /api/health` | Shows whether the Shopify settings are filled in. |
@@ -84,8 +84,8 @@ node test/local-server.js    # app on http://localhost:3000 (add real env vars t
 ## Still to decide
 
 - Buttons price ($5) and button artwork are placeholders
-- Wait-time formula: 12 min + 4 per add-on + 2 tote + 1 headband (`makeMinutes` in `index.html`)
-- Pickup slots: next 8 × 15-minute slots, no limit per slot yet
+- Sewing time: 5 min per bikini + the team's per-customization minutes (`MINUTES` / `minutes()` in `lib/rules.js`); wait & watch = this bag + the paid line ahead (`lineAhead` in `lib/queue.js`)
+- Checkout asks wait & watch / pick up later BEFORE Shopify (`POST /api/orders/estimate` gives the sewing time + line). Pickup slots: every 15 min on the pop-up day, 10 AM–3 PM Miami time, starting once the line is sewn (`POPUP` in `index.html`)
 - Taxes/shipping come from your Shopify settings; line items are marked "no shipping" (in-person pickup)
 
 

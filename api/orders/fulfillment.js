@@ -1,6 +1,7 @@
 import { route } from "../../lib/http.js";
 import { gql, check } from "../../lib/shopify.js";
 import { verify } from "../../lib/sign.js";
+import { waitFor, QUEUE_QUERY, queueSince } from "../../lib/queue.js";
 
 // POST /api/orders/fulfillment  { id, sig, mode: "wait" | "pickup", pickupAt }
 // Records the customer's choice on the draft order as tags + attributes the team can see in Shopify.
@@ -11,19 +12,29 @@ export default route(["POST"], async (body) => {
   if (!mode) throw new Error("Choose wait & watch or pick up later");
   const pickupAt = String(body.pickupAt || "").replace(/[^0-9:APM ]/gi, "").slice(0, 12);
   if (mode === "pickup" && !pickupAt) throw new Error("Choose a pickup time");
-  const minutes = Math.max(0, Math.min(600, parseInt(body.minutes, 10) || 0));
+  // the exact pickup moment (the pop-up day can be tomorrow), kept so the seamstress page sorts it right
+  const at = Date.parse(String(body.pickupIso || ""));
+  const pickupIso = mode === "pickup" && Number.isFinite(at) && Math.abs(at - Date.now()) < 8 * 24 * 3600_000 ? new Date(at).toISOString() : "";
+  let minutes = Math.max(0, Math.min(600, parseInt(body.minutes, 10) || 0)), readyAt = null;
 
   // Keep what checkout already put on the order (e.g. the customer's name for the seamstresses)
   // and replace only the fulfilment details, so changing your mind doesn't leave stale ones.
   const current = await gql(`query($id:ID!){ draftOrder(id:$id){ customAttributes{ key value } } }`, { id });
-  const OURS = ["Source", "Fulfilment", "Pickup time", "Estimated minutes", "Chosen at"];
+  const OURS = ["Source", "Fulfilment", "Pickup time", "Pickup at", "Estimated minutes", "Chosen at"];
   const kept = ((current.draftOrder && current.draftOrder.customAttributes) || []).filter((a) => !OURS.includes(a.key));
+  // Wait & watch: her own sewing time + everything already in line ahead of her (the server knows the line)
+  if (mode === "wait") {
+    const own = +((kept.find((a) => a.key === "Work minutes") || {}).value) || minutes || 5;
+    try { const plan = waitFor((await gql(QUEUE_QUERY, { q: queueSince() })).draftOrders.nodes || [], own, Date.now(), id); minutes = plan.minutes; readyAt = plan.readyAt; }
+    catch (e) { minutes = own; }
+  }
   const attrs = [
     ...kept,
     { key: "Source", value: "Peaces Swim Builder" },
     { key: "Fulfilment", value: mode === "wait" ? "Wait & watch" : "Pick up later" },
   ];
   if (mode === "pickup") attrs.push({ key: "Pickup time", value: pickupAt });
+  if (pickupIso) attrs.push({ key: "Pickup at", value: pickupIso });
   if (minutes) attrs.push({ key: "Estimated minutes", value: String(minutes) });
   attrs.push({ key: "Chosen at", value: new Date().toISOString() }); // first come, first served on the seamstress page
 
@@ -34,5 +45,5 @@ export default route(["POST"], async (body) => {
     { id, input: { customAttributes: attrs, tags } }
   );
   check(data.draftOrderUpdate, "draftOrderUpdate");
-  return { ok: true };
+  return { ok: true, minutes, readyAt };
 });

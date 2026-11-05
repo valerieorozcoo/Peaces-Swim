@@ -88,49 +88,120 @@
     .num{font-size:22px;}
   }
 
+  /* simple name-first cards + language switch */
+  .langs{display:inline-flex; border:1.5px solid var(--teal); margin-left:12px; vertical-align:middle;}
+  .langs button{border:0; background:transparent; color:var(--teal); padding:6px 12px; font-weight:600; font-size:15px;}
+  .langs button[aria-pressed="true"]{background:var(--teal); color:#fff;}
+  .name{font-size:30px; font-weight:700; line-height:1.1; margin:0;}
+  .ord{font-size:15px; color:var(--ink-60); margin:2px 0 8px; letter-spacing:.04em;}
+  .mode{display:inline-block; padding:6px 12px; font-weight:700; font-size:18px; margin:0 0 10px; color:#fff; background:var(--teal);}
+  .mode.pickup{background:#7a3fb0;}
+  .work{display:inline-block; margin:0 0 10px 8px; font-size:16px; font-weight:600; color:var(--ink-60); vertical-align:top; padding-top:7px;}
+  .pieces{font-size:18px; margin:0 0 4px;}
+  .pieces b{font-weight:600; color:var(--ink-60); font-size:14px; letter-spacing:.08em; text-transform:uppercase; margin-right:6px;}
+  ol.adds{margin:4px 0 0; padding-left:22px; font-size:18px;}
+  ol.adds li{margin-bottom:3px;}
+  .bkh{font-weight:700; color:#4B2470; margin:10px 0 4px; font-size:16px;}
+  .actions .btn.big{padding:14px 26px; font-size:17px;}
+  .me{display:flex; align-items:center; gap:10px; margin:0 0 14px; font-size:16px;}
+  .me input{border:0; background:var(--lav); padding:10px 12px; font-size:18px; width:180px;}
+  .me.need input{box-shadow:inset 0 0 0 2px var(--pink);}
+  .blk{margin-bottom:22px;}
+  .blk h2{margin:0 0 4px; font-size:22px; letter-spacing:.14em; text-transform:uppercase; font-weight:600; color:var(--teal);}
+  .blk .sub{margin:0 0 12px; font-size:15px; color:var(--ink-60);}
+  #list-sewing,#list-next,#list-unpaid{max-width:900px;}
+  .actions{flex-wrap:wrap;}
+  .card.first .name::after{content:attr(data-next); margin-left:10px; font-size:14px; letter-spacing:.12em; text-transform:uppercase; background:var(--teal); color:#fff; padding:3px 8px; vertical-align:middle;}
+  .card.sewing{border-left-color:#7a3fb0; background:#fbf6ff;}
+  .card.first{box-shadow:0 0 0 3px var(--teal);}
+  .eta{display:block; font-size:16px; font-weight:600; margin:0 0 8px;}
+  .eta.late{color:var(--pink);}
+  .by{display:inline-block; background:#7a3fb0; color:#fff; padding:3px 10px; font-weight:700; font-size:15px; margin:0 0 8px;}
+  .when2{margin:4px 0 0;}
+  .when2 .mode{margin:0 8px 0 0;}
+  .mode.late{background:var(--pink);}
+  .bk{font-size:19px; margin:10px 0 16px;}           /* the small gap after the bikini line */
+  .bk b{font-weight:700;}
+  .piece{margin:0 0 10px;}
+  .plabel{margin:0; font-weight:700; font-size:16px; letter-spacing:.08em; text-transform:uppercase; color:var(--teal-deep);}
+  .plist{margin:2px 0 0; padding-left:20px; font-size:18px; line-height:1.4;}
+  .plist .none{color:var(--ink-60); list-style:none; margin-left:-20px;}
+  .linkish{background:none; border:0; text-decoration:underline; color:var(--ink-60); font-size:14px; padding:0 4px;}
+  .texther{background:var(--teal); color:#fff; padding:8px 12px; font-weight:700; text-decoration:none; white-space:nowrap;}
   .toast{position:fixed; left:50%; bottom:20px; transform:translateX(-50%); background:var(--ink); color:#fff; padding:12px 16px; display:flex; gap:14px; align-items:center; font-size:16px; max-width:calc(100% - 32px);}
   .toast button{background:none; border:0; color:#fff; text-decoration:underline; padding:0; font-weight:600;}
   dt.bk{grid-column:1/-1; font-weight:700; color:#4B2470; margin-top:6px;} dd.bk{display:none;}
   .pic img.extra-pic{margin-top:8px;}
+
+  /* ===== 4 × 6 in tags for the seamstress, English + Spanish ===== */
+  .autoprint{display:inline-flex; align-items:center; gap:6px; margin-left:12px; font-size:15px; color:var(--ink);}
+  .autoprint input{width:18px; height:18px; accent-color:var(--teal);}
+  .btn.ghost{background:transparent; color:var(--teal); border:1.5px solid var(--teal);}
+  .btn.ghost:hover{background:var(--lav);}
+  .tip{font-size:13px; color:var(--ink-60); margin:-6px 0 12px;}
+  #printArea{position:fixed; left:-10000px; top:0;}
+  .tag{width:4in; height:6in; overflow:hidden; background:#fff; color:#2E2433; font-family:var(--font); padding:.16in .18in; display:flex; flex-direction:column; gap:.05in; font-size:var(--fs,10pt); line-height:1.22;}
+  .tag *{margin:0;}
+  .t-head{display:flex; align-items:center; justify-content:space-between; gap:8px; border-bottom:2px solid #2E2433; padding-bottom:.05in;}
+  .t-logo{height:.42in; width:auto;}
+  .t-num{text-align:right; font-size:2.1em; font-weight:700; line-height:1;}
+  .t-num small,.t-who small,.t-sec h4{display:block; font-size:.5em; font-weight:600; letter-spacing:.12em; text-transform:uppercase; color:#6b5a66;}
+  .t-sec h4{font-size:.78em; margin-bottom:.02in;}
+  .t-who{font-size:1.45em; font-weight:600; line-height:1.1;}
+  .t-meta{display:flex; justify-content:space-between; gap:6px; font-size:.82em; font-weight:600; background:#2E2433; color:#fff; padding:.03in .07in;}
+  .t-pic{flex:0 1 auto; height:var(--pic,1.9in); min-height:.9in; width:100%; object-fit:contain; background:#faf6fe;}
+  .t-sec .en{font-weight:600;}
+  .t-sec .es{font-style:italic; color:#4B2470;}
+  .t-sec ol{padding-left:1.2em;}
+  .t-sec li{margin-bottom:.03in;}
+  .t-sec li span{display:block;}
+  @media print{
+    @page{size:4in 6in; margin:0;}
+    html,body{background:#fff !important;}
+    body > *:not(#printArea){display:none !important;}
+    #printArea{position:static; left:auto;}
+    .tag{page-break-after:always; break-after:page;}
+  }
 </style>
 </head>
 <body>
 <div class="wrap">
   <header>
-    <h1>Seamstress queue</h1>
-    <div class="status" id="status" hidden><span id="updated"></span><button type="button" id="refresh">Refresh</button><button type="button" id="logout">Lock</button></div>
+    <h1 data-t="title">Orders</h1>
+    <div class="status"><span id="statusIn" hidden><span id="updated"></span><button type="button" id="refresh" data-t="refresh">Refresh</button><button type="button" id="logout" data-t="lock">Lock</button>
+      <label class="autoprint"><input type="checkbox" id="autoPrint" checked> <span data-t="auto">Auto-print new tags</span></label></span>
+      <span class="langs" role="group" aria-label="Language · Idioma"><button type="button" data-lang="en" aria-pressed="true">English</button><button type="button" data-lang="es" aria-pressed="false">Español</button></span></div>
   </header>
 
   <section class="lock" id="lock">
     <form id="lockForm">
-      <label for="pass">Enter the seamstress passcode</label>
+      <label for="pass" data-t="passLabel">Enter the seamstress passcode</label>
       <input id="pass" type="password" autocomplete="current-password" required>
-      <button class="btn" type="submit">Open queue</button>
+      <button class="btn" type="submit" data-t="open">Open</button>
       <p class="err" id="lockErr" role="alert"></p>
     </form>
   </section>
 
   <main id="queue" hidden>
-    <div class="tabs" role="tablist">
-      <button type="button" role="tab" data-tab="wait" aria-selected="true">Wait &amp; Watch (<span data-count="wait">0</span>)</button>
-      <button type="button" role="tab" data-tab="pickup" aria-selected="false">Pickup Later (<span data-count="pickup">0</span>)</button>
-    </div>
+    <div class="me"><label for="sewer" data-t="me">Your name</label><input id="sewer" type="text" maxlength="30" autocomplete="off" placeholder="Ana"></div>
     <p class="err" id="loadErr" role="alert"></p>
-    <div class="cols">
-      <section class="col on" data-col="wait">
-        <h2>Wait &amp; Watch (<span data-count="wait">0</span>)</h2>
-        <p class="sub">Customer is here. First come, first served.</p>
-        <div class="list" id="list-wait"></div>
-      </section>
-      <section class="col" data-col="pickup">
-        <h2>Pickup Later (<span data-count="pickup">0</span>)</h2>
-        <p class="sub">Soonest pickup first.</p>
-        <div class="list" id="list-pickup"></div>
-      </section>
-    </div>
+    <section class="blk">
+      <h2><span data-t="nowH">Sewing now</span> (<span data-count="sewing">0</span>)</h2>
+      <div class="list" id="list-sewing"></div>
+    </section>
+    <section class="blk">
+      <h2><span data-t="nextH">Up next</span> (<span data-count="next">0</span>)</h2>
+      <p class="sub" data-t="nextSub">Whoever finishes first takes the top one. People waiting here go first; a pickup jumps ahead only when it would otherwise be late.</p>
+      <div class="list" id="list-next"></div>
+    </section>
+    <section class="blk" id="blk-unpaid" hidden>
+      <h2><span data-t="unpaidH">Not paid yet</span> (<span data-count="unpaid">0</span>)</h2>
+      <div class="list" id="list-unpaid"></div>
+    </section>
   </main>
 </div>
-<div class="toast" id="toast" hidden><span id="toastText"></span><button type="button" id="undo">Undo</button></div>
+<div id="printArea" aria-hidden="true"></div>
+<div class="toast" id="toast" hidden><span id="toastText"></span><a id="textHer" class="texther" hidden></a><button type="button" id="undo" data-t="undo">Undo</button></div>
 
 <script>
 (function(){
@@ -168,61 +239,221 @@
     return d.toDateString() === tm.toDateString() ? " tomorrow" : " " + d.toLocaleDateString(undefined, { weekday:"short" });
   }
 
-  function card(o, i){
-    var c = el("article", "card" + (o.paid ? "" : " unpaid"));
+  /* ---------- language ---------- */
+  var LKEY = "peaces-seamstress-lang", lang = "en", lastQ = null;
+  try { if (localStorage.getItem(LKEY) === "es") lang = "es"; } catch (e) {}
+  var T = {
+    title:["Orders","Pedidos"], refresh:["Refresh","Actualizar"], lock:["Lock","Bloquear"], auto:["Auto-print new tags","Imprimir etiquetas nuevas"],
+    passLabel:["Enter the seamstress passcode","Escribe la contraseña"], open:["Open","Abrir"], undo:["Undo","Deshacer"],
+    waitH:["Waiting here","Esperando aquí"], pickH:["Picking up later","Recogen después"],
+    waitSub:["The customer is here. Oldest first.","La clienta está aquí. Primero la que lleva más tiempo."],
+    pickSub:["They come back later. Soonest pickup first.","Regresan después. Primero la que recoge más pronto."],
+    order:["Order","Pedido"], noName:["No name","Sin nombre"], top:["Top","Arriba"], bottom:["Bottom","Abajo"], adds:["Add-ons","Extras"], none:["None","Ninguno"],
+    also:["Also in the bag","También en la bolsa"], done:["Done ✓","Listo ✓"], saving:["Saving…","Guardando…"], print:["Print tag","Imprimir etiqueta"],
+    notPaid:["Not paid yet","Sin pagar"], noPic:["No picture","Sin foto"], told:["Customer was told ~{m} min","Se le dijo ~{m} min"],
+    emptyWait:["No one waiting right now.","Nadie esperando ahorita."], emptyPick:["No pickups coming up.","No hay pedidos para recoger."],
+    updated:["Updated","Actualizado"], cantRefresh:["Couldn't refresh: {e}. Retrying…","No se pudo actualizar: {e}. Reintentando…"],
+    markedDone:["{n} done.","{n} listo."], cantDone:["Couldn't finish {n}: {e}","No se pudo terminar {n}: {e}"], cantUndo:["Couldn't undo: {e}","No se pudo deshacer: {e}"],
+    bikini:["Bikini {i} of {n}","Bikini {i} de {n}"], one:["1 bikini","1 bikini"], name:["Name","Nombre"],
+    customs:["Customizations","Personalizaciones"], work:["≈ {m} min of sewing","≈ {m} min de costura"],
+    nothing:["Nothing","Nada"], textedK:["Texting {n} through Klaviyo ✓","Klaviyo le avisa a {n} ✓"], texted:["Texted {n} ✓","Le mandamos mensaje a {n} ✓"], textHer:["Text {n} it's ready","Avisarle a {n}"],
+    noPhone:["(no phone number to text)","(no hay teléfono para avisar)"], me:["Your name","Tu nombre"], nowH:["Sewing now","Cosiendo ahora"], nextH:["Up next","Siguientes"], unpaidH:["Not paid yet","Sin pagar"],
+    nextSub:["Whoever finishes first takes the top one. People waiting here go first; a pickup jumps ahead only when it would otherwise be late.","La que termine primero toma la de arriba. Primero las que esperan aquí; un pedido para recoger se adelanta solo si no estaría a tiempo."],
+    emptyNow:["Nobody is sewing right now.","Nadie está cosiendo ahorita."], emptyNext:["Nothing in line.","No hay pedidos en fila."],
+    start:["Start sewing","Empezar"], stop:["Stop","Soltar"], sewingBy:["{n} is sewing","{n} está cosiendo"], readyBy:["Ready ~{t}","Lista ~{t}"],
+    late:["Late for pickup at {t}!","¡Tarde para recoger a las {t}!"], startBy:["Start by {t} for the {p} pickup","Empieza a las {t} para que esté a las {p}"],
+    nextUp:["Next","Siguiente"], needName:["Type your name first (top of the page).","Escribe tu nombre primero (arriba)."],
+    taken:["{e}","{e}"], cantStart:["Couldn't start {n}: {e}","No se pudo empezar {n}: {e}"]
+  };
+  function t(k, v){ var s = (T[k] || [k, k])[lang === "es" ? 1 : 0]; if (v) Object.keys(v).forEach(function(x){ s = s.replace("{" + x + "}", v[x]); }); return s; }
+  function L(en, es){ return lang === "es" ? (es || en) : en; }
+  function clock(iso){ return new Date(iso).toLocaleTimeString(lang === "es" ? "es-MX" : "en-US", { hour:"numeric", minute:"2-digit" }); }
+  function waited(iso){
+    var m = Math.round((Date.now() - Date.parse(iso)) / 60000);
+    if (!isFinite(m) || m < 1) return lang === "es" ? "recién llegó" : "just now";
+    return m < 60 ? m + " min" : Math.floor(m / 60) + " h " + (m % 60) + " min";
+  }
+  function dayWord(iso){
+    var d = new Date(iso), n = new Date();
+    if (d.toDateString() === n.toDateString()) return "";
+    var tm = new Date(n); tm.setDate(n.getDate() + 1);
+    if (d.toDateString() === tm.toDateString()) return lang === "es" ? " mañana" : " tomorrow";
+    return " " + d.toLocaleDateString(lang === "es" ? "es-MX" : "en-US", { weekday:"short" });
+  }
+  function modeText(o){
+    if (o.mode === "pickup") return (lang === "es" ? "Recoge a las " : "Picks up at ") + o.pickupAt + (o.pickupDate ? dayWord(o.pickupDate) : "");
+    return (lang === "es" ? "Esperando aquí · " : "Waiting here · ") + waited(o.chosenAt);
+  }
+  function applyLang(){
+    document.documentElement.lang = lang;
+    document.querySelectorAll("[data-t]").forEach(function(n){ n.textContent = t(n.dataset.t); });
+    document.querySelectorAll(".langs button").forEach(function(b){ b.setAttribute("aria-pressed", String(b.dataset.lang === lang)); });
+    document.title = lang === "es" ? "Peaces · Pedidos" : "Peaces · Orders";
+    if (lastQ) render(lastQ);
+  }
+  document.querySelectorAll(".langs button").forEach(function(b){
+    b.addEventListener("click", function(){ lang = b.dataset.lang; try { localStorage.setItem(LKEY, lang); } catch (e) {} applyLang(); });
+  });
+
+  /* One order, as simple as possible:
+       Name
+       Order #D1042
+       Waiting here · ready ~2:40 PM   (or: Pick up at 3:15 PM)
+       Bikini: Mint triangle top (S), Blue seamless bottom (S)
+       Top:    each customization on its own line, in tier order
+       Bottom: the same
+       [Done] */
+  function lc1(x){ return x.charAt(0).toLowerCase() + x.slice(1); }
+  function card(o, i, kind){
+    var c = el("article", "card" + (o.paid ? "" : " unpaid") + (kind === "sewing" ? " sewing" : "") + (kind === "next" && i === 0 ? " first" : ""));
     var pic = el("div", "pic");
-    if (o.image) { var img = el("img"); img.src = o.image; img.alt = "Bikini design for order " + o.number; img.loading = "lazy"; pic.appendChild(img); }
-    else pic.appendChild(el("span", null, "No picture saved"));
+    if (o.image) { var img = el("img"); img.src = o.image; img.alt = ""; img.loading = "lazy"; pic.appendChild(img); }
+    else pic.appendChild(el("span", null, t("noPic")));
     c.appendChild(pic);
 
     var body = el("div");
-    var top = el("div", "top");
-    top.appendChild(el("span", "num", o.number));
-    top.appendChild(el("span", "pos", "#" + (i + 1) + " in line"));
-    body.appendChild(top);
-    body.appendChild(el("div", "who", o.customer || "No name given"));
+    var nm = el("p", "name", o.customer || t("noName")); if (kind === "next" && i === 0) nm.setAttribute("data-next", t("nextUp")); body.appendChild(nm);
+    body.appendChild(el("p", "ord", t("order") + " " + o.number));
+    var when = el("p", "when2");
+    if (kind === "sewing") when.appendChild(el("span", "by", t("sewingBy", { n: o.sewingBy || "?" })));
+    var chip = o.mode === "pickup"
+      ? (lang === "es" ? "Recoge a las " : "Pick up at ") + o.pickupAt + (o.pickupDate ? dayWord(o.pickupDate) : "")
+      : (lang === "es" ? "Esperando aquí" : "Waiting here") + (o.readyAt ? " · " + lc1(t("readyBy", { t: clock(o.readyAt) })) : " · " + waited(o.chosenAt));
+    when.appendChild(el("span", "mode" + (o.mode === "pickup" ? " pickup" : "") + (o.late ? " late" : ""), chip));
+    if (!o.paid) when.appendChild(el("span", "badge", t("notPaid")));
+    body.appendChild(when);
+    if (o.late) body.appendChild(el("p", "eta late", t("late", { t: o.pickupAt })));
 
-    if (o.mode === "pickup") body.appendChild(el("span", "when", "Pickup " + o.pickupAt + (o.pickupDate ? dayLabel(o.pickupDate) : "")));
-    else body.appendChild(el("span", "when", (o.mode ? "Waiting " : "Paid, didn't choose · waiting ") + ago(o.chosenAt)));
-    if (!o.paid) body.appendChild(el("span", "badge", "Not paid yet"));
-
-    var dl = el("dl");
-    function row(k, v){ if (!v || (Array.isArray(v) && !v.length)) return; dl.appendChild(el("dt", null, k));
-      var dd = el("dd");
-      if (Array.isArray(v)) { var ul = el("ul"); v.forEach(function(x){ ul.appendChild(el("li", null, x)); }); dd.appendChild(ul); }
-      else dd.textContent = v;
-      dl.appendChild(dd); }
-    var bks = (o.bikinis && o.bikinis.length) ? o.bikinis : [{ top:o.top, bottom:o.bottom, addons:o.addons, image:o.image }];
+    var bks = bikinisOfOrder(o);
     bks.forEach(function(b, bi){
-      if (bks.length > 1) { dl.appendChild(el("dt", "bk", "Bikini " + (bi + 1) + " of " + bks.length)); dl.appendChild(el("dd", "bk", ""));
-        if (bi > 0 && b.image) { var im2 = el("img"); im2.src = b.image; im2.alt = "Bikini " + (bi + 1); im2.className = "extra-pic"; im2.loading = "lazy"; pic.appendChild(im2); } }
-      row("Top", b.top);
-      row("Bottom", b.bottom);
-      row("Add ons", b.addons.length ? b.addons : ["None"]);
+      var sum = el("p", "bk");
+      sum.appendChild(el("b", null, (bks.length > 1 ? t("bikini", { i: bi + 1, n: bks.length }) : "Bikini") + ": "));
+      sum.appendChild(document.createTextNode(L(b.short, b.shortEs) || [L(b.top, b.topEs), L(b.bottom, b.bottomEs)].filter(Boolean).join(", ")));
+      body.appendChild(sum);
+      if (bi > 0 && b.image) { var im2 = el("img"); im2.src = b.image; im2.alt = ""; im2.className = "extra-pic"; im2.loading = "lazy"; pic.appendChild(im2); }
+      var piece = function(label, en, es){
+        var box = el("div", "piece"); box.appendChild(el("p", "plabel", label));
+        var ul = el("ul", "plist");
+        if (!en.length) ul.appendChild(el("li", "none", t("nothing")));
+        en.forEach(function(x, k){ ul.appendChild(el("li", null, L(x, es[k]))); });
+        box.appendChild(ul); body.appendChild(box);
+      };
+      if (b.hasPieces) { piece(t("top") + ":", b.topCustom, b.topCustomEs || []); piece(t("bottom") + ":", b.bottomCustom, b.bottomCustomEs || []); }
+      else piece(t("customs") + ":", b.addons || [], b.addonsEs || []); // older orders: one list
+      if (b.extras && b.extras.length) { var p3 = el("p", "pieces"); p3.appendChild(el("b", null, t("also") + ": ")); p3.appendChild(document.createTextNode(b.extras.map(function(x){ return L(x.en, x.es); }).join(", "))); body.appendChild(p3); }
     });
-    row("Extras", o.extras);
-    body.appendChild(dl);
 
     var actions = el("div", "actions");
-    var done = el("button", "btn", "Mark done");
+    if (kind === "next") {
+      var st = el("button", "btn ghost", t("start")); st.type = "button";
+      st.addEventListener("click", function(){ startSewing(o, st, true); });
+    }
+    var done = el("button", "btn big", t("done"));
     done.type = "button";
     done.addEventListener("click", function(){ markDone(o, done); });
     actions.appendChild(done);
-    if (o.minutes && o.mode === "wait") actions.appendChild(el("span", "note", "Customer was told ~" + o.minutes + " min"));
+    if (st) actions.appendChild(st);
+    if (kind === "sewing") { var sp = el("button", "btn ghost", t("stop")); sp.type = "button"; sp.addEventListener("click", function(){ startSewing(o, sp, false); }); actions.appendChild(sp); }
+    var pt = el("button", "linkish", t("print"));
+    pt.type = "button";
+    pt.addEventListener("click", function(){ var l = orderTags(o); if (printed) { l.forEach(function(x){ if (printed.indexOf(x.key) < 0) printed.push(x.key); }); savePrinted(); } printTags(l); });
+    actions.appendChild(pt);
     body.appendChild(actions);
     c.appendChild(body);
     return c;
   }
 
+
+  /* ---------- tags: one 4 × 6 card per bikini, English + Spanish ---------- */
+  var PKEY = "peaces-printed-tags", AKEY = "peaces-autoprint";
+  var printed = null;
+  try { printed = JSON.parse(localStorage.getItem(PKEY) || "null"); } catch (e) {}
+  try { if (localStorage.getItem(AKEY) === "0") $("autoPrint").checked = false; } catch (e) {}
+  $("autoPrint").addEventListener("change", function(){ try { localStorage.setItem(AKEY, this.checked ? "1" : "0"); } catch (e) {} });
+  function savePrinted(){ try { localStorage.setItem(PKEY, JSON.stringify(printed.slice(-600))); } catch (e) {} }
+  function bikinisOfOrder(o){
+    return (o.bikinis && o.bikinis.length) ? o.bikinis : [{ top:o.top, bottom:o.bottom, addons:o.addons || [], addonsEs:[], image:o.image, extras:[] }];
+  }
+  function tagFor(o, b, bi, n){
+    var ES = lang === "es";
+    function H(en, es){ return ES ? es : en + " · " + es; }
+    var tg = el("section", "tag");
+    var head = el("div", "t-head");
+    var logo = el("img", "t-logo"); logo.src = "/art/logo-ps.png"; logo.alt = ""; head.appendChild(logo);
+    var num = el("div", "t-num"); num.appendChild(el("small", null, H("Order", "Pedido"))); num.appendChild(document.createTextNode(o.number)); head.appendChild(num);
+    tg.appendChild(head);
+    var who = el("div", "t-who"); who.appendChild(el("small", null, H("Name", "Nombre"))); who.appendChild(document.createTextNode(o.customer || H("No name", "Sin nombre"))); tg.appendChild(who);
+    var meta = el("div", "t-meta");
+    meta.appendChild(el("span", null, n > 1 ? (ES ? "Bikini " + (bi + 1) + " de " + n : "Bikini " + (bi + 1) + " of " + n + " · " + (bi + 1) + " de " + n) : "1 bikini"));
+    meta.appendChild(el("span", null, o.mode === "pickup" ? (ES ? "Recoge a las " + o.pickupAt : "Picks up " + o.pickupAt + " · Recoge " + o.pickupAt) : H("Waiting here", "Esperando aquí")));
+    tg.appendChild(meta);
+    if (b.image) { var im = el("img", "t-pic"); im.src = b.image; im.alt = ""; tg.appendChild(im); }
+    function sec(h, en, es){ var d = el("div", "t-sec"); d.appendChild(el("h4", null, h));
+      if (ES) d.appendChild(el("p", "en", es || en || ""));
+      else { d.appendChild(el("p", "en", en || "")); if (es && es !== en) d.appendChild(el("p", "es", es)); }
+      tg.appendChild(d); }
+    sec(H("Top", "Parte de arriba"), b.top, b.topEs);
+    sec(H("Bottom", "Parte de abajo"), b.bottom, b.bottomEs);
+    var s = el("div", "t-sec"); s.appendChild(el("h4", null, H("Customizations", "Personalizaciones")));
+    if (!b.addons.length) s.appendChild(el("p", "en", H("None", "Ninguna")));
+    else { var ol = el("ol"); b.addons.forEach(function(a, k){ var li = el("li"), es = (b.addonsEs || [])[k];
+      if (ES) li.appendChild(el("span", "en", es || a));
+      else { li.appendChild(el("span", "en", a)); if (es) li.appendChild(el("span", "es", es)); }
+      ol.appendChild(li); }); s.appendChild(ol); }
+    tg.appendChild(s);
+    if (b.extras && b.extras.length) sec(H("Also in the bag", "También en la bolsa"), b.extras.map(function(x){ return x.en; }).join(", "), b.extras.map(function(x){ return x.es || x.en; }).join(", "));
+    return tg;
+  }
+  // shrink the text (then the picture) until everything fits on the 4 × 6 card
+  function fit(t){
+    var fs = 10.5, pic = 1.9;
+    t.style.setProperty("--fs", fs + "pt"); t.style.setProperty("--pic", pic + "in");
+    var guard = 0;
+    while (t.scrollHeight > t.clientHeight + 1 && guard++ < 40) {
+      if (pic > 1.1) pic -= 0.15; else if (fs > 6.5) fs -= 0.4; else break;
+      t.style.setProperty("--fs", fs + "pt"); t.style.setProperty("--pic", pic + "in");
+    }
+  }
+  function printTags(list){ // list: [{o, b, bi, n}]
+    if (!list.length) return;
+    var area = $("printArea"); area.textContent = "";
+    list.forEach(function(x){ var t = tagFor(x.o, x.b, x.bi, x.n); area.appendChild(t); });
+    var imgs = [].slice.call(area.querySelectorAll("img"));
+    Promise.all(imgs.map(function(i){ return i.complete ? 0 : new Promise(function(r){ i.onload = i.onerror = r; setTimeout(r, 4000); }); })).then(function(){
+      [].forEach.call(area.children, fit);
+      setTimeout(function(){ window.print(); }, 60);
+    });
+  }
+  function orderTags(o){ var bs = bikinisOfOrder(o); return bs.map(function(b, bi){ return { o:o, b:b, bi:bi, n:bs.length, key:o.id + "#" + bi }; }); }
+  function chime(){
+    try { var C = window.AudioContext || window.webkitAudioContext, ctx = new C();
+      [880, 1175].forEach(function(f, i){ var g = ctx.createGain(), osc = ctx.createOscillator(); osc.frequency.value = f; osc.connect(g); g.connect(ctx.destination);
+        var t0 = ctx.currentTime + i * 0.18; g.gain.setValueAtTime(0.0001, t0); g.gain.exponentialRampToValueAtTime(0.25, t0 + 0.02); g.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.35); osc.start(t0); osc.stop(t0 + 0.4); });
+    } catch (e) {}
+  }
+  // after every refresh: print tags for paid bikinis we haven't printed on this device yet
+  function autoTags(q){
+    var all = q.wait.concat(q.pickup).filter(function(o){ return o.paid; }).reduce(function(acc, o){ return acc.concat(orderTags(o)); }, []);
+    if (printed === null) { printed = all.map(function(x){ return x.key; }); savePrinted(); return; } // first time on this device: start fresh
+    var fresh = all.filter(function(x){ return printed.indexOf(x.key) < 0; });
+    if (!fresh.length) return;
+    chime();
+    if (!$("autoPrint").checked) return;
+    fresh.forEach(function(x){ printed.push(x.key); }); savePrinted();
+    printTags(fresh);
+  }
   function render(q){
-    ["wait", "pickup"].forEach(function(k){
+    lastQ = q;
+    var sets = { sewing: q.sewing || [], next: q.next || [], unpaid: q.unpaid || [] };
+    Object.keys(sets).forEach(function(k){
       var list = $("list-" + k);
       list.textContent = "";
-      if (!q[k].length) list.appendChild(el("div", "empty", k === "wait" ? "No one waiting right now." : "No pickups coming up."));
-      q[k].forEach(function(o, i){ list.appendChild(card(o, i)); });
-      document.querySelectorAll('[data-count="' + k + '"]').forEach(function(n){ n.textContent = q[k].length; });
+      if (!sets[k].length && k !== "unpaid") list.appendChild(el("div", "empty", t(k === "sewing" ? "emptyNow" : "emptyNext")));
+      sets[k].forEach(function(o, i){ list.appendChild(card(o, i, k)); });
+      document.querySelectorAll('[data-count="' + k + '"]').forEach(function(n){ n.textContent = sets[k].length; });
     });
-    $("updated").textContent = "Updated " + new Date().toLocaleTimeString([], { hour:"numeric", minute:"2-digit" });
+    $("blk-unpaid").hidden = !sets.unpaid.length;
+    $("updated").textContent = t("updated") + " " + clock(new Date().toISOString());
   }
 
   async function load(){
@@ -233,35 +464,56 @@
       $("loadErr").textContent = "";
       show(true);
       render(q);
+      autoTags(q);
     } catch (e) {
       if (e.status === 401 || e.status === 503) { lock(e.message); }
-      else $("loadErr").textContent = "Couldn't refresh: " + e.message + ". Retrying…";
+      else $("loadErr").textContent = t("cantRefresh", { e: e.message });
     } finally { loading = false; }
   }
 
+  /* who is sewing on this device (two seamstresses, two devices) */
+  var NKEY = "peaces-sewer";
+  try { $("sewer").value = localStorage.getItem(NKEY) || ""; } catch (e) {}
+  $("sewer").addEventListener("input", function(){ try { localStorage.setItem(NKEY, this.value.trim()); } catch (e) {} this.parentNode.classList.remove("need"); });
+  async function startSewing(o, btn, on){
+    var me = $("sewer").value.trim();
+    if (on && !me) { $("sewer").parentNode.classList.add("need"); $("sewer").focus(); $("loadErr").textContent = t("needName"); return; }
+    btn.disabled = true; btn.textContent = t("saving");
+    try { await call("start", { id: o.id, sewer: me, start: on }); $("loadErr").textContent = ""; load(); }
+    catch (e) { btn.disabled = false; btn.textContent = t(on ? "start" : "stop"); $("loadErr").textContent = t("cantStart", { n: o.number, e: e.message }); load(); }
+  }
   async function markDone(o, btn){
-    btn.disabled = true; btn.textContent = "Saving…";
+    btn.disabled = true; btn.textContent = t("saving");
     try {
-      await call("done", { id: o.id, done: true });
+      var r = await call("done", { id: o.id, done: true });
       undoId = o.id;
-      $("toastText").textContent = o.number + " marked done.";
+      var tx = r && r.text, who = (o.customer || "").split(" ")[0] || o.number, link = $("textHer");
+      link.hidden = true;
+      var msg = t("markedDone", { n: o.customer || o.number });
+      if (tx && tx.sent) msg += " " + t(tx.via === "klaviyo" ? "textedK" : "texted", { n: who });   // sent automatically
+      else if (tx && tx.phone && tx.message) {                                          // one tap: opens Messages with the text written
+        link.href = "sms:" + tx.phone + "?&body=" + encodeURIComponent(tx.message);
+        link.textContent = t("textHer", { n: who }); link.hidden = false;
+      }
+      else if (tx && tx.reason === "no-phone") msg += " " + t("noPhone");
+      $("toastText").textContent = msg;
       $("toast").hidden = false;
-      clearTimeout(toastTimer); toastTimer = setTimeout(function(){ $("toast").hidden = true; undoId = null; }, 8000);
+      clearTimeout(toastTimer); toastTimer = setTimeout(function(){ $("toast").hidden = true; undoId = null; }, link.hidden ? 8000 : 30000);
       load();
     } catch (e) {
-      btn.disabled = false; btn.textContent = "Mark done";
-      $("loadErr").textContent = "Couldn't mark " + o.number + " done: " + e.message;
+      btn.disabled = false; btn.textContent = t("done");
+      $("loadErr").textContent = t("cantDone", { n: o.number, e: e.message });
     }
   }
   $("undo").addEventListener("click", async function(){
     if (!undoId) return;
     var id = undoId; undoId = null; $("toast").hidden = true;
-    try { await call("done", { id: id, done: false }); } catch (e) { $("loadErr").textContent = "Couldn't undo: " + e.message; }
+    try { await call("done", { id: id, done: false }); } catch (e) { $("loadErr").textContent = t("cantUndo", { e: e.message }); }
     load();
   });
 
   function show(open){
-    $("lock").hidden = open; $("queue").hidden = !open; $("status").hidden = !open;
+    $("lock").hidden = open; $("queue").hidden = !open; $("statusIn").hidden = !open;
     clearInterval(timer);
     if (open) timer = setInterval(load, 20000);
   }
@@ -289,6 +541,7 @@
   });
   document.addEventListener("visibilitychange", function(){ if (!document.hidden) load(); });
 
+  applyLang();
   if (passcode) load();
 })();
 </script>

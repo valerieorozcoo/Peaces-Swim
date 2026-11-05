@@ -38,13 +38,15 @@ try {
   assert.equal(r.status, 400); ok("bad phone rejected");
 
   const design = { topStyle: "triangle", bottomStyle: "seamless", topColor: "cheetah", bottomColor: "coral", sizeTop: "S", sizeBottom: "M",
-    addons: [{ id: "bows", variant: "white", cfg: { tp: ["mid"] } }, { id: "ruffles", variant: "pink" }, { id: "charms", variant: "letters" }], initials: "val", tote: true, headband: false };
+    addons: [{ id: "bows", variant: "white", cfg: { tp: ["mid"] } }, { id: "ruffles", variant: "cheetah" }, { id: "charms", variant: "letters", cfg: { mid: 3 } }], initials: "val", tote: true, headband: false };
   r = await post("/orders/create", { design, customer: { phone: "3055551234", welcomeToken: welcome } });
-  assert.equal(r.status, 201); assert.equal(r.body.subtotal, 95 + 5 + 15 + 3 * 10 + 15);
-  assert.equal(r.body.total, 144); assert.equal(r.body.discounted, true);
+  assert.equal(r.status, 201); assert.equal(r.body.subtotal, 95 + 5 + 15 + 3 * 7 + 15);
+  assert.equal(r.body.total, 135.9); assert.equal(r.body.discounted, true);
+  assert.equal(r.body.minutes, 5 + 1 + 8 + 2); // plain 5 + one bow + ruffles + charms
+  assert.ok(db.drafts[0].input.customAttributes.some((x) => x.key === "Work minutes" && x.value === "16")); ok("sewing time worked out from the team's per-customization minutes");
   const d0 = db.drafts[0].input;
   assert.equal(d0.purchasingEntity, undefined);
-  assert.ok(d0.lineItems.some((l) => l.title === "Add on: Charms (Letters · VAL in the middle, Basic jump ring clasp)")); ok("signed welcome discount on guest checkout, no customer-account link");
+  assert.ok(d0.lineItems.some((l) => l.title === "Add on: Charms (Basic jump ring clasp, Top, middle ×3: Letter V ×3)")); ok("signed welcome discount on guest checkout, no customer-account link");
 
   r = await post("/orders/create", { design, customer: { phone: "3055551234" } });
   assert.equal(r.body.discounted, false);
@@ -61,11 +63,11 @@ try {
   r = await post("/orders/create", { design, customer: { phone: "3055551234", welcomeToken: welcome, email: "Val@PeacesSwim.com" } });
   const dw = db.drafts.at(-1);
   assert.deepEqual(dw.input.discountCodes, ["PEACESPARTY"]); assert.equal(dw.input.appliedDiscount, undefined);
-  assert.equal(dw.input.email, "val@peacesswim.com"); assert.equal(r.body.total, 144);
+  assert.equal(dw.input.email, "val@peacesswim.com"); assert.equal(r.body.total, 135.9);
   ok("welcome 10% is applied as PEACESPARTY (can't be stacked again at checkout) and the order carries their email");
   db.welcomeCode = "SOMETHINGELSE";
   r = await post("/orders/create", { design, customer: { phone: "3055551234", welcomeToken: welcome } });
-  assert.equal(r.body.total, 144); assert.equal(db.drafts.at(-1).update.appliedDiscount.value, 10);
+  assert.equal(r.body.total, 135.9); assert.equal(db.drafts.at(-1).update.appliedDiscount.value, 10);
   delete db.welcomeCode; ok("if Shopify skips the code, the promised 10% is still applied");
   r = await post("/orders/create", { design, customer: { phone: "3055551234", email: "x@y.com" } });
   assert.equal(db.drafts.at(-1).input.email, undefined); ok("no signup, no email or discount on the order");
@@ -73,7 +75,7 @@ try {
   const second = { topStyle: "underwire", bottomStyle: "seamless", topColor: "teal", bottomColor: "teal", sizeTop: "M", sizeBottom: "M", addons: [] };
   const pic = "data:image/jpeg;base64," + Buffer.from("fake-jpeg-bytes").toString("base64");
   r = await post("/orders/create", { designs: [design, second], images: [pic, pic] });
-  assert.equal(r.status, 201); assert.equal(r.body.bikinis, 2); assert.equal(r.body.subtotal, 160 + 95);
+  assert.equal(r.status, 201); assert.equal(r.body.bikinis, 2); assert.equal(r.body.subtotal, 151 + 95);
   const bag = db.drafts.at(-1).input.lineItems;
   assert.equal(bag.filter((l) => /^Custom bikini/.test(l.title)).length, 2);
   assert.ok(bag.every((l) => l.customAttributes.some((a) => a.key === "Bikini")));
@@ -83,7 +85,7 @@ try {
   assert.equal(r.status, 400); ok("no more than 5 bikinis per checkout");
 
   r = await post("/orders/create", { design, customer: { phone: "9999999999" } });
-  assert.equal(r.body.total, 160); assert.equal(r.body.discounted, false); ok("no discount for unknown phone");
+  assert.equal(r.body.total, 151); assert.equal(r.body.discounted, false); ok("no discount for unknown phone");
 
   const opts = { topStyle: "triangle", bottomStyle: "triangle", topColor: "green", bottomColor: "cheetah", sizeTop: "S", sizeBottom: "S", initials: "A", rsText: "K",
     addons: [{ id: "beads", variant: "bw-pink", cfg: { ties: 3, mid: 3 } }, { id: "laceTrim", variant: "white", cfg: { bottom: "around" } },
@@ -91,7 +93,7 @@ try {
              { id: "bows", variant: "pink", cfg: { tp: ["sides"], bp: ["mid"] } }] };
   r = await post("/orders/create", { design: opts, customer: { phone: "9999999999" } });
   assert.equal(r.status, 201, JSON.stringify(r.body));
-  assert.equal(r.body.subtotal, 95 + 15 + 25 + 25 + 10 + 10 + 10); ok("add-on choices priced on server (9 beads, lace all around, 2 bottom connectors, 1 rhinestone, wrap ties, bows in 2 spots)");
+  assert.equal(r.body.subtotal, 95 + 15 + 20 + 25 + 10 + 10 + 5); ok("add-on choices priced on server (9 beads, lace all around +$5, 2 bottom connectors, 1 rhinestone, wrap ties, 3 bows for a flat $5)");
   const tinyJpeg = "data:image/jpeg;base64," + Buffer.from("fake-jpeg-bytes").toString("base64");
   r = await post("/orders/create", { design: opts, image: tinyJpeg });
   const dImg = db.drafts.at(-1).input;
@@ -120,15 +122,55 @@ try {
   ok("rules enforced on the server: " + rejects.length + " bad designs rejected");
   r = await post("/orders/create", { design: { ...opts, rsText: "kate", addons: [
     { id: "charms", variant: "cp-shell", cfg: { mid: 2, left: 1, clasp: "cn-big-gold" } },
-    { id: "laceRuffles", variant: "black", cfg: { lower: "front" } }, { id: "fringe", variant: "gold", cfg: { lower: "front" } },
+    { id: "laceRuffles", variant: "black", cfg: { lower: "front" } }, { id: "fringe", variant: "black", cfg: { lower: "front" } },
     { id: "rhinestones", cfg: { metal: "gold", place: "butt" } }] } });
-  assert.equal(r.body.subtotal, 95 + 3 * 20 + 15 + 15 + 40); ok("3 long charms with clasp upgrades, lace ruffles + fringe front, 4 lowercase rhinestones on the back");
+  assert.equal(r.body.subtotal, 95 + 3 * 12 + 15 + 15 + 40); ok("3 long charms with clasp upgrades, lace ruffles + fringe front, 4 lowercase rhinestones on the back");
+  const mint = { ...opts, bottomColor: "green", addons: [{ id: "charms", variant: "cp-pearls", cfg: { mid: 1, clasp: "cn-small-rhinestone" } },
+    { id: "beads", variant: "ba-pink", cfg: { str: { ties: ["ba-pink", "bp-16mm", "ba-pink"], mid: ["ba-pink", "ba-pink", "ba-pink", "ba-pink"] } } }] };
+  r = await post("/orders/create", { design: mint });
+  assert.equal(r.status, 201, JSON.stringify(r.body)); assert.equal(r.body.subtotal, 95 + 12 + 5 * Math.ceil(10 / 3));
+  const beadLine = db.drafts.at(-1).input.lineItems.find((l) => /Beads/.test(l.title)).title;
+  assert.equal(beadLine, "Add on: Beads (Top ties, each side ×3: Acrylic · Pink, Pearl · 16 mm, Acrylic · Pink, Middle ×4: Acrylic · Pink ×4)");
+  ok("mixed beads: each spot keeps its exact beads in order, priced $5 per 3");
+  for (const str of [{ ties: ["ba-pink", "nope"] }, { mid: Array(5).fill("ba-pink") }, { ties: Array(11).fill("bp-16mm") }]) {
+    r = await post("/orders/create", { design: { ...mint, addons: [{ id: "connectors" }, { id: "beads", variant: "ba-pink", cfg: { str } }] } });
+    assert.equal(r.status, 400);
+  }
+  ok("mixed beads: unknown beads and over-the-limit spots rejected");
+  const coral = { ...opts, topStyle: "underwire", bottomStyle: "seamless", topColor: "coral", bottomColor: "coral",
+    addons: [{ id: "buttons", cfg: { str: { tr: ["large", "large", "small"], bl: ["large", "small"] } } }] };
+  r = await post("/orders/create", { design: coral });
+  assert.equal(r.status, 201, JSON.stringify(r.body)); assert.equal(r.body.subtotal, 95 + 10);
+  assert.equal(db.drafts.at(-1).input.lineItems.find((l) => /Buttons/.test(l.title)).title,
+    "Add on: Buttons (White · Top, right corner ×3: Large ×2, Small, Bottom, left corner ×2: Large, Small)");
+  ok("bralette buttons: small and large mixed in each corner, $5 for every 3");
+  r = await post("/orders/create", { design: { ...opts, addons: [{ id: "buttons", cfg: { str: { tn: ["small", "large", "large", "small"], bn: ["large"] } } }] } });
+  assert.equal(r.body.subtotal, 95 + 10);
+  assert.match(db.drafts.at(-1).input.lineItems.find((l) => /Buttons/.test(l.title)).title, /Top, along the lace line ×4: Small, Large ×2, Small/);
+  ok("triangle buttons mix sizes too");
+  r = await post("/orders/create", { design: { ...coral, addons: [{ id: "buttons", cfg: { str: { tr: ["huge"] } } }] } });
+  assert.equal(r.status, 400); ok("buttons only come small or large");
   r = await post("/orders/create", { design: { ...opts, addons: [{ id: "rhinestones", cfg: { metal: "gold", place: "one" } }] } });
   assert.equal(r.body.subtotal, 95 + 10); ok("older saved designs (one cup) still price");
   r = await post("/orders/create", { design: { ...bra, addons: [{ id: "connectors" }, { id: "extTies" }, { id: "buttons", cfg: { tl: 3, tr: 1, br: 2, size: "large" } },
-    { id: "beads", variant: "bp-16mm", cfg: { ties: 5, ext: 8, ends: 2 } }, { id: "charms", variant: "cg-halo", cfg: { mid: 1, ext: 3, left: 3, right: 3 } }] } });
+    { id: "beads", variant: "bp-16mm", cfg: { ties: 5, ext: 8, ends: 2 } }, { id: "charms", variant: "cg-halo", cfg: { mid: 1, left: 3, right: 3, clasp: "cn-big-gold" } }] } });
   assert.equal(r.status, 201, JSON.stringify(r.body));
-  assert.equal(r.body.subtotal, 95 + 10 + 10 + 30 + 5 * Math.ceil(34 / 3) + 13 * 10); ok("bralette set at its limits: connectors $10 for both straps, corner buttons, 34 beads, 13 charms");
+  assert.equal(r.body.subtotal, 95 + 10 + 10 + 10 + 5 * Math.ceil(34 / 3) + 7 * 12); ok("bralette set at its limits: connectors $10 for both straps, corner buttons, 34 beads, 7 charms with clasp upgrades");
+  r = await post("/orders/create", { design: { ...bra, addons: [{ id: "charms", variant: "cg-halo", cfg: { left: 1, clasp: "plain" } }] } });
+  assert.equal(r.status, 400); ok("charms on the seamless bottom need a clasp upgrade");
+  r = await post("/orders/create", { design: { ...opts, addons: [{ id: "roses", cfg: { tp: ["mid", "sides"], bp: ["sides"] } }] } });
+  assert.equal(r.body.subtotal, 95 + 5); ok("5 roses: a flat $5");
+  r = await post("/orders/create", { design: { ...opts, addons: [{ id: "bows", cfg: { tp: ["mid", "sides"], bp: ["mid", "sides"] } }] } });
+  assert.equal(r.status, 400); ok("6 bows rejected: up to 5");
+  r = await post("/orders/create", { design: { ...opts, addons: [{ id: "laceRuffles", variant: "pink", cfg: { lower: "around" } }, { id: "laceTrim", cfg: { bottom: "front" } }] } });
+  assert.equal(r.status, 201, JSON.stringify(r.body)); assert.equal(r.body.subtotal, 95 + 15 + 15); ok("lace ruffles all around; lace front only adds nothing");
+  r = await post("/orders/create", { design: { ...opts, addons: [{ id: "buttons", cfg: { str: { tn: Array(9).fill("large") } } }] } });
+  assert.equal(r.body.subtotal, 95 + 15); ok("9 buttons: $15");
+  r = await post("/orders/create", { design: { ...opts, addons: [{ id: "connectors", cfg: { top: "none", bottom: "two" } }] } });
+  assert.equal(r.body.subtotal, 95 + 15); ok("bottom connectors only: $15");
+  for (const bad of [{ top: "none", bottom: "no" }]) { r = await post("/orders/create", { design: { ...opts, addons: [{ id: "connectors", cfg: bad }] } }); assert.equal(r.status, 400); }
+  r = await post("/orders/create", { design: { ...opts, addons: [{ id: "connectors", cfg: { top: "none", bottom: "two" } }, { id: "extTies", cfg: { style: "wrap" } }] } });
+  assert.equal(r.status, 400); ok("no middle connector: no connector tie styles, no empty connector order");
 
   r = await post("/orders/accessories", { items: { headband: { color: "cheetah", qty: 2 }, tote: { color: "blue", qty: 1 } } });
   assert.equal(r.status, 201); assert.equal(r.body.subtotal, 2 * 10 + 15); assert.equal(r.body.total, 35);
@@ -141,6 +183,13 @@ try {
   ok("accessories: empty, wrong colour or silly quantities rejected");
   r = await post("/orders/create", { design: { ...design, topColor: "teal" } });
   assert.equal(r.status, 400); ok("teal on triangle rejected");
+  const limited = { topStyle: "underwire", bottomStyle: "seamless", topColor: "cheetah", bottomColor: "green", sizeTop: "S", sizeBottom: "S", addons: [] };
+  r = await post("/orders/create", { design: limited });
+  assert.equal(r.status, 201, JSON.stringify(r.body)); ok("limited run: cheetah bralette + mint seamless bottom can be ordered");
+  globalThis.PeacesRules.SOLD_OUT.push("bottom:seamless:green");
+  r = await post("/orders/create", { design: limited });
+  assert.equal(r.status, 400); assert.match(r.body.error, /sold out/);
+  globalThis.PeacesRules.SOLD_OUT.length = 0; ok("a sold out piece can't be checked out");
   r = await post("/orders/create", { design: { ...design, addons: [{ id: "bows", cfg: { tp: ["mid"] }, price: 0 }] } });
   assert.equal(r.body.subtotal, 95 + 5 + 15); ok("browser can't set prices");
 
@@ -155,9 +204,12 @@ try {
   // ---- Seamstress queue ----
   const tinyPic = "data:image/jpeg;base64," + Buffer.from("fake-jpeg-bytes").toString("base64");
   const waiter = (await post("/orders/create", { design, image: tinyPic, customer: { phone: "7865550101", name: "Mia <b>Wait</b>" } })).body;
-  await post("/orders/fulfillment", { id: waiter.id, sig: waiter.sig, mode: "wait", minutes: 30 });
+  r = await post("/orders/estimate", { designs: [design, design] });
+  assert.equal(r.status, 200); assert.equal(r.body.minutes, 32); assert.equal(typeof r.body.ahead, "number"); ok("estimate before checkout: sewing time for the bag + the line");
+  r = await post("/orders/fulfillment", { id: waiter.id, sig: waiter.sig, mode: "wait", minutes: 30 });
+  assert.equal(r.body.minutes, 16); ok("wait & watch time = her own sewing + the paid line ahead (the client's guess is ignored)");
   const ana = (await post("/orders/create", { design: opts, customer: { phone: "7865550202", name: "Ana Pickup" } })).body;
-  await post("/orders/fulfillment", { id: ana.id, sig: ana.sig, mode: "pickup", pickupAt: "4:00 PM" });
+  await post("/orders/fulfillment", { id: ana.id, sig: ana.sig, mode: "pickup", pickupAt: "1:15 PM", pickupIso: new Date(Date.now() + 20 * 3600_000).toISOString() });
   r = await post("/seamstress/queue", { passcode: "nope" });
   assert.equal(r.status, 401); assert.equal(r.body.wait, undefined); ok("seamstress queue needs the passcode");
   r = await post("/seamstress/queue", { passcode: "sew-sew-123", tzOffset: 0 });
@@ -169,13 +221,32 @@ try {
   const card = r.body.wait[0];
   assert.equal(card.customer, "Mia bWait/b"); assert.equal(card.image, "https://cdn.shopify.com/s/files/peaces-design.jpg");
   assert.equal(card.top, "Triangle top · Cheetah · S"); assert.equal(card.bottom, "Seamless bottom · Coral · M");
-  assert.deepEqual(card.addons, ["Mini bows (White · Top: One in the middle of the string)", "Ruffles (Pink · On the top tie straps)", "Charms (Letters · VAL in the middle, Basic jump ring clasp)"]);
+  assert.deepEqual(card.addons, ["Mini bows (White · Top: One in the middle of the string)", "Ruffles (Cheetah · On the top tie straps)", "Charms (Basic jump ring clasp, Top, middle ×3: Letter V ×3)"]);
+  const tagBk = card.bikinis[0];
+  assert.equal(tagBk.topEs, "Top triángulo · Animal print (cheetah) · S"); assert.equal(tagBk.bottomEs, "Parte de abajo seamless (fruncida) · Coral · M");
+  assert.deepEqual(tagBk.addonsEs, ["Mini moños (Blanco · Parte de arriba: Uno en el centro de la tira)", "Volantes (Animal print (cheetah) · En las tiras del top)", "Dijes (Broche: Argolla básica, Arriba, centro ×3: Letra V ×3)"]);
+  ok("seamstress tags: every piece and customization also written in Spanish");
   assert.deepEqual(card.extras, ["Peaces terry tote (Pink)"]); assert.equal(card.mode, "wait");
   const anaCard = r.body.pickup.find((c) => c.number === ana.name);
-  assert.equal(anaCard.customer, "Ana Pickup"); assert.equal(anaCard.pickupAt, "4:00 PM");
+  assert.equal(anaCard.customer, "Ana Pickup"); assert.equal(anaCard.pickupAt, "1:15 PM"); assert.ok(Date.parse(anaCard.pickupDate) - Date.now() > 19 * 3600_000); // the exact pop-up day, not today
   ok("each card has order number, name (kept after the wait/pickup choice), bikini picture and full customization");
+  r = await post("/seamstress/start", { passcode: "sew-sew-123", id: waiter.id, sewer: "" });
+  assert.equal(r.status, 400); ok("a seamstress has to say who she is to start");
+  r = await post("/seamstress/start", { passcode: "sew-sew-123", id: waiter.id, sewer: "Ana" });
+  assert.equal(r.status, 200);
+  r = await post("/seamstress/start", { passcode: "sew-sew-123", id: waiter.id, sewer: "Lucia" });
+  assert.equal(r.status, 409); assert.match(r.body.error, /Ana is already sewing/);
+  r = await post("/seamstress/queue", { passcode: "sew-sew-123", tzOffset: 0 });
+  assert.deepEqual(r.body.sewing.map((c) => [c.number, c.sewingBy]), [[waiter.name, "Ana"]]);
+  assert.ok(!r.body.next.some((c) => c.id === waiter.id)); assert.ok(r.body.sewing[0].readyAt);
+  assert.ok(db.drafts.find((d) => d.id === waiter.id).update.customAttributes.some((x) => x.key === "Customer name")); ok("start sewing: shows under Sewing now, the other seamstress can't take it, nothing else on the order is lost");
+  r = await post("/seamstress/start", { passcode: "sew-sew-123", id: waiter.id, start: false });
+  r = await post("/seamstress/queue", { passcode: "sew-sew-123", tzOffset: 0 });
+  assert.equal(r.body.sewing.length, 0); assert.equal(r.body.next[0].id, waiter.id); ok("stop hands it back to the top of the line");
   r = await post("/seamstress/done", { passcode: "sew-sew-123", id: waiter.id });
   assert.equal(r.body.done, true);
+  assert.equal(r.body.text.phone, "+17865550101"); assert.equal(r.body.text.sent, false); assert.equal(r.body.text.reason, "not-set-up");
+  assert.match(r.body.text.message, /^Hi Mia! Your Peace \(order #D\d+\) is ready!/); ok("done: the customer's number + a ready text come back (Twilio not set up → one-tap text from the phone)");
   r = await post("/seamstress/queue", { passcode: "sew-sew-123" });
   assert.equal(r.body.wait.length, 0); ok("marking an order done takes it off the queue");
   await post("/seamstress/done", { passcode: "sew-sew-123", id: waiter.id, done: false });
@@ -263,7 +334,8 @@ try {
   r = await post("/customers/create", { name: "Mia", email: "MIA@EXAMPLE.COM", phone: "7865550101" });
   assert.equal(r.body.ok, true); assert.equal(r.body.existing, true);
   assert.ok(verifyWelcomeToken(r.body.welcomeToken, "+17865550101"));
-  ok("matching existing contacts receive a welcome receipt without account access");
+  assert.ok(mia.tags.includes("waitlist") && mia.tags.includes("peaces-builder"));
+  ok("matching existing contacts receive a welcome receipt without account access, and keep every tag");
 
 
   assert.equal(db.tokenCalls, 1); ok("access token fetched once and cached");
