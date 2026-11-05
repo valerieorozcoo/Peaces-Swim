@@ -195,16 +195,17 @@ try {
   assert.equal(r.status, 400); assert.match(r.body.error, /sold out/);
   globalThis.PeacesRules.SOLD_OUT.length = 0; ok("a sold out piece can't be checked out");
   r = await post("/orders/create", { design, promo: " peacespopup " });
-  assert.equal(r.status, 201); assert.equal(r.body.promo, true); assert.equal(r.body.subtotal, 95 + 15); assert.equal(r.body.total, 110);
+  assert.equal(r.status, 201); assert.equal(r.body.promo, true); assert.equal(r.body.subtotal, 151 - 10); assert.equal(r.body.total, 141);
   { const li = db.drafts[db.drafts.length - 1].input.lineItems;
-    assert.ok(li.filter((l) => /^Add on: /.test(l.title)).every((l) => l.appliedDiscount && l.appliedDiscount.value === 100));
-    assert.ok(li.filter((l) => !/^Add on: /.test(l.title)).every((l) => !l.appliedDiscount));
+    assert.deepEqual(li.filter((l) => l.appliedDiscount).map((l) => [l.title.slice(0, 13), l.appliedDiscount.valueType, l.appliedDiscount.value]), [["Custom bikini", "FIXED_AMOUNT", 10]]);
     assert.ok(db.drafts[db.drafts.length - 1].input.tags.includes("peacespopup")); }
-  ok("PeacesPopUp code: every customization free (bikini + tote still charged), any capitalization");
+  ok("PeacesPopUp code: $10 off the order (once, on the first bikini), any capitalization");
+  r = await post("/orders/create", { designs: [design, design], promo: "PEACESPOPUP" });
+  assert.equal(r.body.subtotal, 302 - 10); ok("$10 once per order, not per bikini");
   r = await post("/orders/create", { design, promo: "PEACESPOPUP", customer: { phone: "3055551234", welcomeToken: welcome } });
-  assert.equal(r.body.total, 99); ok("PeacesPopUp + welcome 10%: 10% off what's left");
+  assert.equal(r.body.total, 126.9); ok("PeacesPopUp + welcome 10%: 10% off what's left");
   r = await post("/orders/create", { design, promo: "FREESTUFF" });
-  assert.equal(r.body.promo, false); assert.equal(r.body.subtotal, 95 + 5 + 15 + 3 * 7 + 15); ok("a wrong code changes nothing");
+  assert.equal(r.body.promo, false); assert.equal(r.body.subtotal, 151); ok("a wrong code changes nothing");
   process.env.POPUP_CODE_UNTIL = "2020-01-01T00:00:00Z";
   r = await post("/orders/create", { design, promo: "PeacesPopUp" });
   assert.equal(r.body.promo, false); delete process.env.POPUP_CODE_UNTIL; ok("the code stops working after the pop-up");

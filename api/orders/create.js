@@ -10,12 +10,13 @@ const money = (n) => ({ amount: n.toFixed(2), currencyCode: CURRENCY });
 // The welcome 10% is applied as this Shopify code, so a customer can't add it a second time at checkout.
 const WELCOME_CODE = process.env.WELCOME_DISCOUNT_CODE || "PEACESPARTY";
 const MAX_BIKINIS = 5;
-// Pop-up code: every customization free. Typed on the site (Shopify codes can't reach these custom lines).
+// Pop-up code: $10 off the order. Typed on the site; applied here as a $10 discount on the first bikini line,
+// so it stacks with the welcome 10% code and can't be added twice.
 // Works until midnight after the pop-up, Miami time; change with POPUP_CODE / POPUP_CODE_UNTIL in Vercel.
 export const POPUP_CODE = String(process.env.POPUP_CODE || "PEACESPOPUP").toUpperCase();
 const popupCodeUntil = () => Date.parse(process.env.POPUP_CODE_UNTIL || "2026-11-06T00:00:00-05:00");
 export const popupCodeOk = (code, now = Date.now()) => String(code || "").trim().toUpperCase() === POPUP_CODE && now < popupCodeUntil();
-const isCustomization = (title) => /^Add[- ]on: /.test(title);
+export const POPUP_OFF = 10;
 
 // POST /api/orders/create  { designs:[design…], images:[dataUrl…], customer:{ phone, name, email, welcomeToken } }
 // (a single { design, image } still works). Prices every bikini in the bag on the server,
@@ -27,8 +28,9 @@ export default route(["POST"], async (body) => {
   if (!designs.length || designs.length > MAX_BIKINIS) throw new Error("You can check out 1 to " + MAX_BIKINIS + " bikinis at a time");
   const orders = designs.map((d) => priceDesign(d));
   const promo = popupCodeOk(body.promo);
-  const freeCustoms = promo ? orders.reduce((s, o) => s + o.lines.filter((l) => isCustomization(l.title)).reduce((x, l) => x + l.price, 0), 0) : 0;
-  const subtotal = orders.reduce((s, o) => s + o.subtotal, 0) - freeCustoms;
+  const full = orders.reduce((s, o) => s + o.subtotal, 0);
+  const promoOff = promo ? Math.min(POPUP_OFF, orders[0].lines[0].price) : 0;
+  const subtotal = full - promoOff;
   const work = orders.reduce((s, o) => s + o.minutes, 0); // sewing minutes for every bikini in the bag
 
   const cust = body.customer || {};
@@ -46,7 +48,7 @@ export default route(["POST"], async (body) => {
         title: l.title, quantity: 1, originalUnitPriceWithCurrency: money(l.price),
         requiresShipping: false, taxable: true,
         customAttributes: tag.concat(Object.entries(l.attrs).map(([key, value]) => ({ key, value }))),
-        ...(promo && isCustomization(l.title) && l.price > 0 && { appliedDiscount: { valueType: "PERCENTAGE", value: 100, title: "PeacesPopUp: free customizations" } }),
+        ...(promoOff && lineItems.length === 0 && { appliedDiscount: { valueType: "FIXED_AMOUNT", value: promoOff, title: "PeacesPopUp: $10 off" } }),
       });
     }
     // The picture of each built bikini rides on its bikini line as `_design_image`
@@ -61,7 +63,7 @@ export default route(["POST"], async (body) => {
     allowDiscountCodesInCheckout: true, // lets customers type Shopify discount codes (e.g. FREETOTE) at checkout
     note: "Made in the Peaces Swim Builder" + (many ? " · " + orders.length + " bikinis" : "")
       + pictures.map((u, i) => (u ? "\nDesign picture" + (many ? " " + (i + 1) : "") + ": " + u : "")).join(""),
-    customAttributes: [{ key: "Source", value: "Peaces Swim Builder" }, ...(promo ? [{ key: "Code", value: "PeacesPopUp (customizations free)" }] : [])],
+    customAttributes: [{ key: "Source", value: "Peaces Swim Builder" }, ...(promo ? [{ key: "Code", value: "PeacesPopUp ($10 off)" }] : [])],
     lineItems,
   };
   const customerName = String(cust.name || "").replace(/[\u0000-\u001f<>]/g, "").trim().slice(0, 60);
@@ -100,7 +102,7 @@ export default route(["POST"], async (body) => {
     status: 201,
     body: {
       id: d.id, sig: sign(d.id), name: d.name, checkoutUrl: d.invoiceUrl,
-      subtotal, discounted, promo, freeCustoms, bikinis: orders.length, minutes: work, wait: plan ? plan.minutes : null, readyAt: plan ? plan.readyAt : null,
+      subtotal, discounted, promo, promoOff, bikinis: orders.length, minutes: work, wait: plan ? plan.minutes : null, readyAt: plan ? plan.readyAt : null,
       image: pictures[0] || null, images: pictures,
       total: total(d) !== null ? total(d) : +expected.toFixed(2),
     },

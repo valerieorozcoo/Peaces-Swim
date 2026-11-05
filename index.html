@@ -1736,7 +1736,7 @@
         <input id="promoIn" type="text" placeholder="Have a code?" autocomplete="off" autocapitalize="characters" spellcheck="false">
         <button type="submit">Apply</button>
       </form>
-      <p class="promo-on" id="promoOn" hidden><span aria-hidden="true">&#10003;</span> <b>PeacesPopUp</b> · all customizations are free today <button type="button" id="promoOff">Remove</button></p>
+      <p class="promo-on" id="promoOn" hidden><span aria-hidden="true">&#10003;</span> <b>PeacesPopUp</b> · $10 off your order <button type="button" id="promoOff">Remove</button></p>
       <p class="promo-err" id="promoErr" role="alert" hidden></p>
 
       <div class="perk" id="perkNote" hidden>
@@ -2474,8 +2474,8 @@
       colorOf("top").name+" top + "+colorOf("bottom").name+" bottom";
   }
   function activeAddons(){ return ADDONS.filter(function(a){return state.addons[a.id] && addonAvailable(a.id);}); }
-  /* pop-up code: every customization free (the server checks the code again and applies it on the order) */
-  var PROMO_CODE="PEACESPOPUP", PROMO_UNTIL=Date.parse("2026-11-06T00:00:00-05:00"), PROMO_KEY="peaces-promo", lastAdds=0;
+  /* pop-up code: $10 off the order, once (the server checks the code again and applies it on the order) */
+  var PROMO_CODE="PEACESPOPUP", PROMO_OFF=10, PROMO_UNTIL=Date.parse("2026-11-06T00:00:00-05:00"), PROMO_KEY="peaces-promo", lastAdds=0;
   function promoOn(){ return !!state.promo && Date.now()<PROMO_UNTIL; }
   try{ if(localStorage.getItem(PROMO_KEY)===PROMO_CODE && Date.now()<PROMO_UNTIL) state.promo=true; }catch(e){}
   function renderSummary(){
@@ -2485,7 +2485,7 @@
     if(state.tote) full+=15;
     if(state.headband) full+=10;
     lastAdds=adds;
-    var free=promoOn(), sub=free?full-adds:full;
+    var free=promoOn(), sub=free?Math.max(0,full-PROMO_OFF):full;
     var total=state.perk?sub*(1-DISCOUNT):sub;
     document.getElementById("totalPrice").innerHTML=state.perk?"<s>"+fmt(sub)+"</s>"+fmt(total):fmt(total);
     document.getElementById("itemCount").textContent=(list.length?list.length+" add on"+(list.length>1?"s":""):"Base only")+" · size "+state.sizeTop+"/"+state.sizeBottom;
@@ -2498,9 +2498,9 @@
     row(styleOf("bottom").name+" · "+colorOf("bottom").name+" · "+state.sizeBottom,"included");
     list.forEach(function(a){
       var t=addonText(a);
-      if(free) row(a.name+(t?" ("+t+")":""),(priceOf(a.id)?"<s>+"+fmt(priceOf(a.id))+"</s>":"")+"free","free");
-      else row(a.name+(t?" ("+t+")":""),"+"+fmt(priceOf(a.id)));
+      row(a.name+(t?" ("+t+")":""),"+"+fmt(priceOf(a.id)));
     });
+    if(free) row("PeacesPopUp","−"+fmt(PROMO_OFF),"discount");
     if(state.perk) row("Socials + messages","−"+fmt(sub*DISCOUNT),"discount");
     var mt=document.getElementById("miniTotal"); if(mt) mt.innerHTML=document.getElementById("totalPrice").innerHTML;
     var ps=document.getElementById("peaceSheet"); // the phone's pull-down: sizes, what's on it, total
@@ -3672,9 +3672,9 @@
   var bag=[], MAX_BAG=5, lastSub=BASE_PRICE;
   function designTitle(){ return styleOf("top").name+" + "+styleOf("bottom").name; }
   function designColors(){ return colorOf("top").name+" / "+colorOf("bottom").name; }
-  function bagSub(){ return bag.reduce(function(s,b){ return s+b.sub-(promoOn()?(b.adds||0):0); },0); }
+  function bagSub(){ return bag.reduce(function(s,b){ return s+b.sub; },0); }
   function grandTotalHtml(){
-    var sub=bagSub()+lastSub-(promoOn()?lastAdds:0), total=state.perk?sub*(1-DISCOUNT):sub;
+    var sub=Math.max(0,bagSub()+lastSub-(promoOn()?PROMO_OFF:0)), total=state.perk?sub*(1-DISCOUNT):sub;
     return state.perk?"<s>"+fmt(sub)+"</s>"+fmt(total):fmt(total);
   }
   function renderBag(curSub){
@@ -3684,7 +3684,7 @@
     var box=document.getElementById("bagList"); box.innerHTML="";
     bag.forEach(function(b,i){
       var row=document.createElement("div"); row.className="bag-item";
-      row.innerHTML='<img alt="" src="'+b.image+'"><div><strong>Bikini '+(i+1)+'</strong><span>'+b.title+'</span><span>'+b.colors+' · '+b.sizes+'</span></div><em>'+fmt(b.sub-(promoOn()?(b.adds||0):0))+'</em>';
+      row.innerHTML='<img alt="" src="'+b.image+'"><div><strong>Bikini '+(i+1)+'</strong><span>'+b.title+'</span><span>'+b.colors+' · '+b.sizes+'</span></div><em>'+fmt(b.sub)+'</em>';
       var x=document.createElement("button"); x.type="button"; x.className="bag-x"; x.setAttribute("aria-label","Remove bikini "+(i+1)); x.innerHTML="&times;";
       x.addEventListener("click",function(){ bag.splice(i,1); renderSummary(); });
       row.appendChild(x); box.appendChild(row);
