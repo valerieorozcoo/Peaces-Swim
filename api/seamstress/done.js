@@ -47,6 +47,8 @@ export default route(["POST"], async (body) => {
   const phone = toE164(attr(a, "Text when ready") || info.phone || "") || "";
   const name = attr(a, "Customer name") || (info.customer && info.customer.displayName) || "";
   const tags = info.tags || [];
+  // shipped orders: no "ready" text (Shopify emails them when it's fulfilled with tracking)
+  if (tags.includes("ship") && !tags.includes("pickup") && !tags.includes("wait-and-watch")) return { ok: true, done: true, text: { sent: false, reason: "ship", name } };
   const mode = tags.includes("pickup") ? "pickup" : "wait", pickupAt = attr(a, "Pickup time");
   const message = readyMessage({ name, number: info.name, mode, pickupAt });
   if (!phone) return { ok: true, done: true, text: { sent: false, reason: "no-phone", name } };
