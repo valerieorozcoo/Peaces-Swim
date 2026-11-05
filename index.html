@@ -5,7 +5,7 @@
 <script>
   /* Prelaunch switch: these addresses show only the waitlist; every other address
      (shop.peacesswim.com, previews) shows the full site. Empty the list on launch day. */
-  var PRELAUNCH_HOSTS=["peacesswim.com","www.peacesswim.com"];
+  var PRELAUNCH_HOSTS=[]; // launched Nov 5 2026: every address shows the full site
   if(PRELAUNCH_HOSTS.indexOf(location.hostname)>-1 || /[?&]prelaunch=1/.test(location.search)) document.documentElement.classList.add("prelaunch");
 </script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -1378,7 +1378,7 @@
           <input id="wEmail" name="email" type="email" placeholder="email" autocomplete="email" inputmode="email" required>
           <label class="lp-sr" for="wPhone">Phone number</label>
           <input id="wPhone" name="phone" type="tel" placeholder="phone number" autocomplete="tel" inputmode="tel" required>
-          <label class="lp-check" for="wSms"><input id="wSms" name="sms" type="checkbox" checked><span>Yes, I agree to receive recurring automated marketing text messages from Peaces Swim at this number. Consent is not a condition of purchase. Msg frequency varies. Msg &amp; data rates may apply. Reply STOP to unsubscribe or HELP for help.</span></label>
+          <label class="lp-check" for="wSms"><input id="wSms" name="sms" type="checkbox"><span>Yes, I agree to receive recurring automated marketing text messages from Peaces Swim at this number. Consent is not a condition of purchase. Msg frequency varies. Msg &amp; data rates may apply. Reply STOP to unsubscribe or HELP for help.</span></label>
           <div class="lp-hp" aria-hidden="true"><label for="wCompany">Company<input id="wCompany" name="company" type="text" tabindex="-1" autocomplete="off"></label></div>
           <p class="lp-wait-err" id="waitErr" role="alert" hidden></p>
           <button class="lp-wait-btn" type="submit" id="waitBtn">sign me up</button>
