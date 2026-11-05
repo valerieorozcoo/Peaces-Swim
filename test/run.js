@@ -194,6 +194,20 @@ try {
   r = await post("/orders/create", { design: limited });
   assert.equal(r.status, 400); assert.match(r.body.error, /sold out/);
   globalThis.PeacesRules.SOLD_OUT.length = 0; ok("a sold out piece can't be checked out");
+  r = await post("/orders/create", { design, promo: " peacespopup " });
+  assert.equal(r.status, 201); assert.equal(r.body.promo, true); assert.equal(r.body.subtotal, 95 + 15); assert.equal(r.body.total, 110);
+  { const li = db.drafts[db.drafts.length - 1].input.lineItems;
+    assert.ok(li.filter((l) => /^Add on: /.test(l.title)).every((l) => l.appliedDiscount && l.appliedDiscount.value === 100));
+    assert.ok(li.filter((l) => !/^Add on: /.test(l.title)).every((l) => !l.appliedDiscount));
+    assert.ok(db.drafts[db.drafts.length - 1].input.tags.includes("peacespopup")); }
+  ok("PeacesPopUp code: every customization free (bikini + tote still charged), any capitalization");
+  r = await post("/orders/create", { design, promo: "PEACESPOPUP", customer: { phone: "3055551234", welcomeToken: welcome } });
+  assert.equal(r.body.total, 99); ok("PeacesPopUp + welcome 10%: 10% off what's left");
+  r = await post("/orders/create", { design, promo: "FREESTUFF" });
+  assert.equal(r.body.promo, false); assert.equal(r.body.subtotal, 95 + 5 + 15 + 3 * 7 + 15); ok("a wrong code changes nothing");
+  process.env.POPUP_CODE_UNTIL = "2020-01-01T00:00:00Z";
+  r = await post("/orders/create", { design, promo: "PeacesPopUp" });
+  assert.equal(r.body.promo, false); delete process.env.POPUP_CODE_UNTIL; ok("the code stops working after the pop-up");
   r = await post("/orders/create", { design: { ...design, addons: [{ id: "bows", cfg: { tp: ["mid"] }, price: 0 }] } });
   assert.equal(r.body.subtotal, 95 + 5 + 15); ok("browser can't set prices");
 

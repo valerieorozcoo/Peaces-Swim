@@ -97,7 +97,7 @@ export function startMockShopify(port) {
     }
     if (query.includes("draftOrderCreate")) {
       const i = variables.input;
-      const sub = i.lineItems.reduce((s, l) => s + +l.originalUnitPriceWithCurrency.amount * (l.quantity || 1), 0);
+      const sub = i.lineItems.reduce((s, l) => s + +l.originalUnitPriceWithCurrency.amount * (l.quantity || 1) * (1 - ((l.appliedDiscount && l.appliedDiscount.value) || 0) / 100), 0);
       const codeOff = (i.discountCodes || []).includes(db.welcomeCode === undefined ? "PEACESPARTY" : db.welcomeCode) ? 0.1 : 0;
       const tot = i.appliedDiscount ? sub * (1 - i.appliedDiscount.value / 100) : sub * (1 - codeOff);
       const d = { id: "gid://shopify/DraftOrder/" + (1000 + db.drafts.length), name: "#D" + (db.drafts.length + 1), input: i, createdAt: new Date().toISOString() };
@@ -110,7 +110,7 @@ export function startMockShopify(port) {
       if (!d) return send({ data: { draftOrderUpdate: { draftOrder: null, userErrors: [{ field: ["id"], message: "not found" }] } } });
       d.update = { ...(d.update || {}), ...variables.input }; // like Shopify: fields left out stay as they were
       if (variables.input.appliedDiscount) {
-        const sub = d.input.lineItems.reduce((s, l) => s + +l.originalUnitPriceWithCurrency.amount * (l.quantity || 1), 0);
+        const sub = d.input.lineItems.reduce((s, l) => s + +l.originalUnitPriceWithCurrency.amount * (l.quantity || 1) * (1 - ((l.appliedDiscount && l.appliedDiscount.value) || 0) / 100), 0);
         return send({ data: { draftOrderUpdate: { draftOrder: { id: d.id, name: d.name, invoiceUrl: "https://example.com/invoice/" + d.name.slice(1),
           totalPriceSet: { shopMoney: { amount: (sub * (1 - variables.input.appliedDiscount.value / 100)).toFixed(2) } } }, userErrors: [] } } });
       }
