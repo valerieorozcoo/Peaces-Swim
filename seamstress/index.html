@@ -109,7 +109,16 @@
   .blk{margin-bottom:22px;}
   .blk h2{margin:0 0 4px; font-size:22px; letter-spacing:.14em; text-transform:uppercase; font-weight:600; color:var(--teal);}
   .blk .sub{margin:0 0 12px; font-size:15px; color:var(--ink-60);}
-  #list-sewing,#list-next,#list-unpaid{max-width:900px;}
+  #list-sewing,#list-next,#list-unpaid,#list-completed{max-width:900px;}
+  .topbar{display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; max-width:900px; margin:0 0 14px;}
+  .topbar .me{margin:0;}
+  a.btn{display:inline-block; text-decoration:none;}
+  .views{padding:10px 16px; white-space:nowrap;}
+  .back{display:inline-block; font-size:16px; margin:0 0 14px; padding:0;}
+  .card.done{border-left-color:#8c7f92; background:#f7f5f8;}
+  .doneat{display:inline-block; background:var(--teal-deep, #1f6f6a); color:#fff; padding:3px 10px; font-weight:700; font-size:15px; margin:0 8px 8px 0;}
+  .txt{display:inline-block; font-size:14px; font-weight:600; padding:3px 8px; margin:0 8px 8px 0; border:1.5px solid currentColor;}
+  .txt.no{color:var(--ink-60);}
   .actions{flex-wrap:wrap;}
   .card.first .name::after{content:attr(data-next); margin-left:10px; font-size:14px; letter-spacing:.12em; text-transform:uppercase; background:var(--teal); color:#fff; padding:3px 8px; vertical-align:middle;}
   .card.sewing{border-left-color:#7a3fb0; background:#fbf6ff;}
@@ -194,8 +203,12 @@
   </section>
 
   <main id="queue" hidden>
-    <div class="me"><label for="sewer" data-t="me">Your name</label><input id="sewer" type="text" maxlength="30" autocomplete="off" placeholder="Ana"></div>
+    <div class="topbar">
+      <div class="me"><label for="sewer" data-t="me">Your name</label><input id="sewer" type="text" maxlength="30" autocomplete="off" placeholder="Ana"></div>
+      <a class="btn ghost views" id="toDone" href="#completed"><span data-t="doneBtn">Completed</span> (<span data-count="completed">0</span>) →</a>
+    </div>
     <p class="err" id="loadErr" role="alert"></p>
+    <div id="queueView">
     <section class="blk">
       <h2><span data-t="nowH">Sewing now</span> (<span data-count="sewing">0</span>)</h2>
       <div class="list" id="list-sewing"></div>
@@ -209,6 +222,15 @@
       <h2><span data-t="unpaidH">Not paid yet</span> (<span data-count="unpaid">0</span>)</h2>
       <div class="list" id="list-unpaid"></div>
     </section>
+    </div>
+    <div id="doneView" hidden>
+      <a class="linkish back" href="#" id="toQueue" data-t="back">← Back to orders</a>
+      <section class="blk">
+        <h2><span data-t="doneH">Completed</span> (<span data-count="completed">0</span>)</h2>
+        <p class="sub" data-t="doneSub">Finished in the last 3 days, newest first.</p>
+        <div class="list" id="list-completed"></div>
+      </section>
+    </div>
   </main>
 </div>
 <div id="printArea" aria-hidden="true"></div>
@@ -274,7 +296,12 @@
     start:["Start sewing","Empezar"], stop:["Stop","Soltar"], sewingBy:["{n} is sewing","{n} está cosiendo"], readyBy:["Ready ~{t}","Lista ~{t}"],
     late:["Late for pickup at {t}!","¡Tarde para recoger a las {t}!"], startBy:["Start by {t} for the {p} pickup","Empieza a las {t} para que esté a las {p}"],
     nextUp:["Next","Siguiente"], needName:["Type your name first (top of the page).","Escribe tu nombre primero (arriba)."],
-    taken:["{e}","{e}"], cantStart:["Couldn't start {n}: {e}","No se pudo empezar {n}: {e}"]
+    taken:["{e}","{e}"], cantStart:["Couldn't start {n}: {e}","No se pudo empezar {n}: {e}"],
+    doneBtn:["Completed","Terminados"], doneH:["Completed","Terminados"], back:["← Back to orders","← Volver a pedidos"],
+    doneSub:["Finished in the last 3 days, newest first.","Terminados en los últimos 3 días, los más recientes primero."],
+    doneAt:["Done {t}","Lista {t}"], textedOk:["Texted ✓","Avisada ✓"], notTexted:["Not texted","Sin aviso"],
+    putBack:["Put back in line","Regresar a la fila"], emptyDone:["Nothing finished yet.","Nada terminado todavía."],
+    waitedHere:["Waited here","Esperó aquí"], putBackDone:["{n} is back in line.","{n} regresó a la fila."]
   };
   function t(k, v){ var s = (T[k] || [k, k])[lang === "es" ? 1 : 0]; if (v) Object.keys(v).forEach(function(x){ s = s.replace("{" + x + "}", v[x]); }); return s; }
   function L(en, es){ return lang === "es" ? (es || en) : en; }
@@ -316,7 +343,7 @@
        [Done] */
   function lc1(x){ return x.charAt(0).toLowerCase() + x.slice(1); }
   function card(o, i, kind){
-    var c = el("article", "card" + (o.paid ? "" : " unpaid") + (kind === "sewing" ? " sewing" : "") + (kind === "next" && i === 0 ? " first" : ""));
+    var c = el("article", "card" + (o.paid ? "" : " unpaid") + (kind === "sewing" ? " sewing" : "") + (kind === "completed" ? " done" : "") + (kind === "next" && i === 0 ? " first" : ""));
     var pic = el("div", "pic");
     if (o.image) { var img = el("img"); img.src = o.image; img.alt = ""; img.loading = "lazy"; pic.appendChild(img); }
     else pic.appendChild(el("span", null, t("noPic")));
@@ -327,13 +354,17 @@
     body.appendChild(el("p", "ord", t("order") + " " + o.number));
     var when = el("p", "when2");
     if (kind === "sewing") when.appendChild(el("span", "by", t("sewingBy", { n: o.sewingBy || "?" })));
-    var chip = o.mode === "pickup"
+    if (kind === "completed") {
+      if (o.doneAt) when.appendChild(el("span", "doneat", t("doneAt", { t: clock(o.doneAt) + dayWord(o.doneAt) }) + (o.doneBy ? " · " + o.doneBy : "")));
+      when.appendChild(el("span", "txt" + (o.texted ? "" : " no"), t(o.texted ? "textedOk" : "notTexted")));
+    }
+    var chip = kind === "completed" ? (o.mode === "pickup" ? (lang === "es" ? "Recoge a las " : "Pick up at ") + o.pickupAt : t("waitedHere")) : o.mode === "pickup"
       ? (lang === "es" ? "Recoge a las " : "Pick up at ") + o.pickupAt + (o.pickupDate ? dayWord(o.pickupDate) : "")
       : (lang === "es" ? "Esperando aquí" : "Waiting here") + (o.readyAt ? " · " + lc1(t("readyBy", { t: clock(o.readyAt) })) : " · " + waited(o.chosenAt));
-    when.appendChild(el("span", "mode" + (o.mode === "pickup" ? " pickup" : "") + (o.late ? " late" : ""), chip));
+    when.appendChild(el("span", "mode" + (o.mode === "pickup" ? " pickup" : "") + (o.late && kind !== "completed" ? " late" : ""), chip));
     if (!o.paid) when.appendChild(el("span", "badge", t("notPaid")));
     body.appendChild(when);
-    if (o.late) body.appendChild(el("p", "eta late", t("late", { t: o.pickupAt })));
+    if (o.late && kind !== "completed") body.appendChild(el("p", "eta late", t("late", { t: o.pickupAt })));
 
     var bks = bikinisOfOrder(o);
     bks.forEach(function(b, bi){
@@ -359,10 +390,16 @@
       var st = el("button", "btn ghost", t("start")); st.type = "button";
       st.addEventListener("click", function(){ startSewing(o, st, true); });
     }
-    var done = el("button", "btn big", t("done"));
-    done.type = "button";
-    done.addEventListener("click", function(){ markDone(o, done); });
-    actions.appendChild(done);
+    if (kind === "completed") {
+      var back = el("button", "btn ghost", t("putBack")); back.type = "button";
+      back.addEventListener("click", function(){ putBack(o, back); });
+      actions.appendChild(back);
+    } else {
+      var done = el("button", "btn big", t("done"));
+      done.type = "button";
+      done.addEventListener("click", function(){ markDone(o, done); });
+      actions.appendChild(done);
+    }
     if (st) actions.appendChild(st);
     if (kind === "sewing") { var sp = el("button", "btn ghost", t("stop")); sp.type = "button"; sp.addEventListener("click", function(){ startSewing(o, sp, false); }); actions.appendChild(sp); }
     var pt = el("button", "linkish", t("print"));
@@ -465,11 +502,11 @@
   }
   function render(q){
     lastQ = q;
-    var sets = { sewing: q.sewing || [], next: q.next || [], unpaid: q.unpaid || [] };
+    var sets = { sewing: q.sewing || [], next: q.next || [], unpaid: q.unpaid || [], completed: q.completed || [] };
     Object.keys(sets).forEach(function(k){
       var list = $("list-" + k);
       list.textContent = "";
-      if (!sets[k].length && k !== "unpaid") list.appendChild(el("div", "empty", t(k === "sewing" ? "emptyNow" : "emptyNext")));
+      if (!sets[k].length && k !== "unpaid") list.appendChild(el("div", "empty", t(k === "sewing" ? "emptyNow" : k === "completed" ? "emptyDone" : "emptyNext")));
       sets[k].forEach(function(o, i){ list.appendChild(card(o, i, k)); });
       document.querySelectorAll('[data-count="' + k + '"]').forEach(function(n){ n.textContent = sets[k].length; });
     });
@@ -506,7 +543,7 @@
   async function markDone(o, btn){
     btn.disabled = true; btn.textContent = t("saving");
     try {
-      var r = await call("done", { id: o.id, done: true });
+      var r = await call("done", { id: o.id, done: true, sewer: $("sewer").value.trim() });
       undoId = o.id;
       var tx = r && r.text, who = (o.customer || "").split(" ")[0] || o.number, link = $("textHer");
       link.hidden = true;
@@ -526,6 +563,24 @@
       $("loadErr").textContent = t("cantDone", { n: o.number, e: e.message });
     }
   }
+  async function putBack(o, btn){
+    btn.disabled = true; btn.textContent = t("saving");
+    try {
+      await call("done", { id: o.id, done: false });
+      $("toastText").textContent = t("putBackDone", { n: o.customer || o.number }); $("textHer").hidden = true; undoId = null;
+      $("toast").hidden = false; clearTimeout(toastTimer); toastTimer = setTimeout(function(){ $("toast").hidden = true; }, 5000);
+    } catch (e) { btn.disabled = false; btn.textContent = t("putBack"); $("loadErr").textContent = t("cantUndo", { e: e.message }); }
+    load();
+  }
+  /* two pages in one: the orders (sewing now + up next) and #completed */
+  function view(){
+    var d = location.hash === "#completed";
+    $("queueView").hidden = d; $("doneView").hidden = !d; $("toDone").hidden = d;
+    window.scrollTo(0, 0);
+  }
+  window.addEventListener("hashchange", view);
+  $("toQueue").addEventListener("click", function(e){ e.preventDefault(); history.pushState("", document.title, location.pathname + location.search); view(); });
+  view();
   $("undo").addEventListener("click", async function(){
     if (!undoId) return;
     var id = undoId; undoId = null; $("toast").hidden = true;
