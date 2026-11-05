@@ -242,7 +242,13 @@ try {
   assert.ok(db.drafts.find((d) => d.id === waiter.id).update.customAttributes.some((x) => x.key === "Customer name")); ok("start sewing: shows under Sewing now, the other seamstress can't take it, nothing else on the order is lost");
   r = await post("/seamstress/start", { passcode: "sew-sew-123", id: waiter.id, start: false });
   r = await post("/seamstress/queue", { passcode: "sew-sew-123", tzOffset: 0 });
-  assert.equal(r.body.sewing.length, 0); assert.equal(r.body.next[0].id, waiter.id); ok("stop hands it back to the top of the line");
+  assert.equal(r.body.sewing.length, 0);
+  assert.ok(!r.body.next.some((c) => c.id === waiter.id)); assert.ok(r.body.unpaid.some((c) => c.id === waiter.id));
+  assert.ok(r.body.next.every((c) => c.paid)); ok("Up next is paid orders only; unpaid ones (even someone paying right now) are on Not paid yet");
+  db.drafts.find((d) => d.id === waiter.id).status = "COMPLETED";
+  r = await post("/seamstress/queue", { passcode: "sew-sew-123", tzOffset: 0 });
+  assert.equal(r.body.next[0].id, waiter.id); assert.ok(!r.body.unpaid.some((c) => c.id === waiter.id));
+  ok("once paid it moves to Up next; stop hands it back to the top of the line");
   r = await post("/seamstress/done", { passcode: "sew-sew-123", id: waiter.id, sewer: "Lucia" });
   assert.equal(r.body.done, true);
   assert.equal(r.body.text.phone, "+17865550101"); assert.equal(r.body.text.sent, false); assert.equal(r.body.text.reason, "not-set-up");
