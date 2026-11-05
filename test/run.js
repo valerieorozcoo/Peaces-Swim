@@ -369,8 +369,7 @@ try {
 
 
   assert.equal(db.tokenCalls, 1); ok("access token fetched once and cached");
-  assert.deepEqual(LIVE_SOLD_OUT.sort(), ["bottom:seamless:cheetah", "bottom:seamless:teal", "top:underwire:cheetah", "top:underwire:teal"]);
-  ok("sold out now: teal + cheetah bandeau (bralette) tops and seamless bottoms; cheetah triangle still in stock");
+  assert.deepEqual(LIVE_SOLD_OUT, []); ok("nothing is sold out right now");
   console.log(`\nAll ${n} checks passed.`);
 } finally { s1.close(); s2.close(); }
 
