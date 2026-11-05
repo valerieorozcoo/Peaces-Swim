@@ -153,6 +153,7 @@
   .t-sec .en{font-weight:600;}
   .t-sec .es{font-style:italic; color:#4B2470;}
   .t-sec ol{padding-left:1.2em;}
+  .t-sec .none{font-style:italic;}
   .t-sec li{margin-bottom:.03in;}
   .t-sec li span{display:block;}
   @media print{
@@ -161,6 +162,16 @@
     body > *:not(#printArea){display:none !important;}
     #printArea{position:static; left:auto;}
     .tag{page-break-after:always; break-after:page;}
+    /* label (thermal) printers print black only: no greys, purples or tints that fade or dither */
+    .tag,.tag *{color:#000 !important;}
+    .t-head{border-bottom-color:#000;}
+    .t-meta{background:#000 !important; color:#fff !important;}
+    .t-meta *{color:#fff !important;}
+    .t-pic{background:#fff !important; filter:grayscale(1) contrast(1.35);}
+    .t-logo{filter:grayscale(1) brightness(0);}
+    .t-sec .es{font-weight:500;}
+    .t-sec li{border-bottom:1px dotted #000; padding-bottom:.02in;}
+    * {-webkit-print-color-adjust:exact; print-color-adjust:exact;}
   }
 </style>
 </head>
@@ -392,15 +403,25 @@
       if (ES) d.appendChild(el("p", "en", es || en || ""));
       else { d.appendChild(el("p", "en", en || "")); if (es && es !== en) d.appendChild(el("p", "es", es)); }
       tg.appendChild(d); }
-    sec(H("Top", "Parte de arriba"), b.top, b.topEs);
-    sec(H("Bottom", "Parte de abajo"), b.bottom, b.bottomEs);
-    var s = el("div", "t-sec"); s.appendChild(el("h4", null, H("Customizations", "Personalizaciones")));
-    if (!b.addons.length) s.appendChild(el("p", "en", H("None", "Ninguna")));
-    else { var ol = el("ol"); b.addons.forEach(function(a, k){ var li = el("li"), es = (b.addonsEs || [])[k];
-      if (ES) li.appendChild(el("span", "en", es || a));
-      else { li.appendChild(el("span", "en", a)); if (es) li.appendChild(el("span", "es", es)); }
-      ol.appendChild(li); }); s.appendChild(ol); }
-    tg.appendChild(s);
+    // same layout as the card: each piece, then its customizations in tier order
+    function piece(h, name, nameEs, items, itemsEs){
+      var d = el("div", "t-sec"); d.appendChild(el("h4", null, h));
+      if (name) { if (ES) d.appendChild(el("p", "en", nameEs || name)); else { d.appendChild(el("p", "en", name)); if (nameEs && nameEs !== name) d.appendChild(el("p", "es", nameEs)); } }
+      if (!items.length) d.appendChild(el("p", "none", H("No customizations", "Sin personalización")));
+      else { var ol = el("ol"); items.forEach(function(a, k){ var li = el("li"), es = (itemsEs || [])[k];
+        if (ES) li.appendChild(el("span", "en", es || a));
+        else { li.appendChild(el("span", "en", a)); if (es && es !== a) li.appendChild(el("span", "es", es)); }
+        ol.appendChild(li); }); d.appendChild(ol); }
+      tg.appendChild(d);
+    }
+    if (b.hasPieces) {
+      if (b.top || (b.topCustom || []).length) piece(H("Top", "Parte de arriba"), b.top, b.topEs, b.topCustom || [], b.topCustomEs || []);
+      if (b.bottom || (b.bottomCustom || []).length) piece(H("Bottom", "Parte de abajo"), b.bottom, b.bottomEs, b.bottomCustom || [], b.bottomCustomEs || []);
+    } else { // older orders: pieces, then one list
+      sec(H("Top", "Parte de arriba"), b.top, b.topEs);
+      sec(H("Bottom", "Parte de abajo"), b.bottom, b.bottomEs);
+      piece(H("Customizations", "Personalizaciones"), "", "", b.addons || [], b.addonsEs || []);
+    }
     if (b.extras && b.extras.length) sec(H("Also in the bag", "También en la bolsa"), b.extras.map(function(x){ return x.en; }).join(", "), b.extras.map(function(x){ return x.es || x.en; }).join(", "));
     return tg;
   }
