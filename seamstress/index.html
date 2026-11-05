@@ -109,7 +109,19 @@
   .blk{margin-bottom:22px;}
   .blk h2{margin:0 0 4px; font-size:22px; letter-spacing:.14em; text-transform:uppercase; font-weight:600; color:var(--teal);}
   .blk .sub{margin:0 0 12px; font-size:15px; color:var(--ink-60);}
-  #list-sewing,#list-next,#list-unpaid{max-width:900px;}
+  #list-sewing,#list-next,#list-unpaid,#list-completed{max-width:900px;}
+  .topbar{display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; max-width:900px; margin:0 0 14px;}
+  .topbar .me{margin:0;}
+  a.btn{display:inline-block; text-decoration:none;}
+  .views{padding:10px 16px; white-space:nowrap;}
+  .navs{display:flex; flex-direction:column; align-items:stretch; gap:8px;}
+  .navs .views{text-align:center;}
+  .unpaidbtn{color:var(--pink) !important; border-color:var(--pink) !important;}
+  .back{display:inline-block; font-size:16px; margin:0 0 14px; padding:0;}
+  .card.done{border-left-color:#8c7f92; background:#f7f5f8;}
+  .doneat{display:inline-block; background:var(--teal-deep, #1f6f6a); color:#fff; padding:3px 10px; font-weight:700; font-size:15px; margin:0 8px 8px 0;}
+  .txt{display:inline-block; font-size:14px; font-weight:600; padding:3px 8px; margin:0 8px 8px 0; border:1.5px solid currentColor;}
+  .txt.no{color:var(--ink-60);}
   .actions{flex-wrap:wrap;}
   .card.first .name::after{content:attr(data-next); margin-left:10px; font-size:14px; letter-spacing:.12em; text-transform:uppercase; background:var(--teal); color:#fff; padding:3px 8px; vertical-align:middle;}
   .card.sewing{border-left-color:#7a3fb0; background:#fbf6ff;}
@@ -153,6 +165,7 @@
   .t-sec .en{font-weight:600;}
   .t-sec .es{font-style:italic; color:#4B2470;}
   .t-sec ol{padding-left:1.2em;}
+  .t-sec .none{font-style:italic;}
   .t-sec li{margin-bottom:.03in;}
   .t-sec li span{display:block;}
   @media print{
@@ -161,6 +174,16 @@
     body > *:not(#printArea){display:none !important;}
     #printArea{position:static; left:auto;}
     .tag{page-break-after:always; break-after:page;}
+    /* label (thermal) printers print black only: no greys, purples or tints that fade or dither */
+    .tag,.tag *{color:#000 !important;}
+    .t-head{border-bottom-color:#000;}
+    .t-meta{background:#000 !important; color:#fff !important;}
+    .t-meta *{color:#fff !important;}
+    .t-pic{background:#fff !important; filter:grayscale(1) contrast(1.35);}
+    .t-logo{filter:grayscale(1) brightness(0);}
+    .t-sec .es{font-weight:500;}
+    .t-sec li{border-bottom:1px dotted #000; padding-bottom:.02in;}
+    * {-webkit-print-color-adjust:exact; print-color-adjust:exact;}
   }
 </style>
 </head>
@@ -183,8 +206,15 @@
   </section>
 
   <main id="queue" hidden>
-    <div class="me"><label for="sewer" data-t="me">Your name</label><input id="sewer" type="text" maxlength="30" autocomplete="off" placeholder="Ana"></div>
+    <div class="topbar">
+      <div class="me"><label for="sewer" data-t="me">Your name</label><input id="sewer" type="text" maxlength="30" autocomplete="off" placeholder="Ana"></div>
+      <div class="navs" id="navs">
+        <a class="btn ghost views" href="#completed"><span data-t="doneBtn">Completed</span> (<span data-count="completed">0</span>) →</a>
+        <a class="btn ghost views unpaidbtn" href="#unpaid"><span data-t="unpaidH">Not paid yet</span> (<span data-count="unpaid">0</span>) →</a>
+      </div>
+    </div>
     <p class="err" id="loadErr" role="alert"></p>
+    <div id="queueView">
     <section class="blk">
       <h2><span data-t="nowH">Sewing now</span> (<span data-count="sewing">0</span>)</h2>
       <div class="list" id="list-sewing"></div>
@@ -194,10 +224,23 @@
       <p class="sub" data-t="nextSub">Whoever finishes first takes the top one. People waiting here go first; a pickup jumps ahead only when it would otherwise be late.</p>
       <div class="list" id="list-next"></div>
     </section>
-    <section class="blk" id="blk-unpaid" hidden>
-      <h2><span data-t="unpaidH">Not paid yet</span> (<span data-count="unpaid">0</span>)</h2>
-      <div class="list" id="list-unpaid"></div>
-    </section>
+    </div>
+    <div id="unpaidView" hidden>
+      <a class="linkish back" href="#" data-t="back">← Back to orders</a>
+      <section class="blk">
+        <h2><span data-t="unpaidH">Not paid yet</span> (<span data-count="unpaid">0</span>)</h2>
+        <p class="sub" data-t="unpaidSub">Orders that haven't been paid. They join Up next as soon as they're paid.</p>
+        <div class="list" id="list-unpaid"></div>
+      </section>
+    </div>
+    <div id="doneView" hidden>
+      <a class="linkish back" href="#" data-t="back">← Back to orders</a>
+      <section class="blk">
+        <h2><span data-t="doneH">Completed</span> (<span data-count="completed">0</span>)</h2>
+        <p class="sub" data-t="doneSub">Finished in the last 3 days, newest first.</p>
+        <div class="list" id="list-completed"></div>
+      </section>
+    </div>
   </main>
 </div>
 <div id="printArea" aria-hidden="true"></div>
@@ -263,7 +306,13 @@
     start:["Start sewing","Empezar"], stop:["Stop","Soltar"], sewingBy:["{n} is sewing","{n} está cosiendo"], readyBy:["Ready ~{t}","Lista ~{t}"],
     late:["Late for pickup at {t}!","¡Tarde para recoger a las {t}!"], startBy:["Start by {t} for the {p} pickup","Empieza a las {t} para que esté a las {p}"],
     nextUp:["Next","Siguiente"], needName:["Type your name first (top of the page).","Escribe tu nombre primero (arriba)."],
-    taken:["{e}","{e}"], cantStart:["Couldn't start {n}: {e}","No se pudo empezar {n}: {e}"]
+    taken:["{e}","{e}"], cantStart:["Couldn't start {n}: {e}","No se pudo empezar {n}: {e}"],
+    doneBtn:["Completed","Terminados"], doneH:["Completed","Terminados"], back:["← Back to orders","← Volver a pedidos"],
+    doneSub:["Finished in the last 3 days, newest first.","Terminados en los últimos 3 días, los más recientes primero."],
+    doneAt:["Done {t}","Lista {t}"], textedOk:["Texted ✓","Avisada ✓"], notTexted:["Not texted","Sin aviso"],
+    putBack:["Put back in line","Regresar a la fila"], emptyDone:["Nothing finished yet.","Nada terminado todavía."],
+    waitedHere:["Waited here","Esperó aquí"], emptyUnpaid:["Nothing waiting on payment.","Nada pendiente de pago."],
+    unpaidSub:["Orders that haven't been paid. They join Up next as soon as they're paid.","Pedidos sin pagar. Pasan a Siguientes en cuanto se pagan."], putBackDone:["{n} is back in line.","{n} regresó a la fila."]
   };
   function t(k, v){ var s = (T[k] || [k, k])[lang === "es" ? 1 : 0]; if (v) Object.keys(v).forEach(function(x){ s = s.replace("{" + x + "}", v[x]); }); return s; }
   function L(en, es){ return lang === "es" ? (es || en) : en; }
@@ -305,7 +354,7 @@
        [Done] */
   function lc1(x){ return x.charAt(0).toLowerCase() + x.slice(1); }
   function card(o, i, kind){
-    var c = el("article", "card" + (o.paid ? "" : " unpaid") + (kind === "sewing" ? " sewing" : "") + (kind === "next" && i === 0 ? " first" : ""));
+    var c = el("article", "card" + (o.paid ? "" : " unpaid") + (kind === "sewing" ? " sewing" : "") + (kind === "completed" ? " done" : "") + (kind === "next" && i === 0 ? " first" : ""));
     var pic = el("div", "pic");
     if (o.image) { var img = el("img"); img.src = o.image; img.alt = ""; img.loading = "lazy"; pic.appendChild(img); }
     else pic.appendChild(el("span", null, t("noPic")));
@@ -316,13 +365,17 @@
     body.appendChild(el("p", "ord", t("order") + " " + o.number));
     var when = el("p", "when2");
     if (kind === "sewing") when.appendChild(el("span", "by", t("sewingBy", { n: o.sewingBy || "?" })));
-    var chip = o.mode === "pickup"
+    if (kind === "completed") {
+      if (o.doneAt) when.appendChild(el("span", "doneat", t("doneAt", { t: clock(o.doneAt) + dayWord(o.doneAt) }) + (o.doneBy ? " · " + o.doneBy : "")));
+      when.appendChild(el("span", "txt" + (o.texted ? "" : " no"), t(o.texted ? "textedOk" : "notTexted")));
+    }
+    var chip = kind === "completed" ? (o.mode === "pickup" ? (lang === "es" ? "Recoge a las " : "Pick up at ") + o.pickupAt : t("waitedHere")) : o.mode === "pickup"
       ? (lang === "es" ? "Recoge a las " : "Pick up at ") + o.pickupAt + (o.pickupDate ? dayWord(o.pickupDate) : "")
       : (lang === "es" ? "Esperando aquí" : "Waiting here") + (o.readyAt ? " · " + lc1(t("readyBy", { t: clock(o.readyAt) })) : " · " + waited(o.chosenAt));
-    when.appendChild(el("span", "mode" + (o.mode === "pickup" ? " pickup" : "") + (o.late ? " late" : ""), chip));
+    when.appendChild(el("span", "mode" + (o.mode === "pickup" ? " pickup" : "") + (o.late && kind !== "completed" ? " late" : ""), chip));
     if (!o.paid) when.appendChild(el("span", "badge", t("notPaid")));
     body.appendChild(when);
-    if (o.late) body.appendChild(el("p", "eta late", t("late", { t: o.pickupAt })));
+    if (o.late && kind !== "completed") body.appendChild(el("p", "eta late", t("late", { t: o.pickupAt })));
 
     var bks = bikinisOfOrder(o);
     bks.forEach(function(b, bi){
@@ -348,10 +401,16 @@
       var st = el("button", "btn ghost", t("start")); st.type = "button";
       st.addEventListener("click", function(){ startSewing(o, st, true); });
     }
-    var done = el("button", "btn big", t("done"));
-    done.type = "button";
-    done.addEventListener("click", function(){ markDone(o, done); });
-    actions.appendChild(done);
+    if (kind === "completed") {
+      var back = el("button", "btn ghost", t("putBack")); back.type = "button";
+      back.addEventListener("click", function(){ putBack(o, back); });
+      actions.appendChild(back);
+    } else {
+      var done = el("button", "btn big", t("done"));
+      done.type = "button";
+      done.addEventListener("click", function(){ markDone(o, done); });
+      actions.appendChild(done);
+    }
     if (st) actions.appendChild(st);
     if (kind === "sewing") { var sp = el("button", "btn ghost", t("stop")); sp.type = "button"; sp.addEventListener("click", function(){ startSewing(o, sp, false); }); actions.appendChild(sp); }
     var pt = el("button", "linkish", t("print"));
@@ -392,15 +451,25 @@
       if (ES) d.appendChild(el("p", "en", es || en || ""));
       else { d.appendChild(el("p", "en", en || "")); if (es && es !== en) d.appendChild(el("p", "es", es)); }
       tg.appendChild(d); }
-    sec(H("Top", "Parte de arriba"), b.top, b.topEs);
-    sec(H("Bottom", "Parte de abajo"), b.bottom, b.bottomEs);
-    var s = el("div", "t-sec"); s.appendChild(el("h4", null, H("Customizations", "Personalizaciones")));
-    if (!b.addons.length) s.appendChild(el("p", "en", H("None", "Ninguna")));
-    else { var ol = el("ol"); b.addons.forEach(function(a, k){ var li = el("li"), es = (b.addonsEs || [])[k];
-      if (ES) li.appendChild(el("span", "en", es || a));
-      else { li.appendChild(el("span", "en", a)); if (es) li.appendChild(el("span", "es", es)); }
-      ol.appendChild(li); }); s.appendChild(ol); }
-    tg.appendChild(s);
+    // same layout as the card: each piece, then its customizations in tier order
+    function piece(h, name, nameEs, items, itemsEs){
+      var d = el("div", "t-sec"); d.appendChild(el("h4", null, h));
+      if (name) { if (ES) d.appendChild(el("p", "en", nameEs || name)); else { d.appendChild(el("p", "en", name)); if (nameEs && nameEs !== name) d.appendChild(el("p", "es", nameEs)); } }
+      if (!items.length) d.appendChild(el("p", "none", H("No customizations", "Sin personalización")));
+      else { var ol = el("ol"); items.forEach(function(a, k){ var li = el("li"), es = (itemsEs || [])[k];
+        if (ES) li.appendChild(el("span", "en", es || a));
+        else { li.appendChild(el("span", "en", a)); if (es && es !== a) li.appendChild(el("span", "es", es)); }
+        ol.appendChild(li); }); d.appendChild(ol); }
+      tg.appendChild(d);
+    }
+    if (b.hasPieces) {
+      if (b.top || (b.topCustom || []).length) piece(H("Top", "Parte de arriba"), b.top, b.topEs, b.topCustom || [], b.topCustomEs || []);
+      if (b.bottom || (b.bottomCustom || []).length) piece(H("Bottom", "Parte de abajo"), b.bottom, b.bottomEs, b.bottomCustom || [], b.bottomCustomEs || []);
+    } else { // older orders: pieces, then one list
+      sec(H("Top", "Parte de arriba"), b.top, b.topEs);
+      sec(H("Bottom", "Parte de abajo"), b.bottom, b.bottomEs);
+      piece(H("Customizations", "Personalizaciones"), "", "", b.addons || [], b.addonsEs || []);
+    }
     if (b.extras && b.extras.length) sec(H("Also in the bag", "También en la bolsa"), b.extras.map(function(x){ return x.en; }).join(", "), b.extras.map(function(x){ return x.es || x.en; }).join(", "));
     return tg;
   }
@@ -444,15 +513,14 @@
   }
   function render(q){
     lastQ = q;
-    var sets = { sewing: q.sewing || [], next: q.next || [], unpaid: q.unpaid || [] };
+    var sets = { sewing: q.sewing || [], next: q.next || [], unpaid: q.unpaid || [], completed: q.completed || [] };
     Object.keys(sets).forEach(function(k){
       var list = $("list-" + k);
       list.textContent = "";
-      if (!sets[k].length && k !== "unpaid") list.appendChild(el("div", "empty", t(k === "sewing" ? "emptyNow" : "emptyNext")));
+      if (!sets[k].length) list.appendChild(el("div", "empty", t({ sewing: "emptyNow", completed: "emptyDone", unpaid: "emptyUnpaid" }[k] || "emptyNext")));
       sets[k].forEach(function(o, i){ list.appendChild(card(o, i, k)); });
       document.querySelectorAll('[data-count="' + k + '"]').forEach(function(n){ n.textContent = sets[k].length; });
     });
-    $("blk-unpaid").hidden = !sets.unpaid.length;
     $("updated").textContent = t("updated") + " " + clock(new Date().toISOString());
   }
 
@@ -485,7 +553,7 @@
   async function markDone(o, btn){
     btn.disabled = true; btn.textContent = t("saving");
     try {
-      var r = await call("done", { id: o.id, done: true });
+      var r = await call("done", { id: o.id, done: true, sewer: $("sewer").value.trim() });
       undoId = o.id;
       var tx = r && r.text, who = (o.customer || "").split(" ")[0] || o.number, link = $("textHer");
       link.hidden = true;
@@ -505,6 +573,25 @@
       $("loadErr").textContent = t("cantDone", { n: o.number, e: e.message });
     }
   }
+  async function putBack(o, btn){
+    btn.disabled = true; btn.textContent = t("saving");
+    try {
+      await call("done", { id: o.id, done: false });
+      $("toastText").textContent = t("putBackDone", { n: o.customer || o.number }); $("textHer").hidden = true; undoId = null;
+      $("toast").hidden = false; clearTimeout(toastTimer); toastTimer = setTimeout(function(){ $("toast").hidden = true; }, 5000);
+    } catch (e) { btn.disabled = false; btn.textContent = t("putBack"); $("loadErr").textContent = t("cantUndo", { e: e.message }); }
+    load();
+  }
+  /* three pages in one: the orders (sewing now + up next), #completed and #unpaid */
+  function view(){
+    var h = location.hash;
+    var d = h === "#completed", u = h === "#unpaid";
+    $("queueView").hidden = d || u; $("doneView").hidden = !d; $("unpaidView").hidden = !u; $("navs").hidden = d || u;
+    window.scrollTo(0, 0);
+  }
+  window.addEventListener("hashchange", view);
+  document.querySelectorAll(".back").forEach(function(a){ a.addEventListener("click", function(e){ e.preventDefault(); history.pushState("", document.title, location.pathname + location.search); view(); }); });
+  view();
   $("undo").addEventListener("click", async function(){
     if (!undoId) return;
     var id = undoId; undoId = null; $("toast").hidden = true;

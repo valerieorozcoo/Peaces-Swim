@@ -1,13 +1,13 @@
 import { route } from "../../lib/http.js";
 import { gql, check, toE164 } from "../../lib/shopify.js";
-import { checkPasscode, DONE_TAG } from "../../lib/queue.js";
+import { checkPasscode, DONE_TAG, cleanName } from "../../lib/queue.js";
 import { readyMessage, sendSms, smsReady } from "../../lib/sms.js";
 import { klaviyoReady, sendReadyEvent } from "../../lib/klaviyo.js";
 
 export const TEXTED_TAG = "texted-ready";
 const attr = (list, key) => ((list || []).find((a) => a.key === key) || {}).value || "";
 
-// POST /api/seamstress/done  { passcode, id, done: true | false }
+// POST /api/seamstress/done  { passcode, id, sewer, done: true | false }
 // Marks a builder order finished (tag `seamstress-done`) so it leaves the queue; done:false undoes it.
 // When it's marked done the customer gets a "your Peace is ready" text (once): through Klaviyo when
 // KLAVIYO_PRIVATE_KEY is set (a "Peace Ready" event → Klaviyo flow), or Twilio when that's set up instead;
@@ -17,9 +17,19 @@ export default route(["POST"], async (body) => {
   const id = String(body.id || "");
   if (!/^gid:\/\/shopify\/DraftOrder\/\d+$/.test(id)) throw new Error("Unknown order");
   const op = body.done === false ? "tagsRemove" : "tagsAdd";
+  let doneTags = [DONE_TAG];
+  if (op === "tagsAdd") { // when it was finished and by whom, for the Completed page
+    const who = cleanName(body.sewer);
+    doneTags.push("done-at:" + new Date().toISOString(), ...(who ? ["done-by:" + who] : []));
+  } else {
+    try {
+      const cur = await gql(`query($id:ID!){ draftOrder(id:$id){ tags } }`, { id });
+      doneTags = doneTags.concat(((cur.draftOrder && cur.draftOrder.tags) || []).filter((t) => /^done-(at|by):/.test(t)));
+    } catch (e) { /* the done tag alone is enough to put it back */ }
+  }
   const data = await gql(
     `mutation($id:ID!,$tags:[String!]!){ ${op}(id:$id, tags:$tags){ userErrors{ field message } } }`,
-    { id, tags: [DONE_TAG] }
+    { id, tags: doneTags }
   );
   check(data[op], op);
   if (op === "tagsRemove") return { ok: true, done: false };
