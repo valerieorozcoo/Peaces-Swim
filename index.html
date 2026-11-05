@@ -568,6 +568,15 @@
   .summary-list .row span:last-child{font-variant-numeric:tabular-nums; color:var(--ink);}
   .summary-list .row.discount span{color:var(--pink);}
   .perk{margin-top:12px; display:flex; gap:9px; align-items:flex-start; background:var(--aqua-pale); border:1px solid var(--purple); border-radius:0; padding:11px 13px; font-size:15px; cursor:pointer;}
+  /* pop-up code */
+  .promo{display:flex; gap:8px; margin:12px 0 4px;}
+  .promo input{flex:1; min-width:0; border:1px solid var(--line, #d9c8ea); background:#fff; padding:10px 12px; font:inherit; font-size:15px; letter-spacing:.06em; text-transform:uppercase;}
+  .promo input::placeholder{text-transform:none; letter-spacing:0;}
+  .promo button{border:0; background:#4B2470; color:#fff; padding:10px 16px; font:inherit; font-size:13px; letter-spacing:.14em; text-transform:uppercase; cursor:pointer;}
+  .promo-on{margin:12px 0 4px; padding:10px 12px; background:#efddfd; color:#4B2470; font-size:15px;}
+  .promo-on button{background:none; border:0; color:#4B2470; text-decoration:underline; font:inherit; font-size:13px; cursor:pointer; margin-left:6px;}
+  .promo-err{margin:4px 0; color:#e75297; font-size:14px;}
+  .row.free span:last-child s{opacity:.55; margin-right:6px;}
   .perk input{accent-color:var(--aqua); margin-top:2px; width:15px; height:15px; flex:none;}
   .perk small{display:block; color:var(--ink-soft); font-size:13px;}
   .cta{margin-top:12px; width:100%; padding:14px 18px; border:none; border-radius:0; background:var(--pink); color:#fff; font-family:var(--font); font-weight:500; font-size:17px; cursor:pointer; transition:background .15s, transform .12s;}
@@ -1722,6 +1731,14 @@
 
       <div class="summary-list" id="summaryList"></div>
 
+      <form class="promo" id="promoForm" novalidate>
+        <label class="lp-sr" for="promoIn">Pop-up code</label>
+        <input id="promoIn" type="text" placeholder="Have a code?" autocomplete="off" autocapitalize="characters" spellcheck="false">
+        <button type="submit">Apply</button>
+      </form>
+      <p class="promo-on" id="promoOn" hidden><span aria-hidden="true">&#10003;</span> <b>PeacesPopUp</b> · all customizations are free today <button type="button" id="promoOff">Remove</button></p>
+      <p class="promo-err" id="promoErr" role="alert" hidden></p>
+
       <div class="perk" id="perkNote" hidden>
         <span aria-hidden="true">&#10003;</span>
         <span>10% off applied<small id="perkWho">Thanks for sharing your info</small><small class="perk-code">Code PEACESPARTY</small></span>
@@ -2457,11 +2474,18 @@
       colorOf("top").name+" top + "+colorOf("bottom").name+" bottom";
   }
   function activeAddons(){ return ADDONS.filter(function(a){return state.addons[a.id] && addonAvailable(a.id);}); }
+  /* pop-up code: every customization free (the server checks the code again and applies it on the order) */
+  var PROMO_CODE="PEACESPOPUP", PROMO_UNTIL=Date.parse("2026-11-06T00:00:00-05:00"), PROMO_KEY="peaces-promo", lastAdds=0;
+  function promoOn(){ return !!state.promo && Date.now()<PROMO_UNTIL; }
+  try{ if(localStorage.getItem(PROMO_KEY)===PROMO_CODE && Date.now()<PROMO_UNTIL) state.promo=true; }catch(e){}
   function renderSummary(){
-    var list=activeAddons(), sub=BASE_PRICE;
-    list.forEach(function(a){ sub+=priceOf(a.id); });
-    if(state.tote) sub+=15;
-    if(state.headband) sub+=10;
+    var list=activeAddons(), full=BASE_PRICE, adds=0;
+    list.forEach(function(a){ adds+=priceOf(a.id); });
+    full+=adds;
+    if(state.tote) full+=15;
+    if(state.headband) full+=10;
+    lastAdds=adds;
+    var free=promoOn(), sub=free?full-adds:full;
     var total=state.perk?sub*(1-DISCOUNT):sub;
     document.getElementById("totalPrice").innerHTML=state.perk?"<s>"+fmt(sub)+"</s>"+fmt(total):fmt(total);
     document.getElementById("itemCount").textContent=(list.length?list.length+" add on"+(list.length>1?"s":""):"Base only")+" · size "+state.sizeTop+"/"+state.sizeBottom;
@@ -2474,17 +2498,35 @@
     row(styleOf("bottom").name+" · "+colorOf("bottom").name+" · "+state.sizeBottom,"included");
     list.forEach(function(a){
       var t=addonText(a);
-      row(a.name+(t?" ("+t+")":""),"+"+fmt(priceOf(a.id)));
+      if(free) row(a.name+(t?" ("+t+")":""),(priceOf(a.id)?"<s>+"+fmt(priceOf(a.id))+"</s>":"")+"free","free");
+      else row(a.name+(t?" ("+t+")":""),"+"+fmt(priceOf(a.id)));
     });
     if(state.perk) row("Socials + messages","−"+fmt(sub*DISCOUNT),"discount");
     var mt=document.getElementById("miniTotal"); if(mt) mt.innerHTML=document.getElementById("totalPrice").innerHTML;
     var ps=document.getElementById("peaceSheet"); // the phone's pull-down: sizes, what's on it, total
     if(ps) ps.innerHTML='<div class="ps-sizes"><span>Top <b>'+state.sizeTop+'</b></span><span>Bottom <b>'+state.sizeBottom+'</b></span></div>'+
       '<div class="ps-rows">'+box.innerHTML+'</div><div class="ps-total"><span>Total</span><b>'+document.getElementById("totalPrice").innerHTML+'</b></div>';
-    if(typeof renderBag==="function" && document.getElementById("bagbar")) renderBag(sub);
+    if(typeof renderBag==="function" && document.getElementById("bagbar")) renderBag(full);
+    var pf=document.getElementById("promoForm"); if(pf){ pf.hidden=free; document.getElementById("promoOn").hidden=!free; }
     if(typeof syncCheckoutPop==="function" && document.getElementById("checkoutPop")) syncCheckoutPop();
   }
   function renderAll(){ renderRig(); renderSummary(); syncControls(); syncBaseSel(); }
+  (function(){
+    var f=document.getElementById("promoForm"); if(!f) return;
+    var inp=document.getElementById("promoIn"), err=document.getElementById("promoErr");
+    f.addEventListener("submit",function(e){
+      e.preventDefault();
+      var v=inp.value.trim().toUpperCase().replace(/\s+/g,"");
+      if(!v) return;
+      if(v!==PROMO_CODE || Date.now()>=PROMO_UNTIL){ err.textContent="That code isn't valid."; err.hidden=false; return; }
+      err.hidden=true; state.promo=true; inp.value="";
+      try{ localStorage.setItem(PROMO_KEY,PROMO_CODE); }catch(x){}
+      renderSummary();
+    });
+    document.getElementById("promoOff").addEventListener("click",function(){
+      state.promo=false; try{ localStorage.removeItem(PROMO_KEY); }catch(x){} renderSummary();
+    });
+  })();
   (function(){
     var t=document.getElementById("peaceToggle"), sh=document.getElementById("peaceSheet");
     function flip(){ if(!window.matchMedia("(max-width:880px)").matches) return; var open=sh.hidden; sh.hidden=!open; t.setAttribute("aria-expanded",open?"true":"false"); t.classList.toggle("open",open); }
@@ -3608,7 +3650,7 @@
     try{
       var pic=await designImageOrNull(4000), inBag=bagPayload();
       var o=await api("/orders/create",{designs:inBag.designs.concat([designPayload()]), images:inBag.images.concat([pic]),
-        customer:lead?{phone:lead.phone,welcomeToken:lead.welcomeToken,name:lead.name,email:lead.email}:null});
+        customer:lead?{phone:lead.phone,welcomeToken:lead.welcomeToken,name:lead.name,email:lead.email}:null, promo:promoOn()?PROMO_CODE:""});
       if(!o.id || !o.sig || !o.checkoutUrl) throw new Error("We couldn't prepare checkout. Please try again.");
       currentOrder=o; bag.length=0;
       if(tab) tab.location.href=o.checkoutUrl; else window.location.href=o.checkoutUrl;
@@ -3630,9 +3672,9 @@
   var bag=[], MAX_BAG=5, lastSub=BASE_PRICE;
   function designTitle(){ return styleOf("top").name+" + "+styleOf("bottom").name; }
   function designColors(){ return colorOf("top").name+" / "+colorOf("bottom").name; }
-  function bagSub(){ return bag.reduce(function(s,b){ return s+b.sub; },0); }
+  function bagSub(){ return bag.reduce(function(s,b){ return s+b.sub-(promoOn()?(b.adds||0):0); },0); }
   function grandTotalHtml(){
-    var sub=bagSub()+lastSub, total=state.perk?sub*(1-DISCOUNT):sub;
+    var sub=bagSub()+lastSub-(promoOn()?lastAdds:0), total=state.perk?sub*(1-DISCOUNT):sub;
     return state.perk?"<s>"+fmt(sub)+"</s>"+fmt(total):fmt(total);
   }
   function renderBag(curSub){
@@ -3642,7 +3684,7 @@
     var box=document.getElementById("bagList"); box.innerHTML="";
     bag.forEach(function(b,i){
       var row=document.createElement("div"); row.className="bag-item";
-      row.innerHTML='<img alt="" src="'+b.image+'"><div><strong>Bikini '+(i+1)+'</strong><span>'+b.title+'</span><span>'+b.colors+' · '+b.sizes+'</span></div><em>'+fmt(b.sub)+'</em>';
+      row.innerHTML='<img alt="" src="'+b.image+'"><div><strong>Bikini '+(i+1)+'</strong><span>'+b.title+'</span><span>'+b.colors+' · '+b.sizes+'</span></div><em>'+fmt(b.sub-(promoOn()?(b.adds||0):0))+'</em>';
       var x=document.createElement("button"); x.type="button"; x.className="bag-x"; x.setAttribute("aria-label","Remove bikini "+(i+1)); x.innerHTML="&times;";
       x.addEventListener("click",function(){ bag.splice(i,1); renderSummary(); });
       row.appendChild(x); box.appendChild(row);
@@ -3668,7 +3710,7 @@
     if(btn.dataset.busy||bag.length+1>=MAX_BAG) return;
     btn.dataset.busy="1"; var label=btn.textContent; btn.textContent="ADDING…";
     var pic=await designImageOrNull(4000);
-    bag.push({design:designPayload(), image:pic||"art/logo-ps.png", title:designTitle(), colors:designColors(), sizes:state.sizeTop+"/"+state.sizeBottom, sub:lastSub});
+    bag.push({design:designPayload(), image:pic||"art/logo-ps.png", title:designTitle(), colors:designColors(), sizes:state.sizeTop+"/"+state.sizeBottom, sub:lastSub, adds:lastAdds});
     btn.textContent=label; delete btn.dataset.busy;
     var n=bag.length;
     resetDesign();

@@ -12,6 +12,10 @@ process.env.SEAMSTRESS_PASSCODE = "sew-sew-123";
 const { startLocal } = await import("./local-server.js");
 const { server: s1, db } = await startMockShopify(MOCK);
 const s2 = await startLocal(APP);
+// what's sold out in the shop right now shouldn't break the pricing tests: check the list, then test with everything in stock
+await import("../lib/rules.js");
+const LIVE_SOLD_OUT = globalThis.PeacesRules.SOLD_OUT.slice();
+globalThis.PeacesRules.SOLD_OUT.length = 0;
 const post = async (p, b) => { const r = await fetch(`http://localhost:${APP}/api${p}`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(b) }); return { status: r.status, body: await r.json() }; };
 
 let n = 0; const ok = (m) => { n++; console.log("  ✓", m); };
@@ -190,6 +194,20 @@ try {
   r = await post("/orders/create", { design: limited });
   assert.equal(r.status, 400); assert.match(r.body.error, /sold out/);
   globalThis.PeacesRules.SOLD_OUT.length = 0; ok("a sold out piece can't be checked out");
+  r = await post("/orders/create", { design, promo: " peacespopup " });
+  assert.equal(r.status, 201); assert.equal(r.body.promo, true); assert.equal(r.body.subtotal, 95 + 15); assert.equal(r.body.total, 110);
+  { const li = db.drafts[db.drafts.length - 1].input.lineItems;
+    assert.ok(li.filter((l) => /^Add on: /.test(l.title)).every((l) => l.appliedDiscount && l.appliedDiscount.value === 100));
+    assert.ok(li.filter((l) => !/^Add on: /.test(l.title)).every((l) => !l.appliedDiscount));
+    assert.ok(db.drafts[db.drafts.length - 1].input.tags.includes("peacespopup")); }
+  ok("PeacesPopUp code: every customization free (bikini + tote still charged), any capitalization");
+  r = await post("/orders/create", { design, promo: "PEACESPOPUP", customer: { phone: "3055551234", welcomeToken: welcome } });
+  assert.equal(r.body.total, 99); ok("PeacesPopUp + welcome 10%: 10% off what's left");
+  r = await post("/orders/create", { design, promo: "FREESTUFF" });
+  assert.equal(r.body.promo, false); assert.equal(r.body.subtotal, 95 + 5 + 15 + 3 * 7 + 15); ok("a wrong code changes nothing");
+  process.env.POPUP_CODE_UNTIL = "2020-01-01T00:00:00Z";
+  r = await post("/orders/create", { design, promo: "PeacesPopUp" });
+  assert.equal(r.body.promo, false); delete process.env.POPUP_CODE_UNTIL; ok("the code stops working after the pop-up");
   r = await post("/orders/create", { design: { ...design, addons: [{ id: "bows", cfg: { tp: ["mid"] }, price: 0 }] } });
   assert.equal(r.body.subtotal, 95 + 5 + 15); ok("browser can't set prices");
 
@@ -350,6 +368,8 @@ try {
 
 
   assert.equal(db.tokenCalls, 1); ok("access token fetched once and cached");
+  assert.deepEqual(LIVE_SOLD_OUT.sort(), ["bottom:seamless:cheetah", "bottom:seamless:teal", "top:underwire:cheetah", "top:underwire:teal"]);
+  ok("sold out now: teal + cheetah bandeau (bralette) tops and seamless bottoms; cheetah triangle still in stock");
   console.log(`\nAll ${n} checks passed.`);
 } finally { s1.close(); s2.close(); }
 
