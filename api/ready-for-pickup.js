@@ -33,7 +33,8 @@ export default async function handler(req, res) {
   }
 
   // Simple protection so only your team can fire this
-  if (req.headers["x-admin-key"] !== process.env.ADMIN_SECRET) {
+  // (if ADMIN_SECRET isn't set in Vercel, nobody gets in: otherwise a missing key would match a missing secret)
+  if (!process.env.ADMIN_SECRET || req.headers["x-admin-key"] !== process.env.ADMIN_SECRET) {
     return res.status(401).json({ error: "Unauthorized" });
   }
 
