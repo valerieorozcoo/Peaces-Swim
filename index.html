@@ -1810,13 +1810,14 @@
         </section>
         <button class="cta" id="extrasNext" type="button">CHECKOUT</button>
         <button class="cta cta-soft" id="addAnother" type="button">ADD TO BAG &amp; DESIGN ANOTHER BIKINI</button>
-        <button class="gate-skip page-back" id="extrasNo" type="button">No thanks</button>
+        <button class="gate-skip page-back" id="extrasNo" type="button">No thanks, check out</button>
       </div>
 
       <div id="pageDone" hidden>
         <section class="step">
           <div class="step-head"><h2>All done</h2><p class="hint">Here's your peace. Check out whenever you're ready.</p></div>
           <p class="done-copy">Your total and everything you picked are in the panel. Hit <strong>Checkout</strong> when you're ready.</p>
+          <button class="cta" id="doneCheckout" type="button">CHECKOUT</button>
           <button class="cta cta-soft" id="addAnother2" type="button">ADD TO BAG &amp; DESIGN ANOTHER BIKINI</button>
           <button class="gate-skip page-back" id="backToPeaces" type="button">Back to my design</button>
         </section>
@@ -2655,7 +2656,9 @@
   document.getElementById("extrasNext").addEventListener("click",function(){ showPage("pageDone"); document.getElementById("checkoutBtn").click(); });
   document.getElementById("extrasNo").addEventListener("click",function(){
     state.tote=false; state.headband=false; syncExtras(); renderSummary(); showPage("pageDone");
+    document.getElementById("checkoutBtn").click(); // done customizing: straight to checkout
   });
+  document.getElementById("doneCheckout").addEventListener("click",function(){ document.getElementById("checkoutBtn").click(); });
   document.getElementById("backToPeaces").addEventListener("click",function(){ showPage("pagePeaces"); });
 
   var TIER_LABEL={1:"Tier 1",2:"Tier 2",3:"Tier 3",4:"Tier 4"};
