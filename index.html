@@ -2510,15 +2510,16 @@
   // the code box is gone from the site: every code (FREESHIP, PEACESVIP…) is typed at Shopify checkout
   function promoOn(){ return false; }
   try{ localStorage.removeItem(PROMO_KEY); }catch(e){}
-  /* Creator links (www.peacesswim.com/PINKPILATESXPS): every bikini $70, customizations free, free shipping.
-     The server checks the code again and applies the prices on the Shopify order. Remembered 30 days. */
-  var CREATOR_CODES=["PINKPILATESXPS","PINKHAUS"], CREATOR_BASE=70, CREATOR_KEY="peaces-creator", creator=null;
-  (function(){ try{
-    var m=/[?&]creator=([A-Za-z0-9]+)/.exec(location.search), c=m&&m[1].toUpperCase();
-    if(c && CREATOR_CODES.indexOf(c)>-1){ localStorage.setItem(CREATOR_KEY,JSON.stringify({code:c,at:Date.now()})); history.replaceState(null,"",location.pathname+location.hash); }
-    var s=JSON.parse(localStorage.getItem(CREATOR_KEY)||"null");
-    if(s && CREATOR_CODES.indexOf(s.code)>-1 && Date.now()-s.at<30*864e5) creator=s.code;
-  }catch(e){} })();
+  /* Creator links (www.peacesswim.com/PINKPILATESXPS, /PINKHAUS): every bikini $70, customizations free, free
+     shipping. ONLY on those addresses: the plain www.peacesswim.com never gets it (nothing is remembered).
+     The server checks the code again and applies the prices on the Shopify order. */
+  var CREATOR_CODES=["PINKPILATESXPS","PINKHAUS"], CREATOR_BASE=70, creator=null;
+  (function(){
+    try{ localStorage.removeItem("peaces-creator"); }catch(e){} // forget codes saved by the old version
+    var seg=(location.pathname.split("/")[1]||"").toUpperCase(), m=/[?&]creator=([A-Za-z0-9]+)/.exec(location.search), q=m&&m[1].toUpperCase();
+    creator=CREATOR_CODES.indexOf(seg)>-1 ? seg : (q && CREATOR_CODES.indexOf(q)>-1 ? q : null);
+    if(creator && location.hash.length<2){ try{ history.replaceState(null,"",location.pathname+location.search+"#design"); }catch(e){} } // open straight on the builder
+  })();
   function creatorSub(full,adds){ return full-adds-Math.max(0,BASE_PRICE-CREATOR_BASE); } // one bikini at creator price
   function renderSummary(){
     var list=activeAddons(), full=BASE_PRICE, adds=0;

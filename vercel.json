@@ -1,44 +1,96 @@
 {
   "redirects": [
     {
-      "source": "/PINKPILATESXPS",
-      "destination": "/?creator=PINKPILATESXPS#design",
+      "source": "/PINKPILATESXPS/",
+      "destination": "/PINKPILATESXPS",
       "permanent": false
+    },
+    {
+      "source": "/pinkpilatesxps/",
+      "destination": "/pinkpilatesxps",
+      "permanent": false
+    },
+    {
+      "source": "/PinkPilatesXPS/",
+      "destination": "/PinkPilatesXPS",
+      "permanent": false
+    },
+    {
+      "source": "/PinkPilatesxPS/",
+      "destination": "/PinkPilatesxPS",
+      "permanent": false
+    },
+    {
+      "source": "/PinkPilatesXps/",
+      "destination": "/PinkPilatesXps",
+      "permanent": false
+    },
+    {
+      "source": "/Pinkpilatesxps/",
+      "destination": "/Pinkpilatesxps",
+      "permanent": false
+    },
+    {
+      "source": "/PINKHAUS/",
+      "destination": "/PINKHAUS",
+      "permanent": false
+    },
+    {
+      "source": "/pinkhaus/",
+      "destination": "/pinkhaus",
+      "permanent": false
+    },
+    {
+      "source": "/PinkHaus/",
+      "destination": "/PinkHaus",
+      "permanent": false
+    },
+    {
+      "source": "/Pinkhaus/",
+      "destination": "/Pinkhaus",
+      "permanent": false
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/PINKPILATESXPS",
+      "destination": "/index.html"
     },
     {
       "source": "/pinkpilatesxps",
-      "destination": "/?creator=PINKPILATESXPS#design",
-      "permanent": false
+      "destination": "/index.html"
     },
     {
       "source": "/PinkPilatesXPS",
-      "destination": "/?creator=PINKPILATESXPS#design",
-      "permanent": false
+      "destination": "/index.html"
     },
     {
       "source": "/PinkPilatesxPS",
-      "destination": "/?creator=PINKPILATESXPS#design",
-      "permanent": false
+      "destination": "/index.html"
+    },
+    {
+      "source": "/PinkPilatesXps",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/Pinkpilatesxps",
+      "destination": "/index.html"
     },
     {
       "source": "/PINKHAUS",
-      "destination": "/?creator=PINKHAUS#design",
-      "permanent": false
+      "destination": "/index.html"
     },
     {
       "source": "/pinkhaus",
-      "destination": "/?creator=PINKHAUS#design",
-      "permanent": false
+      "destination": "/index.html"
     },
     {
       "source": "/PinkHaus",
-      "destination": "/?creator=PINKHAUS#design",
-      "permanent": false
+      "destination": "/index.html"
     },
     {
       "source": "/Pinkhaus",
-      "destination": "/?creator=PINKHAUS#design",
-      "permanent": false
+      "destination": "/index.html"
     }
   ]
 }
