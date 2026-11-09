@@ -1,8 +1,44 @@
 {
   "redirects": [
-    { "source": "/PINKPILATESXPS", "destination": "/?creator=PINKPILATESXPS#design", "permanent": false },
-    { "source": "/pinkpilatesxps", "destination": "/?creator=PINKPILATESXPS#design", "permanent": false },
-    { "source": "/PinkPilatesXPS", "destination": "/?creator=PINKPILATESXPS#design", "permanent": false },
-    { "source": "/PinkPilatesxPS", "destination": "/?creator=PINKPILATESXPS#design", "permanent": false }
+    {
+      "source": "/PINKPILATESXPS",
+      "destination": "/?creator=PINKPILATESXPS#design",
+      "permanent": false
+    },
+    {
+      "source": "/pinkpilatesxps",
+      "destination": "/?creator=PINKPILATESXPS#design",
+      "permanent": false
+    },
+    {
+      "source": "/PinkPilatesXPS",
+      "destination": "/?creator=PINKPILATESXPS#design",
+      "permanent": false
+    },
+    {
+      "source": "/PinkPilatesxPS",
+      "destination": "/?creator=PINKPILATESXPS#design",
+      "permanent": false
+    },
+    {
+      "source": "/PINKHAUS",
+      "destination": "/?creator=PINKHAUS#design",
+      "permanent": false
+    },
+    {
+      "source": "/pinkhaus",
+      "destination": "/?creator=PINKHAUS#design",
+      "permanent": false
+    },
+    {
+      "source": "/PinkHaus",
+      "destination": "/?creator=PINKHAUS#design",
+      "permanent": false
+    },
+    {
+      "source": "/Pinkhaus",
+      "destination": "/?creator=PINKHAUS#design",
+      "permanent": false
+    }
   ]
 }

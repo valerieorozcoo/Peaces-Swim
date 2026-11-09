@@ -379,6 +379,9 @@ try {
     assert.ok(bikiniLines.length === 2 && bikiniLines.every((l) => l.appliedDiscount.valueType === "FIXED_AMOUNT" && l.appliedDiscount.value === 25));
     assert.ok(addLines.length && addLines.every((l) => l.appliedDiscount.value === 100)); assert.ok(extras.every((l) => !l.appliedDiscount));
     ok("PINKPILATESXPS: every bikini $70, customizations free, free shipping, tote full price, no extra 10%");
+    const ph = (await post("/orders/create", { design, creator: "PinkHaus" })).body;
+    assert.equal(ph.creator, "PINKHAUS"); assert.equal(ph.subtotal, 70 + 15);
+    assert.ok(db.drafts.find((d) => d.id === ph.id).input.tags.includes("pinkhaus")); ok("PINKHAUS: same creator pricing, tagged pinkhaus");
     const n = (await post("/orders/create", { design, creator: "NOTACODE" })).body;
     assert.equal(n.creator, null); assert.equal(n.subtotal, 151); ok("an unknown creator code changes nothing");
   }
