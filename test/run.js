@@ -194,6 +194,7 @@ try {
   r = await post("/orders/create", { design: limited });
   assert.equal(r.status, 400); assert.match(r.body.error, /sold out/);
   globalThis.PeacesRules.SOLD_OUT.length = 0; ok("a sold out piece can't be checked out");
+  process.env.POPUP_CODE_UNTIL = "2099-01-01T00:00:00Z"; // the real window has ended; test the code logic itself
   r = await post("/orders/create", { design, promo: " peacespopup " });
   assert.equal(r.status, 201); assert.equal(r.body.promo, true); assert.equal(r.body.subtotal, 151 - 10); assert.equal(r.body.total, 141);
   { const li = db.drafts[db.drafts.length - 1].input.lineItems;
