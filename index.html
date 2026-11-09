@@ -1731,13 +1731,6 @@
 
       <div class="summary-list" id="summaryList"></div>
 
-      <form class="promo" id="promoForm" novalidate>
-        <label class="lp-sr" for="promoIn">Pop-up code</label>
-        <input id="promoIn" type="text" placeholder="Have a code?" autocomplete="off" autocapitalize="characters" spellcheck="false">
-        <button type="submit">Apply</button>
-      </form>
-      <p class="promo-on" id="promoOn" hidden><span aria-hidden="true">&#10003;</span> <b>PeacesPopUp</b> · $10 off your order <button type="button" id="promoOff">Remove</button></p>
-      <p class="promo-err" id="promoErr" role="alert" hidden></p>
 
       <div class="perk" id="perkNote" hidden>
         <span aria-hidden="true">&#10003;</span>
@@ -2477,8 +2470,9 @@
   function activeAddons(){ return ADDONS.filter(function(a){return state.addons[a.id] && addonAvailable(a.id);}); }
   /* pop-up code: $10 off the order, once (the server checks the code again and applies it on the order) */
   var PROMO_CODE="PEACESPOPUP", PROMO_OFF=10, PROMO_UNTIL=Date.parse("2026-11-06T00:00:00-05:00"), PROMO_KEY="peaces-promo", lastAdds=0;
-  function promoOn(){ return !!state.promo && Date.now()<PROMO_UNTIL; }
-  try{ if(localStorage.getItem(PROMO_KEY)===PROMO_CODE && Date.now()<PROMO_UNTIL) state.promo=true; }catch(e){}
+  // the code box is gone from the site: every code (FREESHIP, PEACESVIP…) is typed at Shopify checkout
+  function promoOn(){ return false; }
+  try{ localStorage.removeItem(PROMO_KEY); }catch(e){}
   function renderSummary(){
     var list=activeAddons(), full=BASE_PRICE, adds=0;
     list.forEach(function(a){ adds+=priceOf(a.id); });
