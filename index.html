@@ -2476,6 +2476,16 @@
   // the code box is gone from the site: every code (FREESHIP, PEACESVIP…) is typed at Shopify checkout
   function promoOn(){ return false; }
   try{ localStorage.removeItem(PROMO_KEY); }catch(e){}
+  /* Creator links (www.peacesswim.com/PINKPILATESXPS): every bikini $70, customizations free, free shipping.
+     The server checks the code again and applies the prices on the Shopify order. Remembered 30 days. */
+  var CREATOR_CODES=["PINKPILATESXPS"], CREATOR_BASE=70, CREATOR_KEY="peaces-creator", creator=null;
+  (function(){ try{
+    var m=/[?&]creator=([A-Za-z0-9]+)/.exec(location.search), c=m&&m[1].toUpperCase();
+    if(c && CREATOR_CODES.indexOf(c)>-1){ localStorage.setItem(CREATOR_KEY,JSON.stringify({code:c,at:Date.now()})); history.replaceState(null,"",location.pathname+location.hash); }
+    var s=JSON.parse(localStorage.getItem(CREATOR_KEY)||"null");
+    if(s && CREATOR_CODES.indexOf(s.code)>-1 && Date.now()-s.at<30*864e5) creator=s.code;
+  }catch(e){} })();
+  function creatorSub(full,adds){ return full-adds-Math.max(0,BASE_PRICE-CREATOR_BASE); } // one bikini at creator price
   function renderSummary(){
     var list=activeAddons(), full=BASE_PRICE, adds=0;
     list.forEach(function(a){ adds+=priceOf(a.id); });
@@ -2483,23 +2493,24 @@
     if(state.tote) full+=15;
     if(state.headband) full+=10;
     lastAdds=adds;
-    var free=promoOn(), sub=free?Math.max(0,full-PROMO_OFF):full;
-    var total=state.perk?sub*(1-DISCOUNT):sub;
-    document.getElementById("totalPrice").innerHTML=state.perk?"<s>"+fmt(sub)+"</s>"+fmt(total):fmt(total);
+    var free=promoOn(), cr=!!creator, sub=cr?creatorSub(full,adds):free?Math.max(0,full-PROMO_OFF):full;
+    var perk=state.perk && !cr, total=perk?sub*(1-DISCOUNT):sub;
+    document.getElementById("totalPrice").innerHTML=perk?"<s>"+fmt(sub)+"</s>"+fmt(total):fmt(total);
     document.getElementById("itemCount").textContent=(list.length?list.length+" add on"+(list.length>1?"s":""):"Base only")+" · size "+state.sizeTop+"/"+state.sizeBottom;
     var box=document.getElementById("summaryList"); box.innerHTML="";
     function row(l,v,cls){
       var d=document.createElement("div"); d.className="row"+(cls?" "+cls:"");
       d.innerHTML="<span>"+l+"</span><span>"+v+"</span>"; box.appendChild(d);
     }
-    row(styleOf("top").name+" · "+colorOf("top").name+" · "+state.sizeTop,fmt(BASE_PRICE));
+    row(styleOf("top").name+" · "+colorOf("top").name+" · "+state.sizeTop,cr?"<s>"+fmt(BASE_PRICE)+"</s> "+fmt(CREATOR_BASE):fmt(BASE_PRICE),cr?"free":"");
     row(styleOf("bottom").name+" · "+colorOf("bottom").name+" · "+state.sizeBottom,"included");
     list.forEach(function(a){
       var t=addonText(a);
-      row(a.name+(t?" ("+t+")":""),"+"+fmt(priceOf(a.id)));
+      row(a.name+(t?" ("+t+")":""),cr?(priceOf(a.id)?"<s>+"+fmt(priceOf(a.id))+"</s> ":"")+"free":"+"+fmt(priceOf(a.id)),cr?"free":"");
     });
+    if(cr) row("Creator code "+creator,"free shipping","discount");
     if(free) row("PeacesPopUp","−"+fmt(PROMO_OFF),"discount");
-    if(state.perk) row("Socials + messages","−"+fmt(sub*DISCOUNT),"discount");
+    if(perk) row("Socials + messages","−"+fmt(sub*DISCOUNT),"discount");
     var mt=document.getElementById("miniTotal"); if(mt) mt.innerHTML=document.getElementById("totalPrice").innerHTML;
     var ps=document.getElementById("peaceSheet"); // the phone's pull-down: sizes, what's on it, total
     if(ps) ps.innerHTML='<div class="ps-sizes"><span>Top <b>'+state.sizeTop+'</b></span><span>Bottom <b>'+state.sizeBottom+'</b></span></div>'+
@@ -3025,7 +3036,7 @@
   }
   function syncPerk(){
     var note=document.getElementById("perkNote");
-    note.hidden=!state.perk;
+    note.hidden=!state.perk || !!creator; // creator pricing replaces the 10%
     if(state.perk && lead && lead.name){
       document.getElementById("perkWho").textContent="Thanks, "+lead.name.split(" ")[0]+". Your discount is on your total";
     }
@@ -3684,7 +3695,7 @@
       if(prepared && prepared.key===pictureKey()) early=prepared.url || await Promise.race([prepared.promise,new Promise(function(r){ setTimeout(function(){ r(null); },2500); })]);
       var pic=early?null:await designImageOrNull(4000), inBag=bagPayload();
       var o=await api("/orders/create",{designs:inBag.designs.concat([designPayload()]), images:inBag.images.concat([pic]),
-        imageUrls:inBag.images.map(function(){ return null; }).concat([early||null]), ship:SHIPPING,
+        imageUrls:inBag.images.map(function(){ return null; }).concat([early||null]), ship:SHIPPING, creator:creator||"",
         customer:lead?{phone:lead.phone,welcomeToken:lead.welcomeToken,name:lead.name,email:lead.email}:null, promo:promoOn()?PROMO_CODE:""});
       if(!o.id || !o.sig || !o.checkoutUrl) throw new Error("We couldn't prepare checkout. Please try again.");
       currentOrder=o; bag.length=0;
@@ -3710,6 +3721,7 @@
   function designColors(){ return colorOf("top").name+" / "+colorOf("bottom").name; }
   function bagSub(){ return bag.reduce(function(s,b){ return s+b.sub; },0); }
   function grandTotalHtml(){
+    if(creator){ var cs=bag.reduce(function(x,b){ return x+creatorSub(b.sub,b.adds||0); },0)+creatorSub(lastSub,lastAdds); return fmt(cs); }
     var sub=Math.max(0,bagSub()+lastSub-(promoOn()?PROMO_OFF:0)), total=state.perk?sub*(1-DISCOUNT):sub;
     return state.perk?"<s>"+fmt(sub)+"</s>"+fmt(total):fmt(total);
   }
@@ -3720,7 +3732,7 @@
     var box=document.getElementById("bagList"); box.innerHTML="";
     bag.forEach(function(b,i){
       var row=document.createElement("div"); row.className="bag-item";
-      row.innerHTML='<img alt="" src="'+b.image+'"><div><strong>Bikini '+(i+1)+'</strong><span>'+b.title+'</span><span>'+b.colors+' · '+b.sizes+'</span></div><em>'+fmt(b.sub)+'</em>';
+      row.innerHTML='<img alt="" src="'+b.image+'"><div><strong>Bikini '+(i+1)+'</strong><span>'+b.title+'</span><span>'+b.colors+' · '+b.sizes+'</span></div><em>'+fmt(creator?creatorSub(b.sub,b.adds||0):b.sub)+'</em>';
       var x=document.createElement("button"); x.type="button"; x.className="bag-x"; x.setAttribute("aria-label","Remove bikini "+(i+1)); x.innerHTML="&times;";
       x.addEventListener("click",function(){ bag.splice(i,1); renderSummary(); });
       row.appendChild(x); box.appendChild(row);

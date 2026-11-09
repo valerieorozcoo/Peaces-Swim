@@ -369,6 +369,19 @@ try {
   ok("matching existing contacts receive a welcome receipt without account access, and keep every tag");
 
 
+  { // creator code PINKPILATESXPS: every bikini $70, customizations free, free shipping
+    const o = (await post("/orders/create", { designs: [design, design], creator: "pinkpilatesxps", customer: { phone: "3055551234", welcomeToken: welcome } })).body;
+    assert.equal(o.creator, "PINKPILATESXPS"); assert.equal(o.subtotal, 70 * 2 + 15 * 2); assert.equal(o.total, 170); assert.equal(o.discounted, false);
+    const dr = db.drafts.find((d) => d.id === o.id).input;
+    assert.equal(dr.shippingLine.priceWithCurrency.amount, "0.00"); assert.ok(dr.tags.includes("creator") && dr.tags.includes("pinkpilatesxps"));
+    assert.ok(!dr.discountCodes);
+    const bikiniLines = dr.lineItems.filter((l) => /^Custom bikini/.test(l.title)), addLines = dr.lineItems.filter((l) => /^Add on: /.test(l.title)), extras = dr.lineItems.filter((l) => !/^(Custom bikini|Add on)/.test(l.title));
+    assert.ok(bikiniLines.length === 2 && bikiniLines.every((l) => l.appliedDiscount.valueType === "FIXED_AMOUNT" && l.appliedDiscount.value === 25));
+    assert.ok(addLines.length && addLines.every((l) => l.appliedDiscount.value === 100)); assert.ok(extras.every((l) => !l.appliedDiscount));
+    ok("PINKPILATESXPS: every bikini $70, customizations free, free shipping, tote full price, no extra 10%");
+    const n = (await post("/orders/create", { design, creator: "NOTACODE" })).body;
+    assert.equal(n.creator, null); assert.equal(n.subtotal, 151); ok("an unknown creator code changes nothing");
+  }
   { // picture uploaded early, then reused at checkout
     const tiny = "data:image/jpeg;base64," + Buffer.from("fake-jpeg-bytes").toString("base64");
     const pr = await post("/orders/picture", { image: tiny });

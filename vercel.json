@@ -1,0 +1,8 @@
+{
+  "redirects": [
+    { "source": "/PINKPILATESXPS", "destination": "/?creator=PINKPILATESXPS#design", "permanent": false },
+    { "source": "/pinkpilatesxps", "destination": "/?creator=PINKPILATESXPS#design", "permanent": false },
+    { "source": "/PinkPilatesXPS", "destination": "/?creator=PINKPILATESXPS#design", "permanent": false },
+    { "source": "/PinkPilatesxPS", "destination": "/?creator=PINKPILATESXPS#design", "permanent": false }
+  ]
+}
