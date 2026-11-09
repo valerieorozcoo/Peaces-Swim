@@ -17,6 +17,13 @@ export const POPUP_CODE = String(process.env.POPUP_CODE || "PEACESPOPUP").toUppe
 const popupCodeUntil = () => Date.parse(process.env.POPUP_CODE_UNTIL || "2026-11-06T00:00:00-05:00");
 export const popupCodeOk = (code, now = Date.now()) => String(code || "").trim().toUpperCase() === POPUP_CODE && now < popupCodeUntil();
 export const POPUP_OFF = 10;
+// Creator codes (product creators, from a link like www.peacesswim.com/PINKPILATESXPS): every bikini in the
+// bag is $70 with free customizations, and shipping is free. Extras (tote, headband) are full price.
+// More codes: CREATOR_CODES in Vercel (comma separated); price: CREATOR_BASE_PRICE.
+const creatorCodes = () => String(process.env.CREATOR_CODES || "PINKPILATESXPS").toUpperCase().split(/[\s,]+/).filter(Boolean);
+export const creatorCode = (code) => { const c = String(code || "").trim().toUpperCase(); return c && creatorCodes().includes(c) ? c : null; };
+const creatorBase = () => +(process.env.CREATOR_BASE_PRICE || 70);
+const isCustomization = (title) => /^Add[- ]on: /.test(title);
 
 // POST /api/orders/create  { designs:[design…], images:[dataUrl…], customer:{ phone, name, email, welcomeToken } }
 // (a single { design, image } still works). Prices every bikini in the bag on the server,
@@ -27,10 +34,14 @@ export default route(["POST"], async (body) => {
   const images = Array.isArray(body.images) ? body.images : [body.image];
   if (!designs.length || designs.length > MAX_BIKINIS) throw new Error("You can check out 1 to " + MAX_BIKINIS + " bikinis at a time");
   const orders = designs.map((d) => priceDesign(d));
-  const promo = popupCodeOk(body.promo);
+  const creator = creatorCode(body.creator);
+  const promo = !creator && popupCodeOk(body.promo);
   const full = orders.reduce((s, o) => s + o.subtotal, 0);
   const promoOff = promo ? Math.min(POPUP_OFF, orders[0].lines[0].price) : 0;
-  const subtotal = full - promoOff;
+  // creator pricing: what comes off each bikini (base down to $70, every customization free)
+  const creatorOff = (o) => o.lines.reduce((x, l, k) => x + (k === 0 ? Math.max(0, l.price - creatorBase()) : isCustomization(l.title) ? l.price : 0), 0);
+  const creatorTotalOff = creator ? orders.reduce((x, o) => x + creatorOff(o), 0) : 0;
+  const subtotal = full - promoOff - creatorTotalOff;
   const work = orders.reduce((s, o) => s + o.minutes, 0); // sewing minutes for every bikini in the bag
 
   const cust = body.customer || {};
@@ -48,12 +59,16 @@ export default route(["POST"], async (body) => {
   for (let i = 0; i < orders.length; i++) {
     const tag = many ? [{ key: "Bikini", value: (i + 1) + " of " + orders.length }] : [];
     const first = lineItems.length;
-    for (const l of orders[i].lines) {
+    for (const [k, l] of orders[i].lines.entries()) {
+      const creatorDiscount = !creator ? null
+        : k === 0 && l.price > creatorBase() ? { valueType: "FIXED_AMOUNT", value: l.price - creatorBase(), title: creator + ": $" + creatorBase() + " bikini" }
+        : isCustomization(l.title) && l.price > 0 ? { valueType: "PERCENTAGE", value: 100, title: creator + ": free customizations" } : null;
       lineItems.push({
         title: l.title, quantity: 1, originalUnitPriceWithCurrency: money(l.price),
         requiresShipping: true, taxable: true, // we ship now: Shopify checkout asks for their address
         customAttributes: tag.concat(Object.entries(l.attrs).map(([key, value]) => ({ key, value }))),
         ...(promoOff && lineItems.length === 0 && { appliedDiscount: { valueType: "FIXED_AMOUNT", value: promoOff, title: "PeacesPopUp: $10 off" } }),
+        ...(creatorDiscount && { appliedDiscount: creatorDiscount }),
       });
     }
     // The picture of each built bikini rides on its bikini line as `_design_image`
@@ -64,7 +79,8 @@ export default route(["POST"], async (body) => {
   }
 
   const input = {
-    tags: ["peaces-builder", "ship", ...(promo ? ["peacespopup"] : [])],
+    tags: ["peaces-builder", "ship", ...(promo ? ["peacespopup"] : []), ...(creator ? ["creator", creator.toLowerCase()] : [])],
+    ...(creator && { shippingLine: { title: "Free shipping (" + creator + ")", priceWithCurrency: money(0) } }),
     allowDiscountCodesInCheckout: true, // lets customers type Shopify discount codes (e.g. FREETOTE) at checkout
     note: "Made in the Peaces Swim Builder" + (many ? " · " + orders.length + " bikinis" : "")
       + pictures.map((u, i) => (u ? "\nDesign picture" + (many ? " " + (i + 1) : "") + ": " + u : "")).join(""),
@@ -79,7 +95,9 @@ export default route(["POST"], async (body) => {
   const email = String(cust.email || "").trim().toLowerCase().slice(0, 120);
   // Signed-up customers: their email goes on the order so it shows in their Shopify account.
   if (discounted && /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) input.email = email;
-  if (discounted) input.discountCodes = [WELCOME_CODE];
+  // creator orders are already at the creator price, so the welcome 10% isn't added on top
+  if (discounted && !creator) input.discountCodes = [WELCOME_CODE];
+  if (creator) input.customAttributes.push({ key: "Code", value: creator + " (creator: $" + creatorBase() + " bikini, free customizations, free shipping)" });
 
   const create = await gql(
     `mutation($input:DraftOrderInput!){ draftOrderCreate(input:$input){
@@ -90,7 +108,7 @@ export default route(["POST"], async (body) => {
   let d = check(create.draftOrderCreate, "draftOrderCreate").draftOrder;
   const total = (x) => (x && x.totalPriceSet ? +x.totalPriceSet.shopMoney.amount : null);
   // If Shopify skipped the code (e.g. it was paused or changed), still honour the 10% we promised.
-  if (discounted && total(d) !== null && total(d) >= subtotal) {
+  if (discounted && !creator && total(d) !== null && total(d) >= subtotal) {
     const upd = await gql(
       `mutation($id:ID!,$input:DraftOrderInput!){ draftOrderUpdate(id:$id,input:$input){
          draftOrder{ id name invoiceUrl totalPriceSet{ shopMoney{ amount } } } userErrors{ field message } } }`,
@@ -102,12 +120,12 @@ export default route(["POST"], async (body) => {
   // when it would be ready from the sewing schedule (2 seamstresses, wait & watch first)
   let plan = null;
   if (body.ship !== true) try { plan = waitFor((await gql(QUEUE_QUERY, { q: queueSince() })).draftOrders.nodes || [], work, Date.now(), d.id); } catch (e) { plan = null; }
-  const expected = discounted ? subtotal * (1 - DISCOUNT_PERCENT / 100) : subtotal;
+  const expected = discounted && !creator ? subtotal * (1 - DISCOUNT_PERCENT / 100) : subtotal;
   return {
     status: 201,
     body: {
       id: d.id, sig: sign(d.id), name: d.name, checkoutUrl: d.invoiceUrl,
-      subtotal, discounted, promo, promoOff, bikinis: orders.length, minutes: work, wait: plan ? plan.minutes : null, readyAt: plan ? plan.readyAt : null,
+      subtotal, discounted: discounted && !creator, promo, promoOff, creator, bikinis: orders.length, minutes: work, wait: plan ? plan.minutes : null, readyAt: plan ? plan.readyAt : null,
       image: pictures[0] || null, images: pictures,
       total: total(d) !== null ? total(d) : +expected.toFixed(2),
     },
