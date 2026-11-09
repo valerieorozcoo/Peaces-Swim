@@ -2163,6 +2163,39 @@
     el("image",{href:"art2/"+name+".png",x:0,y:(-h/2),width:L,height:h,
       preserveAspectRatio:"none",transform:tf},svg);
   }
+  /* Lace that looks sewn on (like the mint + pink lace sample): cut to the piece's own outline so it follows
+     the real edges, shaded with the same folds as the fabric, a soft shadow under it, a little see-through. */
+  var laceN=0;
+  function laceLayer(svg,mapName,g,draw){
+    var id="lc"+(++laceN)+"_", W=g.w, H=g.h, box={maskUnits:"userSpaceOnUse",x:0,y:0,width:W,height:H,style:"mask-type:alpha"};
+    var defs=el("defs",{},svg);
+    var sm=el("mask",Object.assign({id:id+"s"},box),defs);
+    el("image",{href:"art2/"+mapName+"-sil.png",x:0,y:0,width:W,height:H,preserveAspectRatio:"none"},sm);
+    var lm=el("mask",Object.assign({id:id+"l"},box),defs);
+    var grp=el("g",{mask:"url(#"+id+"s)"},svg);
+    var lace=el("g",{opacity:"0.95",style:"filter:drop-shadow(0 "+(W*0.0025).toFixed(2)+"px "+(W*0.003).toFixed(2)+"px rgba(45,30,45,.32))"},grp);
+    draw(lace); draw(lm);
+    el("image",{href:"art2/"+mapName+"-shade.png",x:0,y:0,width:W,height:H,preserveAspectRatio:"none",mask:"url(#"+id+"l)",opacity:"0.6",style:"mix-blend-mode:multiply"},grp);
+  }
+  /* a lace band along an edge: its outer edge just past the piece's edge (the outline trims it to the real
+     curve), the band lying on the piece toward `inward`; ends stretched by e0 / e1 */
+  function laceBand(sg,h,inward,e0,e1){
+    var dx=sg[2]-sg[0], dy=sg[3]-sg[1], L=Math.sqrt(dx*dx+dy*dy), ux=dx/L, uy=dy/L, nx=-uy, ny=ux;
+    if((inward[0]-(sg[0]+sg[2])/2)*nx+(inward[1]-(sg[1]+sg[3])/2)*ny<0){ nx=-nx; ny=-ny; }
+    var off=h*0.5-h*0.12;
+    return [sg[0]-ux*e0+nx*off, sg[1]-uy*e0+ny*off, sg[2]+ux*e1+nx*off, sg[3]+uy*e1+ny*off];
+  }
+  /* where the lace goes on each piece, as bands */
+  function laceBands(g,isTop,segs,h){
+    var W=g.w;
+    if(isTop && !g.cupDrop) return segs.map(function(sg,i){ // triangle: down the inner edge of each cup, strap to hem
+      var apexFirst=sg[1]<sg[3];
+      return laceBand(sg,h,i?g.cupR:g.cupL,apexFirst?0:W*0.03,apexFirst?W*0.03:0); });
+    var inward=[W/2,g.h*0.8];
+    return segs.map(function(sg,i){ // across the top: from side to side, overlapping a little in the middle
+      var last=i===segs.length-1; return laceBand(sg,h,inward,i===0?W*0.015:h*0.2,last?W*0.015:h*0.2); });
+  }
+
   /* a trim photo whose top edge is sewn along the segment and the rest falls to one side (fringe, ruffles) */
   function hangStrip(svg,name,seg,h,lift){
     var dx=seg[2]-seg[0], dy=seg[3]-seg[1], L=Math.sqrt(dx*dx+dy*dy), ang=Math.atan2(dy,dx)*180/Math.PI;
@@ -2321,7 +2354,8 @@
     if(part!=="bottom"||!bg) return;
     if(on("laceRuffles") && cfg("laceRuffles","lower")==="around") bg.trimSegs.forEach(function(sg){ strip(svg,"p-laceruffle-p-"+variantOf("laceRuffles"),dropSeg(sg,W*0.04),g.h*0.13); });
     if(on("laceTrim") && cfg("laceTrim","bottom")==="around"){
-      bg.trimSegs.forEach(function(sg){ strip(svg,"p-lacetrim-"+variantOf("laceTrim"),dropSeg(sg,W*0.04),W*0.08); });
+      var lb=laceBands(g,false,bg.trimSegs,W*0.08);
+      laceLayer(svg,artName+"-back",g,function(t){ lb.forEach(function(sg){ strip(t,"p-lacetrim-"+variantOf("laceTrim"),sg,W*0.08); }); });
     }
     if(on("rhinestones") && cfg("rhinestones","place")==="butt") rhinestoneText(svg,[bg.rs],W);
   }
@@ -2341,8 +2375,8 @@
       if(!isTop && cfg("ruffles","rbottom")==="sides") sideSegs(g).forEach(function(sg){ ruf(sg,1.05); });
     }
     if(on("laceTrim") && (isTop || cfg("laceTrim","bottom")!=="none")){
-      var lth=isTop?W*0.12:W*0.1;
-      (isTop?laceSegs(g):g.trimSegs).forEach(function(sg){ strip(svg,"p-lacetrim-"+variantOf("laceTrim"),dropSeg(sg,(isTop&&!g.cupDrop?0:lth)*0.5),lth); });
+      var lth=isTop?W*(g.cupDrop?0.1:0.11):W*0.09, lbs=laceBands(g,isTop,isTop&&g.cupDrop?laceSegs(g):g.trimSegs,lth);
+      laceLayer(svg,artName,g,function(t){ lbs.forEach(function(sg){ strip(t,"p-lacetrim-"+variantOf("laceTrim"),sg,lth); }); });
       // "all around": across the top of the bottoms, front AND back (the back half shows on the back view). Never down the sides.
     }
     if(on("laceRuffles") && (isTop || /^(front|around)$/.test(cfg("laceRuffles","lower")))) g.trimSegs.forEach(function(sg){ strip(svg,"p-laceruffle-p-"+variantOf("laceRuffles"),sg,H*0.13); });
