@@ -369,6 +369,20 @@ try {
   ok("matching existing contacts receive a welcome receipt without account access, and keep every tag");
 
 
+  { // picture uploaded early, then reused at checkout
+    const tiny = "data:image/jpeg;base64," + Buffer.from("fake-jpeg-bytes").toString("base64");
+    const pr = await post("/orders/picture", { image: tiny });
+    assert.equal(pr.status, 200); assert.ok(pr.body.url && pr.body.url.startsWith("https://"));
+    const up = db.uploads || 0;
+    const shopUrl = "https://cdn.shopify.com/s/files/1/0855/peaces-design-1.jpg";
+    const o = (await post("/orders/create", { design, imageUrls: [shopUrl], ship: true })).body;
+    const li = db.drafts.find((d) => d.id === o.id).input.lineItems[0];
+    assert.ok(li.customAttributes.some((a) => a.key === "_design_image" && a.value === shopUrl)); assert.equal(db.uploads || 0, up);
+    assert.equal(o.wait, null); ok("an early-uploaded picture goes straight on the order (no second upload, no line lookup when shipping)");
+    const bad = (await post("/orders/create", { design, imageUrls: ["https://evil.example/x.jpg"] })).body;
+    assert.ok(!db.drafts.find((d) => d.id === bad.id).input.lineItems[0].customAttributes.some((a) => a.key === "_design_image" && /evil/.test(a.value)));
+    ok("only Shopify's own picture links are accepted");
+  }
   { // shipping (after the pop-up)
     const sh = (await post("/orders/create", { design, customer: { phone: "7865550909", name: "Shay Ship" } })).body;
     const dr = db.drafts.find((d) => d.id === sh.id);

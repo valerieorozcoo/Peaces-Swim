@@ -12,6 +12,9 @@
 <title>Peaces Swim: A new era of swimwear has arrived</title>
 <meta name="description" content="Design your own bikinis, made in Miami. Pick your peaces, add lace, ties and charms, and wear a swimsuit that's entirely yours.">
 <link rel="icon" type="image/png" href="art/logo-ps.png">
+<link rel="preconnect" href="https://peaces-swim.myshopify.com">
+<link rel="preconnect" href="https://cdn.shopify.com" crossorigin>
+<link rel="dns-prefetch" href="https://peaces-swim.myshopify.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400..700;1,400..700&family=Pinyon+Script&family=Sacramento&display=swap">
 <style>
 @font-face{font-family:"Open Sauce Sans";font-style:normal;font-weight:300;font-display:swap;src:url("fonts/open-sauce-sans-latin-300-normal.woff2") format("woff2");}
@@ -2646,7 +2649,7 @@
   document.getElementById("cpBtn").addEventListener("click",function(){ document.getElementById("checkoutBtn").click(); });
   document.getElementById("toPeaces").addEventListener("click",function(){ tierPage=0; showPage("pagePeaces"); syncTierPages(); });
   document.getElementById("backToStyle").addEventListener("click",function(){ if(tierStep(-1)) return; showPage("pageStyle"); });
-  document.getElementById("allDone").addEventListener("click",function(){ if(tierStep(1)) return; showPage("pageExtras"); });
+  document.getElementById("allDone").addEventListener("click",function(){ if(tierStep(1)) return; showPage("pageExtras"); prepPicture(); });
   document.getElementById("extrasNext").addEventListener("click",function(){ showPage("pageDone"); document.getElementById("checkoutBtn").click(); });
   document.getElementById("extrasNo").addEventListener("click",function(){
     state.tote=false; state.headband=false; syncExtras(); renderSummary(); showPage("pageDone");
@@ -3612,8 +3615,8 @@
   var SHIPPING=true;
   function fulfilStage(ready){
     if(SHIPPING){
-      document.getElementById("fulfilTitle").textContent=ready?"CHECKOUT READY":"TAKING YOU TO CHECKOUT";
-      document.getElementById("fulfilSub").textContent=ready?"Finish paying in the Shopify tab and add your shipping address there. We'll make your Peace and ship it to you.":"Getting your order ready…";
+      document.getElementById("fulfilTitle").textContent="TAKING YOU TO CHECKOUT";
+      document.getElementById("fulfilSub").textContent="One moment…";
       syncGo(); return;
     }
     document.getElementById("fulfilTitle").textContent=ready?"CHECKOUT READY":"HOW DO YOU WANT YOUR PEACE?";
@@ -3651,20 +3654,41 @@
     }).catch(function(){});
   });
 
+  /* Upload the bikini picture early (on "Anything else?") so checkout doesn't wait for it */
+  var prepared=null;
+  function pictureKey(){ try{ var d=designPayload(); delete d.tote; delete d.headband; delete d.toteColor; delete d.headbandColor; return JSON.stringify(d); }catch(e){ return ""; } }
+  function prepPicture(){
+    if(!SHIPPING) return;
+    var key=pictureKey(); if(!key || (prepared && prepared.key===key)) return;
+    var p={key:key,url:null};
+    p.promise=designImageOrNull(6000).then(function(pic){
+      if(!pic) return null;
+      return api("/orders/picture",{image:pic}).then(function(r){ p.url=(r&&r.url)||null; return p.url; });
+    }).catch(function(){ return null; });
+    prepared=p;
+  }
+  // coming back from Shopify with the Back button: don't leave "Taking you to checkout" up
+  window.addEventListener("pageshow",function(e){ if(e.persisted){ document.getElementById("fulfil").hidden=true; currentOrder=null; if(typeof syncCheckoutPop==="function") syncCheckoutPop(); } });
+
   /* Checkout, step 2: make the order, save their choice on it, and open Shopify to pay */
   document.getElementById("fulfilGo").addEventListener("click",async function(){
     var btn=this, note=document.getElementById("checkoutNote"), status=document.getElementById("fulfilStatus");
     if(btn.dataset.busy || btn.disabled) return;
     btn.dataset.busy="1"; btn.textContent="PREPARING…";
     saveDesign();
-    // open the tab now (inside the click) so pop-up blockers allow it, then point it at checkout
-    var tab=window.open("","_blank");
+    // pop-up mode: open the tab now (inside the click) so pop-up blockers allow it. Shipping: same tab.
+    var tab=SHIPPING?null:window.open("","_blank");
     try{
-      var pic=await designImageOrNull(4000), inBag=bagPayload();
+      // the picture was usually uploaded already while they looked at "Anything else?"
+      var early=null;
+      if(prepared && prepared.key===pictureKey()) early=prepared.url || await Promise.race([prepared.promise,new Promise(function(r){ setTimeout(function(){ r(null); },2500); })]);
+      var pic=early?null:await designImageOrNull(4000), inBag=bagPayload();
       var o=await api("/orders/create",{designs:inBag.designs.concat([designPayload()]), images:inBag.images.concat([pic]),
+        imageUrls:inBag.images.map(function(){ return null; }).concat([early||null]), ship:SHIPPING,
         customer:lead?{phone:lead.phone,welcomeToken:lead.welcomeToken,name:lead.name,email:lead.email}:null, promo:promoOn()?PROMO_CODE:""});
       if(!o.id || !o.sig || !o.checkoutUrl) throw new Error("We couldn't prepare checkout. Please try again.");
       currentOrder=o; bag.length=0;
+      if(SHIPPING){ window.location.href=o.checkoutUrl; return; } // straight into Shopify checkout
       if(tab) tab.location.href=o.checkoutUrl; else window.location.href=o.checkoutUrl;
       note.textContent="Order "+o.name+" is ready. Finish paying in the checkout tab.";
       fulfilStage(true);

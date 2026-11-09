@@ -40,6 +40,11 @@ export default route(["POST"], async (body) => {
 
   const many = orders.length > 1;
   const lineItems = [], pictures = [];
+  // Pictures: one the builder already uploaded (a Shopify CDN link) is used as is; the rest are
+  // uploaded now, all at the same time.
+  const given = Array.isArray(body.imageUrls) ? body.imageUrls : [];
+  const okUrl = (u) => typeof u === "string" && u.length < 800 && /^https:\/\/cdn\.shopify\.com\/s\/files\/[^\s"'<>]+$/.test(u);
+  const pics = await Promise.all(orders.map((o, i) => (okUrl(given[i]) ? given[i] : saveDesignImage(images[i], o.lines[0].title))));
   for (let i = 0; i < orders.length; i++) {
     const tag = many ? [{ key: "Bikini", value: (i + 1) + " of " + orders.length }] : [];
     const first = lineItems.length;
@@ -53,7 +58,7 @@ export default route(["POST"], async (body) => {
     }
     // The picture of each built bikini rides on its bikini line as `_design_image`
     // (hidden at checkout, available to the receipt email as line.properties).
-    const url = await saveDesignImage(images[i], orders[i].lines[0].title);
+    const url = pics[i];
     pictures.push(url || null);
     if (url) lineItems[first].customAttributes.push({ key: "_design_image", value: url });
   }
@@ -96,7 +101,7 @@ export default route(["POST"], async (body) => {
   // sewing already waiting in line, so the earliest pickup time is realistic (never blocks checkout)
   // when it would be ready from the sewing schedule (2 seamstresses, wait & watch first)
   let plan = null;
-  try { plan = waitFor((await gql(QUEUE_QUERY, { q: queueSince() })).draftOrders.nodes || [], work, Date.now(), d.id); } catch (e) { plan = null; }
+  if (body.ship !== true) try { plan = waitFor((await gql(QUEUE_QUERY, { q: queueSince() })).draftOrders.nodes || [], work, Date.now(), d.id); } catch (e) { plan = null; }
   const expected = discounted ? subtotal * (1 - DISCOUNT_PERCENT / 100) : subtotal;
   return {
     status: 201,
