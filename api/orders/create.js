@@ -17,10 +17,10 @@ export const POPUP_CODE = String(process.env.POPUP_CODE || "PEACESPOPUP").toUppe
 const popupCodeUntil = () => Date.parse(process.env.POPUP_CODE_UNTIL || "2026-11-06T00:00:00-05:00");
 export const popupCodeOk = (code, now = Date.now()) => String(code || "").trim().toUpperCase() === POPUP_CODE && now < popupCodeUntil();
 export const POPUP_OFF = 10;
-// Creator codes (product creators, from a link like www.peacesswim.com/PINKPILATESXPS): every bikini in the
+// Creator / event codes (from a link like www.peacesswim.com/PINKPILATESXPS or /PINKHAUS): every bikini in the
 // bag is $70 with free customizations, and shipping is free. Extras (tote, headband) are full price.
 // More codes: CREATOR_CODES in Vercel (comma separated); price: CREATOR_BASE_PRICE.
-const creatorCodes = () => String(process.env.CREATOR_CODES || "PINKPILATESXPS").toUpperCase().split(/[\s,]+/).filter(Boolean);
+const creatorCodes = () => String(process.env.CREATOR_CODES || "PINKPILATESXPS,PINKHAUS").toUpperCase().split(/[\s,]+/).filter(Boolean);
 export const creatorCode = (code) => { const c = String(code || "").trim().toUpperCase(); return c && creatorCodes().includes(c) ? c : null; };
 const creatorBase = () => +(process.env.CREATOR_BASE_PRICE || 70);
 const isCustomization = (title) => /^Add[- ]on: /.test(title);

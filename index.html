@@ -2478,7 +2478,7 @@
   try{ localStorage.removeItem(PROMO_KEY); }catch(e){}
   /* Creator links (www.peacesswim.com/PINKPILATESXPS): every bikini $70, customizations free, free shipping.
      The server checks the code again and applies the prices on the Shopify order. Remembered 30 days. */
-  var CREATOR_CODES=["PINKPILATESXPS"], CREATOR_BASE=70, CREATOR_KEY="peaces-creator", creator=null;
+  var CREATOR_CODES=["PINKPILATESXPS","PINKHAUS"], CREATOR_BASE=70, CREATOR_KEY="peaces-creator", creator=null;
   (function(){ try{
     var m=/[?&]creator=([A-Za-z0-9]+)/.exec(location.search), c=m&&m[1].toUpperCase();
     if(c && CREATOR_CODES.indexOf(c)>-1){ localStorage.setItem(CREATOR_KEY,JSON.stringify({code:c,at:Date.now()})); history.replaceState(null,"",location.pathname+location.hash); }
