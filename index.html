@@ -3696,7 +3696,7 @@
       cards.forEach(function(c,i){
         var o=((i-cur)%n+n)%n; if(o>n/2) o-=n;
         var a=Math.abs(o), sc=a===0?1:a===1?0.86:0.74, x=o===0?0:Math.sign(o)*(w*0.5+gap+w*0.86*0.5+(a-1)*(w*0.86*0.5+gap+w*0.74*0.5));
-        c.style.transform="translate(-50%,-50%) translateX("+x+"px) scale("+sc+")"; c.style.opacity=a>2?0:1; c.style.zIndex=10-a; c.tabIndex=a>2?-1:0;
+        c.style.transform="translate(-50%,-50%) translateX("+x+"px) scale("+sc+")"; c.style.opacity=a>2?0:1; c.style.zIndex=10-a; c.tabIndex=a>2?-1:0; c.style.pointerEvents=a>2?"none":"";
         c.setAttribute("aria-label",(a===0?"Play: ":"Show: ")+(vids[i].desc||"TikTok video"));
         if(a!==0 && c.dataset.playing) cover(c,vids[i]);
       });
@@ -3705,8 +3705,11 @@
     function play(c,v){ if(c.dataset.playing) return; c.dataset.playing="1"; c.innerHTML='<iframe src="https://www.tiktok.com/player/v1/'+v.id+'?autoplay=1&loop=1&music_info=1&description=0&rel=0" allow="autoplay; encrypted-media; fullscreen; picture-in-picture" allowfullscreen title="'+(v.desc||"TikTok video").replace(/"/g,"&quot;")+'"></iframe>'; }
     function build(list){
       vids=list; cur=0;
-      cards=vids.map(function(v,i){ var c=document.createElement("button"); c.type="button"; c.className="tt-card"; cover(c,v);
-        c.addEventListener("click",function(){ if(i===cur) play(c,v); else { cur=i; layout(); } }); track.appendChild(c); return c; });
+      cards=vids.map(function(v,i){ var c=document.createElement("div"); c.className="tt-card"; c.setAttribute("role","button"); cover(c,v);
+        function act(){ if(i===cur) play(c,v); else { cur=i; layout(); } }
+        c.addEventListener("click",function(e){ if(!c.dataset.playing) act(); });
+        c.addEventListener("keydown",function(e){ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); act(); } });
+        track.appendChild(c); return c; });
       car.hidden=false; layout();
     }
     car.querySelector(".tt-prev").addEventListener("click",function(){ go(-1); });
