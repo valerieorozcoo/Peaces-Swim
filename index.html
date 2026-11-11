@@ -963,6 +963,35 @@
 
   /* ===== Lookbook page ===== */
   .lb{max-width:1220px; margin:0 auto; padding:24px 20px 72px; color:var(--fs-ink,#2E2433); font-family:var(--font);}
+  /* ---------- Peace Points account ---------- */
+  .ac-wrap{max-width:880px; margin:0 auto; padding:10px 0 80px;}
+  .ac-card{background:#fff; border:1px solid var(--line,#E7DAF3); border-radius:22px; padding:28px; margin-top:22px;}
+  .ac-card h2{margin:0 0 6px; font-size:22px; font-weight:500;}
+  .ac-muted{color:var(--ink-soft,#8A7480); font-size:15px; line-height:1.5; margin:0;}
+  .ac-perks{display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin:22px 0;}
+  .ac-perk{background:var(--pink-pale,#F6EEFB); border-radius:16px; padding:18px; text-align:center;}
+  .ac-perk b{display:block; font-size:26px; font-weight:500; color:var(--ink);}
+  .ac-perk span{font-size:13.5px; color:var(--ink-soft,#8A7480);}
+  .ac-btn{display:inline-block; border:0; cursor:pointer; background:var(--ink); color:#fff; padding:15px 30px; border-radius:999px; font:inherit; font-size:12.5px; letter-spacing:.22em; text-transform:uppercase;}
+  .ac-btn[disabled]{opacity:.45; cursor:default;}
+  .ac-btn.ghost{background:transparent; color:var(--ink); border:1px solid var(--line,#E7DAF3);}
+  .ac-pts{display:flex; align-items:flex-end; gap:12px; flex-wrap:wrap;}
+  .ac-pts b{font-size:64px; line-height:1; font-weight:400; font-style:italic;}
+  .ac-bar{height:10px; border-radius:99px; background:var(--pink-pale,#F6EEFB); overflow:hidden; margin:18px 0 8px;}
+  .ac-bar i{display:block; height:100%; background:var(--pink,#C58BE0); border-radius:99px; transition:width .6s;}
+  .ac-row{display:flex; justify-content:space-between; align-items:center; gap:14px; flex-wrap:wrap;}
+  .ac-code{display:flex; align-items:center; justify-content:space-between; gap:12px; padding:14px 0; border-top:1px solid var(--line,#E7DAF3);}
+  .ac-code code{font-size:17px; letter-spacing:.12em;}
+  .ac-code.used{opacity:.5;}
+  .ac-copy{border:1px solid var(--line,#E7DAF3); background:#fff; border-radius:999px; padding:8px 16px; cursor:pointer; font:inherit; font-size:13px;}
+  .ac-order{display:flex; gap:16px; padding:16px 0; border-top:1px solid var(--line,#E7DAF3);}
+  .ac-order img{width:64px; height:64px; object-fit:contain; border-radius:12px; background:var(--pink-pale,#F6EEFB);}
+  .ac-order p{margin:2px 0; font-size:14.5px;}
+  .ac-tag{display:inline-block; font-size:11.5px; letter-spacing:.12em; text-transform:uppercase; padding:3px 10px; border-radius:99px; background:var(--pink-pale,#F6EEFB); margin-left:6px;}
+  .ac-bday{display:flex; gap:10px; flex-wrap:wrap; margin-top:14px;}
+  .ac-bday select{font:inherit; padding:12px 14px; border-radius:12px; border:1px solid var(--line,#E7DAF3); background:#fff;}
+  .ac-msg{min-height:1.4em; margin:10px 0 0; font-size:14px; color:var(--ink-soft,#8A7480);}
+  @media (max-width:640px){ .ac-perks{grid-template-columns:1fr;} .ac-card{padding:22px;} .ac-pts b{font-size:52px;} }
   .lb-top{display:flex; align-items:center; justify-content:space-between; gap:16px; padding-bottom:18px; border-bottom:1px solid var(--line,#E7DAF3);}
   .lb-logo{height:clamp(64px,8vw,88px); width:auto; display:block;}
   .lb-nav{display:flex; align-items:center; gap:22px;}
@@ -1418,7 +1447,7 @@
         <a href="#shop">Shop</a>
         <a href="#lookbook">Lookbook</a>
         <a href="#about">About</a>
-        <a href="https://shopify.com/85529657569/account" id="accountBtn">Account</a>
+        <a href="#account" id="accountBtn">Account</a>
       </nav>
       <button class="nav-bag lp-bag" type="button" data-bag aria-label="Your bag"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 7h12l-1 13H7L6 7z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg><b data-bagcount>0</b></button>
       <button class="lp-menu-btn" id="menuBtn" type="button" aria-expanded="false" aria-controls="lpMenu"><span></span><span></span><span></span><b>Menu</b></button>
@@ -1431,7 +1460,7 @@
         <a href="#shop">Shop</a>
         <a href="#lookbook">Lookbook</a>
         <a href="#about">About</a>
-        <a href="https://shopify.com/85529657569/account" data-account>Account</a>
+        <a href="#account" data-account>Account</a>
       </nav>
       <img src="art/logo-ps-leopard.png" alt="" class="lp-menu-logo">
     </div>
@@ -1627,7 +1656,7 @@
 <div class="lb acc" id="accessories" hidden>
   <header class="lb-top">
     <a href="#" aria-label="Back to the Peaces Swim home page"><img class="lb-logo" src="art/logo-ps.png" alt="Peaces Swim"></a>
-    <nav class="lb-nav site-nav" aria-label="Menu"><a href="#design">Design</a><a href="#shop">Shop</a><a href="#lookbook">Lookbook</a><a href="#about">About</a><a href="https://shopify.com/85529657569/account" data-account>Account</a></nav><button class="nav-bag" type="button" data-bag aria-label="Your bag"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 7h12l-1 13H7L6 7z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg><b data-bagcount>0</b></button>
+    <nav class="lb-nav site-nav" aria-label="Menu"><a href="#design">Design</a><a href="#shop">Shop</a><a href="#lookbook">Lookbook</a><a href="#about">About</a><a href="#account" data-account>Account</a></nav><button class="nav-bag" type="button" data-bag aria-label="Your bag"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 7h12l-1 13H7L6 7z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg><b data-bagcount>0</b></button>
   </header>
 
   <section class="lb-head">
@@ -1683,12 +1712,63 @@
   <button class="cta" id="accCheckout" type="button" tabindex="-1">CHECKOUT</button>
 </div>
 
+<!-- ================= Account: Peace Points =================
+     #account: sign in with Shopify (email code), see points, rewards and orders. -->
+<div class="lb" id="account" hidden>
+  <header class="lb-top">
+    <a href="#" aria-label="Back to the Peaces Swim home page"><img class="lb-logo" src="art/logo-ps.png" alt="Peaces Swim"></a>
+    <nav class="lb-nav site-nav" aria-label="Menu"><a href="#design">Design</a><a href="#shop">Shop</a><a href="#lookbook">Lookbook</a><a href="#about">About</a><a href="#account" data-account>Account</a></nav><button class="nav-bag" type="button" data-bag aria-label="Your bag"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 7h12l-1 13H7L6 7z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg><b data-bagcount>0</b></button>
+  </header>
+  <section class="lb-head">
+    <p class="lb-kicker">Your Peaces account</p>
+    <h1 class="lb-title">Peace <i>Points</i></h1>
+    <p class="lb-sub" id="acHello">Every Peace you design earns points toward your next one.</p>
+  </section>
+  <div class="ac-wrap">
+    <div class="ac-card" id="acOut">
+      <h2>Join Peace Points</h2>
+      <p class="ac-muted">Sign in with the email you use at checkout. We send you a code, no password needed. Your past orders show up automatically.</p>
+      <div class="ac-perks">
+        <div class="ac-perk"><b>$1 = 1</b><span>point on every order</span></div>
+        <div class="ac-perk"><b>100 = $10</b><span>off your next Peace</span></div>
+        <div class="ac-perk"><b>+25 / +50</b><span>for joining and on your birthday</span></div>
+      </div>
+      <button class="ac-btn" type="button" id="acSignIn">Sign in or join</button>
+      <p class="ac-msg" id="acOutMsg"></p>
+    </div>
+    <div id="acIn" hidden>
+      <div class="ac-card">
+        <div class="ac-row"><p class="ac-muted">Your balance</p><button class="ac-copy" type="button" id="acSignOut">Sign out</button></div>
+        <div class="ac-pts"><b id="acBal">0</b><span class="ac-muted">Peace Points</span></div>
+        <div class="ac-bar"><i id="acBar" style="width:0"></i></div>
+        <p class="ac-muted" id="acNext"></p>
+        <div style="margin-top:18px"><button class="ac-btn" type="button" id="acRedeem">Get $10 off</button></div>
+        <p class="ac-msg" id="acMsg"></p>
+      </div>
+      <div class="ac-card">
+        <h2>Your exclusive codes</h2>
+        <p class="ac-muted">Only you can use these. Enter one at checkout.</p>
+        <div id="acCodes"></div>
+      </div>
+      <div class="ac-card" id="acBdayCard">
+        <h2>Your birthday</h2>
+        <p class="ac-muted" id="acBdayText">Tell us your birthday and get 50 bonus points every year in your birthday month.</p>
+        <div class="ac-bday" id="acBdayForm"><select id="acMonth" aria-label="Month"></select><select id="acDay" aria-label="Day"></select><button class="ac-btn ghost" type="button" id="acBdaySave">Save</button></div>
+      </div>
+      <div class="ac-card">
+        <h2>Your orders</h2>
+        <div id="acOrders"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- ================= About us =================
      #about: who we are. Tap a face on the group photo (or a name card) to say hi. -->
 <div class="lb ab" id="about" hidden>
   <header class="lb-top">
     <a href="#" aria-label="Back to the Peaces Swim home page"><img class="lb-logo" src="art/logo-ps.png" alt="Peaces Swim"></a>
-    <nav class="lb-nav site-nav" aria-label="Menu"><a href="#design">Design</a><a href="#shop">Shop</a><a href="#lookbook">Lookbook</a><a href="#about">About</a><a href="https://shopify.com/85529657569/account" data-account>Account</a></nav><button class="nav-bag" type="button" data-bag aria-label="Your bag"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 7h12l-1 13H7L6 7z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg><b data-bagcount>0</b></button>
+    <nav class="lb-nav site-nav" aria-label="Menu"><a href="#design">Design</a><a href="#shop">Shop</a><a href="#lookbook">Lookbook</a><a href="#about">About</a><a href="#account" data-account>Account</a></nav><button class="nav-bag" type="button" data-bag aria-label="Your bag"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 7h12l-1 13H7L6 7z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg><b data-bagcount>0</b></button>
   </header>
 
   <section class="lb-head">
@@ -1760,7 +1840,7 @@
 <div class="lb" id="lookbook" hidden>
   <header class="lb-top">
     <a href="#" aria-label="Back to the Peaces Swim home page"><img class="lb-logo" src="art/logo-ps.png" alt="Peaces Swim"></a>
-    <nav class="lb-nav site-nav" aria-label="Menu"><a href="#design">Design</a><a href="#shop">Shop</a><a href="#lookbook">Lookbook</a><a href="#about">About</a><a href="https://shopify.com/85529657569/account" data-account>Account</a></nav><button class="nav-bag" type="button" data-bag aria-label="Your bag"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 7h12l-1 13H7L6 7z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg><b data-bagcount>0</b></button>
+    <nav class="lb-nav site-nav" aria-label="Menu"><a href="#design">Design</a><a href="#shop">Shop</a><a href="#lookbook">Lookbook</a><a href="#about">About</a><a href="#account" data-account>Account</a></nav><button class="nav-bag" type="button" data-bag aria-label="Your bag"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 7h12l-1 13H7L6 7z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg><b data-bagcount>0</b></button>
   </header>
 
   <section class="lb-head">
@@ -1804,7 +1884,7 @@
   <div class="bag-toast" id="bagToast" role="status" aria-live="polite" hidden></div>
   <header class="top builder-top" id="bagbar">
     <a href="#" aria-label="Back to the Peaces Swim home page"><img class="logo" src="art/logo-ps.png" alt="Peaces Swim"></a>
-    <nav class="site-nav builder-nav" aria-label="Menu"><a href="#design">Design</a><a href="#shop">Shop</a><a href="#lookbook">Lookbook</a><a href="#about">About</a><a href="https://shopify.com/85529657569/account" data-account>Account</a></nav>
+    <nav class="site-nav builder-nav" aria-label="Menu"><a href="#design">Design</a><a href="#shop">Shop</a><a href="#lookbook">Lookbook</a><a href="#about">About</a><a href="#account" data-account>Account</a></nav>
     <button class="cart-btn" id="bagToggle" type="button" aria-haspopup="dialog" aria-controls="cartDrawer" aria-label="Your bag">
       <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 7h12l-1 13H7L6 7z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg>
       <b id="bagCount">1</b>
@@ -3272,11 +3352,10 @@
     });
     r.addEventListener("pointercancel",function(){ x0=null; });
   })();
-  /* Account goes to the customer's Shopify account (orders + profile), like other Shopify stores.
-     Their orders carry the email they signed up with, so they show up there automatically. */
+  /* Account opens her Peaces account (#account): Peace Points, codes and orders. */
   function syncAccountLinks(){
     document.querySelectorAll('#accountBtn,[data-account]').forEach(function(a){
-      a.href="https://shopify.com/85529657569/account"+(lead&&lead.email?"?login_hint="+encodeURIComponent(lead.email):"");
+      a.href="#account";
       if(a.id==="accountBtn") a.textContent=lead&&lead.name?"Hi, "+String(lead.name).split(" ")[0]:"Account";
     });
   }
@@ -3393,9 +3472,124 @@
   }
   function route(){
     if(document.documentElement.classList.contains("prelaunch")){ leaveDesign(); return; } // waitlist only
-    if(location.hash==="#design") enterDesign(); else if(location.hash==="#lookbook") enterLookbook(); else if(location.hash==="#accessories"||location.hash==="#shop") enterAccessories(); else if(location.hash==="#about") enterAbout(); else leaveDesign(); syncCheckoutPop(); if(typeof renderBag==="function") renderBag(lastSub); }
+    if(location.hash!=="#account") document.getElementById("account").hidden=true;
+    if(location.hash==="#design") enterDesign(); else if(location.hash==="#lookbook") enterLookbook(); else if(location.hash==="#accessories"||location.hash==="#shop") enterAccessories(); else if(location.hash==="#about") enterAbout(); else if(location.hash==="#account") enterAccount(); else leaveDesign(); syncCheckoutPop(); if(typeof renderBag==="function") renderBag(lastSub); }
 
 
+
+  /* ---------- Peace Points account ----------
+     Sign in with Shopify (Customer Account API, email code, PKCE public client).
+     The browser keeps only her sign-in token; the server checks it with Shopify
+     and works out points, codes and orders. Nothing here is trusted for money. */
+  var acPage=document.getElementById("account"), acCfg=null, acData=null;
+  var AC_KEY="peaces-acct";
+  function acLoad(){ try{ return JSON.parse(localStorage.getItem(AC_KEY)||"null"); }catch(e){ return null; } }
+  function acSave(t){ try{ if(t) localStorage.setItem(AC_KEY,JSON.stringify(t)); else localStorage.removeItem(AC_KEY); }catch(e){} }
+  function acApi(path,body){ return fetch("/api/account/"+path,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body||{})}).then(function(r){ return r.json().catch(function(){return {};}).then(function(j){ j._status=r.status; return j; }); }); }
+  function acConfig(){ return acCfg?Promise.resolve(acCfg):acApi("config").then(function(c){ acCfg=c; return c; }); }
+  function b64url(buf){ return btoa(String.fromCharCode.apply(null,new Uint8Array(buf))).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,""); }
+  function randStr(){ var a=new Uint8Array(32); crypto.getRandomValues(a); return b64url(a); }
+  function acRedirect(){ return location.origin+"/account"; }
+  function acSignIn(){
+    var msg=document.getElementById("acOutMsg");
+    acConfig().then(function(c){
+      if(!c.enabled){ msg.textContent="Peace Points sign in opens very soon. Your orders are already earning points!"; return; }
+      var verifier=randStr(), st=randStr(), nonce=randStr();
+      try{ sessionStorage.setItem("peaces-pkce",JSON.stringify({v:verifier,s:st})); }catch(e){}
+      return crypto.subtle.digest("SHA-256",new TextEncoder().encode(verifier)).then(function(h){
+        var u=new URL(c.authorize);
+        u.search=new URLSearchParams({client_id:c.clientId,response_type:"code",redirect_uri:acRedirect(),scope:c.scope,state:st,nonce:nonce,code_challenge:b64url(h),code_challenge_method:"S256"}).toString();
+        location.href=u.toString();
+      });
+    }).catch(function(){ msg.textContent="We couldn't reach sign in. Try again in a moment."; });
+  }
+  function acToken(params){
+    return acConfig().then(function(c){
+      params.client_id=c.clientId;
+      return fetch(c.token,{method:"POST",headers:{"Content-Type":"application/x-www-form-urlencoded"},body:new URLSearchParams(params).toString()}).then(function(r){ if(!r.ok) throw new Error("token "+r.status); return r.json(); });
+    }).then(function(t){ var saved={a:t.access_token,r:t.refresh_token||(acLoad()||{}).r,id:t.id_token||(acLoad()||{}).id,exp:Date.now()+((t.expires_in||3600)-60)*1000}; acSave(saved); return saved; });
+  }
+  /* coming back from Shopify: /account?code=...&state=... */
+  var acCallback=(function(){
+    if(!/^\/account\/?$/.test(location.pathname)) return null;
+    var q=new URLSearchParams(location.search), code=q.get("code"), pk=null;
+    try{ pk=JSON.parse(sessionStorage.getItem("peaces-pkce")||"null"); sessionStorage.removeItem("peaces-pkce"); }catch(e){}
+    try{ history.replaceState(null,"","/#account"); }catch(e){}
+    if(!code||!pk||q.get("state")!==pk.s) return null;
+    return acToken({grant_type:"authorization_code",redirect_uri:acRedirect(),code:code,code_verifier:pk.v}).catch(function(){ return null; });
+  })();
+  function acFresh(){
+    var t=acLoad(); if(!t) return Promise.resolve(null);
+    if(t.exp>Date.now()) return Promise.resolve(t);
+    if(!t.r){ acSave(null); return Promise.resolve(null); }
+    return acToken({grant_type:"refresh_token",refresh_token:t.r}).catch(function(){ acSave(null); return null; });
+  }
+  function acShow(signedIn){ document.getElementById("acOut").hidden=signedIn; document.getElementById("acIn").hidden=!signedIn; }
+  function esc(x){ return String(x==null?"":x).replace(/[&<>"]/g,function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]; }); }
+  var MONTHS=["January","February","March","April","May","June","July","August","September","October","November","December"];
+  function acRender(d){
+    acData=d; acShow(true);
+    document.getElementById("acHello").textContent=d.name?"Hi "+d.name+", welcome back to your Peaces account.":"Welcome back to your Peaces account.";
+    var p=d.points; document.getElementById("acBal").textContent=p.balance;
+    document.getElementById("acBar").style.width=Math.min(100,((p.balance%p.perReward)/p.perReward)*100)+"%";
+    document.getElementById("acNext").textContent=p.canRedeem?"You have enough for $"+p.rewardOff+" off. Treat yourself!":p.toNext+" more points until $"+p.rewardOff+" off. That's about $"+p.toNext+" of Peaces.";
+    document.getElementById("acRedeem").disabled=!p.canRedeem;
+    var codes=document.getElementById("acCodes");
+    codes.innerHTML=d.rewards.length?d.rewards.map(function(r){ return '<div class="ac-code'+(r.used?' used':'')+'"><div><code>'+esc(r.code)+'</code><p class="ac-muted">$'+r.off+' off'+(r.used?': used':'')+'</p></div>'+(r.used?'':'<button class="ac-copy" type="button" data-copy="'+esc(r.code)+'">Copy</button>')+'</div>'; }).join(""):'<p class="ac-muted" style="margin-top:12px">Reach 100 points and your first $10 code shows up here.</p>';
+    if(d.birthday){ document.getElementById("acBdayForm").hidden=true; document.getElementById("acBdayText").textContent="Saved: "+MONTHS[d.birthday.month-1]+" "+d.birthday.day+". We add 50 bonus points every year in your birthday month."; }
+    else document.getElementById("acBdayForm").hidden=false;
+    var ord=document.getElementById("acOrders");
+    ord.innerHTML=d.orders.length?d.orders.map(function(o){
+      var st=o.cancelled?"Cancelled":o.shipped==="FULFILLED"?"Shipped":/PAID/.test(o.paid)&&o.paid!=="PARTIALLY_PAID"?"Being sewn":/REFUND/.test(o.paid)?"Refunded":"Not paid yet";
+      return '<div class="ac-order">'+(o.image?'<img src="'+esc(o.image)+'" alt="">':'')+'<div><p><b>'+esc(o.name)+'</b><span class="ac-tag">'+st+'</span></p><p class="ac-muted">'+new Date(o.date).toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"})+' · $'+o.total.toFixed(2)+(o.points?' · +'+o.points+' pts':'')+'</p>'+o.items.map(function(i){ return '<p class="ac-muted">'+esc(i)+'</p>'; }).join("")+'</div></div>';
+    }).join(""):'<p class="ac-muted" style="margin-top:12px">No orders yet. <a href="#design" style="text-decoration:underline">Design your first Peace</a></p>';
+  }
+  function acRefresh(){
+    return acFresh().then(function(t){
+      if(!t){ acShow(false); return; }
+      return acApi("me",{token:t.a}).then(function(d){
+        if(d._status===401){ acSave(null); acShow(false); return; }
+        if(d._status!==200){ acShow(false); document.getElementById("acOutMsg").textContent="We couldn't load your account. Try again in a moment."; return; }
+        acRender(d);
+      });
+    }).catch(function(){ acShow(false); });
+  }
+  function enterAccount(){
+    if(!builderEl.hidden) resetDesign();
+    ["builder","fulfil"].forEach(function(id){ document.getElementById(id).hidden=true; });
+    landing.hidden=true; lookbook.hidden=true; accPage.hidden=true; aboutPage.hidden=true; closeLightbox(); acPage.hidden=false; syncAccPop();
+    window.scrollTo(0,0);
+    (acCallback||Promise.resolve()).then(function(){ acCallback=null; acRefresh(); });
+  }
+  document.getElementById("acSignIn").addEventListener("click",acSignIn);
+  document.getElementById("acSignOut").addEventListener("click",function(){
+    var t=acLoad(); acSave(null); acData=null; acShow(false);
+    acConfig().then(function(c){ if(c.enabled&&c.logout&&t&&t.id){ var u=new URL(c.logout); u.search=new URLSearchParams({id_token_hint:t.id,post_logout_redirect_uri:location.origin+"/"}).toString(); location.href=u.toString(); } });
+  });
+  document.getElementById("acRedeem").addEventListener("click",function(){
+    var b=this, msg=document.getElementById("acMsg"); b.disabled=true; msg.textContent="Making your code...";
+    acFresh().then(function(t){ return t&&acApi("redeem",{token:t.a}); }).then(function(r){
+      if(r&&r.ok){ acRender(r.account); msg.textContent="Your code "+r.code+" is ready below. Use it at checkout!"; }
+      else { msg.textContent=(r&&r.error)||"That didn't work. Try again."; b.disabled=!(acData&&acData.points.canRedeem); }
+    });
+  });
+  document.getElementById("acCodes").addEventListener("click",function(e){
+    var b=e.target.closest("[data-copy]"); if(!b) return;
+    var done=function(){ b.textContent="Copied"; setTimeout(function(){ b.textContent="Copy"; },1600); };
+    if(navigator.clipboard) navigator.clipboard.writeText(b.dataset.copy).then(done,done); else done();
+  });
+  (function(){
+    var m=document.getElementById("acMonth"), d=document.getElementById("acDay");
+    m.innerHTML='<option value="">Month</option>'+MONTHS.map(function(n,i){ return '<option value="'+(i+1)+'">'+n+'</option>'; }).join("");
+    d.innerHTML='<option value="">Day</option>'+Array.from({length:31},function(_,i){ return '<option>'+(i+1)+'</option>'; }).join("");
+  })();
+  document.getElementById("acBdaySave").addEventListener("click",function(){
+    var m=+document.getElementById("acMonth").value, d=+document.getElementById("acDay").value, t0=document.getElementById("acBdayText");
+    if(!m||!d){ t0.textContent="Pick a month and a day."; return; }
+    acFresh().then(function(t){ return t&&acApi("birthday",{token:t.a,month:m,day:d}); }).then(function(r){
+      if(r&&r._status===200) acRender(r); else t0.textContent=(r&&r.error)||"That didn't save. Try again.";
+    });
+  });
 
   /* ---------- About us: tap a face or a name card to say hi ---------- */
   (function(){

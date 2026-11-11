@@ -8,6 +8,7 @@ const MOCK = 9811, APP = 9812;
 process.env.SHOPIFY_BASE_URL = "http://localhost:" + MOCK;
 process.env.SHOPIFY_CLIENT_ID = "test-id";
 process.env.SHOPIFY_CLIENT_SECRET = "test-secret";
+process.env.CUSTOMER_ACCOUNT_API_URL = "http://localhost:" + MOCK + "/customer-api";
 process.env.SEAMSTRESS_PASSCODE = "sew-sew-123";
 const { startLocal } = await import("./local-server.js");
 const { server: s1, db } = await startMockShopify(MOCK);
@@ -413,6 +414,40 @@ try {
     const dn = await post("/seamstress/done", { passcode: "sew-sew-123", id: sh.id, sewer: "Ana" });
     assert.equal(dn.body.text.reason, "ship"); assert.equal(dn.body.text.sent, false);
     ok("Done on a shipped order sends no 'come get it' text");
+  }
+  { // Peace Points account
+    const cid = "gid://shopify/Customer/777";
+    db.customerTokens = { "tok-mia": { id: cid, firstName: "Mia", lastName: "R", emailAddress: { emailAddress: "mia@example.com" } } };
+    const money = (n) => ({ shopMoney: { amount: String(n) } });
+    db.orders = { [cid]: [
+      { id: "o1", name: "#1010", processedAt: "2026-11-06T15:00:00Z", cancelledAt: null, displayFinancialStatus: "PAID", displayFulfillmentStatus: "UNFULFILLED", currentSubtotalPriceSet: money(85.5), totalPriceSet: money(93.5),
+        lineItems: { nodes: [{ title: "Custom bikini: Triangle top / Triangle bottom", quantity: 1, customAttributes: [{ key: "_short", value: "Mint triangle top (S), Mint triangle bottom (S)" }, { key: "_design_image", value: "https://cdn.shopify.com/s/files/x.jpg" }] }, { title: "Add on: Lace (White)", quantity: 1, customAttributes: [] }] } },
+      { id: "o2", name: "#1011", processedAt: "2026-11-07T15:00:00Z", cancelledAt: null, displayFinancialStatus: "REFUNDED", displayFulfillmentStatus: "UNFULFILLED", currentSubtotalPriceSet: money(0), totalPriceSet: money(110), lineItems: { nodes: [] } },
+    ] };
+    let r = await post("/account/me", { token: "nope" });
+    assert.equal(r.status, 401); ok("account: a bad sign-in token gets nothing");
+    r = await post("/account/me", { token: "tok-mia" });
+    assert.equal(r.status, 200, JSON.stringify(r.body)); assert.equal(r.body.name, "Mia");
+    assert.equal(r.body.points.earned, 85); assert.equal(r.body.points.bonus, 25); assert.equal(r.body.points.balance, 110);
+    assert.equal(r.body.orders.length, 2); assert.deepEqual(r.body.orders[0].items, ["Mint triangle top (S), Mint triangle bottom (S)"]); assert.equal(r.body.orders[1].points, 0);
+    ok("account: $1 = 1 Peace Point on paid orders (refunded don't count) + 25 for joining, orders listed");
+    r = await post("/account/me", { token: "tok-mia" });
+    assert.equal(r.body.points.balance, 110); ok("account: the joining bonus is only given once");
+    r = await post("/account/redeem", { token: "tok-mia" });
+    assert.equal(r.status, 200, JSON.stringify(r.body)); assert.match(r.body.code, /^PEACE-[A-Z2-9]{6}$/);
+    const disc = db.discounts.at(-1);
+    assert.deepEqual(disc.context, { customers: { add: [cid] } }); assert.equal(disc.usageLimit, 1); assert.equal(disc.customerGets.value.discountAmount.amount, "10");
+    assert.equal(r.body.account.points.balance, 10); assert.equal(r.body.account.rewards[0].code, r.body.code); assert.equal(r.body.account.rewards[0].used, false);
+    ok("account: 100 points become a $10 code only she can use, once");
+    r = await post("/account/redeem", { token: "tok-mia" });
+    assert.equal(r.status, 400); ok("account: can't redeem without 100 points");
+    const m = new Intl.DateTimeFormat("en-US", { timeZone: "America/New_York", month: "2-digit" }).format(new Date());
+    r = await post("/account/birthday", { token: "tok-mia", month: +m, day: 1 });
+    assert.equal(r.status, 200, JSON.stringify(r.body)); assert.equal(r.body.points.bonus, 75); ok("account: birthday saved; +50 in her birthday month");
+    r = await post("/account/birthday", { token: "tok-mia", month: 1, day: 2 });
+    assert.equal(r.status, 409); ok("account: birthday can only be set once");
+    r = await post("/account/me", { token: "tok-mia" });
+    assert.equal(r.body.points.bonus, 75); ok("account: birthday bonus once a year");
   }
   assert.equal(db.tokenCalls, 1); ok("access token fetched once and cached");
   assert.deepEqual(LIVE_SOLD_OUT, []); ok("nothing is sold out right now");
