@@ -437,6 +437,19 @@
   .ba-tag{position:absolute; top:14px; padding:6px 12px; border-radius:999px; background:#EFDDFD; color:#4B2470; font-size:12px; letter-spacing:.2em; text-transform:uppercase; font-weight:600; pointer-events:none;}
   .ba-tag-l{left:14px;} .ba-tag-r{right:14px;}
   .ba-cta{display:inline-block; margin-top:28px;}
+  .ba-grid .ba-cta{margin-top:6px;}
+  .ba-grid{display:flex; flex-direction:column; align-items:center;}
+  .ba-grid .ba-text{display:flex; flex-direction:column; align-items:center;}
+  .ba-grid .ba-frame{order:2;} .ba-grid .ba-text .ba-cta{order:3;}
+  @media (max-width:899px){ .ba-grid .ba-text{display:contents;} .ba-grid .ba-cta{margin-top:24px;} }
+  @media (min-width:900px){
+    .ba-grid{flex-direction:row; align-items:center; justify-content:center; gap:clamp(40px,6vw,96px); max-width:1100px; margin:0 auto;}
+    .ba-grid .ba-text{flex:0 1 460px; align-items:flex-start; text-align:left;}
+    .ba-grid .ba-text .pp-title{text-align:left; white-space:nowrap;}
+    .ba-grid .ba-text .ba-cta{width:auto !important; padding-left:40px; padding-right:40px;}
+    .ba-grid .ba-sub{margin:16px 0 26px; text-align:left;}
+    .ba-grid .ba-frame{order:0; margin:0; flex:0 0 auto;}
+  }
   /* tiktok */
   .tt{background:var(--fs-mist,#FAF6FE); padding:72px 20px; text-align:center;}
   .tt-embed{max-width:780px; margin:24px auto 0;}
@@ -1635,16 +1648,20 @@
 
   <section class="ba" id="before-after" aria-labelledby="baTitle">
     <div class="lp-container">
-      <h2 class="pp-title lp-reveal" id="baTitle">Before &amp; <i>After</i></h2>
-      <p class="ba-sub lp-reveal">Our mini bikini on its own, then Peaced: pink lace, beads and a pearl charm. Drag to see the difference.</p>
-      <div class="ba-frame lp-reveal" id="baFrame" style="--pos:50%">
-        <img class="ba-after" src="photos/ba/mini-after.webp" alt="After: the mint mini bikini with pink lace, pink and pearl beads and a pearl charm" loading="lazy">
-        <div class="ba-before"><img src="photos/ba/mini-before.webp" alt="Before: the same mint mini bikini, plain" loading="lazy"></div>
-        <span class="ba-tag ba-tag-l">Before</span><span class="ba-tag ba-tag-r">After</span>
-        <span class="ba-handle" aria-hidden="true"><span></span></span>
-        <input class="ba-range" id="baRange" type="range" min="0" max="100" value="50" aria-label="Slide between before and after">
+      <div class="ba-grid">
+        <div class="ba-text">
+          <h2 class="pp-title lp-reveal" id="baTitle">Before &amp; <i>After</i></h2>
+          <p class="ba-sub lp-reveal">Our mini bikini on its own, then Peaced: pink lace, beads and a pearl charm. Drag to see the difference.</p>
+          <a class="cta ba-cta" href="#design">Design your own</a>
+        </div>
+        <div class="ba-frame lp-reveal" id="baFrame" style="--pos:50%">
+          <img class="ba-after" src="photos/ba/mini-after.webp" alt="After: the mint mini bikini with pink lace, pink and pearl beads and a pearl charm" loading="lazy">
+          <div class="ba-before"><img src="photos/ba/mini-before.webp" alt="Before: the same mint mini bikini, plain" loading="lazy"></div>
+          <span class="ba-tag ba-tag-l">Before</span><span class="ba-tag ba-tag-r">After</span>
+          <span class="ba-handle" aria-hidden="true"><span></span></span>
+          <input class="ba-range" id="baRange" type="range" min="0" max="100" value="50" aria-label="Slide between before and after">
+        </div>
       </div>
-      <a class="cta ba-cta" href="#design">Design your own</a>
     </div>
   </section>
 
