@@ -1795,9 +1795,11 @@
         <h3 class="ac-h3">Your exclusive codes</h3>
         <p class="ac-muted">Only you can use these. Enter one at checkout.</p>
         <div id="acCodes"></div>
+        <div id="acBday">
         <h3 class="ac-h3" id="acBdayCard">Your birthday</h3>
         <p class="ac-muted" id="acBdayText">PS: extra points if you enter your birthday!</p>
         <div class="ac-bday" id="acBdayForm"><select id="acMonth" aria-label="Month"></select><select id="acDay" aria-label="Day"></select><button class="ac-btn ghost" type="button" id="acBdaySave">Save</button></div>
+        </div>
       </section>
       <section class="ac-sec">
         <h2 class="ac-h2">Account Information</h2>
@@ -3587,8 +3589,7 @@
     document.getElementById("acRedeem").disabled=!p.canRedeem;
     var codes=document.getElementById("acCodes");
     codes.innerHTML=d.rewards.length?d.rewards.map(function(r){ return '<div class="ac-code'+(r.used?' used':'')+'"><div><code>'+esc(r.code)+'</code><p class="ac-muted">$'+r.off+' off'+(r.used?': used':'')+'</p></div>'+(r.used?'':'<button class="ac-copy" type="button" data-copy="'+esc(r.code)+'">Copy</button>')+'</div>'; }).join(""):'<p class="ac-muted" style="margin-top:12px">Reach 100 points and your first $10 code shows up here.</p>';
-    if(d.birthday){ document.getElementById("acBdayForm").hidden=true; document.getElementById("acBdayText").textContent="Saved: "+MONTHS[d.birthday.month-1]+" "+d.birthday.day+". We add 50 bonus points every year in your birthday month."; }
-    else document.getElementById("acBdayForm").hidden=false;
+    document.getElementById("acBday").hidden=!!d.birthday; // once it's saved there's nothing left to do here
     document.getElementById("acName").textContent=d.fullName||d.name||"";
     document.getElementById("acEmail").textContent=d.email||"";
     var PAY={PAID:"Paid",PARTIALLY_PAID:"Partly paid",PENDING:"Not paid yet",AUTHORIZED:"Not paid yet",REFUNDED:"Refunded",PARTIALLY_REFUNDED:"Partly refunded",VOIDED:"Cancelled",EXPIRED:"Cancelled"};
