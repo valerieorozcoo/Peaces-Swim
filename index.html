@@ -425,21 +425,23 @@
   /* before & after slider */
   .ba{background:#fff; padding:80px 20px; text-align:center;}
   .ba-sub{max-width:52ch; margin:14px auto 30px; color:var(--ink-soft,#6b5a74); font-size:17px; line-height:1.5;}
-  .ba-frame{position:relative; width:min(520px,100%); margin:0 auto; aspect-ratio:2/3; border-radius:18px; overflow:hidden; background:#000; touch-action:pan-y;}
-  .ba-frame img{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block; user-select:none; -webkit-user-drag:none;}
+  .ba-frame{position:relative; width:min(520px,100%); margin:0 auto; aspect-ratio:2/3; overflow:hidden; background:transparent; touch-action:pan-y;}
+  .ba-frame img{position:absolute; inset:0; width:100%; height:100%; object-fit:contain; display:block; user-select:none; -webkit-user-drag:none;}
   .ba-before{position:absolute; inset:0; clip-path:inset(0 calc(100% - var(--pos)) 0 0);}
-  .ba-handle{position:absolute; top:0; bottom:0; left:var(--pos); width:3px; margin-left:-1.5px; background:#fff; pointer-events:none; box-shadow:0 0 12px rgba(0,0,0,.5);}
-  .ba-handle span{position:absolute; top:50%; left:50%; width:46px; height:46px; margin:-23px 0 0 -23px; border-radius:999px; background:#fff; box-shadow:0 4px 16px rgba(0,0,0,.35);}
+  .ba-after{clip-path:inset(0 0 0 var(--pos));}
+  .ba-handle{position:absolute; top:0; bottom:0; left:var(--pos); width:3px; margin-left:-1.5px; background:#4B2470; pointer-events:none;}
+  .ba-handle span{position:absolute; top:50%; left:50%; width:46px; height:46px; margin:-23px 0 0 -23px; border-radius:999px; background:#fff; border:2px solid #4B2470; box-shadow:0 4px 16px rgba(75,36,112,.2);}
   .ba-handle span::before,.ba-handle span::after{content:""; position:absolute; top:50%; width:0; height:0; margin-top:-6px; border:6px solid transparent;}
   .ba-handle span::before{left:7px; border-right-color:#4B2470;} .ba-handle span::after{right:7px; border-left-color:#4B2470;}
   .ba-range{position:absolute; inset:0; width:100%; height:100%; margin:0; opacity:0; cursor:ew-resize;}
-  .ba-tag{position:absolute; top:14px; padding:6px 12px; border-radius:999px; background:rgba(255,255,255,.9); color:#4B2470; font-size:12px; letter-spacing:.2em; text-transform:uppercase; font-weight:600; pointer-events:none;}
+  .ba-tag{position:absolute; top:14px; padding:6px 12px; border-radius:999px; background:#EFDDFD; color:#4B2470; font-size:12px; letter-spacing:.2em; text-transform:uppercase; font-weight:600; pointer-events:none;}
   .ba-tag-l{left:14px;} .ba-tag-r{right:14px;}
   .ba-cta{display:inline-block; margin-top:28px;}
   /* tiktok */
   .tt{background:var(--fs-mist,#FAF6FE); padding:72px 20px; text-align:center;}
-  .tt-embed{max-width:780px; margin:24px auto 0; min-height:420px;}
-  .tt-embed blockquote{margin:0 auto !important;}
+  .tt-embed{max-width:780px; margin:24px auto 0;}
+  .tt-frame{display:block; width:100%; height:400px; border:0; background:#fff;}
+  @media (max-width:640px){ .tt-frame{height:520px;} }
   .tt-follow{display:inline-block; margin-top:22px;}
   @media (hover:none){ .pp-cta{opacity:1; transform:none;} }
   .pp-next{position:absolute; right:-6px; top:50%; transform:translateY(-50%); width:56px; height:56px; border-radius:999px; border:0; background:var(--fs-ink,#2E2433); color:#fff; display:grid; place-items:center; cursor:pointer; transition:background .2s;}
@@ -965,31 +967,34 @@
   .lb{max-width:1220px; margin:0 auto; padding:24px 20px 72px; color:var(--fs-ink,#2E2433); font-family:var(--font);}
   /* ---------- Peace Points account ---------- */
   .ac-wrap{max-width:880px; margin:0 auto; padding:10px 0 80px;}
-  .ac-card{background:#fff; border:1px solid var(--line,#E7DAF3); border-radius:22px; padding:28px; margin-top:22px;}
+  .ac-card{background:#FBF8FD; border:0; border-radius:22px; padding:28px; margin-top:22px;}
+  #account .lb-top{border-bottom:0;}
+  .ac-hello{font-size:clamp(40px,7vw,72px) !important; line-height:1.05; color:var(--ink) !important; margin:6px 0 0 !important;}
+  .ac-hello i{color:var(--pink,#8A5BB8);}
   .ac-card h2{margin:0 0 6px; font-size:22px; font-weight:500;}
   .ac-muted{color:var(--ink-soft,#8A7480); font-size:15px; line-height:1.5; margin:0;}
   .ac-perks{display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin:22px 0;}
-  .ac-perk{background:var(--pink-pale,#F6EEFB); border-radius:16px; padding:18px; text-align:center;}
+  .ac-perk{background:#fff; border-radius:16px; padding:18px; text-align:center;}
   .ac-perk b{display:block; font-size:26px; font-weight:500; color:var(--ink);}
   .ac-perk span{font-size:13.5px; color:var(--ink-soft,#8A7480);}
   .ac-btn{display:inline-block; border:0; cursor:pointer; background:var(--ink); color:#fff; padding:15px 30px; border-radius:999px; font:inherit; font-size:12.5px; letter-spacing:.22em; text-transform:uppercase;}
   .ac-btn[disabled]{opacity:.45; cursor:default;}
-  .ac-btn.ghost{background:transparent; color:var(--ink); border:1px solid var(--line,#E7DAF3);}
+  .ac-btn.ghost{background:#fff; color:var(--ink); border:0;}
   .ac-pts{display:flex; align-items:flex-end; gap:12px; flex-wrap:wrap;}
   .ac-pts b{font-size:64px; line-height:1; font-weight:400; font-style:italic;}
-  .ac-bar{height:10px; border-radius:99px; background:var(--pink-pale,#F6EEFB); overflow:hidden; margin:18px 0 8px;}
+  .ac-bar{height:10px; border-radius:99px; background:#fff; overflow:hidden; margin:18px 0 8px;}
   .ac-bar i{display:block; height:100%; background:var(--pink,#C58BE0); border-radius:99px; transition:width .6s;}
   .ac-row{display:flex; justify-content:space-between; align-items:center; gap:14px; flex-wrap:wrap;}
-  .ac-code{display:flex; align-items:center; justify-content:space-between; gap:12px; padding:14px 0; border-top:1px solid var(--line,#E7DAF3);}
+  .ac-code{display:flex; align-items:center; justify-content:space-between; gap:12px; padding:14px 18px; margin-top:10px; background:#fff; border-radius:14px;}
   .ac-code code{font-size:17px; letter-spacing:.12em;}
   .ac-code.used{opacity:.5;}
-  .ac-copy{border:1px solid var(--line,#E7DAF3); background:#fff; border-radius:999px; padding:8px 16px; cursor:pointer; font:inherit; font-size:13px;}
-  .ac-order{display:flex; gap:16px; padding:16px 0; border-top:1px solid var(--line,#E7DAF3);}
-  .ac-order img{width:64px; height:64px; object-fit:contain; border-radius:12px; background:var(--pink-pale,#F6EEFB);}
+  .ac-copy{border:0; background:#F1E6FA; border-radius:999px; padding:8px 16px; cursor:pointer; font:inherit; font-size:13px;}
+  .ac-order{display:flex; gap:16px; padding:16px; margin-top:10px; background:#fff; border-radius:14px;}
+  .ac-order img{width:64px; height:64px; object-fit:contain; border-radius:12px; background:#FBF8FD;}
   .ac-order p{margin:2px 0; font-size:14.5px;}
-  .ac-tag{display:inline-block; font-size:11.5px; letter-spacing:.12em; text-transform:uppercase; padding:3px 10px; border-radius:99px; background:var(--pink-pale,#F6EEFB); margin-left:6px;}
+  .ac-tag{display:inline-block; font-size:11.5px; letter-spacing:.12em; text-transform:uppercase; padding:3px 10px; border-radius:99px; background:#F1E6FA; margin-left:6px;}
   .ac-bday{display:flex; gap:10px; flex-wrap:wrap; margin-top:14px;}
-  .ac-bday select{font:inherit; padding:12px 14px; border-radius:12px; border:1px solid var(--line,#E7DAF3); background:#fff;}
+  .ac-bday select{font:inherit; padding:12px 14px; border-radius:12px; border:0; background:#fff;}
   .ac-msg{min-height:1.4em; margin:10px 0 0; font-size:14px; color:var(--ink-soft,#8A7480);}
   @media (max-width:640px){ .ac-perks{grid-template-columns:1fr;} .ac-card{padding:22px;} .ac-pts b{font-size:52px;} }
   .lb-top{display:flex; align-items:center; justify-content:space-between; gap:16px; padding-bottom:18px; border-bottom:1px solid var(--line,#E7DAF3);}
@@ -1007,7 +1012,7 @@
   .lb-sub{margin:18px auto 0; max-width:520px; font-size:18px; line-height:1.55; color:rgba(46,36,51,.78);}
   .lb-grid{list-style:none; margin:0; padding:0; columns:3 300px; column-gap:16px;}
   .lb-tile{break-inside:avoid; margin:0 0 16px;}
-  .lb-tile button{display:block; width:100%; padding:0; border:0; background:var(--fs-mist,#FAF6FE); border-radius:18px; overflow:hidden; cursor:zoom-in; box-shadow:0 1px 0 rgba(75,36,112,.06);}
+  .lb-tile button{display:block; width:100%; padding:0; border:0; background:var(--fs-mist,#FAF6FE); border-radius:0; overflow:hidden; cursor:zoom-in; box-shadow:0 1px 0 rgba(75,36,112,.06);}
   .lb-tile img{display:block; width:100%; height:auto; max-width:none; transition:transform 1s ease-out;}
   .lb-tile button:hover img{transform:scale(1.04);}
   .lb-tile button:focus-visible{outline:2px solid var(--fs-orchid,#8A5BB8); outline-offset:3px;}
@@ -1016,7 +1021,7 @@
   .lb-box{position:fixed; inset:0; z-index:70; display:flex; align-items:center; justify-content:center; padding:56px 64px; background:rgba(46,24,66,.86); -webkit-backdrop-filter:blur(6px); backdrop-filter:blur(6px);}
   .lb-box[hidden]{display:none;}
   .lb-fig{margin:0; text-align:center;}
-  .lb-fig img{max-width:100%; max-height:calc(100svh - 140px); width:auto; height:auto; border-radius:14px; box-shadow:0 20px 60px rgba(0,0,0,.35);}
+  .lb-fig img{max-width:100%; max-height:calc(100svh - 140px); width:auto; height:auto; border-radius:0; box-shadow:0 20px 60px rgba(0,0,0,.35);}
   .lb-fig figcaption{margin-top:12px; color:#fff; font-size:13.5px; letter-spacing:.24em; text-transform:uppercase; opacity:.85;}
   /* ===== site menu (Design · Shop · Lookbook · About · Account) on every page ===== */
   .site-nav{display:flex; align-items:center; gap:22px;}
@@ -1086,7 +1091,7 @@
   .lb-prev{left:14px;} .lb-next{right:14px;}
   @media (max-width:640px){
     .lb-nav > a:not(.cta){display:none;}
-    .lb-grid{columns:2 140px; column-gap:10px;} .lb-tile{margin-bottom:10px;} .lb-tile button{border-radius:14px;}
+    .lb-grid{columns:2 140px; column-gap:10px;} .lb-tile{margin-bottom:10px;} .lb-tile button{border-radius:0;}
     .lb-box{padding:56px 10px 80px;} .lb-arrow{top:auto; bottom:16px; transform:none;} .lb-prev{left:calc(50% - 64px);} .lb-next{right:calc(50% - 64px);}
   }
 
@@ -1560,8 +1565,8 @@
       <h2 class="pp-title lp-reveal" id="baTitle">Before &amp; <i>After</i></h2>
       <p class="ba-sub lp-reveal">Our mini bikini on its own, then Peaced: pink lace, beads and a pearl charm. Drag to see the difference.</p>
       <div class="ba-frame lp-reveal" id="baFrame" style="--pos:50%">
-        <img class="ba-after" src="photos/ba/mini-after.jpg" alt="After: the mint mini bikini with pink lace, pink and pearl beads and a pearl charm" loading="lazy">
-        <div class="ba-before"><img src="photos/ba/mini-before.jpg" alt="Before: the plain mint mini bikini" loading="lazy"></div>
+        <img class="ba-after" src="photos/ba/mini-after.webp" alt="After: the mint mini bikini with pink lace, pink and pearl beads and a pearl charm" loading="lazy">
+        <div class="ba-before"><img src="photos/ba/mini-before.webp" alt="Before: the plain mint mini bikini" loading="lazy"></div>
         <span class="ba-tag ba-tag-l">Before</span><span class="ba-tag ba-tag-r">After</span>
         <span class="ba-handle" aria-hidden="true"><span></span></span>
         <input class="ba-range" id="baRange" type="range" min="0" max="100" value="50" aria-label="Slide between before and after">
@@ -1574,9 +1579,7 @@
     <div class="lp-container">
       <a class="ig-title lp-reveal" id="ttTitle" href="https://www.tiktok.com/@peacesswim" target="_blank" rel="noopener">@peacesswim on TikTok</a>
       <div class="tt-embed" id="ttEmbed">
-        <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@peacesswim" data-unique-id="peacesswim" data-embed-type="creator" style="max-width:780px; min-width:288px;">
-          <section><a target="_blank" rel="noopener" href="https://www.tiktok.com/@peacesswim?refer=creator_embed">@peacesswim</a></section>
-        </blockquote>
+        <iframe class="tt-frame" title="@peacesswim on TikTok" src="https://www.tiktok.com/embed/@peacesswim" loading="lazy" allow="encrypted-media; fullscreen; picture-in-picture" allowfullscreen></iframe>
       </div>
       <a class="cta tt-follow" href="https://www.tiktok.com/@peacesswim" target="_blank" rel="noopener">Follow us on TikTok</a>
     </div>
@@ -1721,7 +1724,7 @@
   </header>
   <section class="lb-head">
     <p class="lb-kicker">Your Peaces account</p>
-    <h1 class="lb-title">Peace <i>Points</i></h1>
+    <h1 class="lb-title" id="acTitle">Peace <i>Points</i></h1>
     <p class="lb-sub" id="acHello">Every Peace you design earns points toward your next one.</p>
   </section>
   <div class="ac-wrap">
@@ -3524,12 +3527,14 @@
     if(!t.r){ acSave(null); return Promise.resolve(null); }
     return acToken({grant_type:"refresh_token",refresh_token:t.r}).catch(function(){ acSave(null); return null; });
   }
-  function acShow(signedIn){ document.getElementById("acOut").hidden=signedIn; document.getElementById("acIn").hidden=!signedIn; }
+  function acShow(signedIn){ document.getElementById("acOut").hidden=signedIn; document.getElementById("acIn").hidden=!signedIn;
+    if(!signedIn){ var tl=document.getElementById("acTitle"); tl.classList.remove("ac-hello"); tl.innerHTML="Peace <i>Points</i>"; document.getElementById("acHello").textContent="Every Peace you design earns points toward your next one."; } }
   function esc(x){ return String(x==null?"":x).replace(/[&<>"]/g,function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]; }); }
   var MONTHS=["January","February","March","April","May","June","July","August","September","October","November","December"];
   function acRender(d){
     acData=d; acShow(true);
-    document.getElementById("acHello").textContent=d.name?"Hi "+d.name+", welcome back to your Peaces account.":"Welcome back to your Peaces account.";
+    var tl=document.getElementById("acTitle"); tl.classList.add("ac-hello"); tl.innerHTML=d.name?"Hi <i>"+esc(d.name)+"</i>":"Hi <i>there</i>";
+    document.getElementById("acHello").textContent="Welcome back to your Peace Points.";
     var p=d.points; document.getElementById("acBal").textContent=p.balance;
     document.getElementById("acBar").style.width=Math.min(100,((p.balance%p.perReward)/p.perReward)*100)+"%";
     document.getElementById("acNext").textContent=p.canRedeem?"You have enough for $"+p.rewardOff+" off. Treat yourself!":p.toNext+" more points until $"+p.rewardOff+" off. That's about $"+p.toNext+" of Peaces.";
@@ -3664,14 +3669,6 @@
     f.addEventListener("pointerdown",function(e){ fromX(e.clientX); f.setPointerCapture&&f.setPointerCapture(e.pointerId); });
     f.addEventListener("pointermove",function(e){ if(e.buttons) fromX(e.clientX); });
   })();
-  /* ---------- home: TikTok (TikTok's own embed of @peacesswim's latest videos), loaded when it scrolls near ---------- */
-  (function(){
-    var box=document.getElementById("ttEmbed"); if(!box) return;
-    function load(){ if(box.dataset.loaded) return; box.dataset.loaded="1"; var sc=document.createElement("script"); sc.async=true; sc.src="https://www.tiktok.com/embed.js"; document.body.appendChild(sc); }
-    if("IntersectionObserver" in window){ var io=new IntersectionObserver(function(es){ if(es.some(function(e){ return e.isIntersecting; })){ load(); io.disconnect(); } },{rootMargin:"600px"}); io.observe(box); }
-    else load();
-  })();
-
   /* ---------- lookbook lightbox ---------- */
   var lbTiles=[].slice.call(document.querySelectorAll("#lbGrid img")), lbBox=document.getElementById("lbBox"), lbAt=0, lbFrom=null;
   function showLook(i){
