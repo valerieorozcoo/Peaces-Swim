@@ -425,7 +425,7 @@
   /* before & after slider */
   .ba{background:#fff; padding:80px 20px; text-align:center;}
   .ba-sub{max-width:52ch; margin:14px auto 30px; color:var(--ink-soft,#6b5a74); font-size:17px; line-height:1.5;}
-  .ba-frame{position:relative; width:min(520px,100%); margin:0 auto; aspect-ratio:2/3; overflow:hidden; background:transparent; touch-action:pan-y;}
+  .ba-frame{position:relative; width:min(420px,86%); margin:0 auto; aspect-ratio:2/3; overflow:hidden; background:transparent; touch-action:pan-y;}
   .ba-frame img{position:absolute; inset:0; width:100%; height:100%; object-fit:contain; display:block; user-select:none; -webkit-user-drag:none;}
   .ba-before{position:absolute; inset:0; clip-path:inset(0 calc(100% - var(--pos)) 0 0);}
   .ba-after{clip-path:inset(0 0 0 var(--pos));}
@@ -456,6 +456,18 @@
   @media (max-width:640px){ .tt-frame{height:520px;} }
   .tt-follow{display:inline-block; width:auto !important; margin-top:30px; padding-left:36px; padding-right:36px;}
   @media (hover:none){ .pp-cta{opacity:1; transform:none;} }
+  /* process cards: big number, title beside it, highlighted description at the bottom */
+  .pp-card h3{display:flex; align-items:flex-start; gap:12px; padding:18px 18px 0 !important; font-size:inherit !important;}
+  .pp-n{font-family:var(--font); font-weight:500; font-size:clamp(80px,6.6vw,104px); line-height:.78; letter-spacing:-.05em; color:#fff;}
+  .pp-t{padding-top:4px; font-family:var(--font); font-weight:500; font-size:clamp(22px,1.8vw,26px); line-height:1.08; letter-spacing:-.01em; color:#fff;}
+  .pp-blurb{position:absolute !important; left:18px; right:18px; bottom:18px; margin:0 !important; max-width:none !important; font-size:15.5px !important; line-height:1.55 !important; color:#fff; text-shadow:0 1px 8px rgba(46,36,51,.5); transition:opacity .25s;}
+  .pp-blurb mark{background:#EFDDFD; color:#2E2433; padding:2px 7px; text-shadow:none; font-weight:500; -webkit-box-decoration-break:clone; box-decoration-break:clone;}
+  .pp-link::before{content:""; position:absolute; inset:0; background:linear-gradient(to top, rgba(46,36,51,.6), rgba(46,36,51,0) 42%); pointer-events:none; z-index:1;}
+  .pp-card h3,.pp-blurb,.pp-cta{z-index:2 !important;}
+  .pp-link::after{background:linear-gradient(to bottom, rgba(46,36,51,.5), rgba(46,36,51,0) 40%) !important;}
+  .pp-cta{top:50%; bottom:auto !important; transform:translateY(calc(-50% + 8px)) !important;}
+  .pp-card:hover .pp-cta,.pp-link:focus-visible .pp-cta{transform:translateY(-50%) !important;}
+  @media (hover:none){ .pp-cta{top:auto; bottom:auto !important; position:relative; display:none;} }
   .pp-next{position:absolute; right:-6px; top:50%; transform:translateY(-50%); width:56px; height:56px; border-radius:999px; border:0; background:var(--fs-ink,#2E2433); color:#fff; display:grid; place-items:center; cursor:pointer; transition:background .2s;}
   .pp-next:hover{background:var(--fs-orchid,#8A5BB8);}
   @media (min-width:768px){ .pp-cards{grid-auto-columns:calc((100% - 32px)/2.4);} .pp-card h3{font-size:40px;} .pp-title{font-size:clamp(40px,5vw,72px); white-space:nowrap;} }
@@ -1111,6 +1123,28 @@
   #lbShopList{display:flex; flex-wrap:wrap; gap:8px; justify-content:center;}
   .lb-chip{border:1.5px solid rgba(255,255,255,.8); background:rgba(255,255,255,.12); color:#fff; border-radius:999px; padding:7px 14px; font:inherit; font-size:12.5px; letter-spacing:.08em; text-transform:none; cursor:pointer;}
   .lb-chip:hover{background:#fff; color:#4B2470;}
+  /* shop cards */
+  .shop-grid{grid-template-columns:repeat(auto-fill,minmax(270px,1fr)) !important; gap:40px 20px !important;}
+  .sc{text-align:left;}
+  .sc-shot{position:relative; aspect-ratio:4/5; background:#FAF8FB; overflow:hidden; cursor:pointer;}
+  .sc-shot img{width:100%; height:100%; object-fit:contain; padding:7% 9%; box-sizing:border-box; display:block; transition:transform .6s ease;}
+  .sc:hover .sc-shot img{transform:scale(1.03);}
+  .sc-mine{position:absolute; top:12px; right:12px; display:flex; align-items:center; gap:6px; padding:7px 12px; border:0; border-radius:999px; background:#fff; color:#2E2433; font:inherit; font-size:13px; cursor:pointer; box-shadow:0 2px 10px rgba(46,36,51,.1);}
+  .sc-mine:hover{background:#2E2433; color:#fff;}
+  .sc-badge{position:absolute; right:12px; bottom:12px; padding:5px 10px; border-radius:6px; background:#fff; color:#2E2433; font-size:13px;}
+  .sc-sizes{position:absolute; left:12px; bottom:12px; display:flex; flex-direction:column; align-items:stretch; padding:8px 4px; border-radius:10px; background:rgba(255,255,255,.96); box-shadow:0 4px 16px rgba(46,36,51,.1); opacity:0; transform:translateY(6px); pointer-events:none; transition:opacity .2s, transform .2s;}
+  .sc-sizes span{font-size:10.5px; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-soft,#8A7480); padding:0 10px 4px; text-align:center;}
+  .sc-sizes button{border:0; background:none; font:inherit; font-size:16px; padding:6px 16px; border-radius:6px; color:#2E2433; cursor:pointer;}
+  .sc-sizes button:hover{background:#EFDDFD;}
+  .sc-shot:hover .sc-sizes,.sc.open .sc-sizes,.sc-sizes:focus-within{opacity:1; transform:none; pointer-events:auto;}
+  .sc-row{display:flex; justify-content:space-between; align-items:flex-start; gap:12px; margin-top:14px;}
+  .sc-name{margin:0; font-size:15px; font-weight:500; letter-spacing:.06em; text-transform:uppercase; color:#2E2433;}
+  .sc-price{margin:5px 0 0; font-size:15px; color:#2E2433;}
+  .sc-price s{opacity:.5; margin-right:4px;}
+  .sc-meta{margin:5px 0 0; font-size:13.5px; color:var(--ink-soft,#8A7480);}
+  .sc-bag{flex:none; border:0; background:none; padding:2px; color:#2E2433; cursor:pointer;}
+  .sc-bag:hover{color:var(--fs-orchid,#8A5BB8);}
+  @media (max-width:640px){ .shop-grid{grid-template-columns:1fr 1fr !important; gap:30px 12px !important;} .sc-mine{top:8px; right:8px; padding:6px 9px; font-size:11.5px;} .sc-badge{display:none;} .sc-sizes{left:8px; bottom:8px;} .sc-sizes button{padding:5px 12px; font-size:15px;} .sc-name{font-size:13px;} .sc-meta{font-size:12.5px;} }
   .suit-pop{position:fixed; right:24px; bottom:24px; z-index:80; width:min(330px,calc(100vw - 32px)); max-height:calc(100svh - 48px); overflow:auto; border-radius:20px; box-shadow:0 24px 60px rgba(0,0,0,.4);}
   .suit-pop[hidden]{display:none;}
   .suit-pop .suit-card{border:0; border-radius:20px;}
@@ -1571,26 +1605,26 @@
         <ol class="pp-cards" id="ppCards">
           <li class="pp-card lp-reveal"><a class="pp-link" href="#design">
             <img src="photos/flatlay.jpg" alt="Mint and leopard bikini pieces laid out on a pink table with confetti" loading="lazy" style="object-position:55% 50%">
-            <h3><span class="pp-n">1.</span> Pick your base</h3>
-            <p class="pp-blurb">Choose your top and bottom: shape, color and size. Mix and match however you like.</p>
+            <h3><span class="pp-n">01</span><span class="pp-t">Pick your base</span></h3>
+            <p class="pp-blurb"><mark>Choose your top and bottom</mark> in any shape, color and size, then mix and match however you like.</p>
             <span class="pp-cta">Get started</span>
           </a></li>
           <li class="pp-card lp-reveal" style="--d:.08s"><a class="pp-link" href="#design">
             <img src="photos/styling-overhead.jpg" alt="Hands arranging mint bikini ties among rhinestones and confetti" loading="lazy">
-            <h3><span class="pp-n">2.</span> Choose your add ons</h3>
-            <p class="pp-blurb">Lace, ruffles, bows, beads, charms, rhinestones and more. Your price updates as you go.</p>
+            <h3><span class="pp-n">02</span><span class="pp-t">Choose your add ons</span></h3>
+            <p class="pp-blurb"><mark>Lace, ruffles, bows and beads</mark> plus charms, rhinestones and more. Your price updates as you go.</p>
             <span class="pp-cta">Get started</span>
           </a></li>
           <li class="pp-card lp-reveal" style="--d:.16s"><a class="pp-link" href="#design">
             <img src="photos/sewing-closeup.jpg" alt="A mint bikini being sewn on a pink jeweled sewing machine" loading="lazy" style="object-position:40% 50%">
-            <h3><span class="pp-n">3.</span> Watch it come to life</h3>
-            <p class="pp-blurb">We sew every Peace by hand in Miami, made to order just for you.</p>
+            <h3><span class="pp-n">03</span><span class="pp-t">Watch it come to life</span></h3>
+            <p class="pp-blurb"><mark>Sewn by hand in Miami</mark> every Peace is made to order, just for you.</p>
             <span class="pp-cta">Get started</span>
           </a></li>
           <li class="pp-card lp-reveal" style="--d:.24s"><a class="pp-link" href="#design">
             <img src="photos/lifeguard-tower.jpg" alt="Two women in aqua and coral bikinis waving from a mint lifeguard tower" loading="lazy" style="object-position:36% 50%">
-            <h3><span class="pp-n">4.</span> Wear your perfect peace</h3>
-            <p class="pp-blurb">It ships straight to your door, ready for the beach. One of one, designed by you.</p>
+            <h3><span class="pp-n">04</span><span class="pp-t">Wear your perfect peace</span></h3>
+            <p class="pp-blurb"><mark>Shipped to your door</mark> ready for the beach. One of one, designed by you.</p>
             <span class="pp-cta">Get started</span>
           </a></li>
         </ol>
@@ -1707,7 +1741,7 @@
   <section class="lb-head">
     <p class="lb-kicker">Made in Miami</p>
     <h1 class="lb-title">The Peaces <i>Shop</i></h1>
-    <p class="lb-sub">Our favorite Peaces, ready to add to your bag. Want to change something? Tap Make it mine.</p>
+    <p class="lb-sub">Our favorite Peaces. Pick your size to add one to your bag, or tap Make it mine to change anything.</p>
   </section>
 
   <div class="shop-grid" id="shopGrid"></div>
@@ -1795,9 +1829,11 @@
         <h3 class="ac-h3">Your exclusive codes</h3>
         <p class="ac-muted">Only you can use these. Enter one at checkout.</p>
         <div id="acCodes"></div>
+        <div id="acBday">
         <h3 class="ac-h3" id="acBdayCard">Your birthday</h3>
         <p class="ac-muted" id="acBdayText">PS: extra points if you enter your birthday!</p>
         <div class="ac-bday" id="acBdayForm"><select id="acMonth" aria-label="Month"></select><select id="acDay" aria-label="Day"></select><button class="ac-btn ghost" type="button" id="acBdaySave">Save</button></div>
+        </div>
       </section>
       <section class="ac-sec">
         <h2 class="ac-h2">Account Information</h2>
@@ -3587,8 +3623,7 @@
     document.getElementById("acRedeem").disabled=!p.canRedeem;
     var codes=document.getElementById("acCodes");
     codes.innerHTML=d.rewards.length?d.rewards.map(function(r){ return '<div class="ac-code'+(r.used?' used':'')+'"><div><code>'+esc(r.code)+'</code><p class="ac-muted">$'+r.off+' off'+(r.used?': used':'')+'</p></div>'+(r.used?'':'<button class="ac-copy" type="button" data-copy="'+esc(r.code)+'">Copy</button>')+'</div>'; }).join(""):'<p class="ac-muted" style="margin-top:12px">Reach 100 points and your first $10 code shows up here.</p>';
-    if(d.birthday){ document.getElementById("acBdayForm").hidden=true; document.getElementById("acBdayText").textContent="Saved: "+MONTHS[d.birthday.month-1]+" "+d.birthday.day+". We add 50 bonus points every year in your birthday month."; }
-    else document.getElementById("acBdayForm").hidden=false;
+    document.getElementById("acBday").hidden=!!d.birthday; // once it's saved there's nothing left to do here
     document.getElementById("acName").textContent=d.fullName||d.name||"";
     document.getElementById("acEmail").textContent=d.email||"";
     var PAY={PAID:"Paid",PARTIALLY_PAID:"Partly paid",PENDING:"Not paid yet",AUTHORIZED:"Not paid yet",REFUNDED:"Refunded",PARTIALLY_REFUNDED:"Partly refunded",VOIDED:"Cancelled",EXPIRED:"Cancelled"};
@@ -4224,7 +4259,7 @@
   document.getElementById("cartCheckout").addEventListener("click",function(){ setCart(false); document.getElementById("checkoutBtn").click(); });
   async function addToBagAndStartOver(btn){
     if(btn.dataset.busy||bag.length+1>=MAX_BAG) return;
-    btn.dataset.busy="1"; var label=btn.textContent; btn.textContent="ADDING…";
+    btn.dataset.busy="1"; var label=btn.textContent; btn.textContent=btn.dataset.z?"…":"ADDING…";
     var pic=await designImageOrNull(4000);
     bag.push({design:designPayload(), image:pic||"art/logo-ps.png", title:designTitle(), colors:designColors(), sizes:state.sizeTop+"/"+state.sizeBottom, sub:lastSub, adds:lastAdds});
     btn.textContent=label; delete btn.dataset.busy;
@@ -4285,7 +4320,7 @@
   async function addSuit(s,top,bottom,btn){
     if(btn.dataset.busy) return;
     if(bag.length+(currentInBag()?1:0)>=MAX_BAG){ siteToast("Your bag is full: up to "+MAX_BAG+" bikinis per order."); return; }
-    btn.dataset.busy="1"; var label=btn.textContent; btn.textContent="ADDING…";
+    btn.dataset.busy="1"; var label=btn.textContent; btn.textContent=btn.dataset.z?"…":"ADDING…";
     var pr=suitPrice(s), pic="photos/shop/"+s.id+".png";
     try{ pic=await toDataUrl(pic); }catch(e){}
     bag.push({design:suitDesign(s,top,bottom), image:pic, title:s.name, colors:colorDef(s.design.topColor).name+" / "+colorDef(s.design.bottomColor).name, sizes:top+"/"+bottom, sub:pr.total, adds:pr.adds});
@@ -4305,7 +4340,30 @@
     if(location.hash==="#design" && !builderEl.hidden){ renderAll(); showPage("pagePeaces"); }
     else { startOnPeaces=true; location.hash="design"; }
   }
-  (function(){ var g=document.getElementById("shopGrid"); if(g) SUITS.forEach(function(s){ g.appendChild(suitCard(s)); }); })();
+  /* Shop grid card: big picture, name / price / colour underneath, sizes pop up on the picture for a quick add */
+  function shopCard(s){
+    var pr=suitPrice(s), card=document.createElement("article");
+    card.className="sc"; card.dataset.suitCard=s.id;
+    var price=creator?"<s>"+fmt(pr.total)+"</s> "+fmt(creatorSub(pr.total,pr.adds)):fmt(pr.total);
+    var t=colorDef(s.design.topColor).name, b=colorDef(s.design.bottomColor).name, col=t===b?t:t+" / "+b;
+    var bagSvg='<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 7h12l-1 13H7L6 7z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg>';
+    card.innerHTML='<div class="sc-shot"><img src="photos/shop/'+s.id+'.png" alt="'+s.name+'" loading="lazy">'+
+      '<button type="button" class="sc-mine" data-act="mine"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>Make it mine</button>'+
+      '<div class="sc-sizes" role="group" aria-label="Add '+s.name+' to your bag in size"><span>Add size</span>'+SIZE_LIST.map(function(z){ return '<button type="button" data-act="add" data-z="'+z+'">'+z+'</button>'; }).join("")+'</div>'+
+      '<span class="sc-badge">Made to order</span></div>'+
+      '<div class="sc-row"><div><h3 class="sc-name">'+s.name+'</h3><p class="sc-price">'+price+'</p><p class="sc-meta">'+col+' · '+s.blurb.replace(/\.$/,"")+'</p></div>'+
+      '<button type="button" class="sc-bag" data-act="sizes" aria-label="Choose a size for '+s.name+'">'+bagSvg+'</button></div>';
+    card.addEventListener("click",function(e){
+      var btn=e.target.closest("[data-act]");
+      if(!btn){ if(e.target.closest(".sc-shot")) card.classList.toggle("open"); return; }
+      if(btn.dataset.act==="sizes"){ card.classList.toggle("open"); return; }
+      if(btn.dataset.act==="mine"){ makeItMine(s,"S","S"); return; }
+      var z=btn.dataset.z; card.classList.remove("open"); addSuit(s,z,z,btn);
+    });
+    return card;
+  }
+  document.addEventListener("click",function(e){ if(!e.target.closest(".sc")) document.querySelectorAll(".sc.open").forEach(function(c){ c.classList.remove("open"); }); });
+  (function(){ var g=document.getElementById("shopGrid"); if(g) SUITS.forEach(function(s){ g.appendChild(shopCard(s)); }); })();
 
   /* lookbook: tags on each photo → that Peace, ready to add to the bag or make yours */
   var LOOK_TAGS=(window.PeacesSuits&&PeacesSuits.LOOK_TAGS)||{};
