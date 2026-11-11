@@ -456,6 +456,18 @@
   @media (max-width:640px){ .tt-frame{height:520px;} }
   .tt-follow{display:inline-block; width:auto !important; margin-top:30px; padding-left:36px; padding-right:36px;}
   @media (hover:none){ .pp-cta{opacity:1; transform:none;} }
+  /* process cards: big number, title beside it, highlighted description at the bottom */
+  .pp-card h3{display:flex; align-items:flex-start; gap:12px; padding:18px 18px 0 !important; font-size:inherit !important;}
+  .pp-n{font-family:var(--font); font-weight:500; font-size:clamp(80px,6.6vw,104px); line-height:.78; letter-spacing:-.05em; color:#fff;}
+  .pp-t{padding-top:4px; font-family:var(--font); font-weight:500; font-size:clamp(22px,1.8vw,26px); line-height:1.08; letter-spacing:-.01em; color:#fff;}
+  .pp-blurb{position:absolute !important; left:18px; right:18px; bottom:18px; margin:0 !important; max-width:none !important; font-size:15.5px !important; line-height:1.55 !important; color:#fff; text-shadow:0 1px 8px rgba(46,36,51,.5); transition:opacity .25s;}
+  .pp-blurb mark{background:#EFDDFD; color:#2E2433; padding:2px 7px; text-shadow:none; font-weight:500; -webkit-box-decoration-break:clone; box-decoration-break:clone;}
+  .pp-link::before{content:""; position:absolute; inset:0; background:linear-gradient(to top, rgba(46,36,51,.6), rgba(46,36,51,0) 42%); pointer-events:none; z-index:1;}
+  .pp-card h3,.pp-blurb,.pp-cta{z-index:2 !important;}
+  .pp-link::after{background:linear-gradient(to bottom, rgba(46,36,51,.5), rgba(46,36,51,0) 40%) !important;}
+  .pp-cta{top:50%; bottom:auto !important; transform:translateY(calc(-50% + 8px)) !important;}
+  .pp-card:hover .pp-cta,.pp-link:focus-visible .pp-cta{transform:translateY(-50%) !important;}
+  @media (hover:none){ .pp-cta{top:auto; bottom:auto !important; position:relative; display:none;} }
   .pp-next{position:absolute; right:-6px; top:50%; transform:translateY(-50%); width:56px; height:56px; border-radius:999px; border:0; background:var(--fs-ink,#2E2433); color:#fff; display:grid; place-items:center; cursor:pointer; transition:background .2s;}
   .pp-next:hover{background:var(--fs-orchid,#8A5BB8);}
   @media (min-width:768px){ .pp-cards{grid-auto-columns:calc((100% - 32px)/2.4);} .pp-card h3{font-size:40px;} .pp-title{font-size:clamp(40px,5vw,72px); white-space:nowrap;} }
@@ -1571,26 +1583,26 @@
         <ol class="pp-cards" id="ppCards">
           <li class="pp-card lp-reveal"><a class="pp-link" href="#design">
             <img src="photos/flatlay.jpg" alt="Mint and leopard bikini pieces laid out on a pink table with confetti" loading="lazy" style="object-position:55% 50%">
-            <h3><span class="pp-n">1.</span> Pick your base</h3>
-            <p class="pp-blurb">Choose your top and bottom: shape, color and size. Mix and match however you like.</p>
+            <h3><span class="pp-n">01</span><span class="pp-t">Pick your base</span></h3>
+            <p class="pp-blurb"><mark>Choose your top and bottom</mark> in any shape, color and size, then mix and match however you like.</p>
             <span class="pp-cta">Get started</span>
           </a></li>
           <li class="pp-card lp-reveal" style="--d:.08s"><a class="pp-link" href="#design">
             <img src="photos/styling-overhead.jpg" alt="Hands arranging mint bikini ties among rhinestones and confetti" loading="lazy">
-            <h3><span class="pp-n">2.</span> Choose your add ons</h3>
-            <p class="pp-blurb">Lace, ruffles, bows, beads, charms, rhinestones and more. Your price updates as you go.</p>
+            <h3><span class="pp-n">02</span><span class="pp-t">Choose your add ons</span></h3>
+            <p class="pp-blurb"><mark>Lace, ruffles, bows and beads</mark> plus charms, rhinestones and more. Your price updates as you go.</p>
             <span class="pp-cta">Get started</span>
           </a></li>
           <li class="pp-card lp-reveal" style="--d:.16s"><a class="pp-link" href="#design">
             <img src="photos/sewing-closeup.jpg" alt="A mint bikini being sewn on a pink jeweled sewing machine" loading="lazy" style="object-position:40% 50%">
-            <h3><span class="pp-n">3.</span> Watch it come to life</h3>
-            <p class="pp-blurb">We sew every Peace by hand in Miami, made to order just for you.</p>
+            <h3><span class="pp-n">03</span><span class="pp-t">Watch it come to life</span></h3>
+            <p class="pp-blurb"><mark>Sewn by hand in Miami</mark> every Peace is made to order, just for you.</p>
             <span class="pp-cta">Get started</span>
           </a></li>
           <li class="pp-card lp-reveal" style="--d:.24s"><a class="pp-link" href="#design">
             <img src="photos/lifeguard-tower.jpg" alt="Two women in aqua and coral bikinis waving from a mint lifeguard tower" loading="lazy" style="object-position:36% 50%">
-            <h3><span class="pp-n">4.</span> Wear your perfect peace</h3>
-            <p class="pp-blurb">It ships straight to your door, ready for the beach. One of one, designed by you.</p>
+            <h3><span class="pp-n">04</span><span class="pp-t">Wear your perfect peace</span></h3>
+            <p class="pp-blurb"><mark>Shipped to your door</mark> ready for the beach. One of one, designed by you.</p>
             <span class="pp-cta">Get started</span>
           </a></li>
         </ol>
