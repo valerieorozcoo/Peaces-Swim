@@ -420,6 +420,27 @@
   .pp-card:hover img{transform:scale(1.04);}
   .pp-card:hover .pp-cta,.pp-link:focus-visible .pp-cta{opacity:1; transform:none;}
   .pp-cta:hover{background:var(--fs-ink,#2E2433); color:#fff;}
+  .pp-blurb{position:relative; z-index:1; margin:10px 20px 0; max-width:30ch; font-size:15.5px; line-height:1.4; color:#fff; text-shadow:0 1px 10px rgba(46,36,51,.55);}
+  .pp-link::after{background:linear-gradient(to bottom, rgba(46,36,51,.62), rgba(46,36,51,0) 58%) !important;}
+  /* before & after slider */
+  .ba{background:#fff; padding:80px 20px; text-align:center;}
+  .ba-sub{max-width:52ch; margin:14px auto 30px; color:var(--ink-soft,#6b5a74); font-size:17px; line-height:1.5;}
+  .ba-frame{position:relative; width:min(520px,100%); margin:0 auto; aspect-ratio:2/3; border-radius:18px; overflow:hidden; background:#000; touch-action:pan-y;}
+  .ba-frame img{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block; user-select:none; -webkit-user-drag:none;}
+  .ba-before{position:absolute; inset:0; clip-path:inset(0 calc(100% - var(--pos)) 0 0);}
+  .ba-handle{position:absolute; top:0; bottom:0; left:var(--pos); width:3px; margin-left:-1.5px; background:#fff; pointer-events:none; box-shadow:0 0 12px rgba(0,0,0,.5);}
+  .ba-handle span{position:absolute; top:50%; left:50%; width:46px; height:46px; margin:-23px 0 0 -23px; border-radius:999px; background:#fff; box-shadow:0 4px 16px rgba(0,0,0,.35);}
+  .ba-handle span::before,.ba-handle span::after{content:""; position:absolute; top:50%; width:0; height:0; margin-top:-6px; border:6px solid transparent;}
+  .ba-handle span::before{left:7px; border-right-color:#4B2470;} .ba-handle span::after{right:7px; border-left-color:#4B2470;}
+  .ba-range{position:absolute; inset:0; width:100%; height:100%; margin:0; opacity:0; cursor:ew-resize;}
+  .ba-tag{position:absolute; top:14px; padding:6px 12px; border-radius:999px; background:rgba(255,255,255,.9); color:#4B2470; font-size:12px; letter-spacing:.2em; text-transform:uppercase; font-weight:600; pointer-events:none;}
+  .ba-tag-l{left:14px;} .ba-tag-r{right:14px;}
+  .ba-cta{display:inline-block; margin-top:28px;}
+  /* tiktok */
+  .tt{background:var(--fs-mist,#FAF6FE); padding:72px 20px; text-align:center;}
+  .tt-embed{max-width:780px; margin:24px auto 0; min-height:420px;}
+  .tt-embed blockquote{margin:0 auto !important;}
+  .tt-follow{display:inline-block; margin-top:22px;}
   @media (hover:none){ .pp-cta{opacity:1; transform:none;} }
   .pp-next{position:absolute; right:-6px; top:50%; transform:translateY(-50%); width:56px; height:56px; border-radius:999px; border:0; background:var(--fs-ink,#2E2433); color:#fff; display:grid; place-items:center; cursor:pointer; transition:background .2s;}
   .pp-next:hover{background:var(--fs-orchid,#8A5BB8);}
@@ -942,6 +963,35 @@
 
   /* ===== Lookbook page ===== */
   .lb{max-width:1220px; margin:0 auto; padding:24px 20px 72px; color:var(--fs-ink,#2E2433); font-family:var(--font);}
+  /* ---------- Peace Points account ---------- */
+  .ac-wrap{max-width:880px; margin:0 auto; padding:10px 0 80px;}
+  .ac-card{background:#fff; border:1px solid var(--line,#E7DAF3); border-radius:22px; padding:28px; margin-top:22px;}
+  .ac-card h2{margin:0 0 6px; font-size:22px; font-weight:500;}
+  .ac-muted{color:var(--ink-soft,#8A7480); font-size:15px; line-height:1.5; margin:0;}
+  .ac-perks{display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin:22px 0;}
+  .ac-perk{background:var(--pink-pale,#F6EEFB); border-radius:16px; padding:18px; text-align:center;}
+  .ac-perk b{display:block; font-size:26px; font-weight:500; color:var(--ink);}
+  .ac-perk span{font-size:13.5px; color:var(--ink-soft,#8A7480);}
+  .ac-btn{display:inline-block; border:0; cursor:pointer; background:var(--ink); color:#fff; padding:15px 30px; border-radius:999px; font:inherit; font-size:12.5px; letter-spacing:.22em; text-transform:uppercase;}
+  .ac-btn[disabled]{opacity:.45; cursor:default;}
+  .ac-btn.ghost{background:transparent; color:var(--ink); border:1px solid var(--line,#E7DAF3);}
+  .ac-pts{display:flex; align-items:flex-end; gap:12px; flex-wrap:wrap;}
+  .ac-pts b{font-size:64px; line-height:1; font-weight:400; font-style:italic;}
+  .ac-bar{height:10px; border-radius:99px; background:var(--pink-pale,#F6EEFB); overflow:hidden; margin:18px 0 8px;}
+  .ac-bar i{display:block; height:100%; background:var(--pink,#C58BE0); border-radius:99px; transition:width .6s;}
+  .ac-row{display:flex; justify-content:space-between; align-items:center; gap:14px; flex-wrap:wrap;}
+  .ac-code{display:flex; align-items:center; justify-content:space-between; gap:12px; padding:14px 0; border-top:1px solid var(--line,#E7DAF3);}
+  .ac-code code{font-size:17px; letter-spacing:.12em;}
+  .ac-code.used{opacity:.5;}
+  .ac-copy{border:1px solid var(--line,#E7DAF3); background:#fff; border-radius:999px; padding:8px 16px; cursor:pointer; font:inherit; font-size:13px;}
+  .ac-order{display:flex; gap:16px; padding:16px 0; border-top:1px solid var(--line,#E7DAF3);}
+  .ac-order img{width:64px; height:64px; object-fit:contain; border-radius:12px; background:var(--pink-pale,#F6EEFB);}
+  .ac-order p{margin:2px 0; font-size:14.5px;}
+  .ac-tag{display:inline-block; font-size:11.5px; letter-spacing:.12em; text-transform:uppercase; padding:3px 10px; border-radius:99px; background:var(--pink-pale,#F6EEFB); margin-left:6px;}
+  .ac-bday{display:flex; gap:10px; flex-wrap:wrap; margin-top:14px;}
+  .ac-bday select{font:inherit; padding:12px 14px; border-radius:12px; border:1px solid var(--line,#E7DAF3); background:#fff;}
+  .ac-msg{min-height:1.4em; margin:10px 0 0; font-size:14px; color:var(--ink-soft,#8A7480);}
+  @media (max-width:640px){ .ac-perks{grid-template-columns:1fr;} .ac-card{padding:22px;} .ac-pts b{font-size:52px;} }
   .lb-top{display:flex; align-items:center; justify-content:space-between; gap:16px; padding-bottom:18px; border-bottom:1px solid var(--line,#E7DAF3);}
   .lb-logo{height:clamp(64px,8vw,88px); width:auto; display:block;}
   .lb-nav{display:flex; align-items:center; gap:22px;}
@@ -968,6 +1018,69 @@
   .lb-fig{margin:0; text-align:center;}
   .lb-fig img{max-width:100%; max-height:calc(100svh - 140px); width:auto; height:auto; border-radius:14px; box-shadow:0 20px 60px rgba(0,0,0,.35);}
   .lb-fig figcaption{margin-top:12px; color:#fff; font-size:13.5px; letter-spacing:.24em; text-transform:uppercase; opacity:.85;}
+  /* ===== site menu (Design · Shop · Lookbook · About · Account) on every page ===== */
+  .site-nav{display:flex; align-items:center; gap:22px;}
+  .site-nav > a,.lb-nav.site-nav > a:not(.cta){display:inline-block !important; font-size:13px; letter-spacing:.22em; text-transform:uppercase; color:var(--fs-ink,#2E2433); text-decoration:none; white-space:nowrap;}
+  .lb-top .site-nav{margin-left:auto;} .lb-top .nav-bag{margin-left:18px;}
+  .lp-header .lp-quick{margin-left:auto;}
+  .lp-bag{margin-left:22px; margin-right:14px;}
+  @media (max-width:1023px){ .lp-bag{margin-left:auto;} }
+  .site-nav > a:hover{color:var(--fs-orchid,#8A5BB8);}
+  .nav-bag{position:relative; display:grid; place-items:center; width:44px; height:44px; border-radius:999px; background:#EFDDFD; color:#4B2470; border:1.5px solid #D8C3EE; cursor:pointer; flex:none;}
+  .nav-bag b{position:absolute; top:-5px; right:-5px; min-width:20px; height:20px; padding:0 5px; border-radius:999px; background:#4B2470; color:#fff; font-size:11.5px; line-height:20px; text-align:center; display:none;}
+  .nav-bag.has b{display:block;}
+  .builder-nav{flex:1; justify-content:center; gap:20px;}
+  .builder-nav > a{font-size:12.5px;}
+  @media (max-width:760px){
+    .lb-top{flex-wrap:wrap;}
+    .site-nav{gap:14px; overflow-x:auto; max-width:100%; -webkit-overflow-scrolling:touch; scrollbar-width:none;}
+    .site-nav::-webkit-scrollbar{display:none;}
+    .site-nav > a,.lb-nav.site-nav > a:not(.cta){font-size:11.5px; letter-spacing:.12em;}
+    .lb-top .nav-bag{order:2; margin-left:auto;}
+    .lb-top .site-nav{width:100%; order:3; justify-content:space-between; padding-top:6px; margin-left:0;}
+    .builder-nav{order:3; flex-basis:100%; justify-content:space-between; gap:10px; padding-top:6px;}
+    header.top.builder-top{flex-wrap:wrap;}
+  }
+
+  /* ===== Shop: premade suits ===== */
+  .shop-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(250px,1fr)); gap:22px; margin:8px 0 46px;}
+  .suit-card{background:#fff; border:1px solid var(--line,#E7DAF3); border-radius:18px; padding:16px; display:flex; flex-direction:column; gap:8px; text-align:center;}
+  .suit-shot{aspect-ratio:4/5; display:grid; place-items:center; background:var(--fs-mist,#FAF6FE); border-radius:14px; overflow:hidden;}
+  .suit-shot img{width:88%; height:92%; object-fit:contain; display:block;}
+  .suit-name{margin:6px 0 0; font-size:19px; font-weight:600; letter-spacing:.02em;}
+  .suit-blurb{margin:0; font-size:14.5px; color:var(--ink-soft,#6b5a74);}
+  .suit-price{margin:0; font-size:18px; font-weight:600; color:#4B2470;}
+  .suit-price s{opacity:.5; font-weight:400; margin-right:4px;}
+  .suit-sizes{display:flex; justify-content:center; gap:14px; font-size:13px; letter-spacing:.12em; text-transform:uppercase;}
+  .suit-sizes select{margin-left:6px; padding:6px 8px; border:1px solid #D8C3EE; border-radius:10px; background:#fff; font:inherit; letter-spacing:0;}
+  .suit-btns{display:flex; flex-direction:column; gap:8px; margin-top:4px;}
+  .suit-btns .cta{width:100%; margin:0; padding:12px 14px; font-size:13.5px;}
+  .shop-acc-head{margin-top:10px;}
+
+  /* ===== Lookbook tags ===== */
+  .lb-tagwrap{position:relative; display:inline-block; line-height:0; max-width:100%;}
+  .lb-tag{position:absolute; transform:translate(-50%,-50%); width:34px; height:34px; border-radius:999px; border:2px solid #fff; background:rgba(75,36,112,.82); color:#fff; font-size:20px; line-height:1; cursor:pointer; display:grid; place-items:center; box-shadow:0 4px 14px rgba(0,0,0,.3); animation:tagPulse 2.2s ease-in-out infinite;}
+  .lb-tag:hover,.lb-tag:focus-visible{background:#8A5BB8; animation:none;}
+  @keyframes tagPulse{0%,100%{box-shadow:0 0 0 0 rgba(255,255,255,.55),0 4px 14px rgba(0,0,0,.3);} 50%{box-shadow:0 0 0 9px rgba(255,255,255,0),0 4px 14px rgba(0,0,0,.3);}}
+  .lb-shop{margin-top:10px; display:flex; flex-wrap:wrap; align-items:center; justify-content:center; gap:8px; color:#fff; font-size:12.5px; letter-spacing:.2em; text-transform:uppercase;}
+  .lb-shop[hidden]{display:none;}
+  #lbShopList{display:flex; flex-wrap:wrap; gap:8px; justify-content:center;}
+  .lb-chip{border:1.5px solid rgba(255,255,255,.8); background:rgba(255,255,255,.12); color:#fff; border-radius:999px; padding:7px 14px; font:inherit; font-size:12.5px; letter-spacing:.08em; text-transform:none; cursor:pointer;}
+  .lb-chip:hover{background:#fff; color:#4B2470;}
+  .suit-pop{position:fixed; right:24px; bottom:24px; z-index:80; width:min(330px,calc(100vw - 32px)); max-height:calc(100svh - 48px); overflow:auto; border-radius:20px; box-shadow:0 24px 60px rgba(0,0,0,.4);}
+  .suit-pop[hidden]{display:none;}
+  .suit-pop .suit-card{border:0; border-radius:20px;}
+  .suit-pop .suit-shot{aspect-ratio:1/1;}
+  .suit-pop-x{position:absolute; top:10px; right:12px; z-index:2; width:34px; height:34px; border:0; border-radius:999px; background:#fff; color:#4B2470; font-size:22px; line-height:1; cursor:pointer; box-shadow:0 2px 8px rgba(0,0,0,.15);}
+  @media (max-width:640px){ .suit-pop{left:16px; right:16px; bottom:16px; width:auto;} }
+  .lb-tile button{position:relative;}
+  .lb-tile-tag{position:absolute; left:10px; bottom:10px; padding:5px 10px; border-radius:999px; background:rgba(255,255,255,.92); color:#4B2470; font-size:11px; letter-spacing:.16em; text-transform:uppercase; font-weight:600;}
+
+  /* ===== "added to your bag" ===== */
+  .site-toast{position:fixed; left:50%; bottom:24px; transform:translateX(-50%); z-index:95; display:flex; align-items:center; gap:14px; padding:12px 14px 12px 20px; border-radius:999px; background:#4B2470; color:#fff; font-size:15px; box-shadow:0 10px 30px rgba(75,36,112,.35); max-width:calc(100% - 32px);}
+  .site-toast[hidden]{display:none;}
+  .site-toast button{border:0; border-radius:999px; background:#fff; color:#4B2470; padding:8px 14px; font:inherit; font-size:13px; letter-spacing:.12em; text-transform:uppercase; cursor:pointer; white-space:nowrap;}
+  .cart-drawer button:disabled{opacity:.45; cursor:not-allowed;}
   .lb-x{position:absolute; top:14px; right:18px; width:46px; height:46px; border:0; border-radius:999px; background:rgba(255,255,255,.14); color:#fff; font-size:30px; line-height:1; cursor:pointer;}
   .lb-arrow{position:absolute; top:50%; transform:translateY(-50%); width:52px; height:52px; border:0; border-radius:999px; background:var(--btn-grad); color:#fff; display:grid; place-items:center; cursor:pointer;}
   .lb-prev{left:14px;} .lb-next{right:14px;}
@@ -1331,22 +1444,23 @@
       </div>
       <nav class="lp-quick" aria-label="Shortcuts">
         <a href="#design">Design</a>
-        <a href="#how">Process</a>
+        <a href="#shop">Shop</a>
+        <a href="#lookbook">Lookbook</a>
         <a href="#about">About</a>
-        <a href="https://shopify.com/85529657569/account" id="accountBtn">Account</a>
+        <a href="#account" id="accountBtn">Account</a>
       </nav>
+      <button class="nav-bag lp-bag" type="button" data-bag aria-label="Your bag"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 7h12l-1 13H7L6 7z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg><b data-bagcount>0</b></button>
       <button class="lp-menu-btn" id="menuBtn" type="button" aria-expanded="false" aria-controls="lpMenu"><span></span><span></span><span></span><b>Menu</b></button>
     </header>
     <!-- phone menu: the four header links (plus Lookbook + Accessories) as a full-screen list -->
     <div class="lp-menu" id="lpMenu" hidden role="dialog" aria-modal="true" aria-label="Menu">
       <button class="lp-menu-x" id="menuClose" type="button" aria-label="Close menu">&times;</button>
       <nav>
-        <a href="#design">Design your own</a>
-        <a href="#how">The process</a>
-        <a href="#about">About us</a>
+        <a href="#design">Design</a>
+        <a href="#shop">Shop</a>
         <a href="#lookbook">Lookbook</a>
-        <a href="#accessories">Accessories</a>
-        <a href="https://shopify.com/85529657569/account" data-account>Account</a>
+        <a href="#about">About</a>
+        <a href="#account" data-account>Account</a>
       </nav>
       <img src="art/logo-ps-leopard.png" alt="" class="lp-menu-logo">
     </div>
@@ -1414,26 +1528,57 @@
           <li class="pp-card lp-reveal"><a class="pp-link" href="#design">
             <img src="photos/flatlay.jpg" alt="Mint and leopard bikini pieces laid out on a pink table with confetti" loading="lazy" style="object-position:55% 50%">
             <h3><span class="pp-n">1.</span> Pick your base</h3>
+            <p class="pp-blurb">Choose your top and bottom: shape, color and size. Mix and match however you like.</p>
             <span class="pp-cta">Get started</span>
           </a></li>
           <li class="pp-card lp-reveal" style="--d:.08s"><a class="pp-link" href="#design">
             <img src="photos/styling-overhead.jpg" alt="Hands arranging mint bikini ties among rhinestones and confetti" loading="lazy">
             <h3><span class="pp-n">2.</span> Choose your add ons</h3>
+            <p class="pp-blurb">Lace, ruffles, bows, beads, charms, rhinestones and more. Your price updates as you go.</p>
             <span class="pp-cta">Get started</span>
           </a></li>
           <li class="pp-card lp-reveal" style="--d:.16s"><a class="pp-link" href="#design">
             <img src="photos/sewing-closeup.jpg" alt="A mint bikini being sewn on a pink jeweled sewing machine" loading="lazy" style="object-position:40% 50%">
             <h3><span class="pp-n">3.</span> Watch it come to life</h3>
+            <p class="pp-blurb">We sew every Peace by hand in Miami, made to order just for you.</p>
             <span class="pp-cta">Get started</span>
           </a></li>
           <li class="pp-card lp-reveal" style="--d:.24s"><a class="pp-link" href="#design">
             <img src="photos/lifeguard-tower.jpg" alt="Two women in aqua and coral bikinis waving from a mint lifeguard tower" loading="lazy" style="object-position:36% 50%">
             <h3><span class="pp-n">4.</span> Wear your perfect peace</h3>
+            <p class="pp-blurb">It ships straight to your door, ready for the beach. One of one, designed by you.</p>
             <span class="pp-cta">Get started</span>
           </a></li>
         </ol>
         <button class="pp-next" type="button" aria-label="Next step" id="ppNext"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
       </div>
+    </div>
+  </section>
+
+  <section class="ba" id="before-after" aria-labelledby="baTitle">
+    <div class="lp-container">
+      <h2 class="pp-title lp-reveal" id="baTitle">Before &amp; <i>After</i></h2>
+      <p class="ba-sub lp-reveal">Our mini bikini on its own, then Peaced: pink lace, beads and a pearl charm. Drag to see the difference.</p>
+      <div class="ba-frame lp-reveal" id="baFrame" style="--pos:50%">
+        <img class="ba-after" src="photos/ba/mini-after.jpg" alt="After: the mint mini bikini with pink lace, pink and pearl beads and a pearl charm" loading="lazy">
+        <div class="ba-before"><img src="photos/ba/mini-before.jpg" alt="Before: the plain mint mini bikini" loading="lazy"></div>
+        <span class="ba-tag ba-tag-l">Before</span><span class="ba-tag ba-tag-r">After</span>
+        <span class="ba-handle" aria-hidden="true"><span></span></span>
+        <input class="ba-range" id="baRange" type="range" min="0" max="100" value="50" aria-label="Slide between before and after">
+      </div>
+      <a class="cta ba-cta" href="#design">Design your own</a>
+    </div>
+  </section>
+
+  <section class="tt" id="tiktok" aria-labelledby="ttTitle">
+    <div class="lp-container">
+      <a class="ig-title lp-reveal" id="ttTitle" href="https://www.tiktok.com/@peacesswim" target="_blank" rel="noopener">@peacesswim on TikTok</a>
+      <div class="tt-embed" id="ttEmbed">
+        <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@peacesswim" data-unique-id="peacesswim" data-embed-type="creator" style="max-width:780px; min-width:288px;">
+          <section><a target="_blank" rel="noopener" href="https://www.tiktok.com/@peacesswim?refer=creator_embed">@peacesswim</a></section>
+        </blockquote>
+      </div>
+      <a class="cta tt-follow" href="https://www.tiktok.com/@peacesswim" target="_blank" rel="noopener">Follow us on TikTok</a>
     </div>
   </section>
 
@@ -1511,15 +1656,19 @@
 <div class="lb acc" id="accessories" hidden>
   <header class="lb-top">
     <a href="#" aria-label="Back to the Peaces Swim home page"><img class="lb-logo" src="art/logo-ps.png" alt="Peaces Swim"></a>
-    <nav class="lb-nav" aria-label="Accessories">
-      <a href="#">Home</a>
-      <a class="cta lb-cta-sm" href="#design">Design your own</a>
-    </nav>
+    <nav class="lb-nav site-nav" aria-label="Menu"><a href="#design">Design</a><a href="#shop">Shop</a><a href="#lookbook">Lookbook</a><a href="#about">About</a><a href="#account" data-account>Account</a></nav><button class="nav-bag" type="button" data-bag aria-label="Your bag"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 7h12l-1 13H7L6 7z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg><b data-bagcount>0</b></button>
   </header>
 
   <section class="lb-head">
     <p class="lb-kicker">Made in Miami</p>
-    <h1 class="lb-title">Peaces <i>Accessories</i></h1>
+    <h1 class="lb-title">The Peaces <i>Shop</i></h1>
+    <p class="lb-sub">Our favorite Peaces, ready to add to your bag. Want to change something? Tap Make it mine.</p>
+  </section>
+
+  <div class="shop-grid" id="shopGrid"></div>
+
+  <section class="lb-head shop-acc-head">
+    <h2 class="lb-title lb-title-sm">Peaces <i>Accessories</i></h2>
     <p class="lb-sub">The headband and the tote, on their own. No bikini needed.</p>
   </section>
 
@@ -1563,16 +1712,63 @@
   <button class="cta" id="accCheckout" type="button" tabindex="-1">CHECKOUT</button>
 </div>
 
+<!-- ================= Account: Peace Points =================
+     #account: sign in with Shopify (email code), see points, rewards and orders. -->
+<div class="lb" id="account" hidden>
+  <header class="lb-top">
+    <a href="#" aria-label="Back to the Peaces Swim home page"><img class="lb-logo" src="art/logo-ps.png" alt="Peaces Swim"></a>
+    <nav class="lb-nav site-nav" aria-label="Menu"><a href="#design">Design</a><a href="#shop">Shop</a><a href="#lookbook">Lookbook</a><a href="#about">About</a><a href="#account" data-account>Account</a></nav><button class="nav-bag" type="button" data-bag aria-label="Your bag"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 7h12l-1 13H7L6 7z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg><b data-bagcount>0</b></button>
+  </header>
+  <section class="lb-head">
+    <p class="lb-kicker">Your Peaces account</p>
+    <h1 class="lb-title">Peace <i>Points</i></h1>
+    <p class="lb-sub" id="acHello">Every Peace you design earns points toward your next one.</p>
+  </section>
+  <div class="ac-wrap">
+    <div class="ac-card" id="acOut">
+      <h2>Join Peace Points</h2>
+      <p class="ac-muted">Sign in with the email you use at checkout. We send you a code, no password needed. Your past orders show up automatically.</p>
+      <div class="ac-perks">
+        <div class="ac-perk"><b>$1 = 1</b><span>point on every order</span></div>
+        <div class="ac-perk"><b>100 = $10</b><span>off your next Peace</span></div>
+        <div class="ac-perk"><b>+25 / +50</b><span>for joining and on your birthday</span></div>
+      </div>
+      <button class="ac-btn" type="button" id="acSignIn">Sign in or join</button>
+      <p class="ac-msg" id="acOutMsg"></p>
+    </div>
+    <div id="acIn" hidden>
+      <div class="ac-card">
+        <div class="ac-row"><p class="ac-muted">Your balance</p><button class="ac-copy" type="button" id="acSignOut">Sign out</button></div>
+        <div class="ac-pts"><b id="acBal">0</b><span class="ac-muted">Peace Points</span></div>
+        <div class="ac-bar"><i id="acBar" style="width:0"></i></div>
+        <p class="ac-muted" id="acNext"></p>
+        <div style="margin-top:18px"><button class="ac-btn" type="button" id="acRedeem">Get $10 off</button></div>
+        <p class="ac-msg" id="acMsg"></p>
+      </div>
+      <div class="ac-card">
+        <h2>Your exclusive codes</h2>
+        <p class="ac-muted">Only you can use these. Enter one at checkout.</p>
+        <div id="acCodes"></div>
+      </div>
+      <div class="ac-card" id="acBdayCard">
+        <h2>Your birthday</h2>
+        <p class="ac-muted" id="acBdayText">Tell us your birthday and get 50 bonus points every year in your birthday month.</p>
+        <div class="ac-bday" id="acBdayForm"><select id="acMonth" aria-label="Month"></select><select id="acDay" aria-label="Day"></select><button class="ac-btn ghost" type="button" id="acBdaySave">Save</button></div>
+      </div>
+      <div class="ac-card">
+        <h2>Your orders</h2>
+        <div id="acOrders"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- ================= About us =================
      #about: who we are. Tap a face on the group photo (or a name card) to say hi. -->
 <div class="lb ab" id="about" hidden>
   <header class="lb-top">
     <a href="#" aria-label="Back to the Peaces Swim home page"><img class="lb-logo" src="art/logo-ps.png" alt="Peaces Swim"></a>
-    <nav class="lb-nav" aria-label="About">
-      <a href="#">Home</a>
-      <a href="#lookbook">Lookbook</a>
-      <a class="cta lb-cta-sm" href="#design">Design your own</a>
-    </nav>
+    <nav class="lb-nav site-nav" aria-label="Menu"><a href="#design">Design</a><a href="#shop">Shop</a><a href="#lookbook">Lookbook</a><a href="#about">About</a><a href="#account" data-account>Account</a></nav><button class="nav-bag" type="button" data-bag aria-label="Your bag"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 7h12l-1 13H7L6 7z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg><b data-bagcount>0</b></button>
   </header>
 
   <section class="lb-head">
@@ -1644,16 +1840,13 @@
 <div class="lb" id="lookbook" hidden>
   <header class="lb-top">
     <a href="#" aria-label="Back to the Peaces Swim home page"><img class="lb-logo" src="art/logo-ps.png" alt="Peaces Swim"></a>
-    <nav class="lb-nav" aria-label="Lookbook">
-      <a href="#">Home</a>
-      <a class="cta lb-cta-sm" href="#design">Design your own</a>
-    </nav>
+    <nav class="lb-nav site-nav" aria-label="Menu"><a href="#design">Design</a><a href="#shop">Shop</a><a href="#lookbook">Lookbook</a><a href="#about">About</a><a href="#account" data-account>Account</a></nav><button class="nav-bag" type="button" data-bag aria-label="Your bag"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 7h12l-1 13H7L6 7z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg><b data-bagcount>0</b></button>
   </header>
 
   <section class="lb-head">
     <p class="lb-kicker">Vol. 01 · Made in Miami</p>
     <h1 class="lb-title">The Peaces <i>Lookbook</i></h1>
-    <p class="lb-sub">Real customs, worn by real girls. Every one of these was designed piece by piece.</p>
+    <p class="lb-sub">Real customs, worn by real girls. Tap a photo, then a tag to add that Peace to your bag or make it yours.</p>
   </section>
 
   <ul class="lb-grid" id="lbGrid">
@@ -1678,15 +1871,20 @@
   <div class="lb-box" id="lbBox" hidden role="dialog" aria-modal="true" aria-label="Lookbook photo">
     <button class="lb-x" type="button" id="lbClose" aria-label="Close">&times;</button>
     <button class="lb-arrow lb-prev" type="button" id="lbPrev" aria-label="Previous photo"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg></button>
-    <figure class="lb-fig"><img id="lbImg" src="" alt=""><figcaption id="lbCount"></figcaption></figure>
+    <figure class="lb-fig"><span class="lb-tagwrap" id="lbTagWrap"><img id="lbImg" src="" alt=""></span><figcaption id="lbCount"></figcaption>
+      <div class="lb-shop" id="lbShop" hidden><span>Shop this look</span><div id="lbShopList"></div></div></figure>
+    <div class="suit-pop" id="suitPop" hidden role="dialog" aria-label="Shop this Peace"></div>
     <button class="lb-arrow lb-next" type="button" id="lbNext" aria-label="Next photo"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
   </div>
 </div>
+
+<div class="site-toast" id="siteToast" role="status" aria-live="polite" hidden><span id="siteToastText"></span><button type="button" id="siteToastBag">View bag</button></div>
 
 <div class="wrap" id="builder" hidden>
   <div class="bag-toast" id="bagToast" role="status" aria-live="polite" hidden></div>
   <header class="top builder-top" id="bagbar">
     <a href="#" aria-label="Back to the Peaces Swim home page"><img class="logo" src="art/logo-ps.png" alt="Peaces Swim"></a>
+    <nav class="site-nav builder-nav" aria-label="Menu"><a href="#design">Design</a><a href="#shop">Shop</a><a href="#lookbook">Lookbook</a><a href="#about">About</a><a href="#account" data-account>Account</a></nav>
     <button class="cart-btn" id="bagToggle" type="button" aria-haspopup="dialog" aria-controls="cartDrawer" aria-label="Your bag">
       <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 7h12l-1 13H7L6 7z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg>
       <b id="bagCount">1</b>
@@ -1915,6 +2113,7 @@
 </div>
 
 <script src="lib/rules.js"></script>
+<script src="lib/suits.js"></script>
 <script>
 (function(){
   "use strict";
@@ -3153,11 +3352,10 @@
     });
     r.addEventListener("pointercancel",function(){ x0=null; });
   })();
-  /* Account goes to the customer's Shopify account (orders + profile), like other Shopify stores.
-     Their orders carry the email they signed up with, so they show up there automatically. */
+  /* Account opens her Peaces account (#account): Peace Points, codes and orders. */
   function syncAccountLinks(){
     document.querySelectorAll('#accountBtn,[data-account]').forEach(function(a){
-      a.href="https://shopify.com/85529657569/account"+(lead&&lead.email?"?login_hint="+encodeURIComponent(lead.email):"");
+      a.href="#account";
       if(a.id==="accountBtn") a.textContent=lead&&lead.name?"Hi, "+String(lead.name).split(" ")[0]:"Account";
     });
   }
@@ -3243,6 +3441,7 @@
     if(!builderEl.hidden) return;
     landing.hidden=true; lookbook.hidden=true; accPage.hidden=true; aboutPage.hidden=true; closeLightbox(); syncAccPop();
     showBuilder();
+    if(startOnPeaces){ startOnPeaces=false; showPage("pagePeaces"); } // "Make it mine": straight to the customizations
   }
   function enterLookbook(){
     if(!builderEl.hidden) resetDesign();
@@ -3273,9 +3472,124 @@
   }
   function route(){
     if(document.documentElement.classList.contains("prelaunch")){ leaveDesign(); return; } // waitlist only
-    if(location.hash==="#design") enterDesign(); else if(location.hash==="#lookbook") enterLookbook(); else if(location.hash==="#accessories") enterAccessories(); else if(location.hash==="#about") enterAbout(); else leaveDesign(); syncCheckoutPop(); }
+    if(location.hash!=="#account") document.getElementById("account").hidden=true;
+    if(location.hash==="#design") enterDesign(); else if(location.hash==="#lookbook") enterLookbook(); else if(location.hash==="#accessories"||location.hash==="#shop") enterAccessories(); else if(location.hash==="#about") enterAbout(); else if(location.hash==="#account") enterAccount(); else leaveDesign(); syncCheckoutPop(); if(typeof renderBag==="function") renderBag(lastSub); }
 
 
+
+  /* ---------- Peace Points account ----------
+     Sign in with Shopify (Customer Account API, email code, PKCE public client).
+     The browser keeps only her sign-in token; the server checks it with Shopify
+     and works out points, codes and orders. Nothing here is trusted for money. */
+  var acPage=document.getElementById("account"), acCfg=null, acData=null;
+  var AC_KEY="peaces-acct";
+  function acLoad(){ try{ return JSON.parse(localStorage.getItem(AC_KEY)||"null"); }catch(e){ return null; } }
+  function acSave(t){ try{ if(t) localStorage.setItem(AC_KEY,JSON.stringify(t)); else localStorage.removeItem(AC_KEY); }catch(e){} }
+  function acApi(path,body){ return fetch("/api/account/"+path,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body||{})}).then(function(r){ return r.json().catch(function(){return {};}).then(function(j){ j._status=r.status; return j; }); }); }
+  function acConfig(){ return acCfg?Promise.resolve(acCfg):acApi("config").then(function(c){ acCfg=c; return c; }); }
+  function b64url(buf){ return btoa(String.fromCharCode.apply(null,new Uint8Array(buf))).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,""); }
+  function randStr(){ var a=new Uint8Array(32); crypto.getRandomValues(a); return b64url(a); }
+  function acRedirect(){ return location.origin+"/account"; }
+  function acSignIn(){
+    var msg=document.getElementById("acOutMsg");
+    acConfig().then(function(c){
+      if(!c.enabled){ msg.textContent="Peace Points sign in opens very soon. Your orders are already earning points!"; return; }
+      var verifier=randStr(), st=randStr(), nonce=randStr();
+      try{ sessionStorage.setItem("peaces-pkce",JSON.stringify({v:verifier,s:st})); }catch(e){}
+      return crypto.subtle.digest("SHA-256",new TextEncoder().encode(verifier)).then(function(h){
+        var u=new URL(c.authorize);
+        u.search=new URLSearchParams({client_id:c.clientId,response_type:"code",redirect_uri:acRedirect(),scope:c.scope,state:st,nonce:nonce,code_challenge:b64url(h),code_challenge_method:"S256"}).toString();
+        location.href=u.toString();
+      });
+    }).catch(function(){ msg.textContent="We couldn't reach sign in. Try again in a moment."; });
+  }
+  function acToken(params){
+    return acConfig().then(function(c){
+      params.client_id=c.clientId;
+      return fetch(c.token,{method:"POST",headers:{"Content-Type":"application/x-www-form-urlencoded"},body:new URLSearchParams(params).toString()}).then(function(r){ if(!r.ok) throw new Error("token "+r.status); return r.json(); });
+    }).then(function(t){ var saved={a:t.access_token,r:t.refresh_token||(acLoad()||{}).r,id:t.id_token||(acLoad()||{}).id,exp:Date.now()+((t.expires_in||3600)-60)*1000}; acSave(saved); return saved; });
+  }
+  /* coming back from Shopify: /account?code=...&state=... */
+  var acCallback=(function(){
+    if(!/^\/account\/?$/.test(location.pathname)) return null;
+    var q=new URLSearchParams(location.search), code=q.get("code"), pk=null;
+    try{ pk=JSON.parse(sessionStorage.getItem("peaces-pkce")||"null"); sessionStorage.removeItem("peaces-pkce"); }catch(e){}
+    try{ history.replaceState(null,"","/#account"); }catch(e){}
+    if(!code||!pk||q.get("state")!==pk.s) return null;
+    return acToken({grant_type:"authorization_code",redirect_uri:acRedirect(),code:code,code_verifier:pk.v}).catch(function(){ return null; });
+  })();
+  function acFresh(){
+    var t=acLoad(); if(!t) return Promise.resolve(null);
+    if(t.exp>Date.now()) return Promise.resolve(t);
+    if(!t.r){ acSave(null); return Promise.resolve(null); }
+    return acToken({grant_type:"refresh_token",refresh_token:t.r}).catch(function(){ acSave(null); return null; });
+  }
+  function acShow(signedIn){ document.getElementById("acOut").hidden=signedIn; document.getElementById("acIn").hidden=!signedIn; }
+  function esc(x){ return String(x==null?"":x).replace(/[&<>"]/g,function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]; }); }
+  var MONTHS=["January","February","March","April","May","June","July","August","September","October","November","December"];
+  function acRender(d){
+    acData=d; acShow(true);
+    document.getElementById("acHello").textContent=d.name?"Hi "+d.name+", welcome back to your Peaces account.":"Welcome back to your Peaces account.";
+    var p=d.points; document.getElementById("acBal").textContent=p.balance;
+    document.getElementById("acBar").style.width=Math.min(100,((p.balance%p.perReward)/p.perReward)*100)+"%";
+    document.getElementById("acNext").textContent=p.canRedeem?"You have enough for $"+p.rewardOff+" off. Treat yourself!":p.toNext+" more points until $"+p.rewardOff+" off. That's about $"+p.toNext+" of Peaces.";
+    document.getElementById("acRedeem").disabled=!p.canRedeem;
+    var codes=document.getElementById("acCodes");
+    codes.innerHTML=d.rewards.length?d.rewards.map(function(r){ return '<div class="ac-code'+(r.used?' used':'')+'"><div><code>'+esc(r.code)+'</code><p class="ac-muted">$'+r.off+' off'+(r.used?': used':'')+'</p></div>'+(r.used?'':'<button class="ac-copy" type="button" data-copy="'+esc(r.code)+'">Copy</button>')+'</div>'; }).join(""):'<p class="ac-muted" style="margin-top:12px">Reach 100 points and your first $10 code shows up here.</p>';
+    if(d.birthday){ document.getElementById("acBdayForm").hidden=true; document.getElementById("acBdayText").textContent="Saved: "+MONTHS[d.birthday.month-1]+" "+d.birthday.day+". We add 50 bonus points every year in your birthday month."; }
+    else document.getElementById("acBdayForm").hidden=false;
+    var ord=document.getElementById("acOrders");
+    ord.innerHTML=d.orders.length?d.orders.map(function(o){
+      var st=o.cancelled?"Cancelled":o.shipped==="FULFILLED"?"Shipped":/PAID/.test(o.paid)&&o.paid!=="PARTIALLY_PAID"?"Being sewn":/REFUND/.test(o.paid)?"Refunded":"Not paid yet";
+      return '<div class="ac-order">'+(o.image?'<img src="'+esc(o.image)+'" alt="">':'')+'<div><p><b>'+esc(o.name)+'</b><span class="ac-tag">'+st+'</span></p><p class="ac-muted">'+new Date(o.date).toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"})+' · $'+o.total.toFixed(2)+(o.points?' · +'+o.points+' pts':'')+'</p>'+o.items.map(function(i){ return '<p class="ac-muted">'+esc(i)+'</p>'; }).join("")+'</div></div>';
+    }).join(""):'<p class="ac-muted" style="margin-top:12px">No orders yet. <a href="#design" style="text-decoration:underline">Design your first Peace</a></p>';
+  }
+  function acRefresh(){
+    return acFresh().then(function(t){
+      if(!t){ acShow(false); return; }
+      return acApi("me",{token:t.a}).then(function(d){
+        if(d._status===401){ acSave(null); acShow(false); return; }
+        if(d._status!==200){ acShow(false); document.getElementById("acOutMsg").textContent="We couldn't load your account. Try again in a moment."; return; }
+        acRender(d);
+      });
+    }).catch(function(){ acShow(false); });
+  }
+  function enterAccount(){
+    if(!builderEl.hidden) resetDesign();
+    ["builder","fulfil"].forEach(function(id){ document.getElementById(id).hidden=true; });
+    landing.hidden=true; lookbook.hidden=true; accPage.hidden=true; aboutPage.hidden=true; closeLightbox(); acPage.hidden=false; syncAccPop();
+    window.scrollTo(0,0);
+    (acCallback||Promise.resolve()).then(function(){ acCallback=null; acRefresh(); });
+  }
+  document.getElementById("acSignIn").addEventListener("click",acSignIn);
+  document.getElementById("acSignOut").addEventListener("click",function(){
+    var t=acLoad(); acSave(null); acData=null; acShow(false);
+    acConfig().then(function(c){ if(c.enabled&&c.logout&&t&&t.id){ var u=new URL(c.logout); u.search=new URLSearchParams({id_token_hint:t.id,post_logout_redirect_uri:location.origin+"/"}).toString(); location.href=u.toString(); } });
+  });
+  document.getElementById("acRedeem").addEventListener("click",function(){
+    var b=this, msg=document.getElementById("acMsg"); b.disabled=true; msg.textContent="Making your code...";
+    acFresh().then(function(t){ return t&&acApi("redeem",{token:t.a}); }).then(function(r){
+      if(r&&r.ok){ acRender(r.account); msg.textContent="Your code "+r.code+" is ready below. Use it at checkout!"; }
+      else { msg.textContent=(r&&r.error)||"That didn't work. Try again."; b.disabled=!(acData&&acData.points.canRedeem); }
+    });
+  });
+  document.getElementById("acCodes").addEventListener("click",function(e){
+    var b=e.target.closest("[data-copy]"); if(!b) return;
+    var done=function(){ b.textContent="Copied"; setTimeout(function(){ b.textContent="Copy"; },1600); };
+    if(navigator.clipboard) navigator.clipboard.writeText(b.dataset.copy).then(done,done); else done();
+  });
+  (function(){
+    var m=document.getElementById("acMonth"), d=document.getElementById("acDay");
+    m.innerHTML='<option value="">Month</option>'+MONTHS.map(function(n,i){ return '<option value="'+(i+1)+'">'+n+'</option>'; }).join("");
+    d.innerHTML='<option value="">Day</option>'+Array.from({length:31},function(_,i){ return '<option>'+(i+1)+'</option>'; }).join("");
+  })();
+  document.getElementById("acBdaySave").addEventListener("click",function(){
+    var m=+document.getElementById("acMonth").value, d=+document.getElementById("acDay").value, t0=document.getElementById("acBdayText");
+    if(!m||!d){ t0.textContent="Pick a month and a day."; return; }
+    acFresh().then(function(t){ return t&&acApi("birthday",{token:t.a,month:m,day:d}); }).then(function(r){
+      if(r&&r._status===200) acRender(r); else t0.textContent=(r&&r.error)||"That didn't save. Try again.";
+    });
+  });
 
   /* ---------- About us: tap a face or a name card to say hi ---------- */
   (function(){
@@ -3341,6 +3655,23 @@
     }finally{ btn.textContent="CHECKOUT"; delete btn.dataset.busy; }
   });
   syncAcc();
+  /* ---------- home: before & after slider ---------- */
+  (function(){
+    var f=document.getElementById("baFrame"), r=document.getElementById("baRange"); if(!f||!r) return;
+    function set(v){ f.style.setProperty("--pos",v+"%"); }
+    r.addEventListener("input",function(){ set(r.value); });
+    function fromX(x){ var b=f.getBoundingClientRect(), v=Math.max(0,Math.min(100,(x-b.left)/b.width*100)); r.value=v; set(v); }
+    f.addEventListener("pointerdown",function(e){ fromX(e.clientX); f.setPointerCapture&&f.setPointerCapture(e.pointerId); });
+    f.addEventListener("pointermove",function(e){ if(e.buttons) fromX(e.clientX); });
+  })();
+  /* ---------- home: TikTok (TikTok's own embed of @peacesswim's latest videos), loaded when it scrolls near ---------- */
+  (function(){
+    var box=document.getElementById("ttEmbed"); if(!box) return;
+    function load(){ if(box.dataset.loaded) return; box.dataset.loaded="1"; var sc=document.createElement("script"); sc.async=true; sc.src="https://www.tiktok.com/embed.js"; document.body.appendChild(sc); }
+    if("IntersectionObserver" in window){ var io=new IntersectionObserver(function(es){ if(es.some(function(e){ return e.isIntersecting; })){ load(); io.disconnect(); } },{rootMargin:"600px"}); io.observe(box); }
+    else load();
+  })();
+
   /* ---------- lookbook lightbox ---------- */
   var lbTiles=[].slice.call(document.querySelectorAll("#lbGrid img")), lbBox=document.getElementById("lbBox"), lbAt=0, lbFrom=null;
   function showLook(i){
@@ -3349,6 +3680,7 @@
     document.getElementById("lbImg").src=src.getAttribute("src");
     document.getElementById("lbImg").alt=src.alt;
     document.getElementById("lbCount").textContent=(lbAt+1)+" / "+lbTiles.length;
+    drawTags();
   }
   function openLightbox(i){ lbFrom=document.activeElement; showLook(i); lbBox.hidden=false; document.body.style.overflow="hidden"; document.getElementById("lbClose").focus(); }
   function closeLightbox(){ if(lbBox.hidden) return; lbBox.hidden=true; document.body.style.overflow=""; if(lbFrom&&lbFrom.focus) lbFrom.focus(); }
@@ -3728,9 +4060,11 @@
       // the picture was usually uploaded already while they looked at "Anything else?"
       var early=null;
       if(prepared && prepared.key===pictureKey()) early=prepared.url || await Promise.race([prepared.promise,new Promise(function(r){ setTimeout(function(){ r(null); },2500); })]);
-      var pic=early?null:await designImageOrNull(4000), inBag=bagPayload();
-      var o=await api("/orders/create",{designs:inBag.designs.concat([designPayload()]), images:inBag.images.concat([pic]),
-        imageUrls:inBag.images.map(function(){ return null; }).concat([early||null]), ship:SHIPPING, creator:creator||"",
+      var withCur=currentInBag(), inBag=bagPayload();
+      if(!withCur && !inBag.designs.length) throw new Error("Your bag is empty.");
+      var pic=(early||!withCur)?null:await designImageOrNull(4000);
+      var o=await api("/orders/create",{designs:inBag.designs.concat(withCur?[designPayload()]:[]), images:inBag.images.concat(withCur?[pic]:[]),
+        imageUrls:inBag.images.map(function(){ return null; }).concat(withCur?[early||null]:[]), ship:SHIPPING, creator:creator||"",
         customer:lead?{phone:lead.phone,welcomeToken:lead.welcomeToken,name:lead.name,email:lead.email}:null, promo:promoOn()?PROMO_CODE:""});
       if(!o.id || !o.sig || !o.checkoutUrl) throw new Error("We couldn't prepare checkout. Please try again.");
       currentOrder=o; bag.length=0;
@@ -3756,13 +4090,16 @@
   function designColors(){ return colorOf("top").name+" / "+colorOf("bottom").name; }
   function bagSub(){ return bag.reduce(function(s,b){ return s+b.sub; },0); }
   function grandTotalHtml(){
-    if(creator){ var cs=bag.reduce(function(x,b){ return x+creatorSub(b.sub,b.adds||0); },0)+creatorSub(lastSub,lastAdds); return fmt(cs); }
-    var sub=Math.max(0,bagSub()+lastSub-(promoOn()?PROMO_OFF:0)), total=state.perk?sub*(1-DISCOUNT):sub;
+    if(creator){ var cs=bag.reduce(function(x,b){ return x+creatorSub(b.sub,b.adds||0); },0)+(currentInBag()?creatorSub(lastSub,lastAdds):0); return fmt(cs); }
+    var sub=Math.max(0,bagSub()+(currentInBag()?lastSub:0)-(promoOn()?PROMO_OFF:0)), total=state.perk?sub*(1-DISCOUNT):sub;
     return state.perk?"<s>"+fmt(sub)+"</s>"+fmt(total):fmt(total);
   }
   function renderBag(curSub){
     lastSub=curSub;
-    document.getElementById("bagCount").textContent=bag.length+1;
+    var inCur=currentInBag(), n=bag.length+(inCur?1:0);
+    document.getElementById("bagCount").textContent=n;
+    document.querySelectorAll("[data-bagcount]").forEach(function(e){ e.textContent=n; e.parentNode.classList.toggle("has",n>0); });
+    var cc=document.getElementById("cartCheckout"); if(cc) cc.disabled=!n;
     document.getElementById("bagTotal").innerHTML=grandTotalHtml();
     var box=document.getElementById("bagList"); box.innerHTML="";
     bag.forEach(function(b,i){
@@ -3774,9 +4111,10 @@
     });
     var cur=document.createElement("div"); cur.className="bag-item current";
     cur.innerHTML='<span class="bag-dot" aria-hidden="true"></span><div><strong>Bikini '+(bag.length+1)+' · designing now</strong><span>'+designTitle()+'</span><span>'+designColors()+' · '+state.sizeTop+'/'+state.sizeBottom+'</span></div><em>'+fmt(curSub)+'</em>';
-    box.appendChild(cur);
+    if(inCur) box.appendChild(cur);
+    if(!n){ var em=document.createElement("p"); em.className="bag-note"; em.textContent="Your bag is empty. Design your own or pick one from the Shop."; box.appendChild(em); }
     if(state.perk){ var d=document.createElement("p"); d.className="bag-note"; d.textContent="10% off the whole bag is applied at checkout."; box.appendChild(d); }
-    var full=bag.length+1>=MAX_BAG;
+    var full=n>=MAX_BAG;
     ["addAnother","addAnother2"].forEach(function(id){ var b=document.getElementById(id); if(b) b.hidden=full; });
   }
   /* the bag lives behind the little bag icon at the top right */
@@ -3802,6 +4140,104 @@
   }
   ["addAnother","addAnother2"].forEach(function(id){ document.getElementById(id).addEventListener("click",function(){ addToBagAndStartOver(this); }); });
   function bagPayload(){ return {designs:bag.map(function(b){ return b.design; }), images:bag.map(function(b){ return /^data:/.test(b.image)?b.image:null; })}; }
+  /* The bikini on the builder only counts as "in the bag" once she has actually started it (picked a shape, color or
+     customization). A bag filled from the Shop / lookbook checks out on its own, without a blank bikini added. */
+  function isFresh(){ var p=state.picked||{}, picked=function(x){ return x && (x.color||x.style); };
+    return !Object.keys(state.addons).some(function(k){ return state.addons[k]; }) && !state.tote && !state.headband && !picked(p.top) && !picked(p.bottom); }
+  function currentInBag(){ return !isFresh() || (!bag.length && !document.getElementById("builder").hidden); }
+
+  /* ---------- the bag on every page: the drawer lives on the page itself, the nav has a bag button ---------- */
+  ["cartShade","cartDrawer"].forEach(function(id){ document.body.appendChild(document.getElementById(id)); });
+  document.addEventListener("click",function(e){ if(e.target.closest && e.target.closest("[data-bag]")){ closeLightbox(); setCart(true); } });
+  function siteToast(msg){
+    var t=document.getElementById("siteToast"); document.getElementById("siteToastText").textContent=msg; t.hidden=false;
+    clearTimeout(t._h); t._h=setTimeout(function(){ t.hidden=true; },4500);
+  }
+  document.getElementById("siteToastBag").addEventListener("click",function(){ document.getElementById("siteToast").hidden=true; closeLightbox(); setCart(true); });
+
+  /* ---------- Shop + lookbook tags: premade suits (lib/suits.js) ----------
+     Add to bag = that exact Peace in her sizes. Make it mine = open it in the builder to change anything. */
+  var SUITS=(window.PeacesSuits&&PeacesSuits.SUITS)||[], SIZE_LIST=["XS","S","M","L"], startOnPeaces=false;
+  function suitPrice(s){
+    var d=s.design, c={topStyle:d.topStyle,bottomStyle:d.bottomStyle,sizeTop:"S",rsText:"",initials:"",addons:d.addons.map(function(a){ return {id:a.id,cfg:a.cfg||{}}; })}, adds=0;
+    d.addons.forEach(function(a,i){ c.addons[i].cfg=R.normalize(a.id,a.cfg||{},c,a.variant); });
+    d.addons.forEach(function(a,i){ adds+=R.price(a.id,c.addons[i].cfg,c,a.variant); });
+    return {adds:adds,total:BASE_PRICE+adds};
+  }
+  function suitDesign(s,top,bottom){
+    var d=JSON.parse(JSON.stringify(s.design));
+    d.sizeTop=top||"S"; d.sizeBottom=bottom||"S";
+    d.addons=d.addons.map(function(a){ return {id:a.id,variant:a.variant,option:a.id==="rhinestones"?"":R.variantName(a.id,a.variant),cfg:a.cfg||{}}; });
+    d.initials=state.initials; d.rsText=state.rsText; d.tote=false; d.headband=false; d.toteColor=state.toteColor; d.headbandColor=state.headbandColor;
+    return d;
+  }
+  function suitCard(s,cls){
+    var pr=suitPrice(s), card=document.createElement("article"), opts=SIZE_LIST.map(function(z){ return "<option"+(z==="S"?" selected":"")+">"+z+"</option>"; }).join("");
+    card.className="suit-card"+(cls?" "+cls:""); card.dataset.suitCard=s.id;
+    var price=creator?"<s>"+fmt(pr.total)+"</s> "+fmt(creatorSub(pr.total,pr.adds)):fmt(pr.total);
+    card.innerHTML='<div class="suit-shot"><img src="photos/shop/'+s.id+'.png" alt="'+s.name+'" loading="lazy"></div>'+
+      '<h3 class="suit-name">'+s.name+'</h3><p class="suit-blurb">'+s.blurb+'</p><p class="suit-price">'+price+'</p>'+
+      '<div class="suit-sizes"><label>Top <select data-size="top" aria-label="'+s.name+' top size">'+opts+'</select></label>'+
+      '<label>Bottom <select data-size="bottom" aria-label="'+s.name+' bottom size">'+opts+'</select></label></div>'+
+      '<div class="suit-btns"><button type="button" class="cta" data-act="add">ADD TO BAG</button><button type="button" class="cta cta-soft" data-act="mine">MAKE IT MINE</button></div>';
+    card.addEventListener("click",function(e){
+      var b=e.target.closest("[data-act]"); if(!b) return;
+      var top=card.querySelector('[data-size="top"]').value, bottom=card.querySelector('[data-size="bottom"]').value;
+      if(b.dataset.act==="add") addSuit(s,top,bottom,b); else makeItMine(s,top,bottom);
+    });
+    return card;
+  }
+  async function addSuit(s,top,bottom,btn){
+    if(btn.dataset.busy) return;
+    if(bag.length+(currentInBag()?1:0)>=MAX_BAG){ siteToast("Your bag is full: up to "+MAX_BAG+" bikinis per order."); return; }
+    btn.dataset.busy="1"; var label=btn.textContent; btn.textContent="ADDING…";
+    var pr=suitPrice(s), pic="photos/shop/"+s.id+".png";
+    try{ pic=await toDataUrl(pic); }catch(e){}
+    bag.push({design:suitDesign(s,top,bottom), image:pic, title:s.name, colors:colorDef(s.design.topColor).name+" / "+colorDef(s.design.bottomColor).name, sizes:top+"/"+bottom, sub:pr.total, adds:pr.adds});
+    btn.textContent=label; delete btn.dataset.busy;
+    closeSuitPop(); renderBag(lastSub);
+    siteToast(s.name+" ("+top+"/"+bottom+") is in your bag.");
+  }
+  function makeItMine(s,top,bottom){
+    var d=suitDesign(s,top,bottom), f=JSON.parse(FRESH);
+    Object.keys(f).forEach(function(k){ state[k]=f[k]; });
+    state.topStyle=d.topStyle; state.bottomStyle=d.bottomStyle; state.topColor=d.topColor; state.bottomColor=d.bottomColor;
+    state.sizeTop=d.sizeTop; state.sizeBottom=d.sizeBottom; state.addons={}; state.variant={}; state.cfg={};
+    d.addons.forEach(function(a){ state.addons[a.id]=true; state.variant[a.id]=a.variant; state.cfg[a.id]=JSON.parse(JSON.stringify(a.cfg||{})); });
+    state.picked={top:{color:true,style:true},bottom:{color:true,style:true}};
+    closeSuitPop(); closeLightbox(); closeDrawers(null);
+    ["top","bottom"].forEach(function(part){ buildStyleGrid(part); buildSwatches(part); }); syncExtras();
+    if(location.hash==="#design" && !builderEl.hidden){ renderAll(); showPage("pagePeaces"); }
+    else { startOnPeaces=true; location.hash="design"; }
+  }
+  (function(){ var g=document.getElementById("shopGrid"); if(g) SUITS.forEach(function(s){ g.appendChild(suitCard(s)); }); })();
+
+  /* lookbook: tags on each photo → that Peace, ready to add to the bag or make yours */
+  var LOOK_TAGS=(window.PeacesSuits&&PeacesSuits.LOOK_TAGS)||{};
+  function lookKey(src){ var m=/(look-\d+)\.jpg/.exec(src||""); return m?m[1]:""; }
+  function drawTags(){
+    var wrap=document.getElementById("lbTagWrap"), list=document.getElementById("lbShopList"), tags=LOOK_TAGS[lookKey(document.getElementById("lbImg").getAttribute("src"))]||[], seen={};
+    if(!wrap) return;
+    wrap.querySelectorAll(".lb-tag").forEach(function(t){ t.remove(); }); list.innerHTML="";
+    tags.forEach(function(t){
+      var s=PeacesSuits.byId(t[0]); if(!s) return;
+      var b=document.createElement("button"); b.type="button"; b.className="lb-tag"; b.style.left=t[1]+"%"; b.style.top=t[2]+"%";
+      b.dataset.suit=s.id; b.setAttribute("aria-label","Shop "+s.name); b.innerHTML="<span aria-hidden=\"true\">+</span>"; wrap.appendChild(b);
+      if(!seen[s.id]){ seen[s.id]=1; var c=document.createElement("button"); c.type="button"; c.className="lb-chip"; c.dataset.suit=s.id; c.textContent=s.name; list.appendChild(c); }
+    });
+    document.getElementById("lbShop").hidden=!tags.length; closeSuitPop();
+  }
+  function openSuitPop(id){
+    var s=PeacesSuits.byId(id), pop=document.getElementById("suitPop"); if(!s||!pop) return;
+    pop.innerHTML=""; var x=document.createElement("button"); x.type="button"; x.className="suit-pop-x"; x.setAttribute("aria-label","Close"); x.innerHTML="&times;";
+    x.addEventListener("click",function(e){ e.stopPropagation(); closeSuitPop(); }); pop.appendChild(x); pop.appendChild(suitCard(s,"in-pop")); pop.hidden=false;
+  }
+  function closeSuitPop(){ var p=document.getElementById("suitPop"); if(p) p.hidden=true; }
+  lbBox.addEventListener("click",function(e){ var t=e.target.closest("[data-suit]"); if(t){ e.stopPropagation(); openSuitPop(t.dataset.suit); } });
+  // tiles with tags get a little "Shop the look" label
+  [].forEach.call(document.querySelectorAll("#lbGrid button[data-i]"),function(b){
+    var im=b.querySelector("img"); if(im && (LOOK_TAGS[lookKey(im.getAttribute("src"))]||[]).length){ var l=document.createElement("span"); l.className="lb-tile-tag"; l.textContent="Shop the look"; b.appendChild(l); }
+  });
   /* ---------- keep every control in sync ---------- */
   function syncControls(){
     document.querySelectorAll(".base-card").forEach(function(c){

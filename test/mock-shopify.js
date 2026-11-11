@@ -12,6 +12,11 @@ export function startMockShopify(port) {
       if (p.get("grant_type") !== "client_credentials" || p.get("client_secret") !== "test-secret") return send({ error: "invalid_client" }, 401);
       return send({ access_token: "tok_123", scope: "read_customers,write_customers,write_draft_orders", expires_in: 86399 });
     }
+    if (req.url === "/customer-api") { // Customer Account API: who is signed in
+      const c = (db.customerTokens || {})[req.headers.authorization || ""];
+      if (!c) return send({ errors: [{ message: "Unauthorized" }] }, 401);
+      return send({ data: { customer: c } });
+    }
     if (req.url === "/staged-upload") { db.uploads = (db.uploads || 0) + 1; db.uploadBytes = raw.length; res.writeHead(204); return res.end(); }
     if (!/^\/admin\/api\/[\d-]+\/graphql\.json$/.test(req.url)) return send({}, 404);
     if (req.headers["x-shopify-access-token"] !== "tok_123") return send({ errors: "Invalid API key or access token" }, 401);
@@ -23,6 +28,22 @@ export function startMockShopify(port) {
       const m = /^(phone|email):"?([^"]*)"?$/.exec(variables.q) || [];
       const nodes = db.customers.filter((c) => (m[1] === "email" ? (c.email || "").toLowerCase() === m[2] : c.phone === m[2]));
       return send({ data: { customers: { nodes: nodes.map((c) => ({ ...c, tags: c.tags || [] })) } } });
+    }
+    if (query.includes('metafield(namespace:"peaces"')) {
+      const mf = (db.metafields || {})[variables.id];
+      return send({ data: { customer: { id: variables.id, metafield: mf ? { value: mf } : null, orders: { nodes: (db.orders || {})[variables.id] || [] } } } });
+    }
+    if (query.includes("metafieldsSet")) {
+      db.metafields = db.metafields || {}; for (const m of variables.m) db.metafields[m.ownerId] = m.value;
+      return send({ data: { metafieldsSet: { metafields: [{ id: "gid://shopify/Metafield/1" }], userErrors: [] } } });
+    }
+    if (query.includes("discountCodeBasicCreate")) {
+      db.discounts = db.discounts || []; db.discounts.push(variables.d);
+      return send({ data: { discountCodeBasicCreate: { codeDiscountNode: { id: "gid://shopify/DiscountCodeNode/" + db.discounts.length }, userErrors: [] } } });
+    }
+    if (query.includes("codeDiscountNodeByCode")) {
+      const d = (db.discounts || []).find((x) => x.code === variables.c);
+      return send({ data: { codeDiscountNodeByCode: d ? { codeDiscount: { asyncUsageCount: d.used ? 1 : 0, status: "ACTIVE" } } : null } });
     }
     if (query.includes("customer(id:")) {
       const c = db.customers.find((x) => x.id === variables.id);

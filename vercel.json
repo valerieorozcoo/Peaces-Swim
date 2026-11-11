@@ -49,6 +49,11 @@
       "source": "/Pinkhaus/",
       "destination": "/Pinkhaus",
       "permanent": false
+    },
+    {
+      "source": "/account/",
+      "destination": "/account",
+      "permanent": false
     }
   ],
   "rewrites": [
@@ -90,6 +95,10 @@
     },
     {
       "source": "/Pinkhaus",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/account",
       "destination": "/index.html"
     }
   ]
