@@ -968,6 +968,69 @@
   .lb-fig{margin:0; text-align:center;}
   .lb-fig img{max-width:100%; max-height:calc(100svh - 140px); width:auto; height:auto; border-radius:14px; box-shadow:0 20px 60px rgba(0,0,0,.35);}
   .lb-fig figcaption{margin-top:12px; color:#fff; font-size:13.5px; letter-spacing:.24em; text-transform:uppercase; opacity:.85;}
+  /* ===== site menu (Design · Shop · Lookbook · About · Account) on every page ===== */
+  .site-nav{display:flex; align-items:center; gap:22px;}
+  .site-nav > a,.lb-nav.site-nav > a:not(.cta){display:inline-block !important; font-size:13px; letter-spacing:.22em; text-transform:uppercase; color:var(--fs-ink,#2E2433); text-decoration:none; white-space:nowrap;}
+  .lb-top .site-nav{margin-left:auto;} .lb-top .nav-bag{margin-left:18px;}
+  .lp-header .lp-quick{margin-left:auto;}
+  .lp-bag{margin-left:22px; margin-right:14px;}
+  @media (max-width:1023px){ .lp-bag{margin-left:auto;} }
+  .site-nav > a:hover{color:var(--fs-orchid,#8A5BB8);}
+  .nav-bag{position:relative; display:grid; place-items:center; width:44px; height:44px; border-radius:999px; background:#EFDDFD; color:#4B2470; border:1.5px solid #D8C3EE; cursor:pointer; flex:none;}
+  .nav-bag b{position:absolute; top:-5px; right:-5px; min-width:20px; height:20px; padding:0 5px; border-radius:999px; background:#4B2470; color:#fff; font-size:11.5px; line-height:20px; text-align:center; display:none;}
+  .nav-bag.has b{display:block;}
+  .builder-nav{flex:1; justify-content:center; gap:20px;}
+  .builder-nav > a{font-size:12.5px;}
+  @media (max-width:760px){
+    .lb-top{flex-wrap:wrap;}
+    .site-nav{gap:14px; overflow-x:auto; max-width:100%; -webkit-overflow-scrolling:touch; scrollbar-width:none;}
+    .site-nav::-webkit-scrollbar{display:none;}
+    .site-nav > a,.lb-nav.site-nav > a:not(.cta){font-size:11.5px; letter-spacing:.12em;}
+    .lb-top .nav-bag{order:2; margin-left:auto;}
+    .lb-top .site-nav{width:100%; order:3; justify-content:space-between; padding-top:6px; margin-left:0;}
+    .builder-nav{order:3; flex-basis:100%; justify-content:space-between; gap:10px; padding-top:6px;}
+    header.top.builder-top{flex-wrap:wrap;}
+  }
+
+  /* ===== Shop: premade suits ===== */
+  .shop-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(250px,1fr)); gap:22px; margin:8px 0 46px;}
+  .suit-card{background:#fff; border:1px solid var(--line,#E7DAF3); border-radius:18px; padding:16px; display:flex; flex-direction:column; gap:8px; text-align:center;}
+  .suit-shot{aspect-ratio:4/5; display:grid; place-items:center; background:var(--fs-mist,#FAF6FE); border-radius:14px; overflow:hidden;}
+  .suit-shot img{width:88%; height:92%; object-fit:contain; display:block;}
+  .suit-name{margin:6px 0 0; font-size:19px; font-weight:600; letter-spacing:.02em;}
+  .suit-blurb{margin:0; font-size:14.5px; color:var(--ink-soft,#6b5a74);}
+  .suit-price{margin:0; font-size:18px; font-weight:600; color:#4B2470;}
+  .suit-price s{opacity:.5; font-weight:400; margin-right:4px;}
+  .suit-sizes{display:flex; justify-content:center; gap:14px; font-size:13px; letter-spacing:.12em; text-transform:uppercase;}
+  .suit-sizes select{margin-left:6px; padding:6px 8px; border:1px solid #D8C3EE; border-radius:10px; background:#fff; font:inherit; letter-spacing:0;}
+  .suit-btns{display:flex; flex-direction:column; gap:8px; margin-top:4px;}
+  .suit-btns .cta{width:100%; margin:0; padding:12px 14px; font-size:13.5px;}
+  .shop-acc-head{margin-top:10px;}
+
+  /* ===== Lookbook tags ===== */
+  .lb-tagwrap{position:relative; display:inline-block; line-height:0; max-width:100%;}
+  .lb-tag{position:absolute; transform:translate(-50%,-50%); width:34px; height:34px; border-radius:999px; border:2px solid #fff; background:rgba(75,36,112,.82); color:#fff; font-size:20px; line-height:1; cursor:pointer; display:grid; place-items:center; box-shadow:0 4px 14px rgba(0,0,0,.3); animation:tagPulse 2.2s ease-in-out infinite;}
+  .lb-tag:hover,.lb-tag:focus-visible{background:#8A5BB8; animation:none;}
+  @keyframes tagPulse{0%,100%{box-shadow:0 0 0 0 rgba(255,255,255,.55),0 4px 14px rgba(0,0,0,.3);} 50%{box-shadow:0 0 0 9px rgba(255,255,255,0),0 4px 14px rgba(0,0,0,.3);}}
+  .lb-shop{margin-top:10px; display:flex; flex-wrap:wrap; align-items:center; justify-content:center; gap:8px; color:#fff; font-size:12.5px; letter-spacing:.2em; text-transform:uppercase;}
+  .lb-shop[hidden]{display:none;}
+  #lbShopList{display:flex; flex-wrap:wrap; gap:8px; justify-content:center;}
+  .lb-chip{border:1.5px solid rgba(255,255,255,.8); background:rgba(255,255,255,.12); color:#fff; border-radius:999px; padding:7px 14px; font:inherit; font-size:12.5px; letter-spacing:.08em; text-transform:none; cursor:pointer;}
+  .lb-chip:hover{background:#fff; color:#4B2470;}
+  .suit-pop{position:fixed; right:24px; bottom:24px; z-index:80; width:min(330px,calc(100vw - 32px)); max-height:calc(100svh - 48px); overflow:auto; border-radius:20px; box-shadow:0 24px 60px rgba(0,0,0,.4);}
+  .suit-pop[hidden]{display:none;}
+  .suit-pop .suit-card{border:0; border-radius:20px;}
+  .suit-pop .suit-shot{aspect-ratio:1/1;}
+  .suit-pop-x{position:absolute; top:10px; right:12px; z-index:2; width:34px; height:34px; border:0; border-radius:999px; background:#fff; color:#4B2470; font-size:22px; line-height:1; cursor:pointer; box-shadow:0 2px 8px rgba(0,0,0,.15);}
+  @media (max-width:640px){ .suit-pop{left:16px; right:16px; bottom:16px; width:auto;} }
+  .lb-tile button{position:relative;}
+  .lb-tile-tag{position:absolute; left:10px; bottom:10px; padding:5px 10px; border-radius:999px; background:rgba(255,255,255,.92); color:#4B2470; font-size:11px; letter-spacing:.16em; text-transform:uppercase; font-weight:600;}
+
+  /* ===== "added to your bag" ===== */
+  .site-toast{position:fixed; left:50%; bottom:24px; transform:translateX(-50%); z-index:95; display:flex; align-items:center; gap:14px; padding:12px 14px 12px 20px; border-radius:999px; background:#4B2470; color:#fff; font-size:15px; box-shadow:0 10px 30px rgba(75,36,112,.35); max-width:calc(100% - 32px);}
+  .site-toast[hidden]{display:none;}
+  .site-toast button{border:0; border-radius:999px; background:#fff; color:#4B2470; padding:8px 14px; font:inherit; font-size:13px; letter-spacing:.12em; text-transform:uppercase; cursor:pointer; white-space:nowrap;}
+  .cart-drawer button:disabled{opacity:.45; cursor:not-allowed;}
   .lb-x{position:absolute; top:14px; right:18px; width:46px; height:46px; border:0; border-radius:999px; background:rgba(255,255,255,.14); color:#fff; font-size:30px; line-height:1; cursor:pointer;}
   .lb-arrow{position:absolute; top:50%; transform:translateY(-50%); width:52px; height:52px; border:0; border-radius:999px; background:var(--btn-grad); color:#fff; display:grid; place-items:center; cursor:pointer;}
   .lb-prev{left:14px;} .lb-next{right:14px;}
@@ -1331,21 +1394,22 @@
       </div>
       <nav class="lp-quick" aria-label="Shortcuts">
         <a href="#design">Design</a>
-        <a href="#how">Process</a>
+        <a href="#shop">Shop</a>
+        <a href="#lookbook">Lookbook</a>
         <a href="#about">About</a>
         <a href="https://shopify.com/85529657569/account" id="accountBtn">Account</a>
       </nav>
+      <button class="nav-bag lp-bag" type="button" data-bag aria-label="Your bag"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 7h12l-1 13H7L6 7z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg><b data-bagcount>0</b></button>
       <button class="lp-menu-btn" id="menuBtn" type="button" aria-expanded="false" aria-controls="lpMenu"><span></span><span></span><span></span><b>Menu</b></button>
     </header>
     <!-- phone menu: the four header links (plus Lookbook + Accessories) as a full-screen list -->
     <div class="lp-menu" id="lpMenu" hidden role="dialog" aria-modal="true" aria-label="Menu">
       <button class="lp-menu-x" id="menuClose" type="button" aria-label="Close menu">&times;</button>
       <nav>
-        <a href="#design">Design your own</a>
-        <a href="#how">The process</a>
-        <a href="#about">About us</a>
+        <a href="#design">Design</a>
+        <a href="#shop">Shop</a>
         <a href="#lookbook">Lookbook</a>
-        <a href="#accessories">Accessories</a>
+        <a href="#about">About</a>
         <a href="https://shopify.com/85529657569/account" data-account>Account</a>
       </nav>
       <img src="art/logo-ps-leopard.png" alt="" class="lp-menu-logo">
@@ -1511,15 +1575,19 @@
 <div class="lb acc" id="accessories" hidden>
   <header class="lb-top">
     <a href="#" aria-label="Back to the Peaces Swim home page"><img class="lb-logo" src="art/logo-ps.png" alt="Peaces Swim"></a>
-    <nav class="lb-nav" aria-label="Accessories">
-      <a href="#">Home</a>
-      <a class="cta lb-cta-sm" href="#design">Design your own</a>
-    </nav>
+    <nav class="lb-nav site-nav" aria-label="Menu"><a href="#design">Design</a><a href="#shop">Shop</a><a href="#lookbook">Lookbook</a><a href="#about">About</a><a href="https://shopify.com/85529657569/account" data-account>Account</a></nav><button class="nav-bag" type="button" data-bag aria-label="Your bag"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 7h12l-1 13H7L6 7z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg><b data-bagcount>0</b></button>
   </header>
 
   <section class="lb-head">
     <p class="lb-kicker">Made in Miami</p>
-    <h1 class="lb-title">Peaces <i>Accessories</i></h1>
+    <h1 class="lb-title">The Peaces <i>Shop</i></h1>
+    <p class="lb-sub">Our favorite Peaces, ready to add to your bag. Want to change something? Tap Make it mine.</p>
+  </section>
+
+  <div class="shop-grid" id="shopGrid"></div>
+
+  <section class="lb-head shop-acc-head">
+    <h2 class="lb-title lb-title-sm">Peaces <i>Accessories</i></h2>
     <p class="lb-sub">The headband and the tote, on their own. No bikini needed.</p>
   </section>
 
@@ -1568,11 +1636,7 @@
 <div class="lb ab" id="about" hidden>
   <header class="lb-top">
     <a href="#" aria-label="Back to the Peaces Swim home page"><img class="lb-logo" src="art/logo-ps.png" alt="Peaces Swim"></a>
-    <nav class="lb-nav" aria-label="About">
-      <a href="#">Home</a>
-      <a href="#lookbook">Lookbook</a>
-      <a class="cta lb-cta-sm" href="#design">Design your own</a>
-    </nav>
+    <nav class="lb-nav site-nav" aria-label="Menu"><a href="#design">Design</a><a href="#shop">Shop</a><a href="#lookbook">Lookbook</a><a href="#about">About</a><a href="https://shopify.com/85529657569/account" data-account>Account</a></nav><button class="nav-bag" type="button" data-bag aria-label="Your bag"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 7h12l-1 13H7L6 7z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg><b data-bagcount>0</b></button>
   </header>
 
   <section class="lb-head">
@@ -1644,16 +1708,13 @@
 <div class="lb" id="lookbook" hidden>
   <header class="lb-top">
     <a href="#" aria-label="Back to the Peaces Swim home page"><img class="lb-logo" src="art/logo-ps.png" alt="Peaces Swim"></a>
-    <nav class="lb-nav" aria-label="Lookbook">
-      <a href="#">Home</a>
-      <a class="cta lb-cta-sm" href="#design">Design your own</a>
-    </nav>
+    <nav class="lb-nav site-nav" aria-label="Menu"><a href="#design">Design</a><a href="#shop">Shop</a><a href="#lookbook">Lookbook</a><a href="#about">About</a><a href="https://shopify.com/85529657569/account" data-account>Account</a></nav><button class="nav-bag" type="button" data-bag aria-label="Your bag"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 7h12l-1 13H7L6 7z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg><b data-bagcount>0</b></button>
   </header>
 
   <section class="lb-head">
     <p class="lb-kicker">Vol. 01 · Made in Miami</p>
     <h1 class="lb-title">The Peaces <i>Lookbook</i></h1>
-    <p class="lb-sub">Real customs, worn by real girls. Every one of these was designed piece by piece.</p>
+    <p class="lb-sub">Real customs, worn by real girls. Tap a photo, then a tag to add that Peace to your bag or make it yours.</p>
   </section>
 
   <ul class="lb-grid" id="lbGrid">
@@ -1678,15 +1739,20 @@
   <div class="lb-box" id="lbBox" hidden role="dialog" aria-modal="true" aria-label="Lookbook photo">
     <button class="lb-x" type="button" id="lbClose" aria-label="Close">&times;</button>
     <button class="lb-arrow lb-prev" type="button" id="lbPrev" aria-label="Previous photo"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg></button>
-    <figure class="lb-fig"><img id="lbImg" src="" alt=""><figcaption id="lbCount"></figcaption></figure>
+    <figure class="lb-fig"><span class="lb-tagwrap" id="lbTagWrap"><img id="lbImg" src="" alt=""></span><figcaption id="lbCount"></figcaption>
+      <div class="lb-shop" id="lbShop" hidden><span>Shop this look</span><div id="lbShopList"></div></div></figure>
+    <div class="suit-pop" id="suitPop" hidden role="dialog" aria-label="Shop this Peace"></div>
     <button class="lb-arrow lb-next" type="button" id="lbNext" aria-label="Next photo"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
   </div>
 </div>
+
+<div class="site-toast" id="siteToast" role="status" aria-live="polite" hidden><span id="siteToastText"></span><button type="button" id="siteToastBag">View bag</button></div>
 
 <div class="wrap" id="builder" hidden>
   <div class="bag-toast" id="bagToast" role="status" aria-live="polite" hidden></div>
   <header class="top builder-top" id="bagbar">
     <a href="#" aria-label="Back to the Peaces Swim home page"><img class="logo" src="art/logo-ps.png" alt="Peaces Swim"></a>
+    <nav class="site-nav builder-nav" aria-label="Menu"><a href="#design">Design</a><a href="#shop">Shop</a><a href="#lookbook">Lookbook</a><a href="#about">About</a><a href="https://shopify.com/85529657569/account" data-account>Account</a></nav>
     <button class="cart-btn" id="bagToggle" type="button" aria-haspopup="dialog" aria-controls="cartDrawer" aria-label="Your bag">
       <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 7h12l-1 13H7L6 7z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg>
       <b id="bagCount">1</b>
@@ -1915,6 +1981,7 @@
 </div>
 
 <script src="lib/rules.js"></script>
+<script src="lib/suits.js"></script>
 <script>
 (function(){
   "use strict";
@@ -3243,6 +3310,7 @@
     if(!builderEl.hidden) return;
     landing.hidden=true; lookbook.hidden=true; accPage.hidden=true; aboutPage.hidden=true; closeLightbox(); syncAccPop();
     showBuilder();
+    if(startOnPeaces){ startOnPeaces=false; showPage("pagePeaces"); } // "Make it mine": straight to the customizations
   }
   function enterLookbook(){
     if(!builderEl.hidden) resetDesign();
@@ -3273,7 +3341,7 @@
   }
   function route(){
     if(document.documentElement.classList.contains("prelaunch")){ leaveDesign(); return; } // waitlist only
-    if(location.hash==="#design") enterDesign(); else if(location.hash==="#lookbook") enterLookbook(); else if(location.hash==="#accessories") enterAccessories(); else if(location.hash==="#about") enterAbout(); else leaveDesign(); syncCheckoutPop(); }
+    if(location.hash==="#design") enterDesign(); else if(location.hash==="#lookbook") enterLookbook(); else if(location.hash==="#accessories"||location.hash==="#shop") enterAccessories(); else if(location.hash==="#about") enterAbout(); else leaveDesign(); syncCheckoutPop(); if(typeof renderBag==="function") renderBag(lastSub); }
 
 
 
@@ -3349,6 +3417,7 @@
     document.getElementById("lbImg").src=src.getAttribute("src");
     document.getElementById("lbImg").alt=src.alt;
     document.getElementById("lbCount").textContent=(lbAt+1)+" / "+lbTiles.length;
+    drawTags();
   }
   function openLightbox(i){ lbFrom=document.activeElement; showLook(i); lbBox.hidden=false; document.body.style.overflow="hidden"; document.getElementById("lbClose").focus(); }
   function closeLightbox(){ if(lbBox.hidden) return; lbBox.hidden=true; document.body.style.overflow=""; if(lbFrom&&lbFrom.focus) lbFrom.focus(); }
@@ -3728,9 +3797,11 @@
       // the picture was usually uploaded already while they looked at "Anything else?"
       var early=null;
       if(prepared && prepared.key===pictureKey()) early=prepared.url || await Promise.race([prepared.promise,new Promise(function(r){ setTimeout(function(){ r(null); },2500); })]);
-      var pic=early?null:await designImageOrNull(4000), inBag=bagPayload();
-      var o=await api("/orders/create",{designs:inBag.designs.concat([designPayload()]), images:inBag.images.concat([pic]),
-        imageUrls:inBag.images.map(function(){ return null; }).concat([early||null]), ship:SHIPPING, creator:creator||"",
+      var withCur=currentInBag(), inBag=bagPayload();
+      if(!withCur && !inBag.designs.length) throw new Error("Your bag is empty.");
+      var pic=(early||!withCur)?null:await designImageOrNull(4000);
+      var o=await api("/orders/create",{designs:inBag.designs.concat(withCur?[designPayload()]:[]), images:inBag.images.concat(withCur?[pic]:[]),
+        imageUrls:inBag.images.map(function(){ return null; }).concat(withCur?[early||null]:[]), ship:SHIPPING, creator:creator||"",
         customer:lead?{phone:lead.phone,welcomeToken:lead.welcomeToken,name:lead.name,email:lead.email}:null, promo:promoOn()?PROMO_CODE:""});
       if(!o.id || !o.sig || !o.checkoutUrl) throw new Error("We couldn't prepare checkout. Please try again.");
       currentOrder=o; bag.length=0;
@@ -3756,13 +3827,16 @@
   function designColors(){ return colorOf("top").name+" / "+colorOf("bottom").name; }
   function bagSub(){ return bag.reduce(function(s,b){ return s+b.sub; },0); }
   function grandTotalHtml(){
-    if(creator){ var cs=bag.reduce(function(x,b){ return x+creatorSub(b.sub,b.adds||0); },0)+creatorSub(lastSub,lastAdds); return fmt(cs); }
-    var sub=Math.max(0,bagSub()+lastSub-(promoOn()?PROMO_OFF:0)), total=state.perk?sub*(1-DISCOUNT):sub;
+    if(creator){ var cs=bag.reduce(function(x,b){ return x+creatorSub(b.sub,b.adds||0); },0)+(currentInBag()?creatorSub(lastSub,lastAdds):0); return fmt(cs); }
+    var sub=Math.max(0,bagSub()+(currentInBag()?lastSub:0)-(promoOn()?PROMO_OFF:0)), total=state.perk?sub*(1-DISCOUNT):sub;
     return state.perk?"<s>"+fmt(sub)+"</s>"+fmt(total):fmt(total);
   }
   function renderBag(curSub){
     lastSub=curSub;
-    document.getElementById("bagCount").textContent=bag.length+1;
+    var inCur=currentInBag(), n=bag.length+(inCur?1:0);
+    document.getElementById("bagCount").textContent=n;
+    document.querySelectorAll("[data-bagcount]").forEach(function(e){ e.textContent=n; e.parentNode.classList.toggle("has",n>0); });
+    var cc=document.getElementById("cartCheckout"); if(cc) cc.disabled=!n;
     document.getElementById("bagTotal").innerHTML=grandTotalHtml();
     var box=document.getElementById("bagList"); box.innerHTML="";
     bag.forEach(function(b,i){
@@ -3774,9 +3848,10 @@
     });
     var cur=document.createElement("div"); cur.className="bag-item current";
     cur.innerHTML='<span class="bag-dot" aria-hidden="true"></span><div><strong>Bikini '+(bag.length+1)+' · designing now</strong><span>'+designTitle()+'</span><span>'+designColors()+' · '+state.sizeTop+'/'+state.sizeBottom+'</span></div><em>'+fmt(curSub)+'</em>';
-    box.appendChild(cur);
+    if(inCur) box.appendChild(cur);
+    if(!n){ var em=document.createElement("p"); em.className="bag-note"; em.textContent="Your bag is empty. Design your own or pick one from the Shop."; box.appendChild(em); }
     if(state.perk){ var d=document.createElement("p"); d.className="bag-note"; d.textContent="10% off the whole bag is applied at checkout."; box.appendChild(d); }
-    var full=bag.length+1>=MAX_BAG;
+    var full=n>=MAX_BAG;
     ["addAnother","addAnother2"].forEach(function(id){ var b=document.getElementById(id); if(b) b.hidden=full; });
   }
   /* the bag lives behind the little bag icon at the top right */
@@ -3802,6 +3877,104 @@
   }
   ["addAnother","addAnother2"].forEach(function(id){ document.getElementById(id).addEventListener("click",function(){ addToBagAndStartOver(this); }); });
   function bagPayload(){ return {designs:bag.map(function(b){ return b.design; }), images:bag.map(function(b){ return /^data:/.test(b.image)?b.image:null; })}; }
+  /* The bikini on the builder only counts as "in the bag" once she has actually started it (picked a shape, color or
+     customization). A bag filled from the Shop / lookbook checks out on its own, without a blank bikini added. */
+  function isFresh(){ var p=state.picked||{}, picked=function(x){ return x && (x.color||x.style); };
+    return !Object.keys(state.addons).some(function(k){ return state.addons[k]; }) && !state.tote && !state.headband && !picked(p.top) && !picked(p.bottom); }
+  function currentInBag(){ return !isFresh() || (!bag.length && !document.getElementById("builder").hidden); }
+
+  /* ---------- the bag on every page: the drawer lives on the page itself, the nav has a bag button ---------- */
+  ["cartShade","cartDrawer"].forEach(function(id){ document.body.appendChild(document.getElementById(id)); });
+  document.addEventListener("click",function(e){ if(e.target.closest && e.target.closest("[data-bag]")){ closeLightbox(); setCart(true); } });
+  function siteToast(msg){
+    var t=document.getElementById("siteToast"); document.getElementById("siteToastText").textContent=msg; t.hidden=false;
+    clearTimeout(t._h); t._h=setTimeout(function(){ t.hidden=true; },4500);
+  }
+  document.getElementById("siteToastBag").addEventListener("click",function(){ document.getElementById("siteToast").hidden=true; closeLightbox(); setCart(true); });
+
+  /* ---------- Shop + lookbook tags: premade suits (lib/suits.js) ----------
+     Add to bag = that exact Peace in her sizes. Make it mine = open it in the builder to change anything. */
+  var SUITS=(window.PeacesSuits&&PeacesSuits.SUITS)||[], SIZE_LIST=["XS","S","M","L"], startOnPeaces=false;
+  function suitPrice(s){
+    var d=s.design, c={topStyle:d.topStyle,bottomStyle:d.bottomStyle,sizeTop:"S",rsText:"",initials:"",addons:d.addons.map(function(a){ return {id:a.id,cfg:a.cfg||{}}; })}, adds=0;
+    d.addons.forEach(function(a,i){ c.addons[i].cfg=R.normalize(a.id,a.cfg||{},c,a.variant); });
+    d.addons.forEach(function(a,i){ adds+=R.price(a.id,c.addons[i].cfg,c,a.variant); });
+    return {adds:adds,total:BASE_PRICE+adds};
+  }
+  function suitDesign(s,top,bottom){
+    var d=JSON.parse(JSON.stringify(s.design));
+    d.sizeTop=top||"S"; d.sizeBottom=bottom||"S";
+    d.addons=d.addons.map(function(a){ return {id:a.id,variant:a.variant,option:a.id==="rhinestones"?"":R.variantName(a.id,a.variant),cfg:a.cfg||{}}; });
+    d.initials=state.initials; d.rsText=state.rsText; d.tote=false; d.headband=false; d.toteColor=state.toteColor; d.headbandColor=state.headbandColor;
+    return d;
+  }
+  function suitCard(s,cls){
+    var pr=suitPrice(s), card=document.createElement("article"), opts=SIZE_LIST.map(function(z){ return "<option"+(z==="S"?" selected":"")+">"+z+"</option>"; }).join("");
+    card.className="suit-card"+(cls?" "+cls:""); card.dataset.suitCard=s.id;
+    var price=creator?"<s>"+fmt(pr.total)+"</s> "+fmt(creatorSub(pr.total,pr.adds)):fmt(pr.total);
+    card.innerHTML='<div class="suit-shot"><img src="photos/shop/'+s.id+'.png" alt="'+s.name+'" loading="lazy"></div>'+
+      '<h3 class="suit-name">'+s.name+'</h3><p class="suit-blurb">'+s.blurb+'</p><p class="suit-price">'+price+'</p>'+
+      '<div class="suit-sizes"><label>Top <select data-size="top" aria-label="'+s.name+' top size">'+opts+'</select></label>'+
+      '<label>Bottom <select data-size="bottom" aria-label="'+s.name+' bottom size">'+opts+'</select></label></div>'+
+      '<div class="suit-btns"><button type="button" class="cta" data-act="add">ADD TO BAG</button><button type="button" class="cta cta-soft" data-act="mine">MAKE IT MINE</button></div>';
+    card.addEventListener("click",function(e){
+      var b=e.target.closest("[data-act]"); if(!b) return;
+      var top=card.querySelector('[data-size="top"]').value, bottom=card.querySelector('[data-size="bottom"]').value;
+      if(b.dataset.act==="add") addSuit(s,top,bottom,b); else makeItMine(s,top,bottom);
+    });
+    return card;
+  }
+  async function addSuit(s,top,bottom,btn){
+    if(btn.dataset.busy) return;
+    if(bag.length+(currentInBag()?1:0)>=MAX_BAG){ siteToast("Your bag is full: up to "+MAX_BAG+" bikinis per order."); return; }
+    btn.dataset.busy="1"; var label=btn.textContent; btn.textContent="ADDING…";
+    var pr=suitPrice(s), pic="photos/shop/"+s.id+".png";
+    try{ pic=await toDataUrl(pic); }catch(e){}
+    bag.push({design:suitDesign(s,top,bottom), image:pic, title:s.name, colors:colorDef(s.design.topColor).name+" / "+colorDef(s.design.bottomColor).name, sizes:top+"/"+bottom, sub:pr.total, adds:pr.adds});
+    btn.textContent=label; delete btn.dataset.busy;
+    closeSuitPop(); renderBag(lastSub);
+    siteToast(s.name+" ("+top+"/"+bottom+") is in your bag.");
+  }
+  function makeItMine(s,top,bottom){
+    var d=suitDesign(s,top,bottom), f=JSON.parse(FRESH);
+    Object.keys(f).forEach(function(k){ state[k]=f[k]; });
+    state.topStyle=d.topStyle; state.bottomStyle=d.bottomStyle; state.topColor=d.topColor; state.bottomColor=d.bottomColor;
+    state.sizeTop=d.sizeTop; state.sizeBottom=d.sizeBottom; state.addons={}; state.variant={}; state.cfg={};
+    d.addons.forEach(function(a){ state.addons[a.id]=true; state.variant[a.id]=a.variant; state.cfg[a.id]=JSON.parse(JSON.stringify(a.cfg||{})); });
+    state.picked={top:{color:true,style:true},bottom:{color:true,style:true}};
+    closeSuitPop(); closeLightbox(); closeDrawers(null);
+    ["top","bottom"].forEach(function(part){ buildStyleGrid(part); buildSwatches(part); }); syncExtras();
+    if(location.hash==="#design" && !builderEl.hidden){ renderAll(); showPage("pagePeaces"); }
+    else { startOnPeaces=true; location.hash="design"; }
+  }
+  (function(){ var g=document.getElementById("shopGrid"); if(g) SUITS.forEach(function(s){ g.appendChild(suitCard(s)); }); })();
+
+  /* lookbook: tags on each photo → that Peace, ready to add to the bag or make yours */
+  var LOOK_TAGS=(window.PeacesSuits&&PeacesSuits.LOOK_TAGS)||{};
+  function lookKey(src){ var m=/(look-\d+)\.jpg/.exec(src||""); return m?m[1]:""; }
+  function drawTags(){
+    var wrap=document.getElementById("lbTagWrap"), list=document.getElementById("lbShopList"), tags=LOOK_TAGS[lookKey(document.getElementById("lbImg").getAttribute("src"))]||[], seen={};
+    if(!wrap) return;
+    wrap.querySelectorAll(".lb-tag").forEach(function(t){ t.remove(); }); list.innerHTML="";
+    tags.forEach(function(t){
+      var s=PeacesSuits.byId(t[0]); if(!s) return;
+      var b=document.createElement("button"); b.type="button"; b.className="lb-tag"; b.style.left=t[1]+"%"; b.style.top=t[2]+"%";
+      b.dataset.suit=s.id; b.setAttribute("aria-label","Shop "+s.name); b.innerHTML="<span aria-hidden=\"true\">+</span>"; wrap.appendChild(b);
+      if(!seen[s.id]){ seen[s.id]=1; var c=document.createElement("button"); c.type="button"; c.className="lb-chip"; c.dataset.suit=s.id; c.textContent=s.name; list.appendChild(c); }
+    });
+    document.getElementById("lbShop").hidden=!tags.length; closeSuitPop();
+  }
+  function openSuitPop(id){
+    var s=PeacesSuits.byId(id), pop=document.getElementById("suitPop"); if(!s||!pop) return;
+    pop.innerHTML=""; var x=document.createElement("button"); x.type="button"; x.className="suit-pop-x"; x.setAttribute("aria-label","Close"); x.innerHTML="&times;";
+    x.addEventListener("click",function(e){ e.stopPropagation(); closeSuitPop(); }); pop.appendChild(x); pop.appendChild(suitCard(s,"in-pop")); pop.hidden=false;
+  }
+  function closeSuitPop(){ var p=document.getElementById("suitPop"); if(p) p.hidden=true; }
+  lbBox.addEventListener("click",function(e){ var t=e.target.closest("[data-suit]"); if(t){ e.stopPropagation(); openSuitPop(t.dataset.suit); } });
+  // tiles with tags get a little "Shop the look" label
+  [].forEach.call(document.querySelectorAll("#lbGrid button[data-i]"),function(b){
+    var im=b.querySelector("img"); if(im && (LOOK_TAGS[lookKey(im.getAttribute("src"))]||[]).length){ var l=document.createElement("span"); l.className="lb-tile-tag"; l.textContent="Shop the look"; b.appendChild(l); }
+  });
   /* ---------- keep every control in sync ---------- */
   function syncControls(){
     document.querySelectorAll(".base-card").forEach(function(c){
