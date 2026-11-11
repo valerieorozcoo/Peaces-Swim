@@ -420,6 +420,27 @@
   .pp-card:hover img{transform:scale(1.04);}
   .pp-card:hover .pp-cta,.pp-link:focus-visible .pp-cta{opacity:1; transform:none;}
   .pp-cta:hover{background:var(--fs-ink,#2E2433); color:#fff;}
+  .pp-blurb{position:relative; z-index:1; margin:10px 20px 0; max-width:30ch; font-size:15.5px; line-height:1.4; color:#fff; text-shadow:0 1px 10px rgba(46,36,51,.55);}
+  .pp-link::after{background:linear-gradient(to bottom, rgba(46,36,51,.62), rgba(46,36,51,0) 58%) !important;}
+  /* before & after slider */
+  .ba{background:#fff; padding:80px 20px; text-align:center;}
+  .ba-sub{max-width:52ch; margin:14px auto 30px; color:var(--ink-soft,#6b5a74); font-size:17px; line-height:1.5;}
+  .ba-frame{position:relative; width:min(520px,100%); margin:0 auto; aspect-ratio:2/3; border-radius:18px; overflow:hidden; background:#000; touch-action:pan-y;}
+  .ba-frame img{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block; user-select:none; -webkit-user-drag:none;}
+  .ba-before{position:absolute; inset:0; clip-path:inset(0 calc(100% - var(--pos)) 0 0);}
+  .ba-handle{position:absolute; top:0; bottom:0; left:var(--pos); width:3px; margin-left:-1.5px; background:#fff; pointer-events:none; box-shadow:0 0 12px rgba(0,0,0,.5);}
+  .ba-handle span{position:absolute; top:50%; left:50%; width:46px; height:46px; margin:-23px 0 0 -23px; border-radius:999px; background:#fff; box-shadow:0 4px 16px rgba(0,0,0,.35);}
+  .ba-handle span::before,.ba-handle span::after{content:""; position:absolute; top:50%; width:0; height:0; margin-top:-6px; border:6px solid transparent;}
+  .ba-handle span::before{left:7px; border-right-color:#4B2470;} .ba-handle span::after{right:7px; border-left-color:#4B2470;}
+  .ba-range{position:absolute; inset:0; width:100%; height:100%; margin:0; opacity:0; cursor:ew-resize;}
+  .ba-tag{position:absolute; top:14px; padding:6px 12px; border-radius:999px; background:rgba(255,255,255,.9); color:#4B2470; font-size:12px; letter-spacing:.2em; text-transform:uppercase; font-weight:600; pointer-events:none;}
+  .ba-tag-l{left:14px;} .ba-tag-r{right:14px;}
+  .ba-cta{display:inline-block; margin-top:28px;}
+  /* tiktok */
+  .tt{background:var(--fs-mist,#FAF6FE); padding:72px 20px; text-align:center;}
+  .tt-embed{max-width:780px; margin:24px auto 0; min-height:420px;}
+  .tt-embed blockquote{margin:0 auto !important;}
+  .tt-follow{display:inline-block; margin-top:22px;}
   @media (hover:none){ .pp-cta{opacity:1; transform:none;} }
   .pp-next{position:absolute; right:-6px; top:50%; transform:translateY(-50%); width:56px; height:56px; border-radius:999px; border:0; background:var(--fs-ink,#2E2433); color:#fff; display:grid; place-items:center; cursor:pointer; transition:background .2s;}
   .pp-next:hover{background:var(--fs-orchid,#8A5BB8);}
@@ -1478,26 +1499,57 @@
           <li class="pp-card lp-reveal"><a class="pp-link" href="#design">
             <img src="photos/flatlay.jpg" alt="Mint and leopard bikini pieces laid out on a pink table with confetti" loading="lazy" style="object-position:55% 50%">
             <h3><span class="pp-n">1.</span> Pick your base</h3>
+            <p class="pp-blurb">Choose your top and bottom: shape, color and size. Mix and match however you like.</p>
             <span class="pp-cta">Get started</span>
           </a></li>
           <li class="pp-card lp-reveal" style="--d:.08s"><a class="pp-link" href="#design">
             <img src="photos/styling-overhead.jpg" alt="Hands arranging mint bikini ties among rhinestones and confetti" loading="lazy">
             <h3><span class="pp-n">2.</span> Choose your add ons</h3>
+            <p class="pp-blurb">Lace, ruffles, bows, beads, charms, rhinestones and more. Your price updates as you go.</p>
             <span class="pp-cta">Get started</span>
           </a></li>
           <li class="pp-card lp-reveal" style="--d:.16s"><a class="pp-link" href="#design">
             <img src="photos/sewing-closeup.jpg" alt="A mint bikini being sewn on a pink jeweled sewing machine" loading="lazy" style="object-position:40% 50%">
             <h3><span class="pp-n">3.</span> Watch it come to life</h3>
+            <p class="pp-blurb">We sew every Peace by hand in Miami, made to order just for you.</p>
             <span class="pp-cta">Get started</span>
           </a></li>
           <li class="pp-card lp-reveal" style="--d:.24s"><a class="pp-link" href="#design">
             <img src="photos/lifeguard-tower.jpg" alt="Two women in aqua and coral bikinis waving from a mint lifeguard tower" loading="lazy" style="object-position:36% 50%">
             <h3><span class="pp-n">4.</span> Wear your perfect peace</h3>
+            <p class="pp-blurb">It ships straight to your door, ready for the beach. One of one, designed by you.</p>
             <span class="pp-cta">Get started</span>
           </a></li>
         </ol>
         <button class="pp-next" type="button" aria-label="Next step" id="ppNext"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
       </div>
+    </div>
+  </section>
+
+  <section class="ba" id="before-after" aria-labelledby="baTitle">
+    <div class="lp-container">
+      <h2 class="pp-title lp-reveal" id="baTitle">Before &amp; <i>After</i></h2>
+      <p class="ba-sub lp-reveal">Our mini bikini on its own, then Peaced: pink lace, beads and a pearl charm. Drag to see the difference.</p>
+      <div class="ba-frame lp-reveal" id="baFrame" style="--pos:50%">
+        <img class="ba-after" src="photos/ba/mini-after.jpg" alt="After: the mint mini bikini with pink lace, pink and pearl beads and a pearl charm" loading="lazy">
+        <div class="ba-before"><img src="photos/ba/mini-before.jpg" alt="Before: the plain mint mini bikini" loading="lazy"></div>
+        <span class="ba-tag ba-tag-l">Before</span><span class="ba-tag ba-tag-r">After</span>
+        <span class="ba-handle" aria-hidden="true"><span></span></span>
+        <input class="ba-range" id="baRange" type="range" min="0" max="100" value="50" aria-label="Slide between before and after">
+      </div>
+      <a class="cta ba-cta" href="#design">Design your own</a>
+    </div>
+  </section>
+
+  <section class="tt" id="tiktok" aria-labelledby="ttTitle">
+    <div class="lp-container">
+      <a class="ig-title lp-reveal" id="ttTitle" href="https://www.tiktok.com/@peacesswim" target="_blank" rel="noopener">@peacesswim on TikTok</a>
+      <div class="tt-embed" id="ttEmbed">
+        <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@peacesswim" data-unique-id="peacesswim" data-embed-type="creator" style="max-width:780px; min-width:288px;">
+          <section><a target="_blank" rel="noopener" href="https://www.tiktok.com/@peacesswim?refer=creator_embed">@peacesswim</a></section>
+        </blockquote>
+      </div>
+      <a class="cta tt-follow" href="https://www.tiktok.com/@peacesswim" target="_blank" rel="noopener">Follow us on TikTok</a>
     </div>
   </section>
 
@@ -3409,6 +3461,23 @@
     }finally{ btn.textContent="CHECKOUT"; delete btn.dataset.busy; }
   });
   syncAcc();
+  /* ---------- home: before & after slider ---------- */
+  (function(){
+    var f=document.getElementById("baFrame"), r=document.getElementById("baRange"); if(!f||!r) return;
+    function set(v){ f.style.setProperty("--pos",v+"%"); }
+    r.addEventListener("input",function(){ set(r.value); });
+    function fromX(x){ var b=f.getBoundingClientRect(), v=Math.max(0,Math.min(100,(x-b.left)/b.width*100)); r.value=v; set(v); }
+    f.addEventListener("pointerdown",function(e){ fromX(e.clientX); f.setPointerCapture&&f.setPointerCapture(e.pointerId); });
+    f.addEventListener("pointermove",function(e){ if(e.buttons) fromX(e.clientX); });
+  })();
+  /* ---------- home: TikTok (TikTok's own embed of @peacesswim's latest videos), loaded when it scrolls near ---------- */
+  (function(){
+    var box=document.getElementById("ttEmbed"); if(!box) return;
+    function load(){ if(box.dataset.loaded) return; box.dataset.loaded="1"; var sc=document.createElement("script"); sc.async=true; sc.src="https://www.tiktok.com/embed.js"; document.body.appendChild(sc); }
+    if("IntersectionObserver" in window){ var io=new IntersectionObserver(function(es){ if(es.some(function(e){ return e.isIntersecting; })){ load(); io.disconnect(); } },{rootMargin:"600px"}); io.observe(box); }
+    else load();
+  })();
+
   /* ---------- lookbook lightbox ---------- */
   var lbTiles=[].slice.call(document.querySelectorAll("#lbGrid img")), lbBox=document.getElementById("lbBox"), lbAt=0, lbFrom=null;
   function showLook(i){
