@@ -1008,6 +1008,33 @@
   .ac-bday{display:flex; gap:10px; flex-wrap:wrap; margin-top:14px;}
   .ac-bday select{font:inherit; padding:12px 14px; border-radius:12px; border:0; background:#fff;}
   .ac-msg{min-height:1.4em; margin:10px 0 0; font-size:14px; color:var(--ink-soft,#8A7480);}
+  .ac-wrap{max-width:1100px;}
+  .ac-sec{margin-top:56px; text-align:left;}
+  .ac-h2{margin:0; padding-bottom:22px; border-bottom:1px solid #E8E4EA; font-size:clamp(30px,4vw,44px); font-weight:500; letter-spacing:-.02em; color:var(--ink);}
+  .ac-h3{margin:30px 0 8px; font-size:18px; font-weight:600; color:var(--ink);}
+  .ac-line{margin:10px 0 0; font-size:17px; letter-spacing:.02em; color:var(--ink);}
+  .ac-link{margin-top:22px; padding:0; border:0; background:none; font:inherit; font-size:15px; color:var(--ink); text-decoration:underline; text-underline-offset:3px; cursor:pointer;}
+  .ac-pts-row{display:flex; align-items:flex-end; justify-content:space-between; gap:24px; flex-wrap:wrap; padding-top:26px;}
+  .ac-pts-l{flex:1 1 360px; max-width:560px;}
+  .ac-bar{background:#F1E6FA !important;}
+  #acCodes .ac-code{background:none; border-radius:0; margin:0; padding:16px 0; border-bottom:1px solid #E8E4EA;}
+  .ac-bday select{background:#F6F2F8 !important;}
+  .ac-btn.ghost{background:#F1E6FA !important;}
+  .ac-table{font-size:16px; color:var(--ink);}
+  .ac-tr{display:grid; grid-template-columns:1.3fr 1.6fr 1.4fr 1.4fr 1fr; gap:16px; padding:26px 0; border-bottom:1px solid #D9D4DC; align-items:start;}
+  .ac-th{padding:34px 0 22px; font-weight:600;}
+  .ac-tr > :nth-child(5){text-align:right;}
+  .ac-tr a{color:var(--ink);}
+  .ac-ord{text-decoration:underline; text-underline-offset:3px;}
+  .ac-track{display:flex; align-items:center; gap:8px; margin-top:12px; font-size:15px; text-decoration:none !important;}
+  .ac-items{grid-column:1/-1; margin:-6px 0 0; font-size:14px; color:var(--ink-soft,#8A7480);}
+  .ac-lbl{display:none;}
+  @media (max-width:700px){
+    .ac-th{display:none;}
+    .ac-tr{grid-template-columns:1fr 1fr; gap:10px 16px;}
+    .ac-tr > :nth-child(5){text-align:left;}
+    .ac-lbl{display:block; font-size:12px; letter-spacing:.12em; text-transform:uppercase; color:var(--ink-soft,#8A7480); margin-bottom:2px;}
+  }
   @media (max-width:640px){ .ac-perks{grid-template-columns:1fr;} .ac-card{padding:22px;} .ac-pts b{font-size:52px;} }
   .lb-top{display:flex; align-items:center; justify-content:space-between; gap:16px; padding-bottom:18px; border-bottom:1px solid var(--line,#E7DAF3);}
   .lb-logo{height:clamp(64px,8vw,88px); width:auto; display:block;}
@@ -1755,28 +1782,34 @@
       <p class="ac-msg" id="acOutMsg"></p>
     </div>
     <div id="acIn" hidden>
-      <div class="ac-card">
-        <div class="ac-row"><p class="ac-muted">Your balance</p><button class="ac-copy" type="button" id="acSignOut">Sign out</button></div>
-        <div class="ac-pts"><b id="acBal">0</b><span class="ac-muted">Peace Points</span></div>
-        <div class="ac-bar"><i id="acBar" style="width:0"></i></div>
-        <p class="ac-muted" id="acNext"></p>
-        <div style="margin-top:18px"><button class="ac-btn" type="button" id="acRedeem">Get $10 off</button></div>
-        <p class="ac-msg" id="acMsg"></p>
-      </div>
-      <div class="ac-card">
-        <h2>Your exclusive codes</h2>
+      <section class="ac-sec">
+        <h2 class="ac-h2">Peace Points</h2>
+        <div class="ac-pts-row">
+          <div class="ac-pts-l">
+            <div class="ac-pts"><b id="acBal">0</b><span class="ac-muted">Peace Points</span></div>
+            <div class="ac-bar"><i id="acBar" style="width:0"></i></div>
+            <p class="ac-muted" id="acNext"></p>
+          </div>
+          <div class="ac-pts-r"><button class="ac-btn" type="button" id="acRedeem">Get $10 off</button><p class="ac-msg" id="acMsg"></p></div>
+        </div>
+        <h3 class="ac-h3">Your exclusive codes</h3>
         <p class="ac-muted">Only you can use these. Enter one at checkout.</p>
         <div id="acCodes"></div>
-      </div>
-      <div class="ac-card" id="acBdayCard">
-        <h2>Your birthday</h2>
+        <h3 class="ac-h3" id="acBdayCard">Your birthday</h3>
         <p class="ac-muted" id="acBdayText">PS: extra points if you enter your birthday!</p>
         <div class="ac-bday" id="acBdayForm"><select id="acMonth" aria-label="Month"></select><select id="acDay" aria-label="Day"></select><button class="ac-btn ghost" type="button" id="acBdaySave">Save</button></div>
-      </div>
-      <div class="ac-card">
-        <h2>Your orders</h2>
-        <div id="acOrders"></div>
-      </div>
+      </section>
+      <section class="ac-sec">
+        <h2 class="ac-h2">Account Information</h2>
+        <h3 class="ac-h3">Contact Information</h3>
+        <p class="ac-line" id="acName"></p>
+        <p class="ac-line" id="acEmail"></p>
+        <button class="ac-link" type="button" id="acSignOut">Sign out</button>
+      </section>
+      <section class="ac-sec">
+        <h2 class="ac-h2">Order History</h2>
+        <div class="ac-table" id="acOrders"></div>
+      </section>
     </div>
   </div>
 </div>
@@ -3556,11 +3589,22 @@
     codes.innerHTML=d.rewards.length?d.rewards.map(function(r){ return '<div class="ac-code'+(r.used?' used':'')+'"><div><code>'+esc(r.code)+'</code><p class="ac-muted">$'+r.off+' off'+(r.used?': used':'')+'</p></div>'+(r.used?'':'<button class="ac-copy" type="button" data-copy="'+esc(r.code)+'">Copy</button>')+'</div>'; }).join(""):'<p class="ac-muted" style="margin-top:12px">Reach 100 points and your first $10 code shows up here.</p>';
     if(d.birthday){ document.getElementById("acBdayForm").hidden=true; document.getElementById("acBdayText").textContent="Saved: "+MONTHS[d.birthday.month-1]+" "+d.birthday.day+". We add 50 bonus points every year in your birthday month."; }
     else document.getElementById("acBdayForm").hidden=false;
+    document.getElementById("acName").textContent=d.fullName||d.name||"";
+    document.getElementById("acEmail").textContent=d.email||"";
+    var PAY={PAID:"Paid",PARTIALLY_PAID:"Partly paid",PENDING:"Not paid yet",AUTHORIZED:"Not paid yet",REFUNDED:"Refunded",PARTIALLY_REFUNDED:"Partly refunded",VOIDED:"Cancelled",EXPIRED:"Cancelled"};
+    var pin='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>';
     var ord=document.getElementById("acOrders");
-    ord.innerHTML=d.orders.length?d.orders.map(function(o){
-      var st=o.cancelled?"Cancelled":o.shipped==="FULFILLED"?"Shipped":/PAID/.test(o.paid)&&o.paid!=="PARTIALLY_PAID"?"Being sewn":/REFUND/.test(o.paid)?"Refunded":"Not paid yet";
-      return '<div class="ac-order">'+(o.image?'<img src="'+esc(o.image)+'" alt="">':'')+'<div><p><b>'+esc(o.name)+'</b><span class="ac-tag">'+st+'</span></p><p class="ac-muted">'+new Date(o.date).toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"})+' · $'+o.total.toFixed(2)+(o.points?' · +'+o.points+' pts':'')+'</p>'+o.items.map(function(i){ return '<p class="ac-muted">'+esc(i)+'</p>'; }).join("")+'</div></div>';
-    }).join(""):'<p class="ac-muted" style="margin-top:12px">No orders yet. <a href="#design" style="text-decoration:underline">Design your first Peace</a></p>';
+    ord.innerHTML=d.orders.length?'<div class="ac-tr ac-th"><span>Order #</span><span>Date</span><span>Payment Status</span><span>Fulfillment Status</span><span>Total</span></div>'+d.orders.map(function(o){
+      var paid=o.cancelled?"Cancelled":(PAY[o.paid]||"Not paid yet");
+      var ful=o.cancelled?"Cancelled":o.shipped==="FULFILLED"?"Fulfilled":o.shipped==="PARTIALLY_FULFILLED"?"Partly shipped":paid==="Paid"?"Being sewn":"Unfulfilled";
+      var num=o.status?'<a class="ac-ord" href="'+esc(o.status)+'" target="_blank" rel="noopener">'+esc(o.name)+'</a>':esc(o.name);
+      return '<div class="ac-tr"><div><span class="ac-lbl">Order #</span>'+num+(o.status?'<a class="ac-track" href="'+esc(o.status)+'" target="_blank" rel="noopener">'+pin+'Track Order</a>':'')+'</div>'+
+        '<div><span class="ac-lbl">Date</span>'+new Date(o.date).toLocaleDateString("en-US",{month:"long",day:"numeric",year:"numeric"})+'</div>'+
+        '<div><span class="ac-lbl">Payment Status</span>'+paid+'</div>'+
+        '<div><span class="ac-lbl">Fulfillment Status</span>'+ful+'</div>'+
+        '<div><span class="ac-lbl">Total</span>'+o.total.toFixed(2)+' USD'+(o.points?'<div class="ac-muted" style="font-size:14px;margin-top:6px">+'+o.points+' pts</div>':'')+'</div>'+
+        (o.items.length?'<p class="ac-items">'+o.items.map(esc).join(" · ")+'</p>':'')+'</div>';
+    }).join(""):'<p class="ac-muted" style="margin-top:22px">No orders yet. <a href="#design" style="text-decoration:underline">Design your first Peace</a></p>';
   }
   function acRefresh(){
     return acFresh().then(function(t){
