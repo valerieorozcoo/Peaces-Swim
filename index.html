@@ -1137,6 +1137,16 @@
   .lb-chip{border:1.5px solid rgba(255,255,255,.8); background:rgba(255,255,255,.12); color:#fff; border-radius:999px; padding:7px 14px; font:inherit; font-size:12.5px; letter-spacing:.08em; text-transform:none; cursor:pointer;}
   .lb-chip:hover{background:#fff; color:#4B2470;}
   /* shop cards */
+  .shop-filters{display:flex; flex-direction:column; gap:10px; margin:0 0 26px;}
+  .sf-row{display:flex; flex-wrap:wrap; align-items:center; gap:8px;}
+  .sf-label{width:52px; font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-soft,#8A7480);}
+  .sf-chip{border:0; border-radius:999px; padding:8px 15px; background:#F6F2F8; color:#2E2433; font:inherit; font-size:14px; cursor:pointer;}
+  .sf-chip:hover{background:#EFDDFD;}
+  .sf-chip[aria-pressed="true"]{background:#2E2433; color:#fff;}
+  .sf-empty{margin:10px 0 30px; color:var(--ink-soft,#8A7480);}
+  .sf-empty button{border:0; background:none; font:inherit; text-decoration:underline; cursor:pointer; color:#2E2433;}
+  .sc[hidden]{display:none;}
+  @media (max-width:640px){ .sf-row{flex-wrap:nowrap; overflow-x:auto; scrollbar-width:none; margin-right:-16px; padding-right:16px;} .sf-row::-webkit-scrollbar{display:none;} .sf-label{flex:none; width:auto; margin-right:4px;} .sf-chip{flex:none;} }
   .shop-grid{grid-template-columns:repeat(auto-fill,minmax(270px,1fr)) !important; gap:40px 20px !important;}
   .sc{text-align:left;}
   .sc-shot{position:relative; aspect-ratio:4/5; background:#FAF8FB; overflow:hidden; cursor:pointer;}
@@ -1766,6 +1776,11 @@
     <p class="lb-sub">Our favorite Peaces. Pick your top and bottom sizes to add one to your bag, or tap Make it mine to change anything.</p>
   </section>
 
+  <div class="shop-filters" id="shopFilters" aria-label="Filter the shop">
+    <div class="sf-row" data-filter="color"><span class="sf-label">Color</span></div>
+    <div class="sf-row" data-filter="style"><span class="sf-label">Style</span></div>
+  </div>
+  <p class="sf-empty" id="shopEmpty" hidden>Nothing here yet in that combo. <button type="button" id="shopReset">Show everything</button></p>
   <div class="shop-grid" id="shopGrid"></div>
 
   <section class="lb-head shop-acc-head">
@@ -4314,7 +4329,7 @@
      Add to bag = that exact Peace in her sizes. Make it mine = open it in the builder to change anything. */
   var SUITS=(window.PeacesSuits&&PeacesSuits.SUITS)||[], SIZE_LIST=["XS","S","M","L"], startOnPeaces=false;
   function suitPrice(s){
-    var d=s.design, c={topStyle:d.topStyle,bottomStyle:d.bottomStyle,sizeTop:"S",rsText:"",initials:"",addons:d.addons.map(function(a){ return {id:a.id,cfg:a.cfg||{}}; })}, adds=0;
+    var d=s.design, c={topStyle:d.topStyle,bottomStyle:d.bottomStyle,sizeTop:"S",rsText:s.personal?"a":"",initials:s.personal?"A":"", /* personal suits: priced "from" one letter */addons:d.addons.map(function(a){ return {id:a.id,cfg:a.cfg||{}}; })}, adds=0;
     d.addons.forEach(function(a,i){ c.addons[i].cfg=R.normalize(a.id,a.cfg||{},c,a.variant); });
     d.addons.forEach(function(a,i){ adds+=R.price(a.id,c.addons[i].cfg,c,a.variant); });
     return {adds:adds,total:BASE_PRICE+adds};
@@ -4371,7 +4386,7 @@
     card.className="sc"; card.dataset.suitCard=s.id;
     var pick={top:null,bottom:null};
     function resetPick(){ pick={top:null,bottom:null}; card.querySelectorAll("[data-part]").forEach(function(x){ x.setAttribute("aria-pressed","false"); }); var a=card.querySelector(".sc-add"); a.disabled=true; a.textContent="Pick top & bottom"; }
-    var price=creator?"<s>"+fmt(pr.total)+"</s> "+fmt(creatorSub(pr.total,pr.adds)):fmt(pr.total);
+    var price=(s.personal?"From ":"")+(creator?"<s>"+fmt(pr.total)+"</s> "+fmt(creatorSub(pr.total,pr.adds)):fmt(pr.total));
     var bagSvg='<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 7h12l-1 13H7L6 7z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg>';
     card.innerHTML='<div class="sc-shot"><img src="photos/shop/'+s.id+'.png" alt="'+s.name+'" loading="lazy">'+
       '<button type="button" class="sc-mine" data-act="mine"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>Make it mine</button>'+
@@ -4390,16 +4405,43 @@
         pick[btn.dataset.part]=btn.dataset.z;
         card.querySelectorAll('[data-part="'+btn.dataset.part+'"]').forEach(function(x){ x.setAttribute("aria-pressed",x===btn?"true":"false"); });
         var add=card.querySelector(".sc-add"), ready=pick.top&&pick.bottom;
-        add.disabled=!ready; add.textContent=ready?"Add "+pick.top+" / "+pick.bottom+" to bag":(pick.top?"Now pick a bottom":"Now pick a top");
+        add.disabled=!ready; add.textContent=ready?(s.personal?"Next: your initials":"Add "+pick.top+" / "+pick.bottom+" to bag"):(pick.top?"Now pick a bottom":"Now pick a top");
         return;
       }
       if(!(pick.top&&pick.bottom)) return;
+      if(s.personal){ card.classList.remove("open"); makeItMine(s,pick.top,pick.bottom); return; }
       card.classList.remove("open"); addSuit(s,pick.top,pick.bottom,btn).then(function(){ resetPick(); });
     });
     return card;
   }
   document.addEventListener("click",function(e){ if(!e.target.closest(".sc")) document.querySelectorAll(".sc.open").forEach(function(c){ c.classList.remove("open"); }); });
-  (function(){ var g=document.getElementById("shopGrid"); if(g) SUITS.forEach(function(s){ g.appendChild(shopCard(s)); }); })();
+  /* Shop: only the current line up, filterable by color and by style */
+  var SHOP_COLORS=[["all","All"],["cheetah","Cheetah"],["green","Mint"],["teal","Blue"],["coral","Coral"]];
+  var SHOP_STYLES=[["all","All"],["lace","Lace"],["ruffles","Ruffles"],["bows","Bows & roses"],["beads","Beads & charms"],["ties","Ties & connectors"],["fringe","Fringe"],["initials","Initials"]];
+  function suitStyles(s){
+    var ids=s.design.addons.map(function(a){ return a.id; }), out=[];
+    if(ids.indexOf("laceTrim")>-1||ids.indexOf("laceRuffles")>-1) out.push("lace");
+    if(ids.indexOf("ruffles")>-1||ids.indexOf("laceRuffles")>-1) out.push("ruffles");
+    if(ids.indexOf("bows")>-1||ids.indexOf("roses")>-1) out.push("bows");
+    if(ids.indexOf("beads")>-1||ids.indexOf("charms")>-1||ids.indexOf("buttons")>-1) out.push("beads");
+    if(ids.indexOf("extTies")>-1||ids.indexOf("connectors")>-1) out.push("ties");
+    if(ids.indexOf("fringe")>-1) out.push("fringe");
+    if(s.personal) out.push("initials");
+    return out;
+  }
+  (function(){
+    var g=document.getElementById("shopGrid"); if(!g) return;
+    var shopSuits=SUITS.filter(function(s){ return s.shop!==false; }), cards=shopSuits.map(function(s){ var c=shopCard(s); c.dataset.color=s.design.topColor; c.dataset.styles=suitStyles(s).join(" "); g.appendChild(c); return c; });
+    var sel={color:"all",style:"all"}, box=document.getElementById("shopFilters");
+    function chips(kind,list){ var row=box.querySelector('[data-filter="'+kind+'"]');
+      list.forEach(function(o){ if(o[0]!=="all" && !cards.some(function(c){ return kind==="color"?c.dataset.color===o[0]:c.dataset.styles.split(" ").indexOf(o[0])>-1; })) return;
+        var b=document.createElement("button"); b.type="button"; b.className="sf-chip"; b.dataset.v=o[0]; b.textContent=o[1]; b.setAttribute("aria-pressed",o[0]==="all"?"true":"false");
+        b.addEventListener("click",function(){ sel[kind]=o[0]; row.querySelectorAll(".sf-chip").forEach(function(x){ x.setAttribute("aria-pressed",x===b?"true":"false"); }); apply(); });
+        row.appendChild(b); }); }
+    function apply(){ var n=0; cards.forEach(function(c){ var ok=(sel.color==="all"||c.dataset.color===sel.color)&&(sel.style==="all"||c.dataset.styles.split(" ").indexOf(sel.style)>-1); c.hidden=!ok; if(ok) n++; }); document.getElementById("shopEmpty").hidden=n>0; }
+    chips("color",SHOP_COLORS); chips("style",SHOP_STYLES);
+    document.getElementById("shopReset").addEventListener("click",function(){ box.querySelectorAll('.sf-chip[data-v="all"]').forEach(function(b){ b.click(); }); });
+  })();
 
   /* lookbook: tags on each photo → that Peace, ready to add to the bag or make yours */
   var LOOK_TAGS=(window.PeacesSuits&&PeacesSuits.LOOK_TAGS)||{};
