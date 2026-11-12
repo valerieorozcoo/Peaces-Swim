@@ -3399,9 +3399,10 @@
     document.documentElement.style.overflow="hidden";
     var f=document.querySelector("#"+(step||"stepPhone")+" input"); if(f) f.focus({preventScroll:true});
   }
+  var gateSkipped=false, gateReshown=false;
   function closeGate(){
     if(gate.hidden) return;
-    gate.hidden=true;
+    gate.hidden=true; if(!lead) gateSkipped=true;
     document.documentElement.style.overflow="";
     if(!document.getElementById("builder").hidden) syncPerk();
   }
@@ -3548,6 +3549,8 @@
     if(!builderEl.hidden) return;
     landing.hidden=true; lookbook.hidden=true; accPage.hidden=true; aboutPage.hidden=true; closeLightbox(); syncAccPop();
     showBuilder();
+    /* closed the 10% pop-up without signing up? show it once more when she starts designing */
+    if(gateSkipped && !gateReshown && !lead && !state.perk && !creator){ gateReshown=true; setTimeout(function(){ if(!builderEl.hidden && gate.hidden && !lead) openGate("stepPhone"); },600); }
     if(startOnPeaces){ startOnPeaces=false; showPage("pagePeaces"); } // "Make it mine": straight to the customizations
   }
   function enterLookbook(){
