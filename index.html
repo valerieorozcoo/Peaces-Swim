@@ -2465,8 +2465,10 @@
     if(parent) parent.appendChild(e);
     return e;
   }
-  function img(svg,name,cx,cy,w,h,rot){
+  function liftStyle(w,k){ k=k||1; return "filter:drop-shadow(0 "+(w*0.035*k).toFixed(2)+"px "+(w*0.045*k).toFixed(2)+"px rgba(40,25,40,.35))"; }
+  function img(svg,name,cx,cy,w,h,rot,lift){
     var a={href:"art2/"+name+".png","x":(-w/2),"y":(-h/2),width:w,height:h,preserveAspectRatio:"xMidYMid meet"};
+    if(lift) a.style=liftStyle(Math.min(w,h),lift);
     a.transform="translate("+cx+","+cy+")"+(rot?" rotate("+rot+")":"");
     return el("image",a,svg);
   }
@@ -2640,17 +2642,19 @@
   }
   function rhinestoneText(svg,spots,W){
     var place=cfg("rhinestones","place"), rt=R.letters(state.rsText,place==="butt"?4:3)||(place==="butt"?"k":"K"), n=rt.length;
-    var gold=cfg("rhinestones","metal")==="gold", col=gold?"#D9A441":"#EEF1F6", edge=gold?"rgba(110,66,10,.75)":"rgba(46,36,51,.45)", fs;
+    var gold=cfg("rhinestones","metal")==="gold", col=gold?"#C98B2E":"#E3E7EE", hi=gold?"#FFE2A0":"#FFFFFF", edge=gold?"rgba(96,58,12,.55)":"rgba(70,80,95,.35)", fs;
     if(place==="butt") fs=W*(n>3?0.23:n>2?0.27:n>1?0.29:0.3);
-    else { fs=W*(n>2?0.13:n>1?0.17:(state.topStyle==="triangle"?0.24:0.29)); fs=Math.min(fs, W*(state.topStyle==="triangle"?0.2:0.26)/(0.45*n)); } // fit inside the cup
+    else { fs=W*(n>2?0.14:n>1?0.19:(state.topStyle==="triangle"?0.25:0.31)); fs=Math.min(fs, W*(state.topStyle==="triangle"?0.22:0.3)/(0.45*n)); } // fit inside the cup
     // crystals set along the CENTER of each script stroke, one row, evenly spaced (like the samples)
-    var dot=fs*0.05, gap=dot*1.45;
+    var dot=fs*0.036, gap=dot*1.22;
+    var dy=place==="butt"?0:fs*0.14; // the bigger letter sits a little lower so it stays on the cup
     spots.forEach(function(pt){
-      crystalDots(rt,fs,gap).forEach(function(d){
-        var x=pt[0]+d[0], y=pt[1]+d[1];
-        el("circle",{cx:x,cy:y,r:dot*0.62,fill:edge},svg);
-        el("circle",{cx:x,cy:y,r:dot*0.47,fill:col},svg);
-        el("circle",{cx:x-dot*0.15,cy:y-dot*0.15,r:dot*0.16,fill:"rgba(255,255,255,.9)"},svg);
+      crystalDots(rt,fs,gap).forEach(function(d,k){
+        var x=pt[0]+d[0], y=pt[1]+d[1]+dy, tw=(Math.sin(k*2.39)+1)/2; // each crystal catches the light a little differently
+        el("circle",{cx:x,cy:y+dot*0.12,r:dot*0.6,fill:edge},svg);
+        el("circle",{cx:x,cy:y,r:dot*0.5,fill:col},svg);
+        el("circle",{cx:x-dot*0.1,cy:y-dot*0.12,r:dot*0.3,fill:hi,opacity:(0.55+0.4*tw).toFixed(2)},svg);
+        if(tw>0.85) el("path",{d:"M"+(x-dot*0.75)+","+y+"L"+(x+dot*0.75)+","+y+"M"+x+","+(y-dot*0.75)+"L"+x+","+(y+dot*0.75),stroke:"rgba(255,255,255,.85)","stroke-width":dot*0.12,"stroke-linecap":"round"},svg); // sparkle
       });
     });
   }
@@ -2703,8 +2707,8 @@
     if(on("laceRuffles") && (isTop || /^(front|around)$/.test(cfg("laceRuffles","lower")))) g.trimSegs.forEach(function(sg){ strip(svg,"p-laceruffle-p-"+variantOf("laceRuffles"),sg,H*0.13); });
     if(on("fringe") && (isTop || cfg("fringe","lower")==="front")){
       // the real fringe (photo): woven tape along the edge, strands falling over the piece
-      var fl=H*(isTop?(tri?0.13:0.09):0.1);
-      fringeSegs(g,isTop).forEach(function(sg){ hangStrip(svg,"fringe-p-"+variantOf("fringe"),sg,fl); });
+      var fl=H*(isTop?(tri?0.17:0.16):0.14), fg=el("g",{style:"filter:drop-shadow(0 "+(W*0.004).toFixed(2)+"px "+(W*0.005).toFixed(2)+"px rgba(40,25,40,.35))"},svg);
+      fringeSegs(g,isTop).forEach(function(sg){ hangStrip(fg,"fringe-p-"+variantOf("fringe"),sg,fl,0.06); });
     }
 
     /* Tier 2: connectors (triangle: middle of the top + both sides of the bottom; bralette: both halter straps) */
@@ -2718,7 +2722,7 @@
     }
     if(on("rhinestones") && isTop && g.cupL){
       var rp=cfg("rhinestones","place");
-      if(rp!=="butt") rhinestoneText(svg,[rp==="right"?g.cupR:g.cupL],W);
+      if(rp!=="butt"){ var cp=rp==="right"?g.cupR:g.cupL; rhinestoneText(svg,[[cp[0]+(rp==="right"?-1:1)*W*0.035,cp[1]]],W); } // a touch in from the edge, like the samples
     }
 
     /* Tier 3: bows + roses (middle and / or both sides, top and bottom) */
@@ -2731,10 +2735,10 @@
         if(bp.indexOf("mid")>-1) pts.push([[g.center[0],g.center[1]+(id==="roses"?H*0.045:4)],1]); // roses: just under the waistband
         if(bp.indexOf("sides")>-1) pts.push([g.hipL,0.72],[g.hipR,0.72]);
       }
-      pts.forEach(function(p){ var sc=id==="roses"?Math.max(p[1],0.9):p[1]; img(svg,name,p[0][0],p[0][1],w*sc,h*sc,0); });
+      pts.forEach(function(p){ var sc=id==="roses"?Math.max(p[1],0.9):p[1]; img(svg,name,p[0][0],p[0][1],w*sc,h*sc,0,1); });
     }
-    if(on("roses")){ var rw=W*(tri?0.11:0.085); spots("roses","p-rose-leaf",rw,rw*41/72); } // a little satin rose with two leaves (the sample)
-    if(on("bows")){ var bw=W*(tri?0.17:0.13); spots("bows","p-bow-"+variantOf("bows"),bw,bw*97/138); }
+    if(on("roses")){ var rw=W*(tri?0.145:0.12); spots("roses","p-rose-leaf",rw,rw*41/72); } // a little satin rose with two leaves (the sample)
+    if(on("bows")){ var bw=W*(tri?0.2:0.165); spots("bows","p-bow-"+variantOf("bows"),bw,bw*97/138); }
 
     /* Tier 3: buttons. Triangle: along the lace line. Bralette + seamless: a little cluster of 1 to 3 in each corner,
        small and large mixed, like the coral sample (first one tucked in the corner, the next beside it, the third below) */
@@ -2753,13 +2757,14 @@
 
     /* Tier 4: beads, by spot. Beads can be mixed, so each one is drawn as the bead picked for that place */
     if(on("beads")){
-      var bd=cfgFor("beads"), ST=bd.str||{}, bs=W*(tri?0.055:0.042);
-      var bead=function(b,x,y,sz){ sz=sz||bs; img(svg,b,x,y,sz,sz,0); };
+      var bd=cfgFor("beads"), ST=bd.str||{}, bs=W*(tri?0.058:0.058);
+      var bead=function(b,x,y,sz){ sz=sz||bs; img(svg,b,x,y,sz,sz,0,0.8); };
       var onRun=function(run,list,t0,step){ list.forEach(function(b,i){ var t=Math.min(0.97,t0+i*step); bead(b,run[0][0]+(run[1][0]-run[0][0])*t,run[0][1]+(run[1][1]-run[0][1])*t,bs*0.9); }); };
       if(isTop){
-        if(bd.ties) [g.strapRunL,g.strapRunR].forEach(function(run){ // first bead sits right above the triangle, the rest go up the tie
-          var L=Math.sqrt(Math.pow(run[1][0]-run[0][0],2)+Math.pow(run[1][1]-run[0][1],2)), step=bs*0.95/L;
-          ST.ties.forEach(function(b,i){ var t=Math.max(0.03,0.93-i*step); bead(b,run[0][0]+(run[1][0]-run[0][0])*t,run[0][1]+(run[1][1]-run[0][1])*t,bs); }); });
+        if(bd.ties) [g.strapRunL,g.strapRunR].forEach(function(run,si){ // first bead sits right above the triangle, the rest go up the tie
+          var L=Math.sqrt(Math.pow(run[1][0]-run[0][0],2)+Math.pow(run[1][1]-run[0][1],2)), step=bs*0.92/L;
+          var nudge=tri?0:(si?-1:1)*bs*0.28; // bralette: threaded right on the middle of the halter strap
+          ST.ties.forEach(function(b,i){ var t=Math.max(0.03,0.93-i*step); bead(b,run[0][0]+(run[1][0]-run[0][0])*t+nudge,run[0][1]+(run[1][1]-run[0][1])*t,bs); }); });
         if(bd.mid){ // left to right across the middle, leaving room for a connector or a charm's clasp
           var gap=bs*0.95, chm=on("charms")&&cfg("charms","mid")>0, hole=(on("connectors")&&tri&&cfg("connectors","top")!=="none")?connW*0.75:(chm?bs*0.55:0);
           var nm=bd.mid, left=Math.ceil(nm/2), xs=[];
